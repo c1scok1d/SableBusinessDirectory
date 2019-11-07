@@ -233,43 +233,15 @@ public class MainActivity extends AppCompatActivity implements
         searchView.setIconifiedByDefault(false);
        // searchView.setSuggestionsAdapter(category);
         searchView.setQueryHint("Search The Directory");
-
-
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionSelect(int position) {
-
-
-                Intent search = getIntent();
-                if (Intent.ACTION_SEARCH.equals(search.getAction())) {
-                    String query = search.getStringExtra(SearchManager.QUERY);
-                    getRetrofitSearch(query);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onSuggestionClick(int position) {
-
-
-                Intent search = getIntent();
-                if (Intent.ACTION_SEARCH.equals(search.getAction())) {
-                    String query = search.getStringExtra(SearchManager.QUERY);
-                    getRetrofitSearch(query);
-                }
-                return false;
-            }
-        });
-
-       /* searchView.setOnQueryTextListener(this);
-        searchView.setOnCloseListener(this);*/
-
-//        AutoCompleteTextView autoCompleteTextView = searchView.findViewById(R.id.search);
- //       autoCompleteTextView.setThreshold(0);
-
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+
+        Intent search = getIntent();
+        if (Intent.ACTION_SEARCH.equals(search.getAction())) {
+            String query = search.getStringExtra(SearchManager.QUERY);
+            getRetrofitSearch(query);
+        }
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         enableMyLocation();
