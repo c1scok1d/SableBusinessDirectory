@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -63,14 +62,14 @@ public class MainActivity extends AppCompatActivity implements
     Double latitude, longitude;
 
     TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo;
-    RecyclerView vertcalRecyclerView, horizontalRecyclervView, vertcalRecyclerView2;
+    RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
     VerticalAdapter verticalAdapter, verticalAdapter2;
     HorizontalAdapter horizontalAdapter;
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
-    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country, zipcode, city, street, bldgNo;
+    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country, zipcode, city, street, bldgno, submit_ip;
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
@@ -113,26 +112,26 @@ public class MainActivity extends AppCompatActivity implements
         /*
             BEGIN vertical Recycler View
          */
-        vertcalRecyclerView = findViewById(R.id.verticalRecyclerView);
-        vertcalRecyclerView2 = findViewById(R.id.verticalRecyclerView2);
+        verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
+       // verticalRecyclerView2 = findViewById(R.id.verticalRecyclerView2);
 
         progressBar = findViewById(R.id.progressbar);
 
         /* Set Vertical LinearLayout to RecyclerView */
         mLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
-        mLayoutManager2 = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
-        vertcalRecyclerView.setLayoutManager(mLayoutManager);
-        vertcalRecyclerView2.setLayoutManager(mLayoutManager2);
+        //mLayoutManager2 = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        verticalRecyclerView.setLayoutManager(mLayoutManager);
+        //verticalRecyclerView2.setLayoutManager(mLayoutManager2);
 
         verticalList = new ArrayList<>();
         locationMatch = new ArrayList<>();
 
 
         verticalAdapter = new VerticalAdapter(verticalList, MainActivity.this);
-        verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
+        //verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
 
-        vertcalRecyclerView.setAdapter(verticalAdapter);
-        vertcalRecyclerView2.setAdapter(verticalAdapter2);
+        verticalRecyclerView.setAdapter(verticalAdapter);
+        //verticalRecyclerView2.setAdapter(verticalAdapter2);
 
 
         btnAdd = findViewById(R.id.btnAdd);
@@ -145,6 +144,12 @@ public class MainActivity extends AppCompatActivity implements
 
         Spinner spnRadius = findViewById(R.id.spnRadius);
         List<String> spinnerArrayRad = new ArrayList<>();
+
+
+        /**
+         *  radius spinner
+         */
+
         spinnerArrayRad.add("Search Radius");
         //spinnerArrayRad.add("5");
         spinnerArrayRad.add("10");
@@ -157,10 +162,6 @@ public class MainActivity extends AppCompatActivity implements
         // Apply the adapter to the spinner
         spnRadius.setAdapter(adapterRad);
         //Action to perform on functions - onItemSelected and onNothing selected
-
-        /**
-         *  radius spinner
-         */
 
         spnRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -243,12 +244,20 @@ public class MainActivity extends AppCompatActivity implements
             getRetrofitSearch(query);
         }
 
+        /**
+         *  location manager to get current location
+         */
+
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         enableMyLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
-        getRetrofit();
+        /**
+         *  api calls to get listings and marketplace products
+         */
+
+       // getRetrofit();
         getRetrofitWoo(); //call to woocommerce products api
         //searchIntent(getIntent());
     }
@@ -445,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
             String maddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
-            String mbldgNo = addresses.get(0).getSubThoroughfare(); // get bulding number
+            String mbldgno = addresses.get(0).getSubThoroughfare(); // get bulding number
             String mstreet = addresses.get(0).getThoroughfare(); //get street name
             String mcity = addresses.get(0).getLocality(); //get city name
             String mstate = addresses.get(0).getAdminArea(); //get state name
@@ -461,12 +470,12 @@ public class MainActivity extends AppCompatActivity implements
             tvState.setText(mstate);
             tvCity.setText(mcity);
             tvStreet.setText(mstreet);
-            tvBldgNo.setText(mbldgNo); */
+            tvBldgNo.setText(mbldgno); */
 
 
             addresses.get(0).getAdminArea();
             address = maddress;
-            bldgNo = mbldgNo;
+            bldgno = mbldgno;
             street = mstreet;
             state = mstate;
             city = mcity;
@@ -486,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements
         //this.longitude = longitude;
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);  // <-- this is the important line!
 
@@ -521,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("main_activity", " response " + response.body());
+                Log.e("GeoDirectory", " response " + response.body());
 
                 // mListPost = response.body();
                 progressBar.setVisibility(View.GONE); //hide progressBar
@@ -588,6 +597,21 @@ public class MainActivity extends AppCompatActivity implements
                          * if no location match continue to pars JSON data
                          */
 
+                        Log.e("Location ", " Id: " + response.body().get(i).getId());
+                        Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
+                        Log.e("Location ", " Rating: " + response.body().get(i).getRating());
+                        Log.e("Location ", " Rating Count: " + response.body().get(i).getRatingCount());
+                        Log.e("Location ", " Street: " + response.body().get(i).getStreet());
+                        Log.e("Location ", " City: " + response.body().get(i).getCity());
+                        Log.e("Location ", " Zip: " + response.body().get(i).getZip());
+                        Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                        Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                        Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
+                        Log.e("Location ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
+                        Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
+                        Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+
+
                         verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                 response.body().get(i).getTitle().getRaw(),
                                 response.body().get(i).getRating(),
@@ -634,7 +658,7 @@ public class MainActivity extends AppCompatActivity implements
        // httpClient.addInterceptor(logging);  // <-- this is the important line!
 
 
-        String baseURL = "https://www.thesablebusinessdirectory.com";
+       // String baseURL = "https://www.thesablebusinessdirectory.com";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -650,7 +674,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<WooProducts>>() {
             @Override
             public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
-                Log.e("main_activity", " response " + response.body());
+                Log.e("WooCommerce", " response " + response.body());
 
                 //mListPost = response.body();
                 progressBar.setVisibility(View.GONE); //hide progressBar
@@ -663,13 +687,13 @@ public class MainActivity extends AppCompatActivity implements
                     //ifStatement to skip json object from array if value is empty/null
 
 
-                    Log.e("main", "id: " + response.body().get(i).getId());
-                    Log.e("main ", " Title: " + response.body().get(i).getName());
-                    Log.e("main", "Description" + response.body().get(i).getName());
-                    Log.e("main ", " Rating: " + response.body().get(i).getAverageRating());
-                    Log.e("main ", " Rating Count: " + response.body().get(i).getRatingCount());
-                    Log.e("main ", " Price: " + response.body().get(i).getPrice());
-                    Log.e("main ", " Image: " + response.body().get(i).getImages().get(0).getSrc());
+                    Log.e("Product ", "id: " + response.body().get(i).getId());
+                    Log.e("Product ", "Title: " + response.body().get(i).getName());
+                    Log.e("Product ", "Description" + response.body().get(i).getName());
+                    Log.e("Product ", "Rating: " + response.body().get(i).getAverageRating());
+                    Log.e("Product ", "Rating Count: " + response.body().get(i).getRatingCount());
+                    Log.e("Product ", "Price: " + response.body().get(i).getPrice());
+                    Log.e("Product ", "Image: " + response.body().get(i).getImages().get(0).getSrc());
 //                    Log.e("main ", " Image1: " + response.body().get(i).getImages().get(1).getSrc());
 
                     //parse response based on WooModel class and add to list array ( get category name, description and image)
@@ -695,12 +719,13 @@ public class MainActivity extends AppCompatActivity implements
     public void getRetrofitSearch( String query) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);  // <-- this is the important line!
         // httpClient.addInterceptor(logging);  // <-- this is the important line!
 
 
-        String baseURL = "https://www.thesablebusinessdirectory.com";
+        //String baseURL = "https://www.thesablebusinessdirectory.com";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())

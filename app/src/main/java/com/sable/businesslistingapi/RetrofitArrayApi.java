@@ -6,6 +6,8 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -31,16 +33,15 @@ public interface RetrofitArrayApi {
     @GET("wp-json/geodir/v2/business/categories")
     Call<List<ListingsCategories>> getCategory();
 
-   /* @GET("wp-json/geodir/v2/business/?post_type=gd_business&search=query")
-    Call<List<BusinessListingsSearch>> getSearch(
-        @Query("query") String query);*/
 /// to make call to dynamic URL
  // @GET
   //Call<List<BusinessListings>> getPostInfo(@Url String url);
 //
-  @FormUrlEncoded
-  @PUT("wp-json/geodir/v2/business/{id}")
-  Call<List<BusinessListings>> postData(
+
+    @Headers("api-key: " + "PUT_YOUR_API_KEY")
+    @FormUrlEncoded
+    @POST("wp-json/geodir/v2/business/{id}")
+    Call<List<BusinessListings>> postData(
           @Path("id") String id,
           @Field("title") String title,
           @Field("street") String street,
@@ -50,7 +51,7 @@ public interface RetrofitArrayApi {
           @Field("phone") String phone,
           @Field("latitude") String latitude,
           @Field("longitude") String longitude,
-          @Field("bldgNo") String bldgNo,
+          @Field("bldgno") String bldgno,
           //@Field("email") String email,
           //@Field("website") String website,
           @Field("content") String content,

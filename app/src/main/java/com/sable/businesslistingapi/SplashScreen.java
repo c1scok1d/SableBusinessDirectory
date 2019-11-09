@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SplashScreen extends AppCompatActivity {
 
     // wait time
-    private final int SPLASH_DISPLAY_LENGTH = 2000; // 3 seconds
+    private final int SPLASH_DISPLAY_LENGTH = 500; // 3 seconds
 
     @Override
     protected void onCreate(Bundle savedInstaceState) {

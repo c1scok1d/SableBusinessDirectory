@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +14,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Request;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Credentials;
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,10 +38,10 @@ public class ReviewActivity extends AppCompatActivity {
     EditText mFeedback;
     Button mSendFeedback;
     TextView tvTitle, tvState, tvStreet, tvCity, tvZip, tvHours, tvisOpen, tvContent, tvPhone, tvBldgNo;
-    ImageView ivImage;
+    ImageView ivImage, image2, image3;
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
-    String baseURL = "https://www.thesablebusinessdirectory.com",id;
+    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username="android_app", password="mroK zH6o wOW7 X094 MTKy fwmY", authToken;
     Double latitude, longitude;
 
 
@@ -61,7 +69,11 @@ public class ReviewActivity extends AppCompatActivity {
         tvContent = findViewById(R.id.tvContent);
         tvPhone = findViewById(R.id.tvPhone);
         ivImage = findViewById(R.id.Icon);
+        image2 = findViewById(R.id.imageView2);
+        image3 = findViewById(R.id.imageView3);
        // progressBar = findViewById(R.id.progressBar);
+
+       // getIP();
 
 
         mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -114,8 +126,8 @@ public class ReviewActivity extends AppCompatActivity {
             latitude = (locationAdd.get(0).lat);
             longitude = (locationAdd.get(0).lng);
             builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img1)).into(ivImage);
-            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img2)).into(ivImage);
-            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img3)).into(ivImage);
+            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img2)).into(image2);
+            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img3)).into(image3);
 
 
 
@@ -138,14 +150,13 @@ public class ReviewActivity extends AppCompatActivity {
             builder.build().load(getIntent().getStringExtra(locationMatch.get(0).image)).into(ivImage);
         }
 
-
-
         mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mFeedback.getText().toString().isEmpty()) {
                     Toast.makeText(ReviewActivity.this, "Please fill in feedback text box", Toast.LENGTH_LONG).show();
                 } else {
+
                     mFeedback.setText("");
                     mRatingBar.setRating(0);
                     Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
@@ -153,11 +164,18 @@ public class ReviewActivity extends AppCompatActivity {
                 }
             }
         });
+
+        try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
+            String submit_ip = s.toString();
+            // System.out.println("My current IP address is " + s.next());
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void submitData(final Double latitude, final Double longitude){
         String title = tvTitle.getText().toString();
-        String bldgNo = tvBldgNo.getText().toString();
+        String bldgno = tvBldgNo.getText().toString();
         String street = tvStreet.getText().toString();
         String city = tvCity.getText().toString();
         String state = tvState.getText().toString();
@@ -170,6 +188,41 @@ public class ReviewActivity extends AppCompatActivity {
         String content = tvContent.getText().toString();
         String hours = tvHours.getText().toString();
 
+        try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
+            String submit_ip = s.toString();
+            // System.out.println("My current IP address is " + s.next());
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);  // <-- this is the important line!
+
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        //Basic Auth
+        if (!TextUtils.isEmpty(username)
+                && !TextUtils.isEmpty(password)) {
+            authToken = Credentials.basic(username, password);
+        }
+
+        //Create a new Interceptor.
+        Interceptor headerAuthorizationInterceptor = new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                okhttp3.Request request = chain.request();
+                Headers headers = request.headers().newBuilder().add("Authorization", authToken).build();
+                request = request.newBuilder().headers(headers).build();
+                return chain.proceed(request);
+            }
+        };
+
+        //Add the interceptor to the client builder.
+        clientBuilder.addInterceptor(headerAuthorizationInterceptor);
+
+
+
         //Defining retrofit api service
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
@@ -177,14 +230,14 @@ public class ReviewActivity extends AppCompatActivity {
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postData(id, title, street, city, state, zip, phone, lat, lng, bldgNo, /*email, website,*/ content, hours);
+        Call<List<BusinessListings>> call = service.postData(id, title, street, city, state, zip, phone, lat, lng, bldgno, /*email, website,*/ content, hours);
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 Log.e("add_listing", " response " + response.body());
 
-                progressBar.setVisibility(View.GONE); //hide progressBar
+  //              progressBar.setVisibility(View.GONE); //hide progressBar
                 if(response.isSuccessful()){
                     Toast.makeText(getApplicationContext(),
                             "Post Updated Title: "+response.body().get(0).getTitle()+
@@ -195,9 +248,10 @@ public class ReviewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE); //hide progressBar
+//                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+
     }
 }
