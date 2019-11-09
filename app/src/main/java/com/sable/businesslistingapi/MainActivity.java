@@ -40,7 +40,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.Credentials;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -257,9 +260,7 @@ public class MainActivity extends AppCompatActivity implements
          *  api calls to get listings and marketplace products
          */
 
-       // getRetrofit();
         getRetrofitWoo(); //call to woocommerce products api
-        //searchIntent(getIntent());
     }
 
   /*  @Override
@@ -484,158 +485,153 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-
     /**
      * Query API for listings data
      * set URL and make call to API
      */
+
+    private static Retrofit retrofit = null;
     public void getRetrofit() {
 
-        //this.latitude = latitude;
-        //this.longitude = longitude;
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
 
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
                 .build();
 
+
+        if(retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+        }
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
         // pass JSON data to BusinessListings class for filtering
         Call<List<BusinessListings>> call = service.getPostInfo();
 
-        // to make call to dynamic URL
-
-         //String yourURL = "https://www.thesablebusinessdirectory.com/wp-json/geodir/v2/business/";
-         //Call<List<BusinessListings>>  call = service.getPostInfo( yourURL);
-
-        /// to get only 6 post from your blog
-        // http://your-blog-url/wp-json/wp/v2/posts?per_page=2
-
-        // to get any specific blog post, use id of post
-        //  http://www.blueappsoftware.in/wp-json/wp/v2/posts/1179
-
-        // to get only title and id of specific
-        // http://www.blueappsoftware.in/android/wp-json/wp/v2/posts/1179?fields=id,title
 
 
         // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("GeoDirectory", " response " + response.body());
+                Log.e("main_activity", " response " + response.body());
+                if (response.isSuccessful()) {
 
-                // mListPost = response.body();
-                progressBar.setVisibility(View.GONE); //hide progressBar
-                category.add("Select Category"); //add heading to category spinner
-
-
-                // loop through JSON response get parse and output to log
-
-                for (int i = 0; i < response.body().size(); i++) {
+                    // mListPost = response.body();
+                    progressBar.setVisibility(View.GONE); //hide progressBar
+                    category.add("Select Category"); //add heading to category spinner
 
 
-                    /**
-                     * onLocationMatch
-                     * if device lat/lng equals stored listing lat/lng locationMatch = true
-                     */
-                    if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
+                    // loop through JSON response get parse and output to log
 
-                        Log.e("LocationMatch ", " Id: " + response.body().get(i).getId());
-                        Log.e("LocationMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
-                        Log.e("LocationMatch ", " Rating: " + response.body().get(i).getRating());
-                        Log.e("LocationMatch ", " Rating Count: " + response.body().get(i).getRatingCount());
-                        Log.e("LocationMatch ", " Street: " + response.body().get(i).getStreet());
-                        Log.e("LocationMatch ", " City: " + response.body().get(i).getCity());
-                        Log.e("LocationMatch ", " Zip: " + response.body().get(i).getZip());
-                        Log.e("LocationMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                        Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                        Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
-                        Log.e("LocationMatch ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                        Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
-                        Log.e("LocationMatch ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+                    for (int i = 0; i < response.body().size(); i++) {
 
-
-                        locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                response.body().get(i).getTitle().getRaw(),
-                                response.body().get(i).getRating(),
-                                response.body().get(i).getRatingCount(),
-                                response.body().get(i).getStreet(),
-                                response.body().get(i).getCity(),
-                                response.body().get(i).getRegion(),
-                                response.body().get(i).getZip(),
-                                response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                                response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
-                                response.body().get(i).getContent().getRaw(),
-                                response.body().get(i).getFeaturedImage().getThumbnail(),
-                                response.body().get(i).getPhone(),
-                                response.body().get(i).getLatitude(),
-                                response.body().get(i).getLongitude(),
-                                response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
-
-                        Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
-                        //Intent matchAnimation = new Intent(MainActivity.this, WPPostDetails.class);
-
-                        Bundle locationMatchBundle = new Bundle();
-                        locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
-                        LocationMatch.putExtra("locationMatch", locationMatch);
-                        //LocationMatch.getSerializableExtra("locationMatchBundle", locationMatchBundle);
-                        //startActivity(matchAnimation);
-                        startActivity(LocationMatch);
-                        break;
-                    } else {
-                        //parse response based on ListingsModel class and add to list array ( get category name, description and image)
 
                         /**
-                         * if no location match continue to pars JSON data
+                         * onLocationMatch
+                         * if device lat/lng equals stored listing lat/lng locationMatch = true
                          */
+                        if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
 
-                        Log.e("Location ", " Id: " + response.body().get(i).getId());
-                        Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
-                        Log.e("Location ", " Rating: " + response.body().get(i).getRating());
-                        Log.e("Location ", " Rating Count: " + response.body().get(i).getRatingCount());
-                        Log.e("Location ", " Street: " + response.body().get(i).getStreet());
-                        Log.e("Location ", " City: " + response.body().get(i).getCity());
-                        Log.e("Location ", " Zip: " + response.body().get(i).getZip());
-                        Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                        Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                        Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
-                        Log.e("Location ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                        Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
-                        Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+                            Log.e("LocationMatch ", " Id: " + response.body().get(i).getId());
+                            Log.e("LocationMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
+                            Log.e("LocationMatch ", " Rating: " + response.body().get(i).getRating());
+                            Log.e("LocationMatch ", " Rating Count: " + response.body().get(i).getRatingCount());
+                            Log.e("LocationMatch ", " Street: " + response.body().get(i).getStreet());
+                            Log.e("LocationMatch ", " City: " + response.body().get(i).getCity());
+                            Log.e("LocationMatch ", " Zip: " + response.body().get(i).getZip());
+                            Log.e("LocationMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                            Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
+                            Log.e("LocationMatch ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
+                            Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
+                            Log.e("LocationMatch ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
 
-                        verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                response.body().get(i).getTitle().getRaw(),
-                                response.body().get(i).getRating(),
-                                response.body().get(i).getRatingCount(),
-                                response.body().get(i).getStreet(),
-                                response.body().get(i).getCity(),
-                                response.body().get(i).getRegion(),
-                                response.body().get(i).getZip(),
-                                response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                                response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
-                                response.body().get(i).getContent().getRaw(),
-                                response.body().get(i).getFeaturedImage().getThumbnail(),
-                                response.body().get(i).getPhone(),
-                                response.body().get(i).getLatitude(),
-                                response.body().get(i).getLongitude(),
-                                response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
+                            locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getStreet(),
+                                    response.body().get(i).getCity(),
+                                    response.body().get(i).getRegion(),
+                                    response.body().get(i).getZip(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
+                                    response.body().get(i).getContent().getRaw(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getPhone(),
+                                    response.body().get(i).getLatitude(),
+                                    response.body().get(i).getLongitude(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
 
-                        // add category name from array to spinner
-                        category.add(response.body().get(i).getPostCategory().get(0).getName());
-                        // display category array list in spinner
-                        spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
-                        Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
+                            Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
+                            //Intent matchAnimation = new Intent(MainActivity.this, WPPostDetails.class);
+
+                            Bundle locationMatchBundle = new Bundle();
+                            locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
+                            LocationMatch.putExtra("locationMatch", locationMatch);
+                            //LocationMatch.getSerializableExtra("locationMatchBundle", locationMatchBundle);
+                            //startActivity(matchAnimation);
+                            startActivity(LocationMatch);
+                            break;
+                        } else {
+                            //parse response based on ListingsModel class and add to list array ( get category name, description and image)
+
+                            /**
+                             * if no location match continue to pars JSON data
+                             */
+
+                            Log.e("Location ", " Id: " + response.body().get(i).getId());
+                            Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
+                            Log.e("Location ", " Rating: " + response.body().get(i).getRating());
+                            Log.e("Location ", " Rating Count: " + response.body().get(i).getRatingCount());
+                            Log.e("Location ", " Street: " + response.body().get(i).getStreet());
+                            Log.e("Location ", " City: " + response.body().get(i).getCity());
+                            Log.e("Location ", " Zip: " + response.body().get(i).getZip());
+                            Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                            Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
+                            Log.e("Location ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
+                            Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
+                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+
+
+                            verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getStreet(),
+                                    response.body().get(i).getCity(),
+                                    response.body().get(i).getRegion(),
+                                    response.body().get(i).getZip(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
+                                    response.body().get(i).getContent().getRaw(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getPhone(),
+                                    response.body().get(i).getLatitude(),
+                                    response.body().get(i).getLongitude(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
+
+                            // add category name from array to spinner
+                            category.add(response.body().get(i).getPostCategory().get(0).getName());
+                            // display category array list in spinner
+                            spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
+                            Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
+                        }
+                        verticalAdapter.notifyDataSetChanged();
+
                     }
-                    verticalAdapter.notifyDataSetChanged();
+                }
+                else {
+                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
 

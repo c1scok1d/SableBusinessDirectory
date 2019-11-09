@@ -396,15 +396,7 @@ public class AddListingActivity extends AppCompatActivity
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         // pass JSON data to BusinessListings class for filtering
         Call<List<ListingsCategories>> call = service.getCategory();
-        // to make call to dynamic URL
-        //String yourURL = "https://www.thesablebusinessdirectory.com/wp-json/geodir/v2/business/";
-        //Call<List<BusinessListings>>  call = service.getPostInfo( yourURL);
-        /// to get only 6 post from your blog
-        // http://your-blog-url/wp-json/wp/v2/posts?per_page=2
-        // to get any specific blog post, use id of post
-        //  http://www.blueappsoftware.in/wp-json/wp/v2/posts/1179
-        // to get only title and id of specific
-        // http://www.blueappsoftware.in/android/wp-json/wp/v2/posts/1179?fields=id,title
+
         // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override

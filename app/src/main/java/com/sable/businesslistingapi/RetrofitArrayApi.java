@@ -37,8 +37,6 @@ public interface RetrofitArrayApi {
  // @GET
   //Call<List<BusinessListings>> getPostInfo(@Url String url);
 //
-
-    @Headers("api-key: " + "PUT_YOUR_API_KEY")
     @FormUrlEncoded
     @POST("wp-json/geodir/v2/business/{id}")
     Call<List<BusinessListings>> postData(
