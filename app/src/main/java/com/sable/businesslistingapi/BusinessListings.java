@@ -69,6 +69,9 @@ public class BusinessListings {
     @SerializedName("street")
     @Expose
     private String street;
+    @SerializedName("bldgno")
+    @Expose
+    private String bldgno;
     @SerializedName("country")
     @Expose
     private String country;
@@ -303,6 +306,14 @@ public class BusinessListings {
 
     public void setPackageId(String packageId) {
         this.packageId = packageId;
+    }
+
+    public String getBldgNo() {
+        return bldgno;
+    }
+
+    public void setBldgNo(String bldgno) {
+        this.bldgno = bldgno;
     }
 
     public String getStreet() {

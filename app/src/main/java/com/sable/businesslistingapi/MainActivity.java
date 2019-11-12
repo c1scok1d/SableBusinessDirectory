@@ -539,37 +539,68 @@ public class MainActivity extends AppCompatActivity implements
                          */
                         if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
 
-                            Log.e("LocationMatch ", " Id: " + response.body().get(i).getId());
-                            Log.e("LocationMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
-                            Log.e("LocationMatch ", " Rating: " + response.body().get(i).getRating());
-                            Log.e("LocationMatch ", " Rating Count: " + response.body().get(i).getRatingCount());
+                            Log.e("LocationMatch ", " id: " + response.body().get(i).getId());
+                            Log.e("LocationMatch ", " post_title: " + response.body().get(i).getTitle().getRaw());
+                            Log.e("LocationMatch", " post_status: " + response.body().get(i).getStatus());
+                            //Log.e("LocationMatch ", " post_tags: " + response.body().get(i).getPostTags().get(i));
+                            Log.e("LocationMatch ", " default_category " + response.body().get(i).getDefaultCategory());
+                            Log.e("LocationMatch ", " post_category" + response.body().get(i).getPostCategory());
+                            Log.e("LocationMatch ", " featured: " + response.body().get(i).getFeatured());
+                            Log.e("LocationMatch ", " featured_image " + response.body().get(i).getFeaturedImage());
+                            Log.e("LocationMatch ", " bldgno: " +response.body().get(i).getBldgNo());
                             Log.e("LocationMatch ", " Street: " + response.body().get(i).getStreet());
                             Log.e("LocationMatch ", " City: " + response.body().get(i).getCity());
+                            Log.e("LocationMatch ", " State: " + response.body().get(i).getRegion());
+                            Log.e("LocationMatch ", " Country: " + response.body().get(i).getCountry());
                             Log.e("LocationMatch ", " Zip: " + response.body().get(i).getZip());
+                            Log.e("LocationMatch ", " Latitude: " +response.body().get(i).getLatitude());
+                            Log.e("LocationMatch ", " Longitude: " + response.body().get(i).getLongitude());
+                            Log.e("LocationMatch ", " RatingBar: " + response.body().get(i).getRating());
+                            Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
+                            Log.e("LocationMatch ", " Email: " + response.body().get(i).getEmail());
+                            Log.e("LocationMatch ", " webstie: " + response.body().get(i).getLongitude());
+                            Log.e("LocationMatch ", " twitter: " + response.body().get(i).getRating());
+                            Log.e("LocationMatch ", " facebook: " + response.body().get(i).getPhone());
+                            Log.e("LocationMatch ", " video: " + response.body().get(i).getEmail());
                             Log.e("LocationMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
                             Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            Log.e("LocationMatch ", " logo: " + response.body().get(i).getLogo());
                             Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("LocationMatch ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                            Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
                             Log.e("LocationMatch ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
-                                    response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getStatus(),
+                                  //  response.body().get(i).getPostTags().get(i),
+                                    response.body().get(i).getDefaultCategory(),
+                                    response.body().get(i).getPostCategory(),
+                                    response.body().get(i).getFeatured(),
+                                    response.body().get(i).getFeaturedImage().getSrc(),
+                                    response.body().get(i).getBldgNo(),
                                     response.body().get(i).getStreet(),
                                     response.body().get(i).getCity(),
                                     response.body().get(i).getRegion(),
+                                    response.body().get(i).getCountry(),
                                     response.body().get(i).getZip(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
-                                    response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    response.body().get(i).getPhone(),
                                     response.body().get(i).getLatitude(),
                                     response.body().get(i).getLongitude(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getPhone(),
+                                    response.body().get(i).getEmail(),
+                                    response.body().get(i).getWebsite(),
+                                    response.body().get(i).getTwitter(),
+                                    response.body().get(i).getFacebook(),
+                                    response.body().get(i).getVideo(),
+                                    response.body().get(i).getBusinessHours(),
+                                    response.body().get(i).getCommentStatus(),
+                                    response.body().get(i).getLogo(),
+                                    response.body().get(i).getContent(),
+                                    response.body().get(i).getFeaturedImage(),
+                                    response.body().get(i).getImages().get(0).getSrc(),
+                                    response.body().get(i).getImages().get(1).getSrc()));
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             //Intent matchAnimation = new Intent(MainActivity.this, WPPostDetails.class);
@@ -588,37 +619,68 @@ public class MainActivity extends AppCompatActivity implements
                              * if no location match continue to pars JSON data
                              */
 
-                            Log.e("Location ", " Id: " + response.body().get(i).getId());
-                            Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
-                            Log.e("Location ", " Rating: " + response.body().get(i).getRating());
-                            Log.e("Location ", " Rating Count: " + response.body().get(i).getRatingCount());
+                            Log.e("Location ", " id: " + response.body().get(i).getId());
+                            Log.e("Location ", " post_title: " + response.body().get(i).getTitle().getRaw());
+                            Log.e("Location ", " post_status: " + response.body().get(i).getStatus());
+//                            Log.e("Location ", " post_tags: " + response.body().get(i).getPostTags().get(i));
+                            Log.e("Location ", " default_category " + response.body().get(i).getDefaultCategory());
+                            Log.e("Location ", " post_category" + response.body().get(i).getPostCategory());
+                            Log.e("Location ", " featured: " + response.body().get(i).getFeatured());
+                            Log.e("Location ", " featured_image " + response.body().get(i).getFeaturedImage());
+                            Log.e("Location ", " bldgno: " +response.body().get(i).getBldgNo());
                             Log.e("Location ", " Street: " + response.body().get(i).getStreet());
                             Log.e("Location ", " City: " + response.body().get(i).getCity());
+                            Log.e("Location ", " State: " + response.body().get(i).getRegion());
+                            Log.e("Location ", " Country: " + response.body().get(i).getCountry());
                             Log.e("Location ", " Zip: " + response.body().get(i).getZip());
+                            Log.e("Location ", " Latitude: " +response.body().get(i).getLatitude());
+                            Log.e("Location ", " Longitude: " + response.body().get(i).getLongitude());
+                            Log.e("Location ", " RatingBar: " + response.body().get(i).getRating());
+                            Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
+                            Log.e("Location ", " Email: " + response.body().get(i).getEmail());
+                            Log.e("Location ", " webstie: " + response.body().get(i).getLongitude());
+                            Log.e("Location ", " twitter: " + response.body().get(i).getRating());
+                            Log.e("Location ", " facebook: " + response.body().get(i).getPhone());
+                            Log.e("Location ", " video: " + response.body().get(i).getEmail());
                             Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
                             Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            Log.e("Location ", " logo: " + response.body().get(i).getLogo());
                             Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("Location ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                            Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
                             Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
 
                             verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
-                                    response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getStatus(),
+                                   // response.body().get(i).getPostTags().get(i),
+                                    response.body().get(i).getDefaultCategory(),
+                                    response.body().get(i).getPostCategory(),
+                                    response.body().get(i).getFeatured(),
+                                    response.body().get(i).getFeaturedImage().getSrc(),
+                                    response.body().get(i).getBldgNo(),
                                     response.body().get(i).getStreet(),
                                     response.body().get(i).getCity(),
                                     response.body().get(i).getRegion(),
+                                    response.body().get(i).getCountry(),
                                     response.body().get(i).getZip(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
-                                    response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    response.body().get(i).getPhone(),
                                     response.body().get(i).getLatitude(),
                                     response.body().get(i).getLongitude(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getPhone(),
+                                    response.body().get(i).getEmail(),
+                                    response.body().get(i).getWebsite(),
+                                    response.body().get(i).getTwitter(),
+                                    response.body().get(i).getFacebook(),
+                                    response.body().get(i).getVideo(),
+                                    response.body().get(i).getBusinessHours(),
+                                    response.body().get(i).getCommentStatus(),
+                                    response.body().get(i).getLogo(),
+                                    response.body().get(i).getContent(),
+                                    response.body().get(i).getFeaturedImage(),
+                                    response.body().get(i).getImages().get(0).getSrc(),
+                                    response.body().get(i).getImages().get(1).getSrc()));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
@@ -747,36 +809,67 @@ public class MainActivity extends AppCompatActivity implements
 
                 for (int i = 0; i < response.body().size(); i++) {
 
-                    Log.e("SearchMatch ", " Id: " + response.body().get(i).getId());
-                    Log.e("SearchMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
-                    Log.e("SearchMatch ", " Rating: " + response.body().get(i).getRating());
-                    Log.e("SearchMatch ", " Rating Count: " + response.body().get(i).getRatingCount());
+                    Log.e("SearchMatch ", " id: " + response.body().get(i).getId());
+                    Log.e("SearchMatch ", " post_title: " + response.body().get(i).getTitle().getRaw());
+                    Log.e("SearchMatch ", " post_status: " + response.body().get(i).getStatus());
+                    Log.e("SearchMatch ", " post_tags: " + response.body().get(i).getPostTags().get(i));
+                    Log.e("SearchMatch ", " default_category " + response.body().get(i).getDefaultCategory());
+                    Log.e("SearchMatch ", " post_category" + response.body().get(i).getPostCategory());
+                    Log.e("SearchMatch ", " featured: " + response.body().get(i).getFeatured());
+                    Log.e("SearchMatch ", " featured_image " + response.body().get(i).getFeaturedImage());
+                    Log.e("SearchMatch ", " bldgno: " +response.body().get(i).getBldgNo());
                     Log.e("SearchMatch ", " Street: " + response.body().get(i).getStreet());
                     Log.e("SearchMatch ", " City: " + response.body().get(i).getCity());
+                    Log.e("SearchMatch ", " State: " + response.body().get(i).getRegion());
+                    Log.e("SearchMatch ", " Country: " + response.body().get(i).getCountry());
                     Log.e("SearchMatch ", " Zip: " + response.body().get(i).getZip());
+                    Log.e("SearchMatch ", " Latitude: " +response.body().get(i).getLatitude());
+                    Log.e("SearchMatch ", " Longitude: " + response.body().get(i).getLongitude());
+                    Log.e("SearchMatch ", " RatingBar: " + response.body().get(i).getRating());
+                    Log.e("SearchMatch ", " Telephone: " + response.body().get(i).getPhone());
+                    Log.e("SearchMatch ", " Email: " + response.body().get(i).getEmail());
+                    Log.e("SearchMatch ", " webstie: " + response.body().get(i).getLongitude());
+                    Log.e("SearchMatch ", " twitter: " + response.body().get(i).getRating());
+                    Log.e("SearchMatch ", " facebook: " + response.body().get(i).getPhone());
+                    Log.e("SearchMatch ", " video: " + response.body().get(i).getEmail());
                     Log.e("SearchMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
                     Log.e("SearchMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                    Log.e("SearchMatch ", " logo: " + response.body().get(i).getLogo());
                     Log.e("SearchMatch ", " Content: " + response.body().get(i).getContent().getRaw());
                     Log.e("SearchMatch ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                    Log.e("SearchMatch ", " Telephone: " + response.body().get(i).getPhone());
                     Log.e("SearchMatch ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
                     verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                            response.body().get(i).getId(),
                             response.body().get(i).getTitle().getRaw(),
-                            response.body().get(i).getRating(),
-                            response.body().get(i).getRatingCount(),
+                            response.body().get(i).getStatus(),
+                           // response.body().get(i).getPostTags().get(i),
+                            response.body().get(i).getDefaultCategory(),
+                            response.body().get(i).getPostCategory(),
+                            response.body().get(i).getFeatured(),
+                            response.body().get(i).getFeaturedImage().getSrc(),
+                            response.body().get(i).getBldgNo(),
                             response.body().get(i).getStreet(),
                             response.body().get(i).getCity(),
                             response.body().get(i).getRegion(),
+                            response.body().get(i).getCountry(),
                             response.body().get(i).getZip(),
-                            response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                            response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
-                            response.body().get(i).getContent().getRaw(),
-                            response.body().get(i).getFeaturedImage().getThumbnail(),
-                            response.body().get(i).getPhone(),
                             response.body().get(i).getLatitude(),
                             response.body().get(i).getLongitude(),
-                            response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()));
+                            response.body().get(i).getRating(),
+                            response.body().get(i).getPhone(),
+                            response.body().get(i).getEmail(),
+                            response.body().get(i).getWebsite(),
+                            response.body().get(i).getTwitter(),
+                            response.body().get(i).getFacebook(),
+                            response.body().get(i).getVideo(),
+                            response.body().get(i).getBusinessHours(),
+                            response.body().get(i).getCommentStatus(),
+                            response.body().get(i).getLogo(),
+                            response.body().get(i).getContent(),
+                            response.body().get(i).getFeaturedImage(),
+                            response.body().get(i).getImages().get(0).getSrc(),
+                            response.body().get(i).getImages().get(1).getSrc()));
 
                     // add category name from array to spinner
                     category.add(response.body().get(i).getPostCategory().get(0).getName());

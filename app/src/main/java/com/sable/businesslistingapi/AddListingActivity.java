@@ -62,8 +62,8 @@ public class AddListingActivity extends AppCompatActivity
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private static final int MY_CAMERA_PERMISSION_CODE = 1;
-    private static final int CAMERA_REQUEST = 1;
+    /*private static final int MY_CAMERA_PERMISSION_CODE = 1;
+    private static final int CAMERA_REQUEST = 1;*/
 
 
     /**
@@ -95,7 +95,7 @@ public class AddListingActivity extends AppCompatActivity
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
 
 
-    ImageView uploadImage1, uploadImage2, uploadImage3;
+    //ImageView uploadImage1, uploadImage2, uploadImage3;
 
 
     /**
@@ -118,9 +118,9 @@ public class AddListingActivity extends AppCompatActivity
         btnNext = findViewById(R.id.btnNext);
         spnCategory = findViewById(R.id.spnCategory);
         btnPic = findViewById(R.id.btnPic);
-        uploadImage1 = findViewById(R.id.uploadImage1);
-        uploadImage2 = findViewById(R.id.uploadImage2);
-        uploadImage3 = findViewById(R.id.uploadImage3);
+       // uploadImage1 = findViewById(R.id.uploadImage1);
+       // uploadImage2 = findViewById(R.id.uploadImage2);
+       // uploadImage3 = findViewById(R.id.uploadImage3);
        // category = new ArrayList<>();
        // locationAdd = new ArrayList<>();
 
@@ -141,10 +141,6 @@ public class AddListingActivity extends AppCompatActivity
              * @param view
              */
             public void onClick(View view) {
-                //Intent intent = new Intent(AddListingActivity.this, ReviewActivity.class);
-                // intent.putExtra("type", "add");
-                //startActivity(intent);
-
 
                 if (etName.getText().toString().isEmpty() || spnCategory == null && spnCategory.getSelectedItem() == null || etDescription.getText().toString().isEmpty()) {
                     Toast.makeText(AddListingActivity.this, "Please fill all sections...", Toast.LENGTH_LONG).show();
@@ -166,63 +162,6 @@ public class AddListingActivity extends AppCompatActivity
             }
 
         });
-
-        /**
-         *
-         * add pics of location to listing
-         *
-         */
-        btnPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                } else {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                }
-            }
-        });
-    }
-
-
-    /**
-     *
-     * request permission to use camera if not already granted
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            } else {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    /**
-     * gets result code from phone after photo taken
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            for (int i = 0; i < 3; i++) {
-                uploadImage1.setImageBitmap(photo);
-            }
-        }
     }
 
     /**

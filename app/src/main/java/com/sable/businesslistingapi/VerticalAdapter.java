@@ -50,7 +50,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.tvisOpen = itemView.findViewById(R.id.tvIsOpen);
             this.tvContent = itemView.findViewById(R.id.tvContent);
             this.tvPhone = itemView.findViewById(R.id.tvPhone);
-            this.image = itemView.findViewById(R.id.Icon);
+            this.image = itemView.findViewById(R.id.ivImage0);
             this.btnCall = itemView.findViewById(R.id.btnCall);
             this.btnDirections = itemView.findViewById(R.id.btnDirections);
             this.tvLat = itemView.findViewById(R.id.tvLat);
@@ -95,14 +95,14 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final ListingsModel object = dataset.get(position);
 
-        String latitude = Double.toString(object.lat);
+        String latitude = Double.toString(object.latitude);
 
-        String longitude = Double.toString(object.lng);
+        String longitude = Double.toString(object.longitude);
 
 
         Picasso.Builder builder = new Picasso.Builder(mContext);
 
-        ((ImageTypeViewHolder) holder).title.setText(object.title);
+        ((ImageTypeViewHolder) holder).title.setText(object.post_title);
         ((ImageTypeViewHolder) holder).tvStreet.setText(object.street);
         ((ImageTypeViewHolder) holder).tvCity.setText(object.city);
         ((ImageTypeViewHolder) holder).tvRegion.setText(object.state);
@@ -114,7 +114,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
         ((ImageTypeViewHolder) holder).tvLat.setText(latitude);
         ((ImageTypeViewHolder) holder).tvLng.setText(longitude);
-        ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.ratingCount));
+        ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.rating));
         builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
 //        ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
        // ((ImageTypeViewHolder) holder).image.setText(object.image);
