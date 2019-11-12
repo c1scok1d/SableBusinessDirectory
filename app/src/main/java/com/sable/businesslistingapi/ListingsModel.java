@@ -26,7 +26,7 @@ public class ListingsModel implements Parcelable {
                          Double latitude, Double longitude, Integer rating, String phone, String email,
                          String website, String twitter, String facebook, String video,
                          BusinessListings.BusinessHours businessHours, String commentStatus,
-                         String logo, BusinessListings.Content content, BusinessListings.FeaturedImage featuredImage,
+                         String logo, String content, BusinessListings.FeaturedImage featuredImage,
                          String src1, String src2) {
 
         //this.mimageType= imageType;
@@ -56,7 +56,7 @@ public class ListingsModel implements Parcelable {
        // this.hours = businessHours;
         this.isOpen = commentStatus;
         this.logo = logo;
-        //this.content = content;
+        this.content = content;
       //  this.image = mImage;
    }
 

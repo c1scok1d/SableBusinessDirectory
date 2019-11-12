@@ -2,12 +2,10 @@ package com.sable.businesslistingapi;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,10 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.FileUtils;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -32,7 +27,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -40,30 +34,11 @@ import androidx.core.content.FileProvider;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import okhttp3.Credentials;
-import okhttp3.Headers;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReviewActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -101,7 +76,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         tvBldgno = findViewById(R.id.tvBldgNo);
         tvState = findViewById(R.id.tvState);
         tvStreet = findViewById(R.id.tvStreet);
-        tvCity = findViewById(R.id.tvCity);
+        tvCity = findViewById(R.id.tvStreet);
         tvZip = findViewById(R.id.tvZip);
         tvCountry = findViewById(R.id.tvCountry);
         tvHours = findViewById(R.id.tvHours);

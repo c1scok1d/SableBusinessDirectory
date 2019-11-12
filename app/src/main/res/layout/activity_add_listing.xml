@@ -71,7 +71,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvCity"
+                android:id="@+id/tvStreet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -117,6 +117,7 @@
                 android:id="@+id/etName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:autofillHints=""
                 android:background="@android:color/transparent"
                 android:hint="@string/enter_business_name"
@@ -139,7 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="3dp"
-                android:text="TextView"
+                android:text="E-Mail: "
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 tools:text="E-Mail: " />
@@ -164,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="3dp"
-                android:text="TextView"
+                android:text="WebSite: "
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 tools:text="Website:  " />
@@ -194,7 +195,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="3dp"
-                    android:text="TextView"
+                    android:text="Phone: "
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     tools:text="Phone: " />

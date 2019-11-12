@@ -293,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements
             // zoom to current location on map
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
-
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
                     .zoom(17)                   // Sets the zoom
@@ -374,7 +373,6 @@ public class MainActivity extends AppCompatActivity implements
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
 
-        setAddress(latitude, longitude);
         // zoom to current location on map
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
@@ -385,6 +383,7 @@ public class MainActivity extends AppCompatActivity implements
                 .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        setAddress(latitude, longitude);
     }
 
     /**
@@ -597,7 +596,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getBusinessHours(),
                                     response.body().get(i).getCommentStatus(),
                                     response.body().get(i).getLogo(),
-                                    response.body().get(i).getContent(),
+                                    response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage(),
                                     response.body().get(i).getImages().get(0).getSrc(),
                                     response.body().get(i).getImages().get(1).getSrc()));
@@ -677,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getBusinessHours(),
                                     response.body().get(i).getCommentStatus(),
                                     response.body().get(i).getLogo(),
-                                    response.body().get(i).getContent(),
+                                    response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage(),
                                     response.body().get(i).getImages().get(0).getSrc(),
                                     response.body().get(i).getImages().get(1).getSrc()));
@@ -866,7 +865,7 @@ public class MainActivity extends AppCompatActivity implements
                             response.body().get(i).getBusinessHours(),
                             response.body().get(i).getCommentStatus(),
                             response.body().get(i).getLogo(),
-                            response.body().get(i).getContent(),
+                            response.body().get(i).getContent().getRaw(),
                             response.body().get(i).getFeaturedImage(),
                             response.body().get(i).getImages().get(0).getSrc(),
                             response.body().get(i).getImages().get(1).getSrc()));

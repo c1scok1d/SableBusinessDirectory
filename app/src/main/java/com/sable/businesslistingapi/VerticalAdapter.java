@@ -30,7 +30,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone, tvRating, tvRatingCount, tvLat, tvLng;
+        TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone, tvRating, tvRatingCount, tvLat, tvLng, tvBldNo;
         ImageView image;
         RatingBar simpleRatingBar;
         ImageButton btnCall, btnDirections;
@@ -42,19 +42,22 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.title = itemView.findViewById(R.id.title);
             this.tvRating = itemView.findViewById(R.id.ratingBar);
             this.tvRatingCount = itemView.findViewById(R.id.tvRatingCount);
-            this.tvStreet = itemView.findViewById(R.id.tvBldgNo);
-            this.tvCity = itemView.findViewById(R.id.tvBldgNo);
-            this.tvRegion = itemView.findViewById(R.id.tvBldgNo);
+            this.tvBldNo = itemView.findViewById(R.id.tvBldgNo);
+            this.tvStreet = itemView.findViewById(R.id.tvStreet);
+            this.tvCity = itemView.findViewById(R.id.tvCity);
+            this.tvRegion = itemView.findViewById(R.id.tvState);
             this.tvZip = itemView.findViewById(R.id.tvZip);
             this.tvHours = itemView.findViewById(R.id.tvHours);
             this.tvisOpen = itemView.findViewById(R.id.tvIsOpen);
             this.tvContent = itemView.findViewById(R.id.tvContent);
             this.tvPhone = itemView.findViewById(R.id.tvPhone);
-            this.image = itemView.findViewById(R.id.ivImage0);
+            this.image = itemView.findViewById(R.id.ivImage);
             this.btnCall = itemView.findViewById(R.id.btnCall);
             this.btnDirections = itemView.findViewById(R.id.btnDirections);
             this.tvLat = itemView.findViewById(R.id.tvLat);
             this.tvLng = itemView.findViewById(R.id.tvLng);
+            this.image = itemView.findViewById(R.id.ivImage);
+            this.tvContent = itemView.findViewById(R.id.tvContent);
       //      this.tvPhone = itemView.findViewById(R.id.btnCall);
 
 
@@ -103,6 +106,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         Picasso.Builder builder = new Picasso.Builder(mContext);
 
         ((ImageTypeViewHolder) holder).title.setText(object.post_title);
+        ((ImageTypeViewHolder) holder).tvBldNo.setText(object.bldgno);
         ((ImageTypeViewHolder) holder).tvStreet.setText(object.street);
         ((ImageTypeViewHolder) holder).tvCity.setText(object.city);
         ((ImageTypeViewHolder) holder).tvRegion.setText(object.state);
@@ -114,8 +118,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
         ((ImageTypeViewHolder) holder).tvLat.setText(latitude);
         ((ImageTypeViewHolder) holder).tvLng.setText(longitude);
+        ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.rating));
-        builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
+        builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
 //        ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
        // ((ImageTypeViewHolder) holder).image.setText(object.image);
 

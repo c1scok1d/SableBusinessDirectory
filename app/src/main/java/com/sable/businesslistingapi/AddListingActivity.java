@@ -1,11 +1,9 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -18,12 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -109,7 +105,7 @@ public class AddListingActivity extends AppCompatActivity
         tvAddress = findViewById(R.id.tvAddress);
         tvZip = findViewById(R.id.tvZip);
         tvState = findViewById(R.id.tvState);
-        tvCity = findViewById(R.id.tvCity);
+        tvCity = findViewById(R.id.tvStreet);
         tvStreet = findViewById(R.id.tvStreet);
         tvBldgNo = findViewById(R.id.tvBldgNo);
         etName = findViewById(R.id.etName);
