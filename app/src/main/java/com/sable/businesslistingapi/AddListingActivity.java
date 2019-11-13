@@ -85,7 +85,7 @@ public class AddListingActivity extends AppCompatActivity
     TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo;
     EditText etName, etDescription, etPhone;
     Button btnNext;
-    ImageButton btnPic;
+    //ImageButton btnPic;
     Spinner spnCategory;
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
@@ -113,7 +113,7 @@ public class AddListingActivity extends AppCompatActivity
         etPhone = findViewById(R.id.etPhone);
         btnNext = findViewById(R.id.btnNext);
         spnCategory = findViewById(R.id.spnCategory);
-        btnPic = findViewById(R.id.btnPic);
+        //btnPic = findViewById(R.id.btnPic);
         // uploadImage1 = findViewById(R.id.uploadImage1);
         // uploadImage2 = findViewById(R.id.uploadImage2);
         // uploadImage3 = findViewById(R.id.uploadImage3);
@@ -131,8 +131,8 @@ public class AddListingActivity extends AppCompatActivity
          */
 
         btnNext.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
+            @Override
+            public void onClick(View view) {
 
                 if (etName.getText().toString().isEmpty() || spnCategory == null && spnCategory.getSelectedItem() == null || etDescription.getText().toString().isEmpty()) {
                     Toast.makeText(AddListingActivity.this, "Please fill all sections...", Toast.LENGTH_LONG).show();

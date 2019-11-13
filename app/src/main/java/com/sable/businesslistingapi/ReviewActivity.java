@@ -83,6 +83,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvContent = findViewById(R.id.content);
         tvPhone = findViewById(R.id.tvPhone);
+        btnPic = findViewById(R.id.btnPic);
 
 
         mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -245,7 +246,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     pickFromGallery();
 
                     Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, 2);
+                    startActivityForResult(intent, GALLERY_REQUEST_CODE);
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -319,7 +320,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("Request Result: ", "Permission: " + permissions[0] + "was " + grantResults[0]);
                     //resume tasks needing this permission
-                    //isReadStoragePermissionGranted();
+                    selectImage(this);
                 } else {
                     // progress.dismiss();
                 }
@@ -330,7 +331,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("Request Result: ", "Permission: " + permissions[0] + "was " + grantResults[0]);
                     //resume tasks needing this permission
-                    //isWriteStoragePermissionGranted();
+                    selectImage(this);
                 } else {
                     // progress.dismiss();
                 }
@@ -341,7 +342,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("Request Result: ", "Permission: " + permissions[0] + "was " + grantResults[0]);
                     //resume tasks needing this permission
-                    //isCameraPermissionGranted();
+                    selectImage(this);
                 } else {
                     // progress.dismiss();
                 }
