@@ -114,13 +114,11 @@ public class AddListingActivity extends AppCompatActivity
         btnNext = findViewById(R.id.btnNext);
         spnCategory = findViewById(R.id.spnCategory);
         btnPic = findViewById(R.id.btnPic);
-       // uploadImage1 = findViewById(R.id.uploadImage1);
-       // uploadImage2 = findViewById(R.id.uploadImage2);
-       // uploadImage3 = findViewById(R.id.uploadImage3);
-       // category = new ArrayList<>();
-       // locationAdd = new ArrayList<>();
-
-
+        // uploadImage1 = findViewById(R.id.uploadImage1);
+        // uploadImage2 = findViewById(R.id.uploadImage2);
+        // uploadImage3 = findViewById(R.id.uploadImage3);
+        // category = new ArrayList<>();
+        // locationAdd = new ArrayList<>();
 
 
         SupportMapFragment mapFragment =
@@ -133,10 +131,8 @@ public class AddListingActivity extends AppCompatActivity
          */
 
         btnNext.setOnClickListener(new View.OnClickListener() {
-            /**
-             * @param view
-             */
-            public void onClick(View view) {
+
+            public void onClick(View v) {
 
                 if (etName.getText().toString().isEmpty() || spnCategory == null && spnCategory.getSelectedItem() == null || etDescription.getText().toString().isEmpty()) {
                     Toast.makeText(AddListingActivity.this, "Please fill all sections...", Toast.LENGTH_LONG).show();
@@ -156,9 +152,10 @@ public class AddListingActivity extends AppCompatActivity
                     startActivity(LocationAdd);
                 }
             }
-
         });
     }
+
+
 
     /**
      * @param map
