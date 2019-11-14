@@ -111,7 +111,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvCity.setText(object.city);
         ((ImageTypeViewHolder) holder).tvRegion.setText(object.state);
         ((ImageTypeViewHolder) holder).tvZip.setText(object.zip);
-        ((ImageTypeViewHolder) holder).tvHours.setText(object.hours);
+//        ((ImageTypeViewHolder) holder).tvHours.setText(object.hours);
         ((ImageTypeViewHolder) holder).tvisOpen.setText(object.isOpen);
         ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setRating(object.rating);
