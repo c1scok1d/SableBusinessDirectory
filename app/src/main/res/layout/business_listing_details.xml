@@ -291,12 +291,13 @@
                             tools:srcCompat="@drawable/directions" />
 
                         <TextView
-                            android:id="@+id/textView7"
+                            android:id="@+id/tvDirections"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:autoText="false"
                             android:gravity="center_horizontal|top|center_vertical"
-                            android:text="GoTo"
+                            android:text="goto"
                             android:textAllCaps="true"
                             android:textColor="@color/colorAccent"
                             android:textStyle="bold" />
