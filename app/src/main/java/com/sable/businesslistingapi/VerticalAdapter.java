@@ -32,7 +32,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone, tvRating, tvRatingCount, tvLat, tvLng, tvBldNo, tvWebsite, tvEmail, tvTwitter, tvFacebook;
+        TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone, tvRating, tvRatingCount, tvLat, tvLng, tvBldNo, tvWebsite, tvEmail, tvTwitter, tvFacebook, tvFeatured;
         ImageView image;
         RatingBar simpleRatingBar;
         ImageButton btnCall, btnDirections, btnWebsite, btnEmail, btnTwitter, btnFacebook;
@@ -66,6 +66,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.btnEmail = itemView.findViewById(R.id.btnEmail);
             this.btnTwitter = itemView.findViewById(R.id.btnTwitter);
             this.btnFacebook = itemView.findViewById(R.id.btnFacebook);
+            this.tvFeatured = itemView.findViewById(R.id.tvFeatured);
             // this.tvContent = itemView.findViewById(R.id.etBusDesc);
             //      this.tvPhone = itemView.findViewById(R.id.btnCall);
 
@@ -178,6 +179,15 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211));
 //        } else {
 //            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+        }
+        if (dataset.get(0).featured){
+            String featured = "Featured";
+            ((ImageTypeViewHolder) holder).tvFeatured.setText(featured);
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(237, 189, 3));
+
+//        } else {
+//            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+
         }
     }
     @Override
