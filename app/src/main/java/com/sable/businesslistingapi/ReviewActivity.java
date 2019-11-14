@@ -1,21 +1,20 @@
 package com.sable.businesslistingapi;
 
-import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,15 +29,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission_group.CAMERA;
 
 public class ReviewActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -54,16 +54,37 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     ImageView ivImage0, ivImage1, ivImage02;
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
-    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username="android_app", password="mroK zH6o wOW7 X094 MTKy fwmY", authToken, Document_img1 = "";
+    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, Document_img1 = "";
     private static final int GALLERY_REQUEST_CODE = 2;
     private static final int CAMERA_REQUEST_CODE = 1;
     Uri imageUri00, imageUri01, imageUri02;
+    Uri picUri;
+
+    private ArrayList<String> permissionsToRequest;
+    private ArrayList<String> permissionsRejected = new ArrayList<>();
+    private ArrayList<String> permissions = new ArrayList<>();
+
+    private final static int ALL_PERMISSIONS_RESULT = 107;
+    private final static int IMAGE_RESULT = 200;
 
 
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+
+        permissions.add(CAMERA);
+        permissions.add(WRITE_EXTERNAL_STORAGE);
+        permissions.add(READ_EXTERNAL_STORAGE);
+        permissionsToRequest = findUnAskedPermissions(permissions);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+
+            if (permissionsToRequest.size() > 0)
+                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+        }
 
         Picasso.Builder builder = new Picasso.Builder(this);
 
@@ -72,17 +93,17 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         mFeedback = findViewById(R.id.etFeedback);
         mSendFeedback = findViewById(R.id.btnSubmit);
         simpleRatingBar = findViewById(R.id.simpleRatingBar);
-        tvPost_title = findViewById(R.id.tvTitle);
+        tvPost_title = findViewById(R.id.etName);
         tvBldgno = findViewById(R.id.tvBldgNo);
         tvState = findViewById(R.id.tvState);
         tvStreet = findViewById(R.id.tvStreet);
-        tvCity = findViewById(R.id.tvStreet);
+        tvCity = findViewById(R.id.tvCity);
         tvZip = findViewById(R.id.tvZip);
         tvCountry = findViewById(R.id.tvCountry);
         tvHours = findViewById(R.id.tvHours);
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvContent = findViewById(R.id.content);
-        tvPhone = findViewById(R.id.tvPhone);
+        tvPhone = findViewById(R.id.etPhone);
         btnPic = findViewById(R.id.btnPic);
 
 
@@ -112,6 +133,14 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             }
         });
 
+        //Add image to review
+        btnPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(selectImage(), IMAGE_RESULT);
+            }
+        });
+
         /**
          *
          * gets Extras if stored lat/lng equals current lat/lng (onLocationMatch)
@@ -137,8 +166,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvCity.setText(locationAdd.get(0).city);
             tvState.setText(locationAdd.get(0).state);
             tvCountry.setText(locationAdd.get(0).country);
-           /* zip.setText(locationAdd.get(0).zip);
-            latitude = (locationAdd.get(0).latitude);
+            tvZip.setText(locationAdd.get(0).zipcode);
+            /*latitude = (locationAdd.get(0).latitude);
             longitude = (locationAdd.get(0).longitude);
             rating.setText(locationAdd.get(0).rating);
             phone.setText(locationAdd.get(0).phone);
@@ -163,12 +192,12 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             tvPost_title.setText(locationMatch.get(0).post_title);
             tvPost_status.setText(locationMatch.get(0).post_status);
-           // post_tags.setText(locationMatch.get(0).post_tags);
+            // post_tags.setText(locationMatch.get(0).post_tags);
             tvDefault_category.setText(locationMatch.get(0).default_category);
             //post_category.setText(locationMatch.get(0).post_category);
             //featured.setValu(locationMatch.get(0).featured.isT);
             builder.build().load(getIntent().getStringExtra(locationMatch.get(0).featured_image)).into(ivImage0);
-           // ivFeaturedImg.setText(locationMatch.get(0).featured_image);
+            // ivFeaturedImg.setText(locationMatch.get(0).featured_image);
             tvBldgno.setText(locationMatch.get(0).bldgno);
             tvStreet.setText(locationMatch.get(0).street);
             tvCity.setText(locationMatch.get(0).city);
@@ -205,277 +234,232 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     mFeedback.setText("");
                     mRatingBar.setRating(0);
                     Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
-                   // submitData();
+                    // submitData();
                 }
-            }
-        });
-
-        btnPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage(ReviewActivity.this);
-
             }
         });
     }
 
     /**
-     * Create a chooser intent to select the source to get image from.<br />
+     * Chooser intent to select the source to get image from.<br />
      * The source can be camera's (ACTION_IMAGE_CAPTURE) or gallery's (ACTION_GET_CONTENT).<br />
      * All possible sources are added to the intent chooser.
      */
-    private void selectImage(final Context context) {
-        //final Permissions permissions = new Permissions(MainActivity.this);
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-        androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
+    public Intent selectImage() {
 
-                    isReadStoragePermissionGranted();
-                    isWriteStoragePermissionGranted();
-                    isCameraPermissionGranted();
-                    captureFromCamera();
+        Uri outputFileUri = getCaptureImageOutputUri();
 
-                } else if (options[item].equals("Choose from Gallery")) {
+        List<Intent> allIntents = new ArrayList<>();
+        PackageManager packageManager = getPackageManager();
 
-                    isReadStoragePermissionGranted();
-                    isWriteStoragePermissionGranted();
-                    pickFromGallery();
-
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, GALLERY_REQUEST_CODE);
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
+        Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for (ResolveInfo res : listCam) {
+            Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            if (outputFileUri != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             }
-        });
-        builder.show();
+            allIntents.add(intent);
+        }
+
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
+        for (ResolveInfo res : listGallery) {
+            Intent intent = new Intent(galleryIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            allIntents.add(intent);
+        }
+
+        Intent mainIntent = allIntents.get(allIntents.size() - 1);
+        for (Intent intent : allIntents) {
+            if (intent.getComponent().getClassName().equals("com.sable.businesslistingapi")) {
+                mainIntent = intent;
+                break;
+            }
+        }
+        allIntents.remove(mainIntent);
+
+        Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+
+        return chooserIntent;
     }
 
-    public void isReadStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.e("Read  Permission", "Permission is granted");
-                //return true;
-            } else {
-
-                Log.e("Read  Permission", "Permission is revoked! Requesting Permission");
-                //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                //return false;
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.e("Read Storage Permission", "Permission is granted by default");
-            //return true;
+    private Uri getCaptureImageOutputUri() {
+        Uri outputFileUri = null;
+        File getImage = getExternalFilesDir("");
+        if (getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "profile.png"));
         }
-    }
-
-    public void isWriteStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.e("Write Permission", "Permission is granted");
-                //return true;
-            } else {
-
-                Log.e("Write Permission", "Permission is revoked! Requesting Permission");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-                //return false;
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.e("Write Permission", "Permission is granted by default");
-            //return true;
-        }
-    }
-
-    public void isCameraPermissionGranted() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.e("Camera Permission", "Permission is granted");
-                //     return true;
-            } else {
-
-                Log.e("Camera Permission", "Permission is revoked!  Requesting Permission");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 3);
-                //   return false;
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.e("Camera Permission", "Permission is granted by default");
-            //return true;
-        }
+        return outputFileUri;
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            //ImageView imageView = findViewById(R.id.imageView);
+            LinearLayout linearLayout = findViewById(R.id.imagesLayout);
+            for (int i = 0; i < 6; i++) {
+                ImageView imageView = new ImageView(ReviewActivity.this);
+                int dimens = 45;
+                float density = getResources().getDisplayMetrics().density;
+                int finalDimens = (int) (dimens * density);
+
+
+                // SET SCALETYPE
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                // SET THE MARGIN
+                int dimensMargin = 4;
+                float densityMargin = getResources().getDisplayMetrics().density;
+                int finalDimensMargin = (int) (dimensMargin * densityMargin);
+
+                LinearLayout.LayoutParams imgvwDimens = new LinearLayout.LayoutParams(finalDimens, finalDimens);
+                imageView.setLayoutParams(imgvwDimens);
+
+                if (requestCode == IMAGE_RESULT) {
+                    String filePath = getImageFilePath(data);
+                    if (filePath != null) {
+                        Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
+                        // SET THE IMAGEVIEW DIMENSIONS
+
+                        LinearLayout.LayoutParams imgvwMargin = new LinearLayout.LayoutParams(finalDimens, finalDimens);
+                        imgvwMargin.setMargins(finalDimensMargin, finalDimensMargin, finalDimensMargin, finalDimensMargin);
+
+                        // SET YOUR IMAGER SOURCE TO YOUR NEW IMAGEVIEW HERE
+                        // FORMAT AND ADD THE NEW IMAGEVIEW WITH TO THE linearLayout
+                        imageView.setLayoutParams(imgvwMargin);
+                        imageView.setImageBitmap(selectedImage);
+                        linearLayout.addView(imageView);
+                    }
+                }
+            }
+        }
+    }
+
+
+    private String getImageFromFilePath(Intent data) {
+        boolean isCamera = data == null || data.getData() == null;
+
+        if (isCamera) return getCaptureImageOutputUri().getPath();
+        else return getPathFromURI(data.getData());
+
+    }
+
+    public String getImageFilePath(Intent data) {
+        return getImageFromFilePath(data);
+    }
+
+    private String getPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Audio.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable("pic_uri", picUri);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // get the file url
+        picUri = savedInstanceState.getParcelable("pic_uri");
+    }
+
+    private ArrayList<String> findUnAskedPermissions(ArrayList<String> wanted) {
+        ArrayList<String> result = new ArrayList<String>();
+
+        for (String perm : wanted) {
+            if (!hasPermission(perm)) {
+                result.add(perm);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean hasPermission(String permission) {
+        if (canMakeSmores()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+            }
+        }
+        return true;
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    private boolean canMakeSmores() {
+        return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode) {
 
-            case 1:
-                Log.d("Request permission", "External storage read ");
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("Request Result: ", "Permission: " + permissions[0] + "was " + grantResults[0]);
-                    //resume tasks needing this permission
-                    selectImage(this);
-                } else {
-                    // progress.dismiss();
+            case ALL_PERMISSIONS_RESULT:
+                for (String perms : permissionsToRequest) {
+                    if (!hasPermission(perms)) {
+                        permissionsRejected.add(perms);
+                    }
                 }
-                break;
 
-            case 2:
-                Log.d("Request permission", "External storage write ");
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("Request Result: ", "Permission: " + permissions[0] + "was " + grantResults[0]);
-                    //resume tasks needing this permission
-                    selectImage(this);
-                } else {
-                    // progress.dismiss();
-                }
-                break;
+                if (permissionsRejected.size() > 0) {
 
-            case 3:
-                Log.d("Request permission", "Camera ");
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("Request Result: ", "Permission: " + permissions[0] + "was " + grantResults[0]);
-                    //resume tasks needing this permission
-                    selectImage(this);
-                } else {
-                    // progress.dismiss();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
+                            showMessageOKCancel("These permissions are mandatory for the application. Please allow access.",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+
+                                                requestPermissions(permissionsRejected.toArray(new String[permissionsRejected.size()]), ALL_PERMISSIONS_RESULT);
+                                            }
+                                        }
+                                    });
+                            return;
+                        }
+                    }
+
                 }
+
                 break;
         }
-    }
 
-
-    //@Override
-    public void onClick(View v) {
-        if (Document_img1.equals("") || Document_img1.equals(null)) {
-            ContextThemeWrapper ctw = new ContextThemeWrapper(ReviewActivity.this, R.style.Theme_AlertDialog);
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctw);
-            alertDialogBuilder.setTitle("Id Prof Can't Empty ");
-            alertDialogBuilder.setMessage("Id Prof Can't empty please select any one document");
-            alertDialogBuilder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-
-                }
-            });
-            alertDialogBuilder.show();
-            return;
-        }
-    }
-
-    private void pickFromGallery() {
-        //Create an Intent with action as ACTION_PICK
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        // Sets the type as image/*. This ensures only components of type image are selected
-        intent.setType("image/*");
-        //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        // Launching the Intent
-        startActivityForResult(intent, GALLERY_REQUEST_CODE);
-    }
-
-    private void captureFromCamera() {
-        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(pictureIntent.resolveActivity(getPackageManager()) != null){
-            //Create a file to store the image
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File...
-            }
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,"com.example.myapplication.fileprovider", photoFile);
-                //pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(pictureIntent, CAMERA_REQUEST_CODE);
-            }
-        }
-    }
-
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-        ImageView imageView = new ImageView(ReviewActivity.this);
-        LinearLayout linearLayout = findViewById(R.id.imagesLayout);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        imageView.setLayoutParams(params);
-        linearLayout.addView(imageView);
-
-        // Result code is RESULT_OK only if the user selects an Image
-
-
-        if (resultCode == Activity.RESULT_OK)
-            switch (requestCode) {
-                case GALLERY_REQUEST_CODE:
-                    //data.getData return the content URI for the selected Image
-                    Uri imageUri = data.getData();
-
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    // Get the cursor
-                    Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
-                    //Get the column index of MediaStore.Images.Media.DATA
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    //Gets the String value in the column
-                    String imgDecodableString = cursor.getString(columnIndex);
-
-                    cursor.close();
-                    // Set the Image in ImageView after decoding the String
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString));
-                    break;
-
-                case CAMERA_REQUEST_CODE:
-                    //Bundle extras = data.getExtras();
-                    Bitmap image = (Bitmap) data.getExtras().get("data");
-                    imageView.setImageBitmap(image);
-            }
-
-    }
-
-    /**
-     * For images captured from the camera, we need to create a File first to tell the camera
-     * where to store the image.
-     *
-     * @return the File created for the image to be store under.
-     */
-    String currentPhotoPath;
-
-    private File createImageFile() throws IOException {
-
-        isWriteStoragePermissionGranted();
-        isReadStoragePermissionGranted();
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 
     /**
      *
      * submit to api
-     * 
-     * 
+     *
+     *
      */
 
-    /*private void submitData(){
+  /*  private void submitData(){
 
         String post_title = tvPost_title.getText().toString();
         String post_status = tvPost_status.getText().toString();
@@ -498,11 +482,11 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         String bldgno = tvBldgno.getText().toString();
         String latitude = tvLatitude.getText().toString();
         String longitude = tvLongitude.getText().toString();
-        /*String image00 = ivImage0.toString();
-        String image01 = ivImage1.toString();
-        String image02 = ivImage02.toString();*/
+        File image00 = getCaptureImageOutputUri();
+        File image01 = getImageFilePath(data);
+        File image02 = getImageFilePath();*/
 
-       /* try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
+      /* try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
             String submit_ip = s.toString();
             // System.out.println("My current IP address is " + s.next());
         } catch (java.io.IOException e) {
@@ -542,10 +526,10 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postData(id, post_title, post_status,
-                default_category, imageUri00, bldgno, street, city, state, zip, country, latitude, longitude, rating,
-                phone, website, email, twitter, facebook, hours, imageUri01,
-                imageUri02, content);
+       /* Call<List<BusinessListings>> call = service.postData(id, post_title, post_status,
+                default_category, image00, bldgno, street, city, state, zip, country, latitude, longitude, rating,
+                phone, website, email, twitter, facebook, hours, image01,
+                image02, content);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
@@ -569,5 +553,5 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             }
         });
 
-    } */
+    }*/
 }

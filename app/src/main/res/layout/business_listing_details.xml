@@ -121,7 +121,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvStreet"
+                        android:id="@+id/tvCity"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="3dp"
@@ -182,7 +182,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tvPhone"
+                            android:id="@+id/etPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="start"
@@ -252,7 +252,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvContent"
+                    android:id="@+id/etBusDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"

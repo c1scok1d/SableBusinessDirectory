@@ -43,21 +43,21 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.tvRating = itemView.findViewById(R.id.ratingBar);
             this.tvRatingCount = itemView.findViewById(R.id.tvRatingCount);
             this.tvBldNo = itemView.findViewById(R.id.tvBldgNo);
-            this.tvStreet = itemView.findViewById(R.id.tvStreet);
+            this.tvStreet = itemView.findViewById(R.id.tvCity);
             this.tvCity = itemView.findViewById(R.id.tvCity);
             this.tvRegion = itemView.findViewById(R.id.tvState);
             this.tvZip = itemView.findViewById(R.id.tvZip);
             this.tvHours = itemView.findViewById(R.id.tvHours);
             this.tvisOpen = itemView.findViewById(R.id.tvIsOpen);
-            this.tvContent = itemView.findViewById(R.id.tvContent);
-            this.tvPhone = itemView.findViewById(R.id.tvPhone);
+            this.tvContent = itemView.findViewById(R.id.etBusDesc);
+            this.tvPhone = itemView.findViewById(R.id.etPhone);
             this.image = itemView.findViewById(R.id.ivImage);
             this.btnCall = itemView.findViewById(R.id.btnCall);
             this.btnDirections = itemView.findViewById(R.id.btnDirections);
             this.tvLat = itemView.findViewById(R.id.tvLat);
             this.tvLng = itemView.findViewById(R.id.tvLng);
             this.image = itemView.findViewById(R.id.ivImage);
-            this.tvContent = itemView.findViewById(R.id.tvContent);
+            this.tvContent = itemView.findViewById(R.id.etBusDesc);
       //      this.tvPhone = itemView.findViewById(R.id.btnCall);
 
 

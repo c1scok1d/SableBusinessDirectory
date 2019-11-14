@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +81,7 @@ public class AddListingActivity extends AppCompatActivity
     /*
     objects of text view and button widgets.
      */
-    TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo;
+    TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry;
     EditText etName, etDescription, etPhone;
     Button btnNext;
     //ImageButton btnPic;
@@ -105,11 +104,12 @@ public class AddListingActivity extends AppCompatActivity
         tvAddress = findViewById(R.id.tvAddress);
         tvZip = findViewById(R.id.tvZip);
         tvState = findViewById(R.id.tvState);
-        tvCity = findViewById(R.id.tvStreet);
+        tvCity = findViewById(R.id.tvCity);
         tvStreet = findViewById(R.id.tvStreet);
         tvBldgNo = findViewById(R.id.tvBldgNo);
+        tvCountry = findViewById(R.id.tvCountry);
         etName = findViewById(R.id.etName);
-        etDescription = findViewById(R.id.etDescription);
+        etDescription = findViewById(R.id.etBusDesc);
         etPhone = findViewById(R.id.etPhone);
         btnNext = findViewById(R.id.btnNext);
         spnCategory = findViewById(R.id.spnCategory);
@@ -286,6 +286,7 @@ public class AddListingActivity extends AppCompatActivity
             tvCity.setText(mcity);
             tvStreet.setText(mstreet);
             tvBldgNo.setText(mbldgNo);
+            tvCountry.setText(mcountry);
 
 
             addresses.get(0).getAdminArea();
