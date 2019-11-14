@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("LocationMatch ", " default_category " + response.body().get(i).getDefaultCategory());
                             Log.e("LocationMatch ", " post_category" + response.body().get(i).getPostCategory());
                             Log.e("LocationMatch ", " featured: " + response.body().get(i).getFeatured());
-                            Log.e("LocationMatch ", " featured_image " + response.body().get(i).getFeaturedImage());
+                            Log.e("LocationMatch ", " featured_image " + response.body().get(i).getFeaturedImage().getSrc());
                             Log.e("LocationMatch ", " bldgno: " +response.body().get(i).getBldgNo());
                             Log.e("LocationMatch ", " Street: " + response.body().get(i).getStreet());
                             Log.e("LocationMatch ", " City: " + response.body().get(i).getCity());
@@ -557,10 +557,10 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("LocationMatch ", " RatingBar: " + response.body().get(i).getRating());
                             Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
                             Log.e("LocationMatch ", " Email: " + response.body().get(i).getEmail());
-                            Log.e("LocationMatch ", " webstie: " + response.body().get(i).getLongitude());
-                            Log.e("LocationMatch ", " twitter: " + response.body().get(i).getRating());
-                            Log.e("LocationMatch ", " facebook: " + response.body().get(i).getPhone());
-                            Log.e("LocationMatch ", " video: " + response.body().get(i).getEmail());
+                            Log.e("LocationMatch ", " webstie: " + response.body().get(i).getWebsite());
+                            Log.e("LocationMatch ", " twitter: " + response.body().get(i).getTwitter());
+                            Log.e("LocationMatch ", " facebook: " + response.body().get(i).getFacebook());
+                            Log.e("LocationMatch ", " video: " + response.body().get(i).getVideo());
                             Log.e("LocationMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
                             Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
                             Log.e("LocationMatch ", " logo: " + response.body().get(i).getLogo());
@@ -637,10 +637,10 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " RatingBar: " + response.body().get(i).getRating());
                             Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
                             Log.e("Location ", " Email: " + response.body().get(i).getEmail());
-                            Log.e("Location ", " webstie: " + response.body().get(i).getLongitude());
-                            Log.e("Location ", " twitter: " + response.body().get(i).getRating());
-                            Log.e("Location ", " facebook: " + response.body().get(i).getPhone());
-                            Log.e("Location ", " video: " + response.body().get(i).getEmail());
+                            Log.e("Location ", " Website: " + response.body().get(i).getWebsite());
+                            Log.e("Location ", " twitter: " + response.body().get(i).getTwitter());
+                            Log.e("Location ", " facebook: " + response.body().get(i).getFacebook());
+                            Log.e("Location ", " video: " + response.body().get(i).getVideo());
                             Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
                             Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
                             Log.e("Location ", " logo: " + response.body().get(i).getLogo());
