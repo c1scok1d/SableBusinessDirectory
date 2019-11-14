@@ -97,7 +97,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     String siteURL = tvWebsite.getText().toString();
                     Intent website = new Intent(Intent.ACTION_VIEW, Uri.parse(siteURL));
-                    startActivity(website);
+                    itemView.getContext().startActivity(website);
                     }
             });
 
@@ -106,7 +106,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     String siteURL = tvTwitter.getText().toString();
                     Intent twitter = new Intent(Intent.ACTION_VIEW, Uri.parse(siteURL));
-                    startActivity(twitter);
+                    itemView.getContext().startActivity(twitter);
                 }
             });
 
@@ -115,7 +115,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     String siteURL = tvFacebook.getText().toString();
                     Intent facebook = new Intent(Intent.ACTION_VIEW, Uri.parse(siteURL));
-                    startActivity(facebook);
+                    itemView.getContext().startActivity(facebook);
                 }
             });
         }
