@@ -226,7 +226,7 @@
                             android:background="@android:color/transparent"
                             android:contentDescription="@string/click_to_call"
                             app:srcCompat="@drawable/outline_call_black_18dp"
-                            tools:srcCompat="@drawable/outline_call_black_18dp" />
+                            tools:srcCompat="@drawable/phone" />
 
                     </LinearLayout>
 

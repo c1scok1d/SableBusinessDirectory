@@ -227,7 +227,7 @@
                             tools:srcCompat="@drawable/website" />
 
                         <EditText
-                            android:id="@+id/tvWebsite"
+                            android:id="@+id/etWebsite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -250,7 +250,7 @@
                             app:srcCompat="@drawable/email" />
 
                         <EditText
-                            android:id="@+id/tvEmail"
+                            android:id="@+id/etEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -303,7 +303,7 @@
                             app:srcCompat="@drawable/twitter" />
 
                         <EditText
-                            android:id="@+id/tvTwitter"
+                            android:id="@+id/etTwitter"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -326,7 +326,7 @@
                             app:srcCompat="@drawable/facebook" />
 
                         <EditText
-                            android:id="@+id/tvFacebook"
+                            android:id="@+id/etFacebook"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"

@@ -82,9 +82,8 @@ public class AddListingActivity extends AppCompatActivity
     objects of text view and button widgets.
      */
     TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry;
-    EditText etName, etDescription, etPhone;
+    EditText etName, etDescription, etPhone, etEmail, etWebsite, etHours, etTwitter, etFacebook;
     Button btnNext;
-    //ImageButton btnPic;
     Spinner spnCategory;
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
@@ -108,15 +107,15 @@ public class AddListingActivity extends AppCompatActivity
         tvStreet = findViewById(R.id.tvStreet);
         tvBldgNo = findViewById(R.id.tvBldgNo);
         tvCountry = findViewById(R.id.tvCountry);
+        btnNext = findViewById(R.id.btnNext);
+        spnCategory = findViewById(R.id.spnCategory);
         etName = findViewById(R.id.etName);
         etDescription = findViewById(R.id.etBusDesc);
         etPhone = findViewById(R.id.etPhone);
-        btnNext = findViewById(R.id.btnNext);
-        spnCategory = findViewById(R.id.spnCategory);
-        //btnPic = findViewById(R.id.btnPic);
-        // uploadImage1 = findViewById(R.id.uploadImage1);
-        // uploadImage2 = findViewById(R.id.uploadImage2);
-        // uploadImage3 = findViewById(R.id.uploadImage3);
+        etEmail = findViewById(R.id.etEmail);
+        etWebsite = findViewById(R.id.etWebsite);
+        etTwitter  = findViewById(R.id.etTwitter);
+        etFacebook = findViewById(R.id.etFacebook);
         // category = new ArrayList<>();
         // locationAdd = new ArrayList<>();
 
@@ -141,9 +140,32 @@ public class AddListingActivity extends AppCompatActivity
                     final String description = etDescription.getText().toString();
                     final String category = spnCategory.getSelectedItem().toString();
                     final String phone = etPhone.getText().toString();
+                    final String email = etEmail.getText().toString();
+                    final String website = etWebsite.getText().toString();
+                    final String twitter = etTwitter.getText().toString();
+                    final String facebook = etFacebook.getText().toString();
 
-                    locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE, name, category, description,
-                            longitude, latitude, address, state, country, zipcode, city, bldgNo, street, img1, img2, img3, phone));
+                    locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
+                            name,
+                            category,
+                            description,
+                            longitude,
+                            latitude,
+                            address,
+                            state,
+                            country,
+                            zipcode,
+                            city,
+                            bldgNo,
+                            street,
+                            img1,
+                            img2,
+                            img3,
+                            phone,
+                            email,
+                            website,
+                            twitter,
+                            facebook));
 
                     Intent LocationAdd = new Intent(AddListingActivity.this, ReviewActivity.class);
                     Bundle locationAddBundle = new Bundle();

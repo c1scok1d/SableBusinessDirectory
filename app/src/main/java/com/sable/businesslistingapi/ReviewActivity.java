@@ -49,7 +49,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     ImageButton btnPic, btnPicUpload;
     TextView tvPost_title, tvPost_status, tvDefault_category, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvEmail, tvWebsite, tvTwitter, tvFacebook,
-            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvTimestamp;
+            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvTimestamp, tvPostCategory, tvName;
 
     ImageView ivImage0, ivImage1, ivImage02;
     RatingBar simpleRatingBar;
@@ -93,7 +93,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         mFeedback = findViewById(R.id.etFeedback);
         mSendFeedback = findViewById(R.id.btnSubmit);
         simpleRatingBar = findViewById(R.id.simpleRatingBar);
-        tvPost_title = findViewById(R.id.etName);
+        tvPost_title = findViewById(R.id.tvName);
         tvBldgno = findViewById(R.id.tvBldgNo);
         tvState = findViewById(R.id.tvState);
         tvStreet = findViewById(R.id.tvStreet);
@@ -102,9 +102,16 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         tvCountry = findViewById(R.id.tvCountry);
         tvHours = findViewById(R.id.tvHours);
         tvIsOpen = findViewById(R.id.tvIsOpen);
-        tvContent = findViewById(R.id.content);
-        tvPhone = findViewById(R.id.etPhone);
+        tvContent = findViewById(R.id.tvContent);
+        tvPhone = findViewById(R.id.tvPhone);
         btnPic = findViewById(R.id.btnPic);
+        tvPostCategory = findViewById(R.id.tvPostCategory);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvWebsite = findViewById(R.id.tvWebsite);
+        tvTwitter = findViewById(R.id.tvTwitter);
+        tvFacebook = findViewById(R.id.tvFacebook);
+        tvName = findViewById(R.id.tvName);
+
 
 
         mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -154,12 +161,12 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
         if (locationMatch == null) {
 
-           /* tvTitle.setText(locationAdd.get(0).post_title);
-            tvStatus.setText(locationAdd.get(0).post_status);
-            tvTags.setText(locationAdd.get(0).post_tags);
-            default_category.setText(locationAdd.get(0).default_category);
-            post_category.setText(locationAdd.get(0).post_category);
-            featured.setText(locationAdd.get(0).featured);
+            tvName.setText(locationAdd.get(0).name);
+            //tvStatus.setText(locationAdd.get(0).post_status);
+            //tvTags.setText(locationAdd.get(0).post_tags);
+            tvPostCategory.setText(locationAdd.get(0).category);
+            //post_category.setText(locationAdd.get(0).post_category);
+            //featured.setText(locationAdd.get(0).featured);
             //ivFeaturedImg.setText(locationAdd.get(0).featured_image);*/
             tvBldgno.setText(locationAdd.get(0).bldgNo);
             tvStreet.setText(locationAdd.get(0).street);
@@ -167,24 +174,24 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvState.setText(locationAdd.get(0).state);
             tvCountry.setText(locationAdd.get(0).country);
             tvZip.setText(locationAdd.get(0).zipcode);
-            /*latitude = (locationAdd.get(0).latitude);
-            longitude = (locationAdd.get(0).longitude);
-            rating.setText(locationAdd.get(0).rating);
-            phone.setText(locationAdd.get(0).phone);
-            email.setText(locationAdd.get(0).email);
-            website.setText(locationAdd.get(0).website);
-            twitter.setText(locationAdd.get(0).twitter);
-            facebook.setText(locationAdd.get(0).facebook);
-            video.setText(locationAdd.get(0).video);
-            hours.setText(locationAdd.get(0).hours);
-            isOpen.setText(locationAdd.get(0).isOpen);
+            //latitude = (locationAdd.get(0).latitude);
+            //longitude = (locationAdd.get(0).longitude);
+            //rating.setText(locationAdd.get(0).rating);
+            tvPhone.setText(locationAdd.get(0).phone);
+            tvEmail.setText(locationAdd.get(0).email);
+            tvWebsite.setText(locationAdd.get(0).website);
+            tvTwitter.setText(locationAdd.get(0).twitter);
+            tvFacebook.setText(locationAdd.get(0).facebook);
+            //video.setText(locationAdd.get(0).video);
+            //hours.setText(locationAdd.get(0).hours);
+            //isOpen.setText(locationAdd.get(0).isOpen);
             //ivLogo.setText(locationAdd.get(0).logo);
-            content.setText(locationAdd.get(0).content);
-            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).featured_image)).into(ivFeaturedImg);
+            tvContent.setText(locationAdd.get(0).description);
+            //builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img1)).into(linearla);
             //ivImage.setText(locationAdd.get(0).image);
-            timestamp.setText(locationAdd.get(0).timestamp);
-            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).image)).into(ivImage);
-            builder.build().load(getIntent().getStringExtra(locationAdd.get(0).logo)).into(ivLogo);
+            //timestamp.setText(locationAdd.get(0).timestamp);
+            //builder.build().load(getIntent().getStringExtra(locationAdd.get(0).image)).into(ivImage);
+            //builder.build().load(getIntent().getStringExtra(locationAdd.get(0).logo)).into(ivLogo);
             //builder.build().load(getIntent().getStringExtra(locationAdd.get(0).img3)).into(image3);*/
 
 
