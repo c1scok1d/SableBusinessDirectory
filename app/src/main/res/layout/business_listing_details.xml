@@ -35,9 +35,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
             android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -55,6 +53,7 @@
                         android:id="@+id/title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
                         android:layout_weight="1"
                         android:gravity="start"
                         android:text="business name"
@@ -147,6 +146,7 @@
                         android:id="@+id/tvCity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
                         android:text="city"
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
@@ -191,6 +191,7 @@
                             android:id="@+id/tvPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
                             android:gravity="start"
                             android:text="@string/listingPhone" />
 
@@ -198,6 +199,7 @@
                             android:id="@+id/tvIsOpen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
                             android:text="@string/isOpen"
                             android:textAllCaps="true"
                             android:textColor="@android:color/holo_green_dark"
@@ -218,7 +220,7 @@
 
                             <TextView
                                 android:id="@+id/tvWebsite"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="5dp"
@@ -324,6 +326,7 @@
                                 android:id="@+id/btnEmail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/email" />
@@ -342,6 +345,7 @@
                                 android:id="@+id/btnFacebook"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/facebook" />
