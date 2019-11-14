@@ -49,7 +49,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.tvZip = itemView.findViewById(R.id.tvZip);
             this.tvHours = itemView.findViewById(R.id.tvHours);
             this.tvisOpen = itemView.findViewById(R.id.tvIsOpen);
-            this.tvContent = itemView.findViewById(R.id.etBusDesc);
+            this.tvContent = itemView.findViewById(R.id.tvDescription);
             this.tvPhone = itemView.findViewById(R.id.etPhone);
             this.image = itemView.findViewById(R.id.ivImage);
             this.btnCall = itemView.findViewById(R.id.btnCall);
@@ -57,7 +57,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.tvLat = itemView.findViewById(R.id.tvLat);
             this.tvLng = itemView.findViewById(R.id.tvLng);
             this.image = itemView.findViewById(R.id.ivImage);
-            this.tvContent = itemView.findViewById(R.id.etBusDesc);
+           // this.tvContent = itemView.findViewById(R.id.etBusDesc);
       //      this.tvPhone = itemView.findViewById(R.id.btnCall);
 
 

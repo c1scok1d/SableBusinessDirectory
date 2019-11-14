@@ -343,18 +343,9 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvBusDescr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="5dp"
-        android:text="@string/enter_business_description"
-        android:textColor="@color/black" />
 
     <EditText
-        android:id="@+id/etBusDesc"
+        android:id="@+id/etDescription"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginStart="5dp"

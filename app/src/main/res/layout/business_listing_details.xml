@@ -17,14 +17,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="200dp"
             android:layout_weight="9"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/ivImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:contentDescription="@string/business_logo"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ic_launcher" />
@@ -121,7 +121,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvCity"
+                        android:id="@+id/tvstreet"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="3dp"
@@ -188,26 +188,6 @@
                             android:gravity="start"
                             android:text="@string/listingPhone" />
 
-                        <TextView
-                            android:id="@+id/tvHours"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:text="@string/hours"
-                            android:textStyle="bold"
-                            tools:text="hours" />
-
-                        <TextView
-                            android:id="@+id/tvIsOpen"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:gravity="start"
-                            android:text="@string/isOpen"
-                            android:textAllCaps="true"
-                            android:textColor="@android:color/holo_green_dark"
-                            android:textStyle="bold" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -225,14 +205,14 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:contentDescription="@string/click_to_call"
-                            app:srcCompat="@drawable/outline_call_black_18dp"
+                            app:srcCompat="@drawable/phone"
                             tools:srcCompat="@drawable/phone" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -245,21 +225,220 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:contentDescription="@string/click_for_directions"
-                            app:srcCompat="@drawable/outline_directions_black_18dp"
-                            tools:srcCompat="@drawable/outline_directions_black_18dp" />
+                            app:srcCompat="@drawable/directions"
+                            tools:srcCompat="@drawable/directions" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvOpenToday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Open Today: "
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:text="9A - 5P"
+                        android:textStyle="bold"
+                        tools:text="9A - 5p" />
+
+                    <TextView
+                        android:id="@+id/tvIsOpen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_weight="1"
+                        android:text="@string/isOpen"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/holo_green_dark"
+                        android:textStyle="bold"
+                        tools:text="isOpen" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivPhoneNo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/phone" />
+
+                            <TextView
+                                android:id="@+id/tvPhone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="3dp"
+                                android:gravity="start|center_horizontal|center_vertical"
+                                android:text="@string/listingPhone"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/tvStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Status" />
+
+                            <TextView
+                                android:id="@+id/tvFeatured"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Featured" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivWebsite"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/website"
+                                tools:srcCompat="@drawable/website" />
+
+                            <TextView
+                                android:id="@+id/tvWebsite"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="3dp"
+                                android:text="http://www.companywebsite.com"
+                                android:textColor="@color/black" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivEmail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/email" />
+
+                            <TextView
+                                android:id="@+id/tvEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="3dp"
+                                android:text="listing@thesablebusinessdirectory.com"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivTwitter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/twitter" />
+
+                            <TextView
+                                android:id="@+id/tvTwitter"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="3dp"
+                                android:text="https://www.twitter.com/listing_name"
+                                android:textColor="@color/black" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivFacebook"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/facebook" />
+
+                            <TextView
+                                android:id="@+id/tvFacebook"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="3dp"
+                                android:text="https://www.facebook.com/listing_name"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/etBusDesc"
+                    android:id="@+id/tvAboutUs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:gravity="start"
                     android:lineSpacingExtra="2dp"
                     android:maxLines="3"
-                    android:text="@string/listingdescription" />
+                    android:text="About Us"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="start"
+                    android:lineSpacingExtra="2dp"
+                    android:maxLines="3"
+                    android:text="@string/listingdescription"
+                    android:textColor="@color/black" />
 
             </LinearLayout>
 

@@ -110,7 +110,7 @@ public class AddListingActivity extends AppCompatActivity
         btnNext = findViewById(R.id.btnNext);
         spnCategory = findViewById(R.id.spnCategory);
         etName = findViewById(R.id.etName);
-        etDescription = findViewById(R.id.etBusDesc);
+        etDescription = findViewById(R.id.etDescription);
         etPhone = findViewById(R.id.etPhone);
         etEmail = findViewById(R.id.etEmail);
         etWebsite = findViewById(R.id.etWebsite);
