@@ -176,34 +176,34 @@ public class MainActivity extends AppCompatActivity implements
                 Map<String, String> query = new HashMap<>();
                 if (parent != null) {
                     switch(position){
-                        case 10:
+                        case 1:
                             radius = "Within' 10 miles of your current location";
 
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
-                            query.put("distance", Integer.toString(position));
+                            query.put("distance", "10");
                             //query.put("orderby",  "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
-                        case 15:
+                        case 2:
                             radius = "Within' 15 miles of your current location";
 
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
-                            query.put("distance", Integer.toString(position));
+                            query.put("distance", "15");
                             //query.put("orderby",  "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
-                        case 20:
+                        case 3:
                             radius = "Within' 20 miles of your current location";
 
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
-                            query.put("distance", Integer.toString(position));
+                            query.put("distance", "20");
                             //query.put("orderby",  "distance");
 
                             getRetrofit(query);
