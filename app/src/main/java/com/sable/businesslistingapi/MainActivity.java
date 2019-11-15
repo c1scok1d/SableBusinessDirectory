@@ -37,8 +37,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
 
         final TextView texty = findViewById(R.id.texty);
 
-        Spinner spnRadius = findViewById(R.id.spnRadius);
+        final Spinner spnRadius = findViewById(R.id.spnRadius);
         List<String> spinnerArrayRad = new ArrayList<>();
 
 
@@ -169,26 +171,55 @@ public class MainActivity extends AppCompatActivity implements
         spnRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 Object item = adapterView.getItemAtPosition(position);
+                String distance, lat, lng;
+                Map<String, String> query = new HashMap<>();
                 if (item != null) {
 
 
                     switch(position){
                         case 10:
                             radius = "Within' 10 miles of your current location";
+                            distance = spnRadius.getSelectedItem().toString();
+                            lat = latitude.toString();
+                            lng = longitude.toString();
+
+                            query.put("latitude", lat);
+                            query.put("longitude", lng);
+                            query.put("distance", distance);
                             // api call for all locations within' 10 miles of device location
-                             texty.setText(radius);
+                            // String query = spnRadius.getStringExtra(SearchManager.QUERY);
+                            //?latitude=21.8380&longitude=73.7190&distance=10&orderby=distance&order=asc
+                            getRetrofit(query);
+                            texty.setText(radius);
                             break;
                         case 15:
                             radius = "Within' 15 miles of your current location";
+                            distance = spnRadius.getSelectedItem().toString();
+
+                            query.put("latitude", latitude.toString());
+                            query.put("longitude", longitude.toString());
+                            query.put("distance", distance);
+                            //String radius = spnRadius.getSelectedItem().toString();
                             // api call for all locations within' 15 miles of device location
+                            //?latitude=21.8380&longitude=73.7190&distance=10&orderby=distance&order=asc
+                            //String query = search.getStringExtra(SearchManager.QUERY);
+                            getRetrofit(query);
                             texty.setText(radius);
                             break;
                         case 20:
                             radius = "Within' 20 miles of your current location";
+                            distance = spnRadius.getSelectedItem().toString();
+
+                            query.put("latitude", latitude.toString());
+                            query.put("longitude", longitude.toString());
+                            query.put("distance", distance);
+                            //String radius = spnRadius.getSelectedItem().toString();
                             // api call for all locations within' 20 miles of device location
+                            //?latitude=21.8380&longitude=73.7190&distance=10&orderby=distance&order=asc
+                            //String query = search.getStringExtra(SearchManager.QUERY);
+                            getRetrofit(query);
                             texty.setText(radius);
                             break;
                         default:
@@ -243,8 +274,10 @@ public class MainActivity extends AppCompatActivity implements
 
         Intent search = getIntent();
         if (Intent.ACTION_SEARCH.equals(search.getAction())) {
-            String query = search.getStringExtra(SearchManager.QUERY);
-            getRetrofitSearch(query);
+            Map<String, String> query = new HashMap<>();
+
+            query.put("search", search.getStringExtra(SearchManager.QUERY));
+            getRetrofit(query);
         }
 
         /**
@@ -263,19 +296,6 @@ public class MainActivity extends AppCompatActivity implements
         getRetrofitWoo(); //call to woocommerce products api
     }
 
-  /*  @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        searchIntent(intent);
-    }
-
-    private void searchIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            getRetrofitSearch(query);
-        }
-    }*/
-
     /**
      * Location listener to get device current lat/lng
      */
@@ -287,8 +307,13 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLocationChanged(Location location) {
+            Map<String, String> query = new HashMap<>();
+
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
+            query.put("latitude", Double.toString(latitude));
+            query.put("longitude", Double.toString(longitude));
+            query.put("distance", "5");
 
             // zoom to current location on map
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -301,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            getRetrofit(); //api call; pass current lat/lng to check if current location in database
+            getRetrofit(query); //api call; pass current lat/lng to check if current location in database
             setAddress(latitude, longitude);  // method to reverse geocode to physical address
         }
 
@@ -490,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements
      */
 
     private static Retrofit retrofit = null;
-    public void getRetrofit() {
+    public void getRetrofit(Map<String, String> query) {
 
 
 
@@ -511,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
         // pass JSON data to BusinessListings class for filtering
-        Call<List<BusinessListings>> call = service.getPostInfo();
+        Call<List<BusinessListings>> call = service.getPostInfo(query);
 
 
 
@@ -768,119 +793,6 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<List<WooProducts>> call, Throwable t) {
-            }
-        });
-
-    }
-
-    public void getRetrofitSearch( String query) {
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
-        // httpClient.addInterceptor(logging);  // <-- this is the important line!
-
-
-        //String baseURL = "https://www.thesablebusinessdirectory.com";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-
-        // pass JSON data to BusinessListings class for filtering
-        Call<List<BusinessListings>> call = service.getSearch(query);
-
-        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
-        call.enqueue(new Callback<List<BusinessListings>>() {
-            @Override
-            public void onResponse(@NotNull Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("main_activity", " response " + response.body());
-
-                //mListPost = response.body();
-                progressBar.setVisibility(View.GONE); //hide progressBar
-
-
-                // loop through JSON response get parse and output to log
-
-                for (int i = 0; i < response.body().size(); i++) {
-
-                    Log.e("SearchMatch ", " id: " + response.body().get(i).getId());
-                    Log.e("SearchMatch ", " post_title: " + response.body().get(i).getTitle().getRaw());
-                    Log.e("SearchMatch ", " post_status: " + response.body().get(i).getStatus());
-                    Log.e("SearchMatch ", " post_tags: " + response.body().get(i).getPostTags().get(i));
-                    Log.e("SearchMatch ", " default_category " + response.body().get(i).getDefaultCategory());
-                    Log.e("SearchMatch ", " post_category" + response.body().get(i).getPostCategory());
-                    Log.e("SearchMatch ", " featured: " + response.body().get(i).getFeatured());
-                    Log.e("SearchMatch ", " featured_image " + response.body().get(i).getFeaturedImage());
-                    Log.e("SearchMatch ", " bldgno: " +response.body().get(i).getBldgNo());
-                    Log.e("SearchMatch ", " Street: " + response.body().get(i).getStreet());
-                    Log.e("SearchMatch ", " City: " + response.body().get(i).getCity());
-                    Log.e("SearchMatch ", " State: " + response.body().get(i).getRegion());
-                    Log.e("SearchMatch ", " Country: " + response.body().get(i).getCountry());
-                    Log.e("SearchMatch ", " Zip: " + response.body().get(i).getZip());
-                    Log.e("SearchMatch ", " Latitude: " +response.body().get(i).getLatitude());
-                    Log.e("SearchMatch ", " Longitude: " + response.body().get(i).getLongitude());
-                    Log.e("SearchMatch ", " RatingBar: " + response.body().get(i).getRating());
-                    Log.e("SearchMatch ", " Telephone: " + response.body().get(i).getPhone());
-                    Log.e("SearchMatch ", " Email: " + response.body().get(i).getEmail());
-                    Log.e("SearchMatch ", " webstie: " + response.body().get(i).getLongitude());
-                    Log.e("SearchMatch ", " twitter: " + response.body().get(i).getRating());
-                    Log.e("SearchMatch ", " facebook: " + response.body().get(i).getPhone());
-                    Log.e("SearchMatch ", " video: " + response.body().get(i).getEmail());
-                    Log.e("SearchMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                    Log.e("SearchMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                    Log.e("SearchMatch ", " logo: " + response.body().get(i).getLogo());
-                    Log.e("SearchMatch ", " Content: " + response.body().get(i).getContent().getRaw());
-                    Log.e("SearchMatch ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                    Log.e("SearchMatch ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
-
-                    verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                            response.body().get(i).getId(),
-                            response.body().get(i).getTitle().getRaw(),
-                            response.body().get(i).getStatus(),
-                           // response.body().get(i).getPostTags().get(i),
-                            response.body().get(i).getDefaultCategory(),
-                            response.body().get(i).getPostCategory(),
-                            response.body().get(i).getFeatured(),
-                            response.body().get(i).getFeaturedImage().getSrc(),
-                            response.body().get(i).getBldgNo(),
-                            response.body().get(i).getStreet(),
-                            response.body().get(i).getCity(),
-                            response.body().get(i).getRegion(),
-                            response.body().get(i).getCountry(),
-                            response.body().get(i).getZip(),
-                            response.body().get(i).getLatitude(),
-                            response.body().get(i).getLongitude(),
-                            response.body().get(i).getRating(),
-                            response.body().get(i).getPhone(),
-                            response.body().get(i).getEmail(),
-                            response.body().get(i).getWebsite(),
-                            response.body().get(i).getTwitter(),
-                            response.body().get(i).getFacebook(),
-                            response.body().get(i).getVideo(),
-                            response.body().get(i).getBusinessHours(),
-                            response.body().get(i).getCommentStatus(),
-                            response.body().get(i).getLogo(),
-                            response.body().get(i).getContent().getRaw(),
-                            response.body().get(i).getFeaturedImage(),
-                            response.body().get(i).getImages().get(0).getSrc(),
-                            response.body().get(i).getImages().get(1).getSrc()));
-
-                    // add category name from array to spinner
-                    category.add(response.body().get(i).getPostCategory().get(0).getName());
-                    // display category array list in spinner
-                    spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
-                    Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
-                }
-                verticalAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
             }
         });
 

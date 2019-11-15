@@ -2,6 +2,7 @@ package com.sable.businesslistingapi;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -15,6 +16,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by Jaink on 14-09-2017.
@@ -25,11 +27,18 @@ import retrofit2.http.Query;
 public interface RetrofitArrayApi {
 
     @GET("wp-json/geodir/v2/business")
-    Call<List<BusinessListings>> getPostInfo();
+    Call<List<BusinessListings>> getPostInfo(
+            @QueryMap Map<String, String> options
+    );
 
     @GET("wp-json/geodir/v2/business/?post_type=gd_business")
     Call<List<BusinessListings>> getSearch(
             @Query("search") String query);
+
+    @GET("wp-json/geodir/v2/business/?post_type=gd_business")
+    Call<List<BusinessListings>> getRadius(
+            @QueryMap Map<String, String> options
+    );
 
     @GET("wp-json/wc/v3/products?consumer_key=ck_c3addab1f230fa55025a2f78969d18f518ebbc5e&consumer_secret=cs_aaf9c39669e92ebd745a0e91a9a5810e9222cc92")
     Call<List<WooProducts>> getPostWooInfo();

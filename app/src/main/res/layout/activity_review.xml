@@ -45,21 +45,26 @@
                     tools:text="Business Name" />
 
                 <TextView
+                    android:id="@+id/tvCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="Category"
+                    android:textAllCaps="true" />
+
+                <TextView
                     android:id="@+id/tvPostCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="0"
-                    android:text="PostCategory" />
-
-                <TextView
-                    android:id="@+id/tvDefaultcategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
                     android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="Def Category" />
+                    android:text="PostCategory"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
             <LinearLayout
