@@ -171,59 +171,41 @@ public class MainActivity extends AppCompatActivity implements
         spnRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                Object item = adapterView.getItemAtPosition(position);
-                String distance, lat, lng;
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 Map<String, String> query = new HashMap<>();
-                if (item != null) {
-
-
+                if (parent != null) {
                     switch(position){
                         case 10:
                             radius = "Within' 10 miles of your current location";
-                            distance = spnRadius.getSelectedItem().toString();
-                            lat = latitude.toString();
-                            lng = longitude.toString();
 
-                            query.put("latitude", lat);
-                            query.put("longitude", lng);
-                            query.put("distance", distance);
-                            // api call for all locations within' 10 miles of device location
-                            // String query = spnRadius.getStringExtra(SearchManager.QUERY);
-                            //?latitude=21.8380&longitude=73.7190&distance=10&orderby=distance&order=asc
+                            query.put("latitude", Double.toString(longitude));
+                            query.put("longitude", Double.toString(latitude));
+                            query.put("distance", Integer.toString(position));
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
                         case 15:
                             radius = "Within' 15 miles of your current location";
-                            distance = spnRadius.getSelectedItem().toString();
 
-                            query.put("latitude", latitude.toString());
-                            query.put("longitude", longitude.toString());
-                            query.put("distance", distance);
-                            //String radius = spnRadius.getSelectedItem().toString();
-                            // api call for all locations within' 15 miles of device location
-                            //?latitude=21.8380&longitude=73.7190&distance=10&orderby=distance&order=asc
-                            //String query = search.getStringExtra(SearchManager.QUERY);
+                            query.put("latitude", Double.toString(longitude));
+                            query.put("longitude", Double.toString(latitude));
+                            query.put("distance", Integer.toString(position));
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
                         case 20:
                             radius = "Within' 20 miles of your current location";
-                            distance = spnRadius.getSelectedItem().toString();
 
-                            query.put("latitude", latitude.toString());
-                            query.put("longitude", longitude.toString());
-                            query.put("distance", distance);
-                            //String radius = spnRadius.getSelectedItem().toString();
-                            // api call for all locations within' 20 miles of device location
-                            //?latitude=21.8380&longitude=73.7190&distance=10&orderby=distance&order=asc
-                            //String query = search.getStringExtra(SearchManager.QUERY);
+                            query.put("latitude", Double.toString(longitude));
+                            query.put("longitude", Double.toString(latitude));
+                            query.put("distance", Integer.toString(position));
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
                         default:
                             radius = "Within' 5 miles of your current location";
+
                             texty.setText(radius);
                             break;
                     }
@@ -266,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements
         searchView = findViewById(R.id.search);
 
         searchView.setIconifiedByDefault(false);
-       // searchView.setSuggestionsAdapter(category);
         searchView.setQueryHint("Search The Directory");
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -276,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         if (Intent.ACTION_SEARCH.equals(search.getAction())) {
             Map<String, String> query = new HashMap<>();
 
+            query.put("distance", "5");
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
         }
@@ -397,6 +379,11 @@ public class MainActivity extends AppCompatActivity implements
         //get location address
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
+        Map<String, String> query = new HashMap<>();
+
+        query.put("latitude", Double.toString(latitude));
+        query.put("longitude", Double.toString(longitude));
+        query.put("distance", "5");
 
         // zoom to current location on map
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -409,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements
                 .build();                   // Creates a CameraPosition from the builder
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         setAddress(latitude, longitude);
+        getRetrofit(query);
     }
 
     /**
