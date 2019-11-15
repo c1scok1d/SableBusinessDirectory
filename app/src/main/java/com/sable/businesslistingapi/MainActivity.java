@@ -182,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", Integer.toString(position));
+                            //query.put("orderby",  "distance");
+
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
@@ -191,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", Integer.toString(position));
+                            //query.put("orderby",  "distance");
+
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
@@ -200,11 +204,19 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", Integer.toString(position));
+                            //query.put("orderby",  "distance");
+
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
                         default:
                             radius = "Within' 5 miles of your current location";
+                            query.put("latitude", Double.toString(longitude));
+                            query.put("longitude", Double.toString(latitude));
+                            query.put("distance", "5");
+                            //query.put("orderby",  "distance");
+
+                            getRetrofit(query);
 
                             texty.setText(radius);
                             break;
@@ -258,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements
             Map<String, String> query = new HashMap<>();
 
             query.put("distance", "5");
+            //query.put("orderby",  "distance");
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
         }
@@ -296,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements
             query.put("latitude", Double.toString(latitude));
             query.put("longitude", Double.toString(longitude));
             query.put("distance", "5");
+            //query.put("orderby",  "distance");
 
             // zoom to current location on map
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
