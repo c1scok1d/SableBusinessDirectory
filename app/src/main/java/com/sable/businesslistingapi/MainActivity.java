@@ -82,11 +82,10 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<WooModel> horizontalList;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
+    Spinner spnCategory, spnRadius;
 
 
     Button btnAdd;
-    Spinner spnRadius = findViewById(R.id.spnRadius);
-    Spinner spnCategory = findViewById(R.id.spnCategory);
     SearchView searchView;
 
     private GoogleMap mMap;
@@ -103,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
 
+        spnRadius = findViewById(R.id.spnRadius);
+        spnCategory = findViewById(R.id.spnCategory);
 
         /* Display current location address */
         tvAddress = findViewById(R.id.tvAddress);
