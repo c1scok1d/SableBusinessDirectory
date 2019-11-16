@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
 
-    Double latitude, longitude;
+    public static Double latitude, longitude;
 
     TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
@@ -78,12 +78,15 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-    ArrayList<String> category;
+    //ArrayList<String> category;
     ArrayList<WooModel> horizontalList;
+    List<String> spinnerArrayRad = new ArrayList<>();
+    List<String> category = new ArrayList<>();
 
 
     Button btnAdd;
-    Spinner spnRadius, spnCategory;
+    Spinner spnRadius = findViewById(R.id.spnRadius);
+    Spinner spnCategory = findViewById(R.id.spnCategory);
     SearchView searchView;
 
     private GoogleMap mMap;
@@ -140,17 +143,13 @@ public class MainActivity extends AppCompatActivity implements
 
 
         btnAdd = findViewById(R.id.btnAdd);
-        spnCategory = findViewById(R.id.spnCategory);
-        spnRadius = findViewById(R.id.spnRadius);
+        //spnCategory = findViewById(R.id.spnCategory);
+        //spnRadius = findViewById(R.id.spnRadius);
 
-        category = new ArrayList<>();
+        //category = new ArrayList<>();
 
         final TextView texty = findViewById(R.id.texty);
-
-        final Spinner spnRadius = findViewById(R.id.spnRadius);
-        List<String> spinnerArrayRad = new ArrayList<>();
-
-
+        //final Spinner spnRadius = findViewById(R.id.spnRadius);
         /**
          *  radius spinner
          */
@@ -160,13 +159,10 @@ public class MainActivity extends AppCompatActivity implements
         spinnerArrayRad.add("10");
         spinnerArrayRad.add("15");
         spinnerArrayRad.add("20");
-        // Create an ArrayAdapter using the string array and a default spinner layout
+
         ArrayAdapter<String> adapterRad = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArrayRad);
-        // Specify the layout to use when the list of choices appears
         adapterRad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spnRadius.setAdapter(adapterRad);
-        //Action to perform on functions - onItemSelected and onNothing selected
 
         spnRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -216,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("distance", "5");
                             //query.put("orderby",  "distance");
 
-                            getRetrofit(query);
+                            //getRetrofit(query);
 
                             texty.setText(radius);
                             break;
@@ -224,6 +220,26 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        category.add("Select Category"); //add heading to category spinner
+        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, category);
+        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnCategory.setAdapter(adapterCategory);
+
+        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Map<String, String> query = new HashMap<>();
+                query.put("category", spnCategory.getSelectedItem().toString());
+                getRetrofit(query);
             }
 
             @Override
@@ -304,8 +320,8 @@ public class MainActivity extends AppCompatActivity implements
         public void onLocationChanged(Location location) {
             Map<String, String> query = new HashMap<>();
 
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
             query.put("latitude", Double.toString(latitude));
             query.put("longitude", Double.toString(longitude));
             query.put("distance", "5");
@@ -517,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements
      */
 
     private static Retrofit retrofit = null;
-    public void getRetrofit(Map<String, String> query) {
+    public void getRetrofit(final Map<String, String> query) {
 
 
 
@@ -551,9 +567,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     // mListPost = response.body();
                     progressBar.setVisibility(View.GONE); //hide progressBar
-                    category.add("Select Category"); //add heading to category spinner
-
-
                     // loop through JSON response get parse and output to log
 
                     for (int i = 0; i < response.body().size(); i++) {
@@ -711,7 +724,9 @@ public class MainActivity extends AppCompatActivity implements
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
                             // display category array list in spinner
-                            spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
+                            //spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_s
+                            // pinner_dropdown_item, category));
+
                             Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
                         }
                         verticalAdapter.notifyDataSetChanged();

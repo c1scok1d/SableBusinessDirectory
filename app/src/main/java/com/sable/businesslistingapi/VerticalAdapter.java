@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,14 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
+
+import static com.sable.businesslistingapi.MainActivity.latitude;
+import static com.sable.businesslistingapi.MainActivity.longitude;
 
 public class VerticalAdapter extends RecyclerView.Adapter {
 
@@ -32,10 +38,12 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone, tvRating, tvRatingCount, tvLat, tvLng, tvBldNo, tvWebsite, tvEmail, tvTwitter, tvFacebook, tvFeatured;
+        TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone,
+                tvRating, tvRatingCount, tvLat, tvLng, tvBldNo, tvWebsite, tvEmail, tvTwitter,
+                tvFacebook, tvFeatured, tvDistance;
         ImageView image;
         RatingBar simpleRatingBar;
-        ImageButton btnCall, btnDirections, btnWebsite, btnEmail, btnTwitter, btnFacebook;
+        ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook;
 
         public ImageTypeViewHolder(final View itemView) {
             super(itemView);
@@ -67,6 +75,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.btnTwitter = itemView.findViewById(R.id.btnTwitter);
             this.btnFacebook = itemView.findViewById(R.id.btnFacebook);
             this.tvFeatured = itemView.findViewById(R.id.tvFeatured);
+            this.tvDistance = itemView.findViewById(R.id.tvDistance);
             // this.tvContent = itemView.findViewById(R.id.etBusDesc);
             //      this.tvPhone = itemView.findViewById(R.id.btnCall);
 
@@ -134,12 +143,20 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final ListingsModel object = dataset.get(position);
 
-        String latitude = Double.toString(object.latitude);
-
-        String longitude = Double.toString(object.longitude);
-
+        //String latitude = Double.toString(object.latitude);
+        //String longitude = Double.toString(object.longitude);
 
         Picasso.Builder builder = new Picasso.Builder(mContext);
+
+        Location locationA = new Location("point A");
+        locationA.setLatitude(object.latitude); //listing lat
+        locationA.setLongitude(object.longitude); //listing lng
+
+        Location locationB = new Location("point B");
+        locationB.setLatitude(latitude); //device lat
+        locationB.setLongitude(longitude); //device lng
+
+        double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
 
         ((ImageTypeViewHolder) holder).title.setText(object.post_title);
 //        ((ImageTypeViewHolder) holder).tvBldNo.setText(object.bldgno);
@@ -151,12 +168,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvisOpen.setText(object.isOpen);
         ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setRating(object.rating);
+        ((ImageTypeViewHolder) holder).tvDistance.setText(String.format( Locale.US, "%10.2f", distance));
 
 //        ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         ((ImageTypeViewHolder) holder).tvWebsite.setText(object.website);
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
-//        ((ImageTypeViewHolder) holder).tvLat.setText(latitude);
-//        ((ImageTypeViewHolder) holder).tvLng.setText(longitude);
+//        ((ImageTypeViewHolder) holder).tvLat.setText(object.latitude);
+//        ((ImageTypeViewHolder) holder).tvLng.setText(object.longitude);
 //        ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.rating));
         builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
