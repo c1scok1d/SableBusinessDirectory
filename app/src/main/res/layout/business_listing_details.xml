@@ -42,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -85,7 +86,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:gravity="center_horizontal" />
+                        android:gravity="center_horizontal"
+                        android:textAllCaps="true" />
 
                 </LinearLayout>
 
@@ -240,13 +242,14 @@
 
                             <TextView
                                 android:id="@+id/tvWebsite"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="5dp"
                                 android:clickable="false"
                                 android:text="http://www.companywebsite.com"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
 
                         </LinearLayout>
 
@@ -381,7 +384,8 @@
                     android:id="@+id/tvAboutUs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginBottom="3dp"
                     android:gravity="start"
                     android:lineSpacingExtra="2dp"
                     android:maxLines="3"
@@ -393,7 +397,9 @@
                     android:id="@+id/tvDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="3dp"
                     android:gravity="start"
                     android:lineSpacingExtra="2dp"
                     android:maxLines="3"

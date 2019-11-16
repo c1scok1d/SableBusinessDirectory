@@ -238,9 +238,12 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Map<String, String> query = new HashMap<>();
-                query.put("category", spnCategory.getSelectedItem().toString());
-                getRetrofit(query);
+                if (spnCategory.getSelectedItem() != "Select Category") {
+
+                    Map<String, String> query = new HashMap<>();
+                    query.put("category", spnCategory.getSelectedItem().toString());
+                    getRetrofit(query);
+                }
             }
 
             @Override
