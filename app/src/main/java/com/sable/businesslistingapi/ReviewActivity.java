@@ -197,9 +197,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationAdd.get(0).description);
         } else {
 
-            tvPost_title.setText(locationMatch.get(0).post_title);
-            tvPost_status.setText(locationMatch.get(0).post_status);
-            tvDefault_category.setText(locationMatch.get(0).default_category);
+            tvPost_title.setText(locationMatch.get(0).title);
+            tvPost_status.setText(locationMatch.get(0).status);
+            tvDefault_category.setText(locationMatch.get(0).category);
             builder.build().load(getIntent().getStringExtra(locationMatch.get(0).featured_image)).into(ivImage0);
             tvBldgno.setText(locationMatch.get(0).bldgno);
             tvStreet.setText(locationMatch.get(0).street);
@@ -545,10 +545,11 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postData(id,
+        Call<List<BusinessListings>> call = service.postData(/*id,*/
                 post_title,
                 default_category,
                 body,

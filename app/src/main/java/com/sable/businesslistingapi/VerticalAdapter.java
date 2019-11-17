@@ -158,7 +158,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
 
-        ((ImageTypeViewHolder) holder).title.setText(object.post_title);
+        ((ImageTypeViewHolder) holder).title.setText(object.title);
 //        ((ImageTypeViewHolder) holder).tvBldNo.setText(object.bldgno);
 //        ((ImageTypeViewHolder) holder).tvStreet.setText(object.street);
         ((ImageTypeViewHolder) holder).tvCity.setText(object.city);
@@ -176,7 +176,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 //        ((ImageTypeViewHolder) holder).tvLat.setText(object.latitude);
 //        ((ImageTypeViewHolder) holder).tvLng.setText(object.longitude);
 //        ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
-        ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.rating));
+        ((ImageTypeViewHolder) holder).simpleRatingBar.setNumStars(object.rating);
+        ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.ratingCount));
         builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
 //        ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
         // ((ImageTypeViewHolder) holder).image.setText(object.image);

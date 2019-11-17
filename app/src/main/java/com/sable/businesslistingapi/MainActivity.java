@@ -585,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("LocationMatch ", " id: " + response.body().get(i).getId());
                             Log.e("LocationMatch ", " post_title: " + response.body().get(i).getTitle().getRaw());
                             Log.e("LocationMatch", " post_status: " + response.body().get(i).getStatus());
-                            //Log.e("LocationMatch ", " post_tags: " + response.body().get(i).getPostTags().get(i));
+                            Log.e("LocationMatch ", " post_tags: " + response.body().get(i).getPostTags().get(i).toString());
                             Log.e("LocationMatch ", " default_category " + response.body().get(i).getDefaultCategory());
                             Log.e("LocationMatch ", " post_category" + response.body().get(i).getPostCategory());
                             Log.e("LocationMatch ", " featured: " + response.body().get(i).getFeatured());
@@ -616,10 +616,11 @@ public class MainActivity extends AppCompatActivity implements
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getLink(),
                                     response.body().get(i).getStatus(),
-                                  //  response.body().get(i).getPostTags().get(i),
-                                    response.body().get(i).getDefaultCategory(),
-                                    response.body().get(i).getPostCategory(),
+                                    //response.body().get(i).getPostTags(),
+                                    //response.body().get(i).getDefaultCategory(),
+                                    response.body().get(i).getPostCategory().get(0).getName(),
                                     response.body().get(i).getFeatured(),
                                     response.body().get(i).getFeaturedImage().getSrc(),
                                     response.body().get(i).getBldgNo(),
@@ -631,6 +632,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getLatitude(),
                                     response.body().get(i).getLongitude(),
                                     response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
                                     response.body().get(i).getPhone(),
                                     response.body().get(i).getEmail(),
                                     response.body().get(i).getWebsite(),
@@ -641,9 +643,8 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getCommentStatus(),
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage(),
-                                    response.body().get(i).getImages().get(0).getSrc(),
-                                    response.body().get(i).getImages().get(1).getSrc()));
+                                    response.body().get(i).getFeaturedImage()));
+
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             //Intent matchAnimation = new Intent(MainActivity.this, WPPostDetails.class);
@@ -685,21 +686,22 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " twitter: " + response.body().get(i).getTwitter());
                             Log.e("Location ", " facebook: " + response.body().get(i).getFacebook());
                             Log.e("Location ", " video: " + response.body().get(i).getVideo());
-                            Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                            Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            // Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRaw());
+                            Log.e("Location ", " IsOpen: " + response.body().get(i).getCommentStatus());
                             Log.e("Location ", " logo: " + response.body().get(i).getLogo());
                             Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("Location ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+//                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
 
                             verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getLink(),
                                     response.body().get(i).getStatus(),
-                                   // response.body().get(i).getPostTags().get(i),
-                                    response.body().get(i).getDefaultCategory(),
-                                    response.body().get(i).getPostCategory(),
+                                    //response.body().get(i).getPostTags(),
+                                    //response.body().get(i).getDefaultCategory(),
+                                    response.body().get(i).getPostCategory().get(0).getName(),
                                     response.body().get(i).getFeatured(),
                                     response.body().get(i).getFeaturedImage().getSrc(),
                                     response.body().get(i).getBldgNo(),
@@ -711,6 +713,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getLatitude(),
                                     response.body().get(i).getLongitude(),
                                     response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
                                     response.body().get(i).getPhone(),
                                     response.body().get(i).getEmail(),
                                     response.body().get(i).getWebsite(),
@@ -721,9 +724,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getCommentStatus(),
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage(),
-                                    response.body().get(i).getImages().get(0).getSrc(),
-                                    response.body().get(i).getImages().get(1).getSrc()));
+                                    response.body().get(i).getFeaturedImage()));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());

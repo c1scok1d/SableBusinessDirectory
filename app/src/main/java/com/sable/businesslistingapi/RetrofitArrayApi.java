@@ -51,34 +51,33 @@ public interface RetrofitArrayApi {
   //Call<List<BusinessListings>> getPostInfo(@Url String url);
 //
     @Multipart
-    @FormUrlEncoded
-    @POST("wp-json/geodir/v2/business/{id}")
+    @POST("wp-json/geodir/v2/business/")
     Call<List<BusinessListings>> postData(
-            @Path("id") String id,
-            @Field("post_title") String post_title,
+            //@Path("id") String id,
+            @Part("post_title") String post_title,
             //@Field("post_status") String post_status,
            // @Field("post_tags") String post_tags,
-            @Field("post_category") String category,
+            @Part("post_category") String category,
             //@Field("featured") String featured,
             @Part MultipartBody.Part featured_image,
-            @Field("bldgno") String bldgno,
-            @Field("street") String street,
-            @Field("city") String city,
-            @Field("region") String state,
-            @Field("country") String country,
-            @Field("zip") String zip,
-            @Field("latitude") Double latitude,
-            @Field("longitude") Double longitude,
-            @Field("ratings") Integer ratings,
-            @Field("phone") String phone,
-            @Field("email") String email,
-            @Field("website") String website,
-            @Field("twitter") String twitter,
-            @Field("facebook") String facebook,
+            @Part("bldgno") String bldgno,
+            @Part("street") String street,
+            @Part("city") String city,
+            @Part("region") String state,
+            @Part("country") String country,
+            @Part("zip") String zip,
+            @Part("latitude") Double latitude,
+            @Part("longitude") Double longitude,
+            @Part("ratings") Integer ratings,
+            @Part("phone") String phone,
+            @Part("email") String email,
+            @Part("website") String website,
+            @Part("twitter") String twitter,
+            @Part("facebook") String facebook,
            // @Field("video") File video,
-            @Field("business_hours") String hours,
+            @Part("business_hours") String hours,
             @Part MultipartBody.Part image,
             @Part MultipartBody.Part logo,
-            @Field("content")String content);
+            @Part("content")String content);
  }
 

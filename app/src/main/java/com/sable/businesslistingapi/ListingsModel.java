@@ -10,43 +10,66 @@ import java.util.List;
 
 public class ListingsModel implements Parcelable {
     public static final int IMAGE_TYPE = 1;
-    public String post_title, post_status, default_category, featured_image,
+    public String title, status, category, featured_image,
             bldgno, street, city, state, country, zip, phone, email, website, twitter, facebook, video,
-            hours, isOpen, content, image, logo, timestamp;
+            hours, isOpen, content, image, logo, timestamp, link;
     public boolean featured;
-    public int rating, id;
+    public int rating, id, ratingCount;
     public Double latitude, longitude;
     public Object post_tags;
     List post_category;
 
 
-    public ListingsModel(int imageType, Integer id, String title, String status, String defaultCategory,
-                         List<BusinessListings.PostCategory> postCategory, Boolean featured, String mfeaturedImage,
-                         String bldgNo, String street, String city, String region, String country, String zip,
-                         Double latitude, Double longitude, Integer rating, String phone, String email,
-                         String website, String twitter, String facebook, String video,
-                         BusinessListings.BusinessHours businessHours, String commentStatus,
-                         String logo, String content, BusinessListings.FeaturedImage featuredImage,
-                         String src1, String src2) {
+    public ListingsModel(int imageType,
+                         Integer id,
+                         String title,
+                         String link,
+                         String status,
+                         String category,
+                         Boolean featured,
+                         String featuredImage,
+                         String bldgNo,
+                         String street,
+                         String city,
+                         String state,
+                         String country,
+                         String zip,
+                         Double latitude,
+                         Double longitude,
+                         Integer rating,
+                         Integer ratingCount,
+                         String phone,
+                         String email,
+                         String website,
+                         String twitter,
+                         String facebook,
+                         String video,
+                         BusinessListings.BusinessHours businessHours,
+                         String commentStatus,
+                         String logo,
+                         String content,
+                         BusinessListings.FeaturedImage image){
 
         //this.mimageType= imageType;
         this.id = id;
-        this.post_title = title;
-        this.post_status = status;
+        this.title = title;
+        this.status = status;
+        this.link = link;
       //  this.post_tags = tags;
-        this.default_category = defaultCategory;
-        this.post_category = postCategory;
+        //this.default_category = defaultCategory;
+        this.category = category;
         this.featured = featured;
-        this.featured_image = mfeaturedImage;
+        this.featured_image = featuredImage;
         this.bldgno = bldgNo;
         this.street = street;
         this.city = city;
-        this.state = region;
+        this.state = state;
         this.country = country;
         this.zip = zip;
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = rating;
+        this.ratingCount = ratingCount;
         this.phone = phone;
         this.email = email;
         this.website = website;
@@ -67,10 +90,10 @@ public class ListingsModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags){
         //write all properties to the parcel
         dest.writeInt(id);
-        dest.writeString(post_title);
-        dest.writeString(post_status);
+        dest.writeString(title);
+        dest.writeString(status);
         //dest.writeParcelable(post_tags);
-        dest.writeString(default_category);
+        dest.writeString(category);
         //dest.writeString(post_category);
         //dest.writeBoolean(featured);
         dest.writeString(featured_image);
@@ -101,10 +124,10 @@ public class ListingsModel implements Parcelable {
     public ListingsModel(Parcel parcel){
         //read and set saved values from parcel
         id = parcel.readInt();
-        post_title = parcel.readString();
-        post_status = parcel.readString();
+        title = parcel.readString();
+        status = parcel.readString();
         post_tags = parcel.readString();
-        default_category = parcel.readString();
+        category = parcel.readString();
         //post_category = parcel.readString();
         //featured = parcel.readBoolean();
         featured_image = parcel.readString();
