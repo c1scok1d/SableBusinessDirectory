@@ -1,11 +1,13 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,9 +35,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.GsonBuilder;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,9 +52,11 @@ import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -179,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "10");
+                            query.put("order", "asc");
                             //query.put("orderby",  "distance");
 
                             getRetrofit(query);
@@ -190,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "15");
+                            query.put("order", "asc");
                             //query.put("orderby",  "distance");
 
                             getRetrofit(query);
@@ -201,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "20");
+                            query.put("order", "asc");
                             //query.put("orderby",  "distance");
 
                             getRetrofit(query);
@@ -211,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("latitude", Double.toString(longitude));
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "5");
+                            query.put("order", "asc");
                             //query.put("orderby",  "distance");
 
                             //getRetrofit(query);
@@ -280,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements
         searchView = findViewById(R.id.search);
 
         searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint("Search The Directory");
+        searchView.setQueryHint("Tap To Search");
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
@@ -290,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements
             Map<String, String> query = new HashMap<>();
 
             query.put("distance", "5");
+            query.put("order", "asc");
             //query.put("orderby",  "distance");
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
@@ -329,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements
             query.put("latitude", Double.toString(latitude));
             query.put("longitude", Double.toString(longitude));
             query.put("distance", "5");
+            query.put("order", "asc");
             //query.put("orderby",  "distance");
 
             // zoom to current location on map
@@ -377,17 +391,35 @@ public class MainActivity extends AppCompatActivity implements
 
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
-       // enableMyLocation();
+        enableMyLocation(); //permission check
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+        if (location != null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        setAddress(latitude, longitude);
     }
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
-    private void enableMyLocation() {
+    public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
@@ -540,7 +572,6 @@ public class MainActivity extends AppCompatActivity implements
     public void getRetrofit(final Map<String, String> query) {
 
 
-
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -551,7 +582,7 @@ public class MainActivity extends AppCompatActivity implements
         if(retrofit==null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().serializeNulls().create()))
                     .client(client)
                     .build();
         }
@@ -582,35 +613,37 @@ public class MainActivity extends AppCompatActivity implements
                          */
                         if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
 
-                            Log.e("LocationMatch ", " id: " + response.body().get(i).getId());
-                            Log.e("LocationMatch ", " post_title: " + response.body().get(i).getTitle().getRaw());
-                            Log.e("LocationMatch", " post_status: " + response.body().get(i).getStatus());
-                            Log.e("LocationMatch ", " post_tags: " + response.body().get(i).getPostTags().get(i).toString());
-                            Log.e("LocationMatch ", " default_category " + response.body().get(i).getDefaultCategory());
-                            Log.e("LocationMatch ", " post_category" + response.body().get(i).getPostCategory());
-                            Log.e("LocationMatch ", " featured: " + response.body().get(i).getFeatured());
-                            Log.e("LocationMatch ", " featured_image " + response.body().get(i).getFeaturedImage().getSrc());
-                            Log.e("LocationMatch ", " bldgno: " +response.body().get(i).getBldgNo());
+                            Log.e("LocationMatch ", " ID: " + response.body().get(i).getId());
+                            Log.e("LocationMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
+                            Log.e("LocationMatch ", " Link: " + response.body().get(i).getLink());
+                            Log.e("LocationMatch ", " Status: " + response.body().get(i).getStatus());
+                            Log.e("LocationMatch ", " Category " + response.body().get(i).getPostCategory().get(0).getName());
+                            Log.e("LocationMatch ", " Featured: " + response.body().get(i).getFeatured());
+                            Log.e("LocationMatch ", " Featured Image: " + response.body().get(i).getFeaturedImage().getSrc());
+                            Log.e("LocationMatch ", " BldgNo: " + response.body().get(i).getBldgNo());
                             Log.e("LocationMatch ", " Street: " + response.body().get(i).getStreet());
                             Log.e("LocationMatch ", " City: " + response.body().get(i).getCity());
                             Log.e("LocationMatch ", " State: " + response.body().get(i).getRegion());
                             Log.e("LocationMatch ", " Country: " + response.body().get(i).getCountry());
                             Log.e("LocationMatch ", " Zip: " + response.body().get(i).getZip());
-                            Log.e("LocationMatch ", " Latitude: " +response.body().get(i).getLatitude());
+                            Log.e("LocationMatch ", " Latitude: " + response.body().get(i).getLatitude());
                             Log.e("LocationMatch ", " Longitude: " + response.body().get(i).getLongitude());
-                            Log.e("LocationMatch ", " RatingBar: " + response.body().get(i).getRating());
+                            Log.e("LocationMatch ", " Rating: " + response.body().get(i).getRating());
+                            Log.e("LocationMatch ", " Rating Count: " + response.body().get(i).getRatingCount());
                             Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
                             Log.e("LocationMatch ", " Email: " + response.body().get(i).getEmail());
-                            Log.e("LocationMatch ", " webstie: " + response.body().get(i).getWebsite());
-                            Log.e("LocationMatch ", " twitter: " + response.body().get(i).getTwitter());
-                            Log.e("LocationMatch ", " facebook: " + response.body().get(i).getFacebook());
-                            Log.e("LocationMatch ", " video: " + response.body().get(i).getVideo());
-                            Log.e("LocationMatch ", " Hours: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                            Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                            Log.e("LocationMatch ", " logo: " + response.body().get(i).getLogo());
+                            Log.e("LocationMatch ", " Website: " + response.body().get(i).getWebsite());
+                            Log.e("LocationMatch ", " Twitter: " + response.body().get(i).getTwitter());
+                            Log.e("LocationMatch ", " Facebook: " + response.body().get(i).getFacebook());
+                            Log.e("LocationMatch ", " Video: " + response.body().get(i).getVideo());
+                            if (response.body().get(i).getBusinessHours() != null){
+                                Log.e("LocationMatch ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                                Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            }
+                            Log.e("LocationMatch ", " Logo: " + response.body().get(i).getLogo());
                             Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
-                            Log.e("LocationMatch ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
-                            Log.e("LocationMatch ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+                            Log.e("LocationMatch ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
+//                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -618,8 +651,6 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getTitle().getRaw(),
                                     response.body().get(i).getLink(),
                                     response.body().get(i).getStatus(),
-                                    //response.body().get(i).getPostTags(),
-                                    //response.body().get(i).getDefaultCategory(),
                                     response.body().get(i).getPostCategory().get(0).getName(),
                                     response.body().get(i).getFeatured(),
                                     response.body().get(i).getFeaturedImage().getSrc(),
@@ -639,11 +670,12 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getTwitter(),
                                     response.body().get(i).getFacebook(),
                                     response.body().get(i).getVideo(),
-                                    response.body().get(i).getBusinessHours(),
-                                    response.body().get(i).getCommentStatus(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage()));
+                                    response.body().get(i).getFeaturedImage().getSrc()));
+
 
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
@@ -663,15 +695,14 @@ public class MainActivity extends AppCompatActivity implements
                              * if no location match continue to pars JSON data
                              */
 
-                            Log.e("Location ", " id: " + response.body().get(i).getId());
-                            Log.e("Location ", " post_title: " + response.body().get(i).getTitle().getRaw());
-                            Log.e("Location ", " post_status: " + response.body().get(i).getStatus());
-//                            Log.e("Location ", " post_tags: " + response.body().get(i).getPostTags().get(i));
-                            Log.e("Location ", " default_category " + response.body().get(i).getDefaultCategory());
-                            Log.e("Location ", " post_category" + response.body().get(i).getPostCategory());
-                            Log.e("Location ", " featured: " + response.body().get(i).getFeatured());
-                            Log.e("Location ", " featured_image " + response.body().get(i).getFeaturedImage());
-                            Log.e("Location ", " bldgno: " +response.body().get(i).getBldgNo());
+                            Log.e("Location ", " ID: " + response.body().get(i).getId());
+                            Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
+                            Log.e("Location ", " Link: " + response.body().get(i).getLink());
+                            Log.e("Location ", " Status: " + response.body().get(i).getStatus());
+                            Log.e("Location ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
+                            Log.e("Location ", " Featured: " + response.body().get(i).getFeatured());
+                            Log.e("Location ", " Featured Image: " + response.body().get(i).getFeaturedImage().getSrc());
+                            Log.e("Location ", " BldgNo: " +response.body().get(i).getBldgNo());
                             Log.e("Location ", " Street: " + response.body().get(i).getStreet());
                             Log.e("Location ", " City: " + response.body().get(i).getCity());
                             Log.e("Location ", " State: " + response.body().get(i).getRegion());
@@ -679,18 +710,21 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " Zip: " + response.body().get(i).getZip());
                             Log.e("Location ", " Latitude: " +response.body().get(i).getLatitude());
                             Log.e("Location ", " Longitude: " + response.body().get(i).getLongitude());
-                            Log.e("Location ", " RatingBar: " + response.body().get(i).getRating());
+                            Log.e("Location ", " Rating: " + response.body().get(i).getRating());
+                            Log.e("Location ", " Rating Count: " + response.body().get(i).getRatingCount());
                             Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
                             Log.e("Location ", " Email: " + response.body().get(i).getEmail());
                             Log.e("Location ", " Website: " + response.body().get(i).getWebsite());
-                            Log.e("Location ", " twitter: " + response.body().get(i).getTwitter());
-                            Log.e("Location ", " facebook: " + response.body().get(i).getFacebook());
-                            Log.e("Location ", " video: " + response.body().get(i).getVideo());
-                            // Log.e("Location ", " Hours: " + response.body().get(i).getBusinessHours().getRaw());
-                            Log.e("Location ", " IsOpen: " + response.body().get(i).getCommentStatus());
-                            Log.e("Location ", " logo: " + response.body().get(i).getLogo());
+                            Log.e("Location ", " Twitter: " + response.body().get(i).getTwitter());
+                            Log.e("Location ", " Facebook: " + response.body().get(i).getFacebook());
+                            Log.e("Location ", " Video: " + response.body().get(i).getVideo());
+                            if (response.body().get(i).getBusinessHours() != null) {
+                                Log.e("Location ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                                Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            }
+                            Log.e("Location ", " Logo: " + response.body().get(i).getLogo());
                             Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
-                            Log.e("Location ", " Image: " + response.body().get(i).getImages().get(0).getThumbnail());
+                            Log.e("Location ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
 //                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
 
 
@@ -699,8 +733,6 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getTitle().getRaw(),
                                     response.body().get(i).getLink(),
                                     response.body().get(i).getStatus(),
-                                    //response.body().get(i).getPostTags(),
-                                    //response.body().get(i).getDefaultCategory(),
                                     response.body().get(i).getPostCategory().get(0).getName(),
                                     response.body().get(i).getFeatured(),
                                     response.body().get(i).getFeaturedImage().getSrc(),
@@ -720,11 +752,11 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getTwitter(),
                                     response.body().get(i).getFacebook(),
                                     response.body().get(i).getVideo(),
-                                    response.body().get(i).getBusinessHours(),
-                                    response.body().get(i).getCommentStatus(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
+                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage()));
+                                    response.body().get(i).getFeaturedImage().getSrc()));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());

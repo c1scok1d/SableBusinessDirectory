@@ -55,11 +55,11 @@ public interface RetrofitArrayApi {
     Call<List<BusinessListings>> postData(
             //@Path("id") String id,
             @Part("post_title") String post_title,
-            //@Field("post_status") String post_status,
+            @Part("post_status") String post_status,
            // @Field("post_tags") String post_tags,
-            @Part("post_category") String category,
+            @Part("default_category") String category,
             //@Field("featured") String featured,
-            @Part MultipartBody.Part featured_image,
+            @Part("content")String content,
             @Part("bldgno") String bldgno,
             @Part("street") String street,
             @Part("city") String city,
@@ -75,9 +75,9 @@ public interface RetrofitArrayApi {
             @Part("twitter") String twitter,
             @Part("facebook") String facebook,
            // @Field("video") File video,
-            @Part("business_hours") String hours,
+            //@Part("business_hours") String hours,
             @Part MultipartBody.Part image,
             @Part MultipartBody.Part logo,
-            @Part("content")String content);
+            @Part MultipartBody.Part featured_image);
  }
 

@@ -159,11 +159,11 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
 
         ((ImageTypeViewHolder) holder).title.setText(object.title);
-//        ((ImageTypeViewHolder) holder).tvBldNo.setText(object.bldgno);
+        ((ImageTypeViewHolder) holder).tvHours.setText(object.hours);
 //        ((ImageTypeViewHolder) holder).tvStreet.setText(object.street);
         ((ImageTypeViewHolder) holder).tvCity.setText(object.city);
         ((ImageTypeViewHolder) holder).tvRegion.setText(object.state);
-        ((ImageTypeViewHolder) holder).tvZip.setText(object.zip);
+        ((ImageTypeViewHolder) holder).tvZip.setText(object.zipcode);
 //        ((ImageTypeViewHolder) holder).tvHours.setText(object.hours);
         ((ImageTypeViewHolder) holder).tvisOpen.setText(object.isOpen);
         ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
@@ -199,10 +199,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 //        } else {
 //            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         }
-        if (dataset.get(0).featured){
+        if (dataset.get(0).featured.equals("true")){
             String featured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(featured);
-            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(237, 189, 3));
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 255));
 
 //        } else {
 //            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);

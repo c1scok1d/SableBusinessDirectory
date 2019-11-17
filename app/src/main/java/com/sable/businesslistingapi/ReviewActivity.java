@@ -37,7 +37,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Credentials;
@@ -72,7 +74,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     ImageView ivImage0, ivImage1, ivImage02;
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
-    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, Document_img1 = "";
+    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
     private static final int GALLERY_REQUEST_CODE = 2;
     private static final int CAMERA_REQUEST_CODE = 1;
     File image00, image01, image02;
@@ -81,6 +83,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<>();
     private ArrayList<String> permissions = new ArrayList<>();
+    private ArrayList<ListingsModel> submitListing;
 
     private final static int ALL_PERMISSIONS_RESULT = 107;
     private final static int IMAGE_RESULT = 200;
@@ -90,6 +93,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+
+        submitListing = new ArrayList<>();
 
         permissions.add(CAMERA);
         permissions.add(WRITE_EXTERNAL_STORAGE);
@@ -111,7 +116,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         mFeedback = findViewById(R.id.etFeedback);
         mSendFeedback = findViewById(R.id.btnSubmit);
         simpleRatingBar = findViewById(R.id.simpleRatingBar);
-        tvPost_title = findViewById(R.id.tvName);
+        //tvPost_title = findViewById(R.id.tvName);
         tvBldgno = findViewById(R.id.tvBldgNo);
         tvState = findViewById(R.id.tvState);
         tvStreet = findViewById(R.id.tvStreet);
@@ -180,8 +185,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         if (locationMatch == null) {
 
             tvName.setText(locationAdd.get(0).name);
-            //tvStatus.setText(locationAdd.get(0).post_status);
-            //tvTags.setText(locationAdd.get(0).post_tags);
             tvPostCategory.setText(locationAdd.get(0).category);
             tvBldgno.setText(locationAdd.get(0).bldgNo);
             tvStreet.setText(locationAdd.get(0).street);
@@ -197,18 +200,16 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationAdd.get(0).description);
         } else {
 
-            tvPost_title.setText(locationMatch.get(0).title);
-            tvPost_status.setText(locationMatch.get(0).status);
-            tvDefault_category.setText(locationMatch.get(0).category);
+            tvName.setText(locationMatch.get(0).title);
+            //tvPost_status.setText(locationMatch.get(0).status);
+            tvPostCategory.setText(locationMatch.get(0).category);
             builder.build().load(getIntent().getStringExtra(locationMatch.get(0).featured_image)).into(ivImage0);
             tvBldgno.setText(locationMatch.get(0).bldgno);
             tvStreet.setText(locationMatch.get(0).street);
             tvCity.setText(locationMatch.get(0).city);
             tvState.setText(locationMatch.get(0).state);
             tvCountry.setText(locationMatch.get(0).country);
-            tvZip.setText(locationMatch.get(0).zip);
-            tvLatitude.setText(locationMatch.get(0).latitude.toString());
-            tvLongitude.setText(locationMatch.get(0).longitude.toString());
+            tvZip.setText(locationMatch.get(0).zipcode);
             tvRating.setText(locationMatch.get(0).rating);
             tvPhone.setText(locationMatch.get(0).phone);
             tvEmail.setText(locationMatch.get(0).email);
@@ -218,10 +219,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvVideo.setText(locationMatch.get(0).video);
             tvHours.setText(locationMatch.get(0).hours);
             tvIsOpen.setText(locationMatch.get(0).isOpen);
-            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).logo)).into(ivImage1);
             tvContent.setText(locationMatch.get(0).content);
-            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).image)).into(ivImage02);
-            tvTimestamp.setText(locationMatch.get(0).timestamp);
         }
 
         mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -282,7 +280,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
         Intent mainIntent = allIntents.get(allIntents.size() - 1);
         for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.sable.businesslistingapi")) {
+            if (intent.getComponent().getClassName().equals("com.sable.businesslistingapi.fileprovider")) {
                 mainIntent = intent;
                 break;
             }
@@ -299,7 +297,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         Uri outputFileUri = null;
         File getImage = getExternalFilesDir("");
         if (getImage != null) {
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "profile.png"));
+            String filename = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
+            //outputFileUri = Uri.fromFile(new File(getImage.getPath(), new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ'.png'").format(new Date())));
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), filename +".png"));
         }
         return outputFileUri;
     }
@@ -353,8 +353,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                                 RequestBody.create(MediaType.parse("multipart/form-data"), image);
 
 // MultipartBody.Part is used to send also the actual file name
-                        MultipartBody.Part body =
-                                MultipartBody.Part.createFormData("image", image.getName(), requestFile);
+                        body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
 
 // add another part within the multipart request
                         RequestBody fullName =
@@ -503,8 +502,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         String content = tvContent.getText().toString();
         String phone = tvPhone.getText().toString();
         String bldgno = tvBldgno.getText().toString();
-//        String latitude = tvLatitude.getText().toString();
-//        String longitude = tvLongitude.getText().toString();
+        Double latitude = MainActivity.latitude;
+        Double longitude = MainActivity.longitude;
         Integer rating = mRatingBar.getNumStars();
 
 
@@ -551,26 +550,27 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         Call<List<BusinessListings>> call = service.postData(/*id,*/
                 post_title,
+                status,
                 default_category,
-                body,
+                content,
                 bldgno,
                 street,
                 city,
                 state,
-                zip,
                 country,
-                MainActivity.latitude,
-                MainActivity.longitude,
+                zip,
+                latitude,
+                longitude,
                 rating,
                 phone,
-                website,
                 email,
+                website,
                 twitter,
                 facebook,
-                hours,
+                /*hours,*/
                 body,
                 body,
-                content);
+                body);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
@@ -578,7 +578,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 Log.e("add_listing", " response " + response.body());
 
-  //              progressBar.setVisibility(View.GONE); //hide progressBar
+//                progressBar.setVisibility(View.GONE); //hide progressBar
                 if(response.isSuccessful()){
                     Toast.makeText(getApplicationContext(),
                             "Post Updated Title: "+response.body().get(0).getTitle()+
@@ -589,7 +589,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-//                progressBar.setVisibility(View.GONE); //hide progressBar
+                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

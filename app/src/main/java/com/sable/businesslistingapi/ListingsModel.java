@@ -11,10 +11,10 @@ import java.util.List;
 public class ListingsModel implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image,
-            bldgno, street, city, state, country, zip, phone, email, website, twitter, facebook, video,
-            hours, isOpen, content, image, logo, timestamp, link;
-    public boolean featured;
-    public int rating, id, ratingCount;
+            bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
+            hours, isOpen, content, image, logo, timestamp, link, featured, ratingCount;
+    //public boolean featured;
+    public int rating, id;
     public Double latitude, longitude;
     public Object post_tags;
     List post_category;
@@ -33,7 +33,7 @@ public class ListingsModel implements Parcelable {
                          String city,
                          String state,
                          String country,
-                         String zip,
+                         String zipcode,
                          Double latitude,
                          Double longitude,
                          Integer rating,
@@ -44,43 +44,40 @@ public class ListingsModel implements Parcelable {
                          String twitter,
                          String facebook,
                          String video,
-                         BusinessListings.BusinessHours businessHours,
+                         String businessHours,
                          String commentStatus,
                          String logo,
                          String content,
-                         BusinessListings.FeaturedImage image){
+                         String image){
 
-        //this.mimageType= imageType;
         this.id = id;
         this.title = title;
-        this.status = status;
         this.link = link;
-      //  this.post_tags = tags;
-        //this.default_category = defaultCategory;
+        this.status = status;
         this.category = category;
-        this.featured = featured;
+        this.featured = featured.toString();
         this.featured_image = featuredImage;
         this.bldgno = bldgNo;
         this.street = street;
         this.city = city;
         this.state = state;
         this.country = country;
-        this.zip = zip;
+        this.zipcode = zipcode;
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = rating;
-        this.ratingCount = ratingCount;
+        this.ratingCount = ratingCount.toString();
         this.phone = phone;
         this.email = email;
         this.website = website;
         this.twitter = twitter;
         this.facebook = facebook;
         this.video = video;
-       // this.hours = businessHours;
+        this.hours = businessHours;
         this.isOpen = commentStatus;
         this.logo = logo;
         this.content = content;
-      //  this.image = mImage;
+        this.image = image;
    }
 
 
@@ -91,21 +88,21 @@ public class ListingsModel implements Parcelable {
         //write all properties to the parcel
         dest.writeInt(id);
         dest.writeString(title);
+        dest.writeString(link);
         dest.writeString(status);
-        //dest.writeParcelable(post_tags);
         dest.writeString(category);
-        //dest.writeString(post_category);
-        //dest.writeBoolean(featured);
+        dest.writeString(featured);
         dest.writeString(featured_image);
         dest.writeString(bldgno);
         dest.writeString(street);
         dest.writeString(city);
         dest.writeString(state);
         dest.writeString(country);
-        dest.writeString(zip);
+        dest.writeString(zipcode);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeInt(rating);
+        dest.writeString(ratingCount);
         dest.writeString(phone);
         dest.writeString(email);
         dest.writeString(website);
@@ -125,21 +122,21 @@ public class ListingsModel implements Parcelable {
         //read and set saved values from parcel
         id = parcel.readInt();
         title = parcel.readString();
+        link = parcel.readString();
         status = parcel.readString();
-        post_tags = parcel.readString();
         category = parcel.readString();
-        //post_category = parcel.readString();
-        //featured = parcel.readBoolean();
+        featured = parcel.readString();
         featured_image = parcel.readString();
         bldgno = parcel.readString();
         street = parcel.readString();
         city = parcel.readString();
         state = parcel.readString();
         country = parcel.readString();
-        zip = parcel.readString();
+        zipcode = parcel.readString();
         latitude = parcel.readDouble();
         longitude = parcel.readDouble();
         rating = parcel.readInt();
+        ratingCount = parcel.readString();
         phone = parcel.readString();
         email = parcel.readString();
         website = parcel.readString();

@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,8 +34,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -46,19 +50,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  *
  */
-public class AddListingActivity extends AppCompatActivity
-        implements
+public class AddListingActivity extends AppCompatActivity implements
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
-
-    /**
-     * Request code for location permission request.
-     *
-     * @see #onRequestPermissionsResult(int, String[], int[])
-     */
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    /*private static final int MY_CAMERA_PERMISSION_CODE = 1;
-    private static final int CAMERA_REQUEST = 1;*/
 
 
     /**
@@ -69,12 +65,8 @@ public class AddListingActivity extends AppCompatActivity
 
     private GoogleMap mMap;
 
-    // private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    // private long FASTEST_INTERVAL = 2000; /* 2 sec */
-    // private LocationManager locationManager;
 
-
-    String address, state, country, zipcode, city, street, img1, img2, img3, bldgNo;
+    String address, state, country, zipcode, city, street, bldgNo;
 
     private Double latitude = 0.00;
     private Double longitude = 0.00;
@@ -95,6 +87,7 @@ public class AddListingActivity extends AppCompatActivity
     /**
      * @param savedInstanceState
      */
+    @SuppressLint("MissingPermission")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_listing);
@@ -158,9 +151,6 @@ public class AddListingActivity extends AppCompatActivity
                             city,
                             bldgNo,
                             street,
-                            img1,
-                            img2,
-                            img3,
                             phone,
                             email,
                             website,
@@ -175,7 +165,56 @@ public class AddListingActivity extends AppCompatActivity
                 }
             }
         });
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        enableMyLocation();
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
+                400, LocationListener);
     }
+
+    android.location.LocationListener LocationListener = new LocationListener() {
+
+        /**
+         * @param location
+         */
+        @Override
+        public void onLocationChanged(Location location) {
+
+            // zoom to current location on map
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            setAddress(latitude, longitude);  // method to reverse geocode to physical address
+        }
+
+        /**
+         * @param provider
+         * @param status
+         * @param extras
+         */
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+        /**
+         * @param provider
+         */
+        @Override
+        public void onProviderEnabled(String provider) {}
+
+        /**
+         * @param provider
+         */
+        @Override
+        public void onProviderDisabled(String provider) {}
+
+    };
 
 
 
@@ -185,15 +224,13 @@ public class AddListingActivity extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
-        enableMyLocation();
+        map.setOnMyLocationButtonClickListener(this);
+        map.setOnMyLocationClickListener(this);
+        enableMyLocation(); //permission check
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            enableMyLocation();
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
         if (location != null) {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
@@ -214,12 +251,11 @@ public class AddListingActivity extends AppCompatActivity
      *
      * Enables the My Location layer if the fine location permission has been granted.
      */
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+    public void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
@@ -227,17 +263,36 @@ public class AddListingActivity extends AppCompatActivity
     }
 
     /**
-     *
-     * Display user current location on map
      * @return
      */
-
+    @Override
     public boolean onMyLocationButtonClick() {
-        setAddress(latitude, longitude);
-        Toast.makeText(this, "Retrieving Current Location", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Getting current location...", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
+    }
+
+    /**
+     * @param location
+     */
+    @Override
+    public void onMyLocationClick(Location location) {
+        //get location address
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
+
+        // zoom to current location on map
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                .zoom(17)                   // Sets the zoom
+                .bearing(90)                // Sets the orientation of the camera to east
+                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        setAddress(latitude, longitude);
     }
 
     /**
@@ -366,6 +421,7 @@ public class AddListingActivity extends AppCompatActivity
                     //parse response based on ListingsModel class and add to list array ( get category name, description and image)
                     // add category name from array to spinner
                     category.add(response.body().get(i).getName());
+                    category.add(response.body().get(i).getId().toString());
                     // display category array list in spinner
                     spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
                     Log.e("main ", " Category: " + response.body().get(i).getName());

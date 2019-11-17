@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,7 +39,8 @@
     <LinearLayout
         android:id="@+id/btnLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="3dp"
         android:layout_marginRight="5dp"
@@ -50,17 +50,16 @@
         <Spinner
             android:id="@+id/spnRadius"
             style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:spinnerMode="dialog"
-            android:textAlignment="gravity"
             android:textSize="12sp" />
 
         <Button
             android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0"
@@ -71,8 +70,10 @@
         <Button
             android:id="@+id/btnShop"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
             android:background="@drawable/ovalbackground"
+            android:gravity="center_horizontal|center_vertical"
             android:text="@string/shop"
             android:textSize="12sp" />
     </LinearLayout>
@@ -102,12 +103,14 @@
         <Spinner
             android:id="@+id/spnCategory"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="0" />
 
         <SearchView
             android:id="@+id/search"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:iconifiedByDefault="true"
             android:queryBackground="@android:color/transparent"
