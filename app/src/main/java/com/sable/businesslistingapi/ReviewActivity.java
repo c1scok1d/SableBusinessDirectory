@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,11 +32,27 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Credentials;
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -57,7 +75,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, Document_img1 = "";
     private static final int GALLERY_REQUEST_CODE = 2;
     private static final int CAMERA_REQUEST_CODE = 1;
-    Uri imageUri00, imageUri01, imageUri02;
+    File image00, image01, image02;
     Uri picUri;
 
     private ArrayList<String> permissionsToRequest;
@@ -206,6 +224,12 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvTimestamp.setText(locationMatch.get(0).timestamp);
         }
 
+        mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+            }
+        });
+
         mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,7 +240,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     mFeedback.setText("");
                     mRatingBar.setRating(0);
                     Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
-                    // submitData();
+                    submitData();
                 }
             }
         });
@@ -279,6 +303,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         }
         return outputFileUri;
     }
+    File image;
+    MultipartBody.Part body;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -286,15 +312,17 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         if (resultCode == Activity.RESULT_OK) {
             //ImageView imageView = findViewById(R.id.imageView);
             LinearLayout linearLayout = findViewById(R.id.imagesLayout);
-            for (int i = 0; i < 6; i++) {
-                ImageView imageView = new ImageView(ReviewActivity.this);
+                //ImageView imageView = new ImageView(ReviewActivity.this);
+                ImageView ii = new ImageView(ReviewActivity.this);
+
                 int dimens = 45;
                 float density = getResources().getDisplayMetrics().density;
                 int finalDimens = (int) (dimens * density);
 
 
                 // SET SCALETYPE
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                ii.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                 // SET THE MARGIN
                 int dimensMargin = 4;
@@ -302,7 +330,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 int finalDimensMargin = (int) (dimensMargin * densityMargin);
 
                 LinearLayout.LayoutParams imgvwDimens = new LinearLayout.LayoutParams(finalDimens, finalDimens);
-                imageView.setLayoutParams(imgvwDimens);
+                //imageView.setLayoutParams(imgvwDimens);
+                ii.setLayoutParams(imgvwDimens);
 
                 if (requestCode == IMAGE_RESULT) {
                     String filePath = getImageFilePath(data);
@@ -313,14 +342,26 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                         LinearLayout.LayoutParams imgvwMargin = new LinearLayout.LayoutParams(finalDimens, finalDimens);
                         imgvwMargin.setMargins(finalDimensMargin, finalDimensMargin, finalDimensMargin, finalDimensMargin);
 
-                        // SET YOUR IMAGER SOURCE TO YOUR NEW IMAGEVIEW HERE
-                        // FORMAT AND ADD THE NEW IMAGEVIEW WITH TO THE linearLayout
-                        imageView.setLayoutParams(imgvwMargin);
-                        imageView.setImageBitmap(selectedImage);
-                        linearLayout.addView(imageView);
+                        ii.setLayoutParams(imgvwDimens);
+                        ii.setImageBitmap(selectedImage);
+                        linearLayout.addView(ii);
+                        //File image00 = new File(filePath);
+
+                        //pass it like this
+                        image = new File(filePath);
+                        RequestBody requestFile =
+                                RequestBody.create(MediaType.parse("multipart/form-data"), image);
+
+// MultipartBody.Part is used to send also the actual file name
+                        MultipartBody.Part body =
+                                MultipartBody.Part.createFormData("image", image.getName(), requestFile);
+
+// add another part within the multipart request
+                        RequestBody fullName =
+                                RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
                     }
                 }
-            }
+
         }
     }
 
@@ -441,39 +482,38 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
      *
      */
 
-  /*  private void submitData(){
+   private void submitData(){
 
-        String post_title = tvPost_title.getText().toString();
-        String post_status = tvPost_status.getText().toString();
-        String default_category = tvDefault_category.getText().toString();
+        String post_title = tvName.getText().toString();
+       // String post_status = tvPost_status.getText().toString();
+        String default_category = tvPostCategory.getText().toString();
         String state = tvState.getText().toString();
         String street = tvStreet.getText().toString();
         String city = tvCity.getText().toString();
         String zip = tvZip.getText().toString();
         String country = tvCity.getText().toString();
-        String rating = tvRating.getText().toString();
+       // String rating = mRatingBar;
         String email = tvEmail.getText().toString();
         String website = tvWebsite.getText().toString();
         String twitter = tvTwitter.getText().toString();
         String facebook = tvFacebook.getText().toString();
-        String video = tvVideo.getText().toString();
+        //String video = tvVideo.getText().toString();
         String hours = tvHours.getText().toString();
         //String isOpen = tvIsOpen.getText().toString();
         String content = tvContent.getText().toString();
         String phone = tvPhone.getText().toString();
         String bldgno = tvBldgno.getText().toString();
-        String latitude = tvLatitude.getText().toString();
-        String longitude = tvLongitude.getText().toString();
-        File image00 = getCaptureImageOutputUri();
-        File image01 = getImageFilePath(data);
-        File image02 = getImageFilePath();*/
+//        String latitude = tvLatitude.getText().toString();
+//        String longitude = tvLongitude.getText().toString();
+        Integer rating = mRatingBar.getNumStars();
+
 
       /* try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
             String submit_ip = s.toString();
             // System.out.println("My current IP address is " + s.next());
         } catch (java.io.IOException e) {
             e.printStackTrace();
-        }
+        } */
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -508,10 +548,28 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-       /* Call<List<BusinessListings>> call = service.postData(id, post_title, post_status,
-                default_category, image00, bldgno, street, city, state, zip, country, latitude, longitude, rating,
-                phone, website, email, twitter, facebook, hours, image01,
-                image02, content);
+        Call<List<BusinessListings>> call = service.postData(id,
+                post_title,
+                default_category,
+                body,
+                bldgno,
+                street,
+                city,
+                state,
+                zip,
+                country,
+                MainActivity.latitude,
+                MainActivity.longitude,
+                rating,
+                phone,
+                website,
+                email,
+                twitter,
+                facebook,
+                hours,
+                body,
+                body,
+                content);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
@@ -535,5 +593,5 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             }
         });
 
-    }*/
+    }
 }
