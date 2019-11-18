@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -31,6 +32,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
@@ -167,8 +170,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         btnPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(selectImage(), IMAGE_RESULT);
-            }
+            startActivityForResult(selectImage(), IMAGE_RESULT);            }
         });
 
         /**
@@ -201,7 +203,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         } else {
 
             tvName.setText(locationMatch.get(0).title);
-            //tvPost_status.setText(locationMatch.get(0).status);
             tvPostCategory.setText(locationMatch.get(0).category);
             builder.build().load(getIntent().getStringExtra(locationMatch.get(0).featured_image)).into(ivImage0);
             tvBldgno.setText(locationMatch.get(0).bldgno);
@@ -312,54 +313,54 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         if (resultCode == Activity.RESULT_OK) {
             //ImageView imageView = findViewById(R.id.imageView);
             LinearLayout linearLayout = findViewById(R.id.imagesLayout);
-                //ImageView imageView = new ImageView(ReviewActivity.this);
-                ImageView ii = new ImageView(ReviewActivity.this);
+            //ImageView imageView = new ImageView(ReviewActivity.this);
+            ImageView ii = new ImageView(ReviewActivity.this);
 
-                int dimens = 45;
-                float density = getResources().getDisplayMetrics().density;
-                int finalDimens = (int) (dimens * density);
+            int dimens = 45;
+            float density = getResources().getDisplayMetrics().density;
+            int finalDimens = (int) (dimens * density);
 
 
-                // SET SCALETYPE
-                //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ii.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            // SET SCALETYPE
+            //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ii.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                // SET THE MARGIN
-                int dimensMargin = 4;
-                float densityMargin = getResources().getDisplayMetrics().density;
-                int finalDimensMargin = (int) (dimensMargin * densityMargin);
+            // SET THE MARGIN
+            int dimensMargin = 4;
+            float densityMargin = getResources().getDisplayMetrics().density;
+            int finalDimensMargin = (int) (dimensMargin * densityMargin);
 
-                LinearLayout.LayoutParams imgvwDimens = new LinearLayout.LayoutParams(finalDimens, finalDimens);
-                //imageView.setLayoutParams(imgvwDimens);
-                ii.setLayoutParams(imgvwDimens);
+            LinearLayout.LayoutParams imgvwDimens = new LinearLayout.LayoutParams(finalDimens, finalDimens);
+            //imageView.setLayoutParams(imgvwDimens);
+            ii.setLayoutParams(imgvwDimens);
 
-                if (requestCode == IMAGE_RESULT) {
-                    String filePath = getImageFilePath(data);
-                    if (filePath != null) {
-                        Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
-                        // SET THE IMAGEVIEW DIMENSIONS
+            if (requestCode == IMAGE_RESULT) {
+                String filePath = getImageFilePath(data);
+                if (filePath != null) {
+                    Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
+                    // SET THE IMAGEVIEW DIMENSIONS
 
-                        LinearLayout.LayoutParams imgvwMargin = new LinearLayout.LayoutParams(finalDimens, finalDimens);
-                        imgvwMargin.setMargins(finalDimensMargin, finalDimensMargin, finalDimensMargin, finalDimensMargin);
+                    LinearLayout.LayoutParams imgvwMargin = new LinearLayout.LayoutParams(finalDimens, finalDimens);
+                    imgvwMargin.setMargins(finalDimensMargin, finalDimensMargin, finalDimensMargin, finalDimensMargin);
 
-                        ii.setLayoutParams(imgvwDimens);
-                        ii.setImageBitmap(selectedImage);
-                        linearLayout.addView(ii);
-                        //File image00 = new File(filePath);
+                    ii.setLayoutParams(imgvwDimens);
+                    ii.setImageBitmap(selectedImage);
+                    linearLayout.addView(ii);
+                    //File image00 = new File(filePath);
 
-                        //pass it like this
-                        image = new File(filePath);
-                        RequestBody requestFile =
-                                RequestBody.create(MediaType.parse("multipart/form-data"), image);
+                    //pass it like this
+                    image = new File(filePath);
+                    RequestBody requestFile =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), image);
 
 // MultipartBody.Part is used to send also the actual file name
-                        body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
+                    body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
 
 // add another part within the multipart request
-                        RequestBody fullName =
-                                RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
-                    }
+                    RequestBody fullName =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
                 }
+            }
 
         }
     }
@@ -589,7 +590,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE); //hide progressBar
+//                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

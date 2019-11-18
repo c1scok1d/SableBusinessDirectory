@@ -76,9 +76,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|center_vertical|fill_vertical"
-                        android:layout_marginStart="3dp"
                         android:layout_weight="1"
-                        android:gravity="start|center_horizontal|center_vertical"
+                        android:gravity="center_horizontal|center_vertical"
                         android:text="rating count" />
 
                     <TextView
@@ -89,6 +88,7 @@
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:textAllCaps="true"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -152,8 +152,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:text="city"
-                        android:textColor="@color/colorAccent"
-                        android:textStyle="bold" />
+                        android:textColor="@color/colorAccent" />
 
                     <TextView
                         android:id="@+id/tvState"
@@ -162,8 +161,7 @@
                         android:layout_marginStart="3dp"
                         android:gravity="start"
                         android:text="state"
-                        android:textColor="@color/colorAccent"
-                        android:textStyle="bold" />
+                        android:textColor="@color/colorAccent" />
 
                     <TextView
                         android:id="@+id/tvZip"
@@ -172,8 +170,7 @@
                         android:layout_marginStart="3dp"
                         android:gravity="start"
                         android:text="zip"
-                        android:textColor="@color/colorAccent"
-                        android:textStyle="bold" />
+                        android:textColor="@color/colorAccent" />
 
                     <TextView
                         android:id="@+id/tvDistance"
@@ -183,7 +180,7 @@
                         android:gravity="end"
                         android:text="TextView"
                         android:textColor="@color/colorAccent"
-                        android:textStyle="bold" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/tvMilesAway"
@@ -193,7 +190,8 @@
                         android:layout_marginEnd="5dp"
                         android:gravity="start"
                         android:text="Miles away"
-                        android:textAllCaps="true" />
+                        android:textAllCaps="true"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -218,8 +216,7 @@
                             android:layout_marginStart="3dp"
                             android:gravity="start"
                             android:text="@string/listingPhone"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold" />
+                            android:textColor="@color/colorAccent" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -227,13 +224,26 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/tvIsOpen"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_horizontal|center_vertical"
+                                android:layout_marginStart="3dp"
+                                android:text="@string/isOpen"
+                                android:textAllCaps="true"
+                                android:textColor="@android:color/holo_green_dark"
+                                android:textSize="12sp"
+                                tools:text="isOpen" />
+
+                            <TextView
                                 android:id="@+id/tvHours"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
+                                android:layout_gravity="center_horizontal|center_vertical"
+                                android:layout_marginStart="5dp"
                                 android:text="TextView"
                                 android:textColor="@color/colorAccent"
-                                android:textStyle="bold" />
+                                android:textSize="12sp" />
 
                         </LinearLayout>
 
@@ -242,16 +252,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/tvIsOpen"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
-                                android:text="@string/isOpen"
-                                android:textAllCaps="true"
-                                android:textColor="@android:color/holo_green_dark"
-                                android:textStyle="bold"
-                                tools:text="isOpen" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -370,7 +370,7 @@
                                 android:id="@+id/btnEmail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
+                                android:layout_marginStart="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/email" />
@@ -379,8 +379,8 @@
                                 android:id="@+id/btnTwitter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
-                                android:layout_marginEnd="3dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/twitter" />
@@ -389,7 +389,7 @@
                                 android:id="@+id/btnFacebook"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="3dp"
+                                android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/facebook" />

@@ -76,8 +76,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             this.btnFacebook = itemView.findViewById(R.id.btnFacebook);
             this.tvFeatured = itemView.findViewById(R.id.tvFeatured);
             this.tvDistance = itemView.findViewById(R.id.tvDistance);
-            // this.tvContent = itemView.findViewById(R.id.etBusDesc);
-            //      this.tvPhone = itemView.findViewById(R.id.btnCall);
+
 
             btnCall.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,8 +142,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final ListingsModel object = dataset.get(position);
 
-        //String latitude = Double.toString(object.latitude);
-        //String longitude = Double.toString(object.longitude);
 
         Picasso.Builder builder = new Picasso.Builder(mContext);
 
@@ -160,28 +157,18 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         ((ImageTypeViewHolder) holder).title.setText(object.title);
         ((ImageTypeViewHolder) holder).tvHours.setText(object.hours);
-//        ((ImageTypeViewHolder) holder).tvStreet.setText(object.street);
         ((ImageTypeViewHolder) holder).tvCity.setText(object.city);
         ((ImageTypeViewHolder) holder).tvRegion.setText(object.state);
         ((ImageTypeViewHolder) holder).tvZip.setText(object.zipcode);
-//        ((ImageTypeViewHolder) holder).tvHours.setText(object.hours);
         ((ImageTypeViewHolder) holder).tvisOpen.setText(object.isOpen);
         ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setRating(object.rating);
         ((ImageTypeViewHolder) holder).tvDistance.setText(String.format( Locale.US, "%10.2f", distance));
-
-//        ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         ((ImageTypeViewHolder) holder).tvWebsite.setText(object.website);
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
-//        ((ImageTypeViewHolder) holder).tvLat.setText(object.latitude);
-//        ((ImageTypeViewHolder) holder).tvLng.setText(object.longitude);
-//        ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setNumStars(object.rating);
         ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.ratingCount));
         builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
-//        ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
-        // ((ImageTypeViewHolder) holder).image.setText(object.image);
-
 
         if ( object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey

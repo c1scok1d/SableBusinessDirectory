@@ -13,42 +13,17 @@ public class ListingsModel implements Parcelable {
     public String title, status, category, featured_image,
             bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
             hours, isOpen, content, image, logo, timestamp, link, featured, ratingCount;
-    //public boolean featured;
     public int rating, id;
     public Double latitude, longitude;
-    public Object post_tags;
-    List post_category;
 
 
-    public ListingsModel(int imageType,
-                         Integer id,
-                         String title,
-                         String link,
-                         String status,
-                         String category,
-                         Boolean featured,
-                         String featuredImage,
-                         String bldgNo,
-                         String street,
-                         String city,
-                         String state,
-                         String country,
-                         String zipcode,
-                         Double latitude,
-                         Double longitude,
-                         Integer rating,
-                         Integer ratingCount,
-                         String phone,
-                         String email,
-                         String website,
-                         String twitter,
-                         String facebook,
-                         String video,
-                         String businessHours,
-                         String commentStatus,
-                         String logo,
-                         String content,
-                         String image){
+
+    public ListingsModel(int imageType, Integer id, String title, String link, String status,
+                         String category, Boolean featured, String featuredImage, String bldgNo, String street,
+                         String city, String state, String country, String zipcode, Double latitude, Double longitude,
+                         Integer rating, Integer ratingCount, String phone, String email, String website, String twitter,
+                         String facebook, String video, String businessHours, String commentStatus, String logo,
+                         String content, String image){
 
         this.id = id;
         this.title = title;
