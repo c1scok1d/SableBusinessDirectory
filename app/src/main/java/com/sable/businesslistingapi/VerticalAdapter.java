@@ -183,23 +183,23 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         // ((ImageTypeViewHolder) holder).image.setText(object.image);
 
 
-        if ( dataset.get(0).facebook == null || dataset.get(0).facebook.isEmpty()) {
+        if ( object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
        // } else {
        //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
        }
 
-        if (dataset.get(0).twitter == null || dataset.get(0).twitter.isEmpty()) {
+        if (object.twitter.equals("null") || object.twitter.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnTwitter.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
         //} else {
         //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
-        if (dataset.get(0).email == null || dataset.get(0).email.isEmpty()) {
+        if (object.email.equals("null") || object.email.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
         //} else {
         //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         }
-        if (dataset.get(0).featured == "true"){
+        if (object.featured.equals("true")){
             String featured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(featured);
             ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
@@ -207,7 +207,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
 
         }
-        if(dataset.get(0).isOpen == "Closed now"){
+        if(object.isOpen.equals("Closed now")){
             ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
         }
     }
