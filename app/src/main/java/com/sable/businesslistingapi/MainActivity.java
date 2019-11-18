@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements
     HorizontalAdapter horizontalAdapter;
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
-    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country, zipcode, city, street, bldgno, submit_ip;
+    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country, zipcode, city, street, bldgno, todayRange, isOpen;
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
@@ -532,34 +532,22 @@ public class MainActivity extends AppCompatActivity implements
         if(addresses.size() > 0) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
-            String maddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
-            String mbldgno = addresses.get(0).getSubThoroughfare(); // get bulding number
-            String mstreet = addresses.get(0).getThoroughfare(); //get street name
-            String mcity = addresses.get(0).getLocality(); //get city name
-            String mstate = addresses.get(0).getAdminArea(); //get state name
-            String mzipcode = addresses.get(0).getPostalCode(); //get zip code
-            String mcountry = addresses.get(0).getCountryName(); //get country
-            /* String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-            String lat = Double.toString(latitude);
-            String lng = Double.toString(longitude); */
-
-
-            tvAddress.setText(maddress);
-            /* tvZip.setText(mzipcode);
-            tvState.setText(mstate);
-            tvCity.setText(mcity);
-            tvStreet.setText(mstreet);
-            tvBldgNo.setText(mbldgno); */
-
-
+            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
+            bldgno = addresses.get(0).getSubThoroughfare(); // get bulding number
+            street = addresses.get(0).getThoroughfare(); //get street name
+            city = addresses.get(0).getLocality(); //get city name
+            state = addresses.get(0).getAdminArea(); //get state name
+            zipcode = addresses.get(0).getPostalCode(); //get zip code
+            country = addresses.get(0).getCountryName(); //get country
+            tvAddress.setText(address);
             addresses.get(0).getAdminArea();
-            address = maddress;
+           /* address = maddress;
             bldgno = mbldgno;
             street = mstreet;
             state = mstate;
             city = mcity;
             zipcode = mzipcode;
-            country = mcountry;
+            country = mcountry;*/
         }
 
     }
@@ -636,10 +624,8 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("LocationMatch ", " Twitter: " + response.body().get(i).getTwitter());
                             Log.e("LocationMatch ", " Facebook: " + response.body().get(i).getFacebook());
                             Log.e("LocationMatch ", " Video: " + response.body().get(i).getVideo());
-                            if (response.body().get(i).getBusinessHours() != null){
-                                Log.e("LocationMatch ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                                Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                            }
+                            Log.e("LocationMatch ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                            Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
                             Log.e("LocationMatch ", " Logo: " + response.body().get(i).getLogo());
                             Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("LocationMatch ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
@@ -718,7 +704,12 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " Twitter: " + response.body().get(i).getTwitter());
                             Log.e("Location ", " Facebook: " + response.body().get(i).getFacebook());
                             Log.e("Location ", " Video: " + response.body().get(i).getVideo());
-                            if (response.body().get(i).getBusinessHours() != null) {
+                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
+                            if(businessHours == null){
+                                String today= "null";
+                                Log.e("Location ", " Today: " +today);
+                                Log.e("Location ", " IsOpen" +today);
+                            } else {
                                 Log.e("Location ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
                                 Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
                             }
@@ -726,6 +717,15 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("Location ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
 //                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+
+                            if(businessHours == null){
+                                String today= "null";
+                                Log.e("Location ", " Today: " +today);
+                                Log.e("Location ", " IsOpen: " +today);
+                            } else {
+                                todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
+                                isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
+                            }
 
 
                             verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -752,8 +752,8 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getTwitter(),
                                     response.body().get(i).getFacebook(),
                                     response.body().get(i).getVideo(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
+                                    todayRange,
+                                    isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc()));

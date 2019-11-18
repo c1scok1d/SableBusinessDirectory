@@ -199,14 +199,16 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 //        } else {
 //            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         }
-        if (dataset.get(0).featured.equals("true")){
+        if (!dataset.get(0).featured.equals("true")){
             String featured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(featured);
-            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 255));
-
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 0));
 //        } else {
 //            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
 
+        }
+        if(dataset.get(0).isOpen.equals("Closed now")){
+            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 ));
         }
     }
     @Override

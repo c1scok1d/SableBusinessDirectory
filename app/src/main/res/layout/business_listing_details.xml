@@ -76,8 +76,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|center_vertical|fill_vertical"
+                        android:layout_marginStart="3dp"
                         android:layout_weight="1"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="start|center_horizontal|center_vertical"
                         android:text="rating count" />
 
                     <TextView
@@ -205,7 +206,7 @@
                     <LinearLayout
                         android:id="@+id/contactLayout"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -215,59 +216,55 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="3dp"
                             android:gravity="start"
-                            android:text="@string/listingPhone" />
+                            android:text="@string/listingPhone"
+                            android:textColor="@color/colorAccent"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/tvIsOpen"
-                                android:layout_width="match_parent"
+                                android:id="@+id/tvHours"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
-                                android:layout_weight="1"
+                                android:text="TextView"
+                                android:textColor="@color/colorAccent"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvIsOpen"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="3dp"
                                 android:text="@string/isOpen"
                                 android:textAllCaps="true"
                                 android:textColor="@android:color/holo_green_dark"
                                 android:textStyle="bold"
                                 tools:text="isOpen" />
-
-                            <TextView
-                                android:id="@+id/tvToday"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Today: " />
-
-                            <TextView
-                                android:id="@+id/tvHours"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="TextView"
-                                android:textColor="@color/colorAccent"
-                                android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/websiteLayout"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/imageView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/website" />
 
                             <TextView
                                 android:id="@+id/tvWebsite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginStart="5dp"
+                                android:layout_marginStart="3dp"
                                 android:clickable="false"
                                 android:text="http://www.companywebsite.com"
                                 android:textColor="@color/black"
@@ -372,7 +369,7 @@
                                 android:id="@+id/btnEmail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
+                                android:layout_marginStart="3dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/email" />
@@ -381,8 +378,8 @@
                                 android:id="@+id/btnTwitter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
-                                android:layout_marginEnd="5dp"
+                                android:layout_marginStart="3dp"
+                                android:layout_marginEnd="3dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/twitter" />
@@ -391,7 +388,7 @@
                                 android:id="@+id/btnFacebook"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="5dp"
+                                android:layout_marginEnd="3dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/facebook" />
