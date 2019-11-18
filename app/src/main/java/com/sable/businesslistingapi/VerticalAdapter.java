@@ -184,31 +184,31 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
 
         if ( dataset.get(0).facebook == null || dataset.get(0).facebook.isEmpty()) {
-            ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211));
-//        } else {
-//            ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
+            ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
+       // } else {
+       //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
        }
 
         if (dataset.get(0).twitter == null || dataset.get(0).twitter.isEmpty()) {
-            ((ImageTypeViewHolder) holder).btnTwitter.setColorFilter(Color.argb(211, 211, 211, 211));
-//        } else {
-//            ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
+            ((ImageTypeViewHolder) holder).btnTwitter.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
+        //} else {
+        //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
         if (dataset.get(0).email == null || dataset.get(0).email.isEmpty()) {
-            ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211));
-//        } else {
-//            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+            ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
+        //} else {
+        //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         }
-        if (!dataset.get(0).featured.equals("true")){
+        if (dataset.get(0).featured == "true"){
             String featured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(featured);
-            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 0));
-//        } else {
-//            ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
+        //} else {
+        //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
 
         }
-        if(dataset.get(0).isOpen.equals("Closed now")){
-            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 ));
+        if(dataset.get(0).isOpen == "Closed now"){
+            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
         }
     }
     @Override

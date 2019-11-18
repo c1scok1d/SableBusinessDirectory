@@ -88,7 +88,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:textAllCaps="true" />
+                        android:textAllCaps="true"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
