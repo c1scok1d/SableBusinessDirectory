@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -204,11 +205,76 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationMatch.get(0).content);
         }
 
-       /* ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+        findViewById(R.id.tvName).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+            public void onClick(View view) {
+                tvName.setCursorVisible(true);
+                tvName.setFocusableInTouchMode(true);
+                tvName.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvName.requestFocus(); //to trigger the soft input
             }
-        });*/
+        });
+
+        findViewById(R.id.tvPhone).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvPhone.setCursorVisible(true);
+                tvPhone.setFocusableInTouchMode(true);
+                tvPhone.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvPhone.requestFocus(); //to trigger the soft input
+            }
+        });
+
+        findViewById(R.id.tvWebsite).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvWebsite.setCursorVisible(true);
+                tvWebsite.setFocusableInTouchMode(true);
+                tvWebsite.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvWebsite.requestFocus(); //to trigger the soft input
+            }
+        });
+
+        findViewById(R.id.tvEmail).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvEmail.setCursorVisible(true);
+                tvEmail.setFocusableInTouchMode(true);
+                tvEmail.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvEmail.requestFocus(); //to trigger the soft input
+            }
+        });
+
+        findViewById(R.id.tvTwitter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvTwitter.setCursorVisible(true);
+                tvTwitter.setFocusableInTouchMode(true);
+                tvTwitter.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvTwitter.requestFocus(); //to trigger the soft input
+            }
+        });
+
+        findViewById(R.id.tvFacebook).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvFacebook.setCursorVisible(true);
+                tvFacebook.setFocusableInTouchMode(true);
+                tvFacebook.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvFacebook.requestFocus(); //to trigger the soft input
+            }
+        });
+
+        findViewById(R.id.tvContent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvContent.setCursorVisible(true);
+                tvContent.setFocusableInTouchMode(true);
+                tvContent.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvContent.requestFocus(); //to trigger the soft input
+            }
+        });
 
         mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +292,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         });
 
         recyclerView = findViewById(R.id.recycler_view);
-        galleryButton = findViewById(R.id.gallery_button);
+        //galleryButton = findViewById(R.id.gallery_button);
 
         if (savedInstanceState != null) {
             photos = savedInstanceState.getParcelableArrayList(PHOTOS_KEY);
