@@ -30,16 +30,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.sable.businesslistingapi.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-        </provider>
-
         <activity android:name=".SplashScreen"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -76,6 +66,16 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.sable.businesslistingapi.easyphotopicker.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/easyimage_filepaths" />
+        </provider>
     </application>
 
 </manifest>

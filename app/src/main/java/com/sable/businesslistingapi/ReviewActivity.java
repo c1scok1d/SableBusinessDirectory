@@ -1,21 +1,13 @@
 package com.sable.businesslistingapi;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.DialogInterface;
+import android.Manifest;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Parcelable;
-import android.provider.MediaStore;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,45 +15,45 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pl.aprilapps.easyphotopicker.ChooserType;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
+import pl.aprilapps.easyphotopicker.MediaFile;
+import pl.aprilapps.easyphotopicker.MediaSource;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.Manifest.permission_group.CAMERA;
+
 
 public class ReviewActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -78,18 +70,36 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
     String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
-    private static final int GALLERY_REQUEST_CODE = 2;
-    private static final int CAMERA_REQUEST_CODE = 1;
+   // private static final int GALLERY_REQUEST_CODE = 2;
+    //private static final int CAMERA_REQUEST_CODE = 1;
     File image00, image01, image02;
     Uri picUri;
 
-    private ArrayList<String> permissionsToRequest;
+   /* private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<>();
     private ArrayList<String> permissions = new ArrayList<>();
     private ArrayList<ListingsModel> submitListing;
 
     private final static int ALL_PERMISSIONS_RESULT = 107;
-    private final static int IMAGE_RESULT = 200;
+    private final static int IMAGE_RESULT = 200; */
+
+    private static final String PHOTOS_KEY = "easy_image_photos_list";
+    private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
+    private static final int CAMERA_REQUEST_CODE = 7500;
+    private static final int CAMERA_VIDEO_REQUEST_CODE = 7501;
+    private static final int GALLERY_REQUEST_CODE = 7502;
+    private static final int DOCUMENTS_REQUEST_CODE = 7503;
+
+    protected RecyclerView recyclerView;
+
+    protected View galleryButton;
+
+    private ImagesAdapter imagesAdapter;
+
+    private ArrayList<MediaFile> photos = new ArrayList<>();
+
+    private EasyImage easyImage;
+
 
 
     @Override
@@ -97,9 +107,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
-        submitListing = new ArrayList<>();
+        //submitListing = new ArrayList<>();
 
-        permissions.add(CAMERA);
+        /*permissions.add(CAMERA);
         permissions.add(WRITE_EXTERNAL_STORAGE);
         permissions.add(READ_EXTERNAL_STORAGE);
         permissionsToRequest = findUnAskedPermissions(permissions);
@@ -110,7 +120,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             if (permissionsToRequest.size() > 0)
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
-        }
+        }*/
 
         Picasso.Builder builder = new Picasso.Builder(this);
 
@@ -170,7 +180,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         btnPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            startActivityForResult(selectImage(), IMAGE_RESULT);            }
+                //selectImage(ReviewActivity.this);
+            }
         });
 
         /**
@@ -243,244 +254,176 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 }
             }
         });
-    }
 
-    /**
-     * Chooser intent to select the source to get image from.<br />
-     * The source can be camera's (ACTION_IMAGE_CAPTURE) or gallery's (ACTION_GET_CONTENT).<br />
-     * All possible sources are added to the intent chooser.
-     */
-    public Intent selectImage() {
+        recyclerView = findViewById(R.id.recycler_view);
+        galleryButton = findViewById(R.id.gallery_button);
 
-        Uri outputFileUri = getCaptureImageOutputUri();
+        if (savedInstanceState != null) {
+            photos = savedInstanceState.getParcelableArrayList(PHOTOS_KEY);
+        }
 
-        List<Intent> allIntents = new ArrayList<>();
-        PackageManager packageManager = getPackageManager();
+        imagesAdapter = new ImagesAdapter(this, photos);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(imagesAdapter);
 
-        Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-        for (ResolveInfo res : listCam) {
-            Intent intent = new Intent(captureIntent);
-            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            intent.setPackage(res.activityInfo.packageName);
-            if (outputFileUri != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        easyImage = new EasyImage.Builder(this)
+                .setChooserTitle("Pick media")
+                .setCopyImagesToPublicGalleryFolder(false)
+//                .setChooserType(ChooserType.CAMERA_AND_DOCUMENTS)
+                .setChooserType(ChooserType.CAMERA_AND_GALLERY)
+                .setFolderName("EasyImage sample")
+                .allowMultiple(true)
+                .build();
+
+        checkGalleryAppAvailability();
+
+
+        findViewById(R.id.gallery_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /** Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised! */
+                String[] necessaryPermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openGallery(ReviewActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, GALLERY_REQUEST_CODE);
+                }
             }
-            allIntents.add(intent);
-        }
+        });
 
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
-        for (ResolveInfo res : listGallery) {
-            Intent intent = new Intent(galleryIntent);
-            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            intent.setPackage(res.activityInfo.packageName);
-            allIntents.add(intent);
-        }
 
-        Intent mainIntent = allIntents.get(allIntents.size() - 1);
-        for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.sable.businesslistingapi.fileprovider")) {
-                mainIntent = intent;
-                break;
+        findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openCameraForImage(ReviewActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, CAMERA_REQUEST_CODE);
+                }
             }
-        }
-        allIntents.remove(mainIntent);
+        });
 
-        Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+        findViewById(R.id.camera_video_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openCameraForVideo(ReviewActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, CAMERA_VIDEO_REQUEST_CODE);
+                }
+            }
+        });
 
-        return chooserIntent;
+        findViewById(R.id.documents_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /** Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised! */
+                String[] necessaryPermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openDocuments(ReviewActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, DOCUMENTS_REQUEST_CODE);
+                }
+            }
+        });
+
+        findViewById(R.id.chooser_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openChooser(ReviewActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, CHOOSER_PERMISSIONS_REQUEST_CODE);
+                }
+            }
+        });
     }
 
-    private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
-        File getImage = getExternalFilesDir("");
-        if (getImage != null) {
-            String filename = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
-            //outputFileUri = Uri.fromFile(new File(getImage.getPath(), new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ'.png'").format(new Date())));
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), filename +".png"));
-        }
-        return outputFileUri;
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(PHOTOS_KEY, photos);
     }
-    File image;
-    MultipartBody.Part body;
+
+    private void checkGalleryAppAvailability() {
+        if (!easyImage.canDeviceHandleGallery()) {
+            //Device has no app that handles gallery intent
+            galleryButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CHOOSER_PERMISSIONS_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openChooser(ReviewActivity.this);
+        } else if (requestCode == CAMERA_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openCameraForImage(ReviewActivity.this);
+        } else if (requestCode == CAMERA_VIDEO_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openCameraForVideo(ReviewActivity.this);
+        } else if (requestCode == GALLERY_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openGallery(ReviewActivity.this);
+        } else if (requestCode == DOCUMENTS_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openDocuments(ReviewActivity.this);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            //ImageView imageView = findViewById(R.id.imageView);
-            LinearLayout linearLayout = findViewById(R.id.imagesLayout);
-            //ImageView imageView = new ImageView(ReviewActivity.this);
-            ImageView ii = new ImageView(ReviewActivity.this);
 
-            int dimens = 45;
-            float density = getResources().getDisplayMetrics().density;
-            int finalDimens = (int) (dimens * density);
-
-
-            // SET SCALETYPE
-            //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            ii.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-            // SET THE MARGIN
-            int dimensMargin = 4;
-            float densityMargin = getResources().getDisplayMetrics().density;
-            int finalDimensMargin = (int) (dimensMargin * densityMargin);
-
-            LinearLayout.LayoutParams imgvwDimens = new LinearLayout.LayoutParams(finalDimens, finalDimens);
-            //imageView.setLayoutParams(imgvwDimens);
-            ii.setLayoutParams(imgvwDimens);
-
-            if (requestCode == IMAGE_RESULT) {
-                String filePath = getImageFilePath(data);
-                if (filePath != null) {
-                    Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
-                    // SET THE IMAGEVIEW DIMENSIONS
-
-                    LinearLayout.LayoutParams imgvwMargin = new LinearLayout.LayoutParams(finalDimens, finalDimens);
-                    imgvwMargin.setMargins(finalDimensMargin, finalDimensMargin, finalDimensMargin, finalDimensMargin);
-
-                    ii.setLayoutParams(imgvwDimens);
-                    ii.setImageBitmap(selectedImage);
-                    linearLayout.addView(ii);
-                    //File image00 = new File(filePath);
-
-                    //pass it like this
-                    image = new File(filePath);
-                    RequestBody requestFile =
-                            RequestBody.create(MediaType.parse("multipart/form-data"), image);
-
-// MultipartBody.Part is used to send also the actual file name
-                    body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
-
-// add another part within the multipart request
-                    RequestBody fullName =
-                            RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
+        easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
+                for (MediaFile imageFile : imageFiles) {
+                    Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
+                onPhotosReturned(imageFiles);
             }
 
-        }
-    }
-
-
-    private String getImageFromFilePath(Intent data) {
-        boolean isCamera = data == null || data.getData() == null;
-
-        if (isCamera) return getCaptureImageOutputUri().getPath();
-        else return getPathFromURI(data.getData());
-
-    }
-
-    public String getImageFilePath(Intent data) {
-        return getImageFromFilePath(data);
-    }
-
-    private String getPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Audio.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putParcelable("pic_uri", picUri);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // get the file url
-        picUri = savedInstanceState.getParcelable("pic_uri");
-    }
-
-    private ArrayList<String> findUnAskedPermissions(ArrayList<String> wanted) {
-        ArrayList<String> result = new ArrayList<String>();
-
-        for (String perm : wanted) {
-            if (!hasPermission(perm)) {
-                result.add(perm);
+            @Override
+            public void onImagePickerError(@NonNull Throwable error, @NonNull MediaSource source) {
+                //Some error handling
+                error.printStackTrace();
             }
-        }
 
-        return result;
+            @Override
+            public void onCanceled(@NonNull MediaSource source) {
+                //Not necessary to remove any files manually anymore
+            }
+        });
     }
 
-    private boolean hasPermission(String permission) {
-        if (canMakeSmores()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
-            }
+    private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
+        photos.addAll(Arrays.asList(returnedPhotos));
+        imagesAdapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(photos.size() - 1);
+    }
+
+    private boolean arePermissionsGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
+
         }
         return true;
     }
 
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
+    private void requestPermissionsCompat(String[] permissions, int requestCode) {
+        ActivityCompat.requestPermissions(ReviewActivity.this, permissions, requestCode);
     }
-
-    private boolean canMakeSmores() {
-        return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        switch (requestCode) {
-
-            case ALL_PERMISSIONS_RESULT:
-                for (String perms : permissionsToRequest) {
-                    if (!hasPermission(perms)) {
-                        permissionsRejected.add(perms);
-                    }
-                }
-
-                if (permissionsRejected.size() > 0) {
-
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
-                            showMessageOKCancel("These permissions are mandatory for the application. Please allow access.",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-
-                                                requestPermissions(permissionsRejected.toArray(new String[permissionsRejected.size()]), ALL_PERMISSIONS_RESULT);
-                                            }
-                                        }
-                                    });
-                            return;
-                        }
-                    }
-
-                }
-
-                break;
-        }
-
-    }
-
     /**
      *
      * submit to api
      *
      *
      */
+    MultipartBody.Part body;
 
    private void submitData(){
 
