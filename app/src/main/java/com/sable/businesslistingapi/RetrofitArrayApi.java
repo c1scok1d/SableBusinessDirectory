@@ -68,7 +68,7 @@ public interface RetrofitArrayApi {
             @Part("zip") String zip,
             @Part("latitude") Double latitude,
             @Part("longitude") Double longitude,
-            @Part("ratings") Integer ratings,
+            @Part("ratings") Float ratings,
             @Part("phone") String phone,
             @Part("email") String email,
             @Part("website") String website,

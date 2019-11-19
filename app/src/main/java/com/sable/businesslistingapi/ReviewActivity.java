@@ -57,7 +57,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ReviewActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    RatingBar mRatingBar;
+    RatingBar ratingBar;
     TextView mRatingScale;
     EditText mFeedback;
     Button mSendFeedback;
@@ -72,6 +72,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
             password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
     Integer category;
+    Float rating;
 
     private static final String PHOTOS_KEY = "easy_image_photos_list";
     private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
@@ -97,24 +98,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
-        //submitListing = new ArrayList<>();
-
-        /*permissions.add(CAMERA);
-        permissions.add(WRITE_EXTERNAL_STORAGE);
-        permissions.add(READ_EXTERNAL_STORAGE);
-        permissionsToRequest = findUnAskedPermissions(permissions);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-
-            if (permissionsToRequest.size() > 0)
-                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
-        }*/
-
         Picasso.Builder builder = new Picasso.Builder(this);
 
-        mRatingBar = findViewById(R.id.ratingBar);
+        ratingBar = findViewById(R.id.ratingBar);
         mRatingScale = findViewById(R.id.tvRatingScale);
         mFeedback = findViewById(R.id.etFeedback);
         mSendFeedback = findViewById(R.id.btnSubmit);
@@ -139,8 +125,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         tvName = findViewById(R.id.tvName);
 
 
-
-        mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 mRatingScale.setText(String.valueOf(v));
@@ -163,16 +148,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     default:
                         mRatingScale.setText("");
                 }
+                rating = ratingBar.getRating();
             }
         });
-
-        //Add image to review
-        /*btnPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //selectImage(ReviewActivity.this);
-            }
-        });*/
 
         /**
          *
@@ -226,11 +204,11 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationMatch.get(0).content);
         }
 
-        mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+       /* ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
             }
-        });
+        });*/
 
         mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,7 +218,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 } else {
 
                     mFeedback.setText("");
-                    mRatingBar.setRating(0);
+                    rating = ratingBar.getRating();
                     Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
                     submitData();
                 }
@@ -416,7 +394,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         String bldgno = tvBldgno.getText().toString();
         Double latitude = MainActivity.latitude;
         Double longitude = MainActivity.longitude;
-        Integer rating = mRatingBar.getNumStars();
+        //Integer rating = ratingBar.getRating();
 
 
       /* try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
