@@ -70,18 +70,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
     String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
-   // private static final int GALLERY_REQUEST_CODE = 2;
-    //private static final int CAMERA_REQUEST_CODE = 1;
-    File image00, image01, image02;
-    Uri picUri;
-
-   /* private ArrayList<String> permissionsToRequest;
-    private ArrayList<String> permissionsRejected = new ArrayList<>();
-    private ArrayList<String> permissions = new ArrayList<>();
-    private ArrayList<ListingsModel> submitListing;
-
-    private final static int ALL_PERMISSIONS_RESULT = 107;
-    private final static int IMAGE_RESULT = 200; */
 
     private static final String PHOTOS_KEY = "easy_image_photos_list";
     private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
@@ -140,7 +128,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvContent = findViewById(R.id.tvContent);
         tvPhone = findViewById(R.id.tvPhone);
-        btnPic = findViewById(R.id.btnPic);
+        //btnPic = findViewById(R.id.btnPic);
         tvPostCategory = findViewById(R.id.tvPostCategory);
         tvEmail = findViewById(R.id.tvEmail);
         tvWebsite = findViewById(R.id.tvWebsite);
@@ -177,12 +165,12 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         });
 
         //Add image to review
-        btnPic.setOnClickListener(new View.OnClickListener() {
+        /*btnPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //selectImage(ReviewActivity.this);
             }
-        });
+        });*/
 
         /**
          *
@@ -317,10 +305,10 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             }
         });
 
-        findViewById(R.id.documents_button).setOnClickListener(new View.OnClickListener() {
+        /* findViewById(R.id.documents_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /** Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised! */
+                // Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised!
                 String[] necessaryPermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
                 if (arePermissionsGranted(necessaryPermissions)) {
                     easyImage.openDocuments(ReviewActivity.this);
@@ -340,7 +328,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     requestPermissionsCompat(necessaryPermissions, CHOOSER_PERMISSIONS_REQUEST_CODE);
                 }
             }
-        });
+        }); */
     }
 
     @Override
