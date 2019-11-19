@@ -4,12 +4,8 @@ import android.Manifest;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
-import android.net.Uri;
 import android.os.Bundle;
-
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,10 +34,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Credentials;
-import okhttp3.Headers;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.aprilapps.easyphotopicker.ChooserType;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -71,7 +69,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
     String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "publish";
     Integer category;
     Float rating;
 
@@ -383,6 +381,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             easyImage.openDocuments(ReviewActivity.this);
         }
     }
+    File image;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -393,6 +392,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 for (MediaFile imageFile : imageFiles) {
                     //body = imageFile.getFile();
+                    image = imageFile.getFile();
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
                 onPhotosReturned(imageFiles);
@@ -436,6 +436,23 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
      *
      */
     MultipartBody.Part body;
+    public class BasicAuthInterceptor implements Interceptor {
+
+        private String credentials;
+
+        public BasicAuthInterceptor(String user, String password) {
+            this.credentials = Credentials.basic(user, password);
+        }
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            Request authenticatedRequest = request.newBuilder()
+                    .header("Authorization", credentials).build();
+            return chain.proceed(authenticatedRequest);
+        }
+
+    }
 
    private void submitData(){
 
@@ -462,45 +479,29 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         Double longitude = MainActivity.longitude;
         //Integer rating = ratingBar.getRating();
 
+       RequestBody requestFile =
+               RequestBody.create(MediaType.parse("multipart/form-data"), image);
 
-      /* try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org").openStream(), "UTF-8").useDelimiter("\\A")) {
-            String submit_ip = s.toString();
-            // System.out.println("My current IP address is " + s.next());
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } */
+// MultipartBody.Part is used to send also the actual file name
+       MultipartBody.Part mimage =
+               MultipartBody.Part.createFormData("featured_image", image.getName(), requestFile);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
 
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        //Basic Auth
-        if (!TextUtils.isEmpty(username)
-                && !TextUtils.isEmpty(password)) {
-            authToken = Credentials.basic(username, password);
-        }
-
-        //Create a new Interceptor.
-        Interceptor headerAuthorizationInterceptor = new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                okhttp3.Request request = chain.request();
-                Headers headers = request.headers().newBuilder().add("Authorization", authToken).build();
-                request = request.newBuilder().headers(headers).build();
-                return chain.proceed(request);
-            }
-        };
+        OkHttpClient client = new OkHttpClient.Builder()
+               .addInterceptor(new BasicAuthInterceptor(username, password))
+               .addInterceptor(logging)
+               .build();
 
         //Add the interceptor to the client builder.
-        clientBuilder.addInterceptor(headerAuthorizationInterceptor);
+        //clientBuilder.addInterceptor(headerAuthorizationInterceptor);
 
         //Defining retrofit api service
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
+                .client(client)
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
@@ -524,9 +525,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 twitter,
                 facebook,
                 /*hours,*/
-                body,
-                body,
-                body);
+                mimage,
+                mimage,
+                mimage);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {

@@ -40,7 +40,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Credentials;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,7 +70,8 @@ public class AddListingActivity extends AppCompatActivity implements
     private GoogleMap mMap;
 
 
-    String address, state, country, zipcode, city, street, bldgNo;
+    String address, state, country, zipcode, city, street, bldgNo, username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY";
 
     private Double latitude = 0.00;
     private Double longitude = 0.00;
@@ -184,22 +188,21 @@ public class AddListingActivity extends AppCompatActivity implements
                 if (!spnCategory.getSelectedItem().toString().equals("Category")) {
 
                     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                    // set your desired log level
                     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-// add your other interceptors …
-// add logging as last interceptor
-                    httpClient.addInterceptor(logging);  // <-- this is the important line!
-                    // set your desired log level
-                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-// add your other interceptors …
-// add logging as last interceptor
-                    httpClient.addInterceptor(logging);  // <-- this is the important line!
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(baseURL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .client(httpClient.build())
+
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .addInterceptor(new BasicAuthInterceptor(username, password))
+                            .addInterceptor(logging)
                             .build();
+
+
+                    if(retrofit==null){
+                        retrofit = new Retrofit.Builder()
+                                .baseUrl(baseURL)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .client(client)
+                                .build();
+                    }
                     RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
                     // pass JSON data to BusinessListings class for filtering
                     Call<List<ListingsCategories>> call = service.getCategory();
@@ -447,26 +450,44 @@ public class AddListingActivity extends AppCompatActivity implements
      * set URL and make call to API
      *
      */
+    public class BasicAuthInterceptor implements Interceptor {
+
+        private String credentials;
+
+        public BasicAuthInterceptor(String user, String password) {
+            this.credentials = Credentials.basic(user, password);
+        }
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            Request authenticatedRequest = request.newBuilder()
+                    .header("Authorization", credentials).build();
+            return chain.proceed(authenticatedRequest);
+        }
+
+    }
     private String baseURL = "https://www.thesablebusinessdirectory.com";
     Integer addCategory;
+
+    private static Retrofit retrofit = null;
     public void getRetrofitCategories() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-// add your other interceptors …
-// add logging as last interceptor
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
-        // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-// add your other interceptors …
-// add logging as last interceptor
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
                 .build();
+
+        if(retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+        }
+
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         // pass JSON data to BusinessListings class for filtering
         Call<List<ListingsCategories>> call = service.getCategory();

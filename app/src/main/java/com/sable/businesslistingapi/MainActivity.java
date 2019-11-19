@@ -82,7 +82,9 @@ public class MainActivity extends AppCompatActivity implements
     HorizontalAdapter horizontalAdapter;
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
-    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country, zipcode, city, street, bldgno, todayRange, isOpen;
+    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
+            zipcode, city, street, bldgno, todayRange, isOpen, username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY";
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
@@ -556,21 +558,40 @@ public class MainActivity extends AppCompatActivity implements
      * set URL and make call to API
      */
 
+    public class BasicAuthInterceptor implements Interceptor {
+
+        private String credentials;
+
+        public BasicAuthInterceptor(String user, String password) {
+            this.credentials = Credentials.basic(user, password);
+        }
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            Request authenticatedRequest = request.newBuilder()
+                    .header("Authorization", credentials).build();
+            return chain.proceed(authenticatedRequest);
+        }
+
+    }
+
     private static Retrofit retrofit = null;
     public void getRetrofit(final Map<String, String> query) {
 
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
+                .addInterceptor(new BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
                 .build();
 
 
         if(retrofit==null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
-                    .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().serializeNulls().create()))
+                    .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();
         }
