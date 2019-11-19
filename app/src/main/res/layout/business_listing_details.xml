@@ -67,6 +67,7 @@
                         style="@style/Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="5dp"
                         android:layout_weight="0"
                         android:numStars="5" />
@@ -76,8 +77,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|center_vertical|fill_vertical"
+                        android:layout_marginStart="5dp"
                         android:layout_weight="1"
-                        android:gravity="center_horizontal|center_vertical"
+                        android:gravity="center_vertical"
                         android:text="rating count" />
 
                     <TextView
