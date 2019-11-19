@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -129,18 +130,24 @@ public class AddListingActivity extends AppCompatActivity implements
                 if (etName.getText().toString().isEmpty() || spnCategory == null && spnCategory.getSelectedItem() == null || etDescription.getText().toString().isEmpty()) {
                     Toast.makeText(AddListingActivity.this, "Please fill all sections...", Toast.LENGTH_LONG).show();
                 } else {
+
+                    getRetrofitCategories();
+
                     final String name = etName.getText().toString();
                     final String description = etDescription.getText().toString();
                     final String category = spnCategory.getSelectedItem().toString();
+                    //addCategory = addCategory;
                     final String phone = etPhone.getText().toString();
                     final String email = etEmail.getText().toString();
                     final String website = etWebsite.getText().toString();
                     final String twitter = etTwitter.getText().toString();
                     final String facebook = etFacebook.getText().toString();
 
+
                     locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
                             name,
                             category,
+                            addCategory,
                             description,
                             longitude,
                             latitude,
@@ -170,6 +177,62 @@ public class AddListingActivity extends AppCompatActivity implements
         enableMyLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
+
+        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!spnCategory.getSelectedItem().toString().equals("Category")) {
+
+                    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                    // set your desired log level
+                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+// add your other interceptors …
+// add logging as last interceptor
+                    httpClient.addInterceptor(logging);  // <-- this is the important line!
+                    // set your desired log level
+                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+// add your other interceptors …
+// add logging as last interceptor
+                    httpClient.addInterceptor(logging);  // <-- this is the important line!
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(baseURL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .client(httpClient.build())
+                            .build();
+                    RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                    // pass JSON data to BusinessListings class for filtering
+                    Call<List<ListingsCategories>> call = service.getCategory();
+
+                    // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                    call.enqueue(new Callback<List<ListingsCategories>>() {
+                        @Override
+                        public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
+                            // addCategory = null;
+                            // loop through JSON response get parse and output to log
+                            for (int i = 0; i < response.body().size(); i++) {
+                                String selected = spnCategory.getSelectedItem().toString();
+                                String replied = response.body().get(i).getName();
+
+                                if (spnCategory.getSelectedItem().toString().equals(response.body().get(i).getName())) {
+                                    addCategory = (response.body().get(i).getId());
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // TODO Auto-generated method stub
+            }
+        });
     }
 
     android.location.LocationListener LocationListener = new LocationListener() {
@@ -385,6 +448,7 @@ public class AddListingActivity extends AppCompatActivity implements
      *
      */
     private String baseURL = "https://www.thesablebusinessdirectory.com";
+    Integer addCategory;
     public void getRetrofitCategories() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // set your desired log level
@@ -421,7 +485,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     //parse response based on ListingsModel class and add to list array ( get category name, description and image)
                     // add category name from array to spinner
                     category.add(response.body().get(i).getName());
-                    category.add(response.body().get(i).getId().toString());
+                    //category.add(response.body().get(i).getId().toString());
                     // display category array list in spinner
                     spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
                     Log.e("main ", " Category: " + response.body().get(i).getName());

@@ -57,7 +57,7 @@ public interface RetrofitArrayApi {
             @Part("post_title") String post_title,
             @Part("post_status") String post_status,
            // @Field("post_tags") String post_tags,
-            @Part("default_category") String category,
+            @Part("post_category") Integer category,
             //@Field("featured") String featured,
             @Part("content")String content,
             @Part("bldgno") String bldgno,

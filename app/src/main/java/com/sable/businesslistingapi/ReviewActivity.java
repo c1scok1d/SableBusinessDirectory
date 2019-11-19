@@ -69,7 +69,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     ImageView ivImage0, ivImage1, ivImage02;
     RatingBar simpleRatingBar;
     private ProgressBar progressBar;
-    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app", password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
+    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "published";
+    Integer category;
 
     private static final String PHOTOS_KEY = "easy_image_photos_list";
     private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
@@ -199,6 +201,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvTwitter.setText(locationAdd.get(0).twitter);
             tvFacebook.setText(locationAdd.get(0).facebook);
             tvContent.setText(locationAdd.get(0).description);
+            category = locationAdd.get(0).addCategory;
+
         } else {
 
             tvName.setText(locationMatch.get(0).title);
@@ -304,31 +308,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 }
             }
         });
-
-        /* findViewById(R.id.documents_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised!
-                String[] necessaryPermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                if (arePermissionsGranted(necessaryPermissions)) {
-                    easyImage.openDocuments(ReviewActivity.this);
-                } else {
-                    requestPermissionsCompat(necessaryPermissions, DOCUMENTS_REQUEST_CODE);
-                }
-            }
-        });
-
-        findViewById(R.id.chooser_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                if (arePermissionsGranted(necessaryPermissions)) {
-                    easyImage.openChooser(ReviewActivity.this);
-                } else {
-                    requestPermissionsCompat(necessaryPermissions, CHOOSER_PERMISSIONS_REQUEST_CODE);
-                }
-            }
-        }); */
     }
 
     @Override
@@ -369,6 +348,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 for (MediaFile imageFile : imageFiles) {
+                    //body = imageFile.getFile();
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
                 onPhotosReturned(imageFiles);
@@ -417,7 +397,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
         String post_title = tvName.getText().toString();
        // String post_status = tvPost_status.getText().toString();
-        String default_category = tvPostCategory.getText().toString();
+        Integer default_category = category;
         String state = tvState.getText().toString();
         String street = tvStreet.getText().toString();
         String city = tvCity.getText().toString();
