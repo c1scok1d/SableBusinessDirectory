@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 public class ListingsAddModel implements Parcelable {
     public static final int IMAGE_TYPE = 1;
-    public String name, category, description, address, state, country, zipcode,  city, bldgNo, street, email, website, twitter, facebook, phone;
+    public String name, category, description, address, state, country, zipcode,  city, bldgNo, street, email, website, twitter, facebook, phone, link;
     public int type, rating, ratingCount, addCategory;
     public Double lat, lng;
 
@@ -15,6 +15,7 @@ public class ListingsAddModel implements Parcelable {
                             String mCity, String mbldgNo, String mstreet, String mPhone, String mEmail, String mWebsite,
                             String mTwitter, String mFacebook) {
         this.name = mName;
+        //this.link = mlink;
         this.category = mCategory;
         this.addCategory = addCategory;
         this.description = mDescription;
@@ -39,6 +40,7 @@ public class ListingsAddModel implements Parcelable {
         //write all properties to the parcel
         //dest.writeInt(type);
         dest.writeString(name);
+        dest.writeString(link);
         dest.writeString(category);
         dest.writeInt(addCategory);
         dest.writeString(description);
@@ -62,6 +64,7 @@ public class ListingsAddModel implements Parcelable {
     public ListingsAddModel(Parcel parcel){
         //read and set saved values from parcel
         name = parcel.readString();
+        link = parcel.readString();
         category = parcel.readString();
         addCategory = parcel.readInt();
         description = parcel.readString();

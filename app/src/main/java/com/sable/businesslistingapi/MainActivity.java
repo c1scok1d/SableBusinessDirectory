@@ -650,7 +650,28 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("LocationMatch ", " Logo: " + response.body().get(i).getLogo());
                             Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("LocationMatch ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
+                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
+                            if(businessHours == null){
+                                String today= "null";
+                                Log.e("Location ", " Today: " +today);
+                                Log.e("Location ", " IsOpen" +today);
+                            } else {
+                                Log.e("Location ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
+                                Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
+                            }
+                            Log.e("Location ", " Logo: " + response.body().get(i).getLogo());
+                            Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
+                            Log.e("Location ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
 //                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+
+                            if(businessHours == null){
+                                String today= "null";
+                                Log.e("Location ", " Today: " +today);
+                                Log.e("Location ", " IsOpen: " +today);
+                            } else {
+                                todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
+                                isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
+                            }
 
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,

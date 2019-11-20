@@ -1,7 +1,6 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -53,9 +51,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-
 public class ReviewActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private static final String PHOTOS_KEY = "easy_image_photos_list";
+    private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
+    private static final int CAMERA_REQUEST_CODE = 7500;
+    private static final int CAMERA_VIDEO_REQUEST_CODE = 7501;
+    private static final int GALLERY_REQUEST_CODE = 7502;
+    private static final int DOCUMENTS_REQUEST_CODE = 7503;
+    protected RecyclerView recyclerView;
+    protected View galleryButton;
     RatingBar ratingBar;
     TextView mRatingScale;
     EditText mFeedback;
@@ -64,33 +69,23 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     TextView tvPost_title, tvPost_status, tvDefault_category, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvEmail, tvWebsite, tvTwitter, tvFacebook,
             tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvTimestamp, tvPostCategory, tvName;
-
     ImageView ivImage0, ivImage1, ivImage02;
     RatingBar simpleRatingBar;
-    private ProgressBar progressBar;
-    String baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", authToken, status = "publish";
+    String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business";
+    Double latitude, longitude;
+    MultipartBody.Part image00, image01, image02, image03, image04, image05;
     Integer category;
     Float rating;
-
-    private static final String PHOTOS_KEY = "easy_image_photos_list";
-    private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
-    private static final int CAMERA_REQUEST_CODE = 7500;
-    private static final int CAMERA_VIDEO_REQUEST_CODE = 7501;
-    private static final int GALLERY_REQUEST_CODE = 7502;
-    private static final int DOCUMENTS_REQUEST_CODE = 7503;
-
-    protected RecyclerView recyclerView;
-
-    protected View galleryButton;
-
+    File image;
+    /**
+     * submit to api
+     */
+    MultipartBody.Part body;
+    private ProgressBar progressBar;
     private ImagesAdapter imagesAdapter;
-
     private ArrayList<MediaFile> photos = new ArrayList<>();
-
     private EasyImage easyImage;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +174,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvFacebook.setText(locationAdd.get(0).facebook);
             tvContent.setText(locationAdd.get(0).description);
             category = locationAdd.get(0).addCategory;
+            link = locationAdd.get(0).link;
+            latitude = locationAdd.get(0).lat;
+            longitude = locationAdd.get(0).lng;
 
         } else {
 
@@ -201,6 +199,9 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvHours.setText(locationMatch.get(0).hours);
             tvIsOpen.setText(locationMatch.get(0).isOpen);
             tvContent.setText(locationMatch.get(0).content);
+            link = locationMatch.get(0).link;
+            latitude = locationMatch.get(0).latitude;
+            longitude = locationAdd.get(0).lng;
         }
 
 
@@ -282,8 +283,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 } else {
 
                     mFeedback.setText("");
-                    rating = ratingBar.getRating();
-                    Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
+                    //rating = ratingBar.getRating();
                     submitData();
                 }
             }
@@ -381,7 +381,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             easyImage.openDocuments(ReviewActivity.this);
         }
     }
-    File image;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -429,13 +428,94 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     private void requestPermissionsCompat(String[] permissions, int requestCode) {
         ActivityCompat.requestPermissions(ReviewActivity.this, permissions, requestCode);
     }
-    /**
-     *
-     * submit to api
-     *
-     *
-     */
-    MultipartBody.Part body;
+
+    private void submitData() {
+
+        title = tvName.getText().toString();
+        status = tvPost_status.getText().toString();
+        state = tvState.getText().toString();
+        city = tvCity.getText().toString();
+        zipcode = tvZip.getText().toString();
+        country = tvCity.getText().toString();
+        rating = ratingBar.getRating();
+
+        for (int i = 00; i <=06; i++) {
+            String filename = "image"+i;
+
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), image);
+            // MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part part  = MultipartBody.Part.createFormData(filename, image.getName(), requestFile);
+
+             //MultipartBody.Part filename = body;
+             //filename = body;
+
+        }
+
+
+        //Add the interceptor to the client builder.
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
+                .build();
+
+        //Defining retrofit api service
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+        Call<List<BusinessListings>> call = service.postReview(/*id,*/
+                link,
+                title,
+                status,
+                rating,
+                post_type,
+                city,
+                state,
+                country,
+                zipcode,
+                latitude,
+                longitude,
+                image00,
+                image01,
+                image02,
+                image03,
+                image04,
+                image05);
+
+
+        call.enqueue(new Callback<List<BusinessListings>>() {
+            @Override
+            public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
+                Log.e("add_listing", " response " + response.body());
+
+//                progressBar.setVisibility(View.GONE); //hide progressBar
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Post Updated Title: " + response.body().get(0).getTitle() +
+                                    " Body: " + response.body().get(0).getContent() +
+                                    " PostId: " + response.body().get(0).getId(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
+//                progressBar.setVisibility(View.GONE); //hide progressBar
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+        });
+
+        Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
+
+
+    }
+
     public class BasicAuthInterceptor implements Interceptor {
 
         private String credentials;
@@ -451,105 +531,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     .header("Authorization", credentials).build();
             return chain.proceed(authenticatedRequest);
         }
-
-    }
-
-   private void submitData(){
-
-        String post_title = tvName.getText().toString();
-       // String post_status = tvPost_status.getText().toString();
-        Integer default_category = category;
-        String state = tvState.getText().toString();
-        String street = tvStreet.getText().toString();
-        String city = tvCity.getText().toString();
-        String zip = tvZip.getText().toString();
-        String country = tvCity.getText().toString();
-       // String rating = mRatingBar;
-        String email = tvEmail.getText().toString();
-        String website = tvWebsite.getText().toString();
-        String twitter = tvTwitter.getText().toString();
-        String facebook = tvFacebook.getText().toString();
-        //String video = tvVideo.getText().toString();
-        String hours = tvHours.getText().toString();
-        //String isOpen = tvIsOpen.getText().toString();
-        String content = tvContent.getText().toString();
-        String phone = tvPhone.getText().toString();
-        String bldgno = tvBldgno.getText().toString();
-        Double latitude = MainActivity.latitude;
-        Double longitude = MainActivity.longitude;
-        //Integer rating = ratingBar.getRating();
-
-       RequestBody requestFile =
-               RequestBody.create(MediaType.parse("multipart/form-data"), image);
-
-// MultipartBody.Part is used to send also the actual file name
-       MultipartBody.Part mimage =
-               MultipartBody.Part.createFormData("featured_image", image.getName(), requestFile);
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-               .addInterceptor(new BasicAuthInterceptor(username, password))
-               .addInterceptor(logging)
-               .build();
-
-        //Add the interceptor to the client builder.
-        //clientBuilder.addInterceptor(headerAuthorizationInterceptor);
-
-        //Defining retrofit api service
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postData(/*id,*/
-                post_title,
-                status,
-                default_category,
-                content,
-                bldgno,
-                street,
-                city,
-                state,
-                country,
-                zip,
-                latitude,
-                longitude,
-                rating,
-                phone,
-                email,
-                website,
-                twitter,
-                facebook,
-                /*hours,*/
-                mimage,
-                mimage,
-                mimage);
-
-        //calling the api
-        call.enqueue(new Callback<List<BusinessListings>>() {
-            @Override
-            public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("add_listing", " response " + response.body());
-
-//                progressBar.setVisibility(View.GONE); //hide progressBar
-                if(response.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),
-                            "Post Updated Title: "+response.body().get(0).getTitle()+
-                                    " Body: "+response.body().get(0).getContent()+
-                                    " PostId: "+response.body().get(0).getId(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-//                progressBar.setVisibility(View.GONE); //hide progressBar
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
 
     }
 }

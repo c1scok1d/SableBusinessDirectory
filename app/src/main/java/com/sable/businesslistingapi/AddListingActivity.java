@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -18,13 +20,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,18 +39,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pl.aprilapps.easyphotopicker.ChooserType;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
+import pl.aprilapps.easyphotopicker.MediaFile;
+import pl.aprilapps.easyphotopicker.MediaSource;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -84,6 +95,20 @@ public class AddListingActivity extends AppCompatActivity implements
     Spinner spnCategory;
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
+    private ArrayList<MediaFile> photos = new ArrayList<>();
+    String name, description, catName, phone, email, website, twitter, facebook, link, status = "publish", Document_img1 = "";
+    Integer catNum;
+    private static final String PHOTOS_KEY = "easy_image_photos_list";
+    private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
+    private static final int CAMERA_REQUEST_CODE = 7500;
+    private static final int CAMERA_VIDEO_REQUEST_CODE = 7501;
+    private static final int GALLERY_REQUEST_CODE = 7502;
+    private static final int DOCUMENTS_REQUEST_CODE = 7503;
+    protected ImageView ivLogo;
+    private ImagesAdapter imagesAdapter;
+    private EasyImage easyImage;
+    File image;
+
 
 
     //ImageView uploadImage1, uploadImage2, uploadImage3;
@@ -137,21 +162,22 @@ public class AddListingActivity extends AppCompatActivity implements
 
                     getRetrofitCategories();
 
-                    final String name = etName.getText().toString();
-                    final String description = etDescription.getText().toString();
-                    final String category = spnCategory.getSelectedItem().toString();
+                    name = etName.getText().toString();
+                    description = etDescription.getText().toString();
+                    catName = spnCategory.getSelectedItem().toString();
                     //addCategory = addCategory;
-                    final String phone = etPhone.getText().toString();
-                    final String email = etEmail.getText().toString();
-                    final String website = etWebsite.getText().toString();
-                    final String twitter = etTwitter.getText().toString();
-                    final String facebook = etFacebook.getText().toString();
+                    phone = etPhone.getText().toString();
+                    email = etEmail.getText().toString();
+                    website = etWebsite.getText().toString();
+                    twitter = etTwitter.getText().toString();
+                    facebook = etFacebook.getText().toString();
 
 
                     locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
                             name,
-                            category,
-                            addCategory,
+                            /*link,*/
+                            catName,
+                            catNum,
                             description,
                             longitude,
                             latitude,
@@ -168,11 +194,13 @@ public class AddListingActivity extends AppCompatActivity implements
                             twitter,
                             facebook));
 
-                    Intent LocationAdd = new Intent(AddListingActivity.this, ReviewActivity.class);
-                    Bundle locationAddBundle = new Bundle();
-                    locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
-                    LocationAdd.putExtra("locationAdd", locationAdd);
-                    startActivity(LocationAdd);
+                    submitData();
+
+                    Intent home = new Intent(AddListingActivity.this, MainActivity.class);
+                    //Bundle locationAddBundle = new Bundle();
+                    //locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
+                    //LocationAdd.putExtra("locationAdd", locationAdd);
+                    startActivity(home);
                 }
             }
         });
@@ -218,7 +246,7 @@ public class AddListingActivity extends AppCompatActivity implements
                                 String replied = response.body().get(i).getName();
 
                                 if (spnCategory.getSelectedItem().toString().equals(response.body().get(i).getName())) {
-                                    addCategory = (response.body().get(i).getId());
+                                    catNum = (response.body().get(i).getId());
                                     break;
                                 }
                             }
@@ -236,6 +264,147 @@ public class AddListingActivity extends AppCompatActivity implements
                 // TODO Auto-generated method stub
             }
         });
+
+        ivLogo = findViewById(R.id.ivLogo);
+        //galleryButton = findViewById(R.id.gallery_button);
+
+        if (savedInstanceState != null) {
+            photos = savedInstanceState.getParcelableArrayList(PHOTOS_KEY);
+        }
+
+        /*imagesAdapter = new ImagesAdapter(this, photos);
+        ivLogo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        ivLogo.setHasFixedSize(true);
+        ivLogo.setAdapter(imagesAdapter);*/
+
+        easyImage = new EasyImage.Builder(this)
+                .setChooserTitle("Pick media")
+                .setCopyImagesToPublicGalleryFolder(false)
+//                .setChooserType(ChooserType.CAMERA_AND_DOCUMENTS)
+                .setChooserType(ChooserType.CAMERA_AND_GALLERY)
+                .setFolderName("EasyImage sample")
+                .allowMultiple(true)
+                .build();
+
+        //checkGalleryAppAvailability();
+
+
+        findViewById(R.id.ivLogo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /** Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised! */
+                String[] necessaryPermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openGallery(AddListingActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, GALLERY_REQUEST_CODE);
+                }
+            }
+        });
+
+
+        /*findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openCameraForImage(AddListingActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, CAMERA_REQUEST_CODE);
+                }
+            }
+        });
+
+        findViewById(R.id.camera_video_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
+                if (arePermissionsGranted(necessaryPermissions)) {
+                    easyImage.openCameraForVideo(AddListingActivity.this);
+                } else {
+                    requestPermissionsCompat(necessaryPermissions, CAMERA_VIDEO_REQUEST_CODE);
+                }
+            }
+        }); */
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(PHOTOS_KEY, photos);
+    }
+
+   /* private void checkGalleryAppAvailability() {
+        if (!easyImage.canDeviceHandleGallery()) {
+            //Device has no app that handles gallery intent
+            galleryButton.setVisibility(View.GONE);
+        }
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CHOOSER_PERMISSIONS_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openChooser(AddListingActivity.this);
+        } else if (requestCode == CAMERA_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openCameraForImage(AddListingActivity.this);
+        } else if (requestCode == CAMERA_VIDEO_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openCameraForVideo(AddListingActivity.this);
+        } else if (requestCode == GALLERY_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openGallery(AddListingActivity.this);
+        } else if (requestCode == DOCUMENTS_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            easyImage.openDocuments(AddListingActivity.this);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
+                for (MediaFile imageFile : imageFiles) {
+                    //body = imageFile.getFile();
+                    image = imageFile.getFile();
+                    Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                }
+                onPhotosReturned(imageFiles);
+            }
+
+            @Override
+            public void onImagePickerError(@NonNull Throwable error, @NonNull MediaSource source) {
+                //Some error handling
+                error.printStackTrace();
+            }
+
+            @Override
+            public void onCanceled(@NonNull MediaSource source) {
+                //Not necessary to remove any files manually anymore
+            }
+        });
+    }
+
+    private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
+        //Bitmap bitmap = BitmapFactory.decodeFile(image.toString());
+        ivLogo.setImageBitmap(BitmapFactory.decodeFile(image.toString()));
+        //photos.addAll(Arrays.asList(returnedPhotos));
+        //imagesAdapter.notifyDataSetChanged();
+        //ivLogo.scrollToPosition(photos.size() - 1);
+    }
+
+    private boolean arePermissionsGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
+
+        }
+        return true;
+    }
+
+    private void requestPermissionsCompat(String[] permissions, int requestCode) {
+        ActivityCompat.requestPermissions(AddListingActivity.this, permissions, requestCode);
     }
 
     android.location.LocationListener LocationListener = new LocationListener() {
@@ -411,7 +580,7 @@ public class AddListingActivity extends AppCompatActivity implements
         if(addresses.size() > 0) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
-            String maddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
+           /* String maddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
             String mbldgNo = addresses.get(0).getSubThoroughfare();
             String mstreet = addresses.get(0).getThoroughfare();
             String mcity = addresses.get(0).getLocality();
@@ -420,19 +589,19 @@ public class AddListingActivity extends AppCompatActivity implements
             String mcountry = addresses.get(0).getCountryName();
             String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
             String lat = Double.toString(latitude);
-            String lng = Double.toString(longitude);
+            String lng = Double.toString(longitude);*/
 
 
 //        tvAddress.setText(address);
-            tvZip.setText(mzipcode);
-            tvState.setText(mstate);
-            tvCity.setText(mcity);
-            tvStreet.setText(mstreet);
-            tvBldgNo.setText(mbldgNo);
-            tvCountry.setText(mcountry);
+            tvZip.setText(addresses.get(0).getPostalCode());
+            tvState.setText(addresses.get(0).getAdminArea());
+            tvCity.setText(addresses.get(0).getLocality());
+            tvStreet.setText(addresses.get(0).getThoroughfare());
+            tvBldgNo.setText(addresses.get(0).getSubThoroughfare());
+            tvCountry.setText(addresses.get(0).getCountryName());
 
 
-            addresses.get(0).getAdminArea();
+           /* addresses.get(0).getAdminArea();
             address = maddress;
             bldgNo = mbldgNo;
             street = mstreet;
@@ -440,7 +609,7 @@ public class AddListingActivity extends AppCompatActivity implements
             city = mcity;
             zipcode = mzipcode;
             country = mcountry;
-//            tvLng.setText(lng);
+//            tvLng.setText(lng);*/
         }
 
     }
@@ -468,7 +637,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
     }
     private String baseURL = "https://www.thesablebusinessdirectory.com";
-    Integer addCategory;
+    //Integer addCategory;
 
     private static Retrofit retrofit = null;
     public void getRetrofitCategories() {
@@ -517,5 +686,67 @@ public class AddListingActivity extends AppCompatActivity implements
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
             }
         });
+    }
+
+    private void submitData(){
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
+                .build();
+
+        //Defining retrofit api service
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+        Call<List<BusinessListings>> call = service.postData(/*id,*/
+                name,
+                status,
+                catNum,
+                description,
+                bldgNo,
+                street,
+                city,
+                state,
+                country,
+                zipcode,
+                latitude,
+                longitude,
+                phone,
+                /* hours,*/
+                email,
+                website,
+                twitter,
+                facebook);
+
+        //calling the api
+        call.enqueue(new Callback<List<BusinessListings>>() {
+            @Override
+            public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
+                Log.e("add_listing", " response " + response.body());
+
+//                progressBar.setVisibility(View.GONE); //hide progressBar
+                if(response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(),
+                            "Post Updated Title: "+response.body().get(0).getTitle()+
+                                    " Body: "+response.body().get(0).getContent()+
+                                    " PostId: "+response.body().get(0).getId(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
+//                progressBar.setVisibility(View.GONE); //hide progressBar
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 }

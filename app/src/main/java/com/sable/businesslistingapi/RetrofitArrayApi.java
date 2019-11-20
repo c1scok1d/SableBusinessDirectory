@@ -50,15 +50,11 @@ public interface RetrofitArrayApi {
  // @GET
   //Call<List<BusinessListings>> getPostInfo(@Url String url);
 //
-    @Multipart
     @POST("wp-json/geodir/v2/business/")
     Call<List<BusinessListings>> postData(
-            //@Path("id") String id,
             @Query("title") String title,
             @Query("status") String status,
-           // @Field("post_tags") String post_tags,
             @Query("post_category") Integer category,
-            //@Field("featured") String featured,
             @Query("content")String content,
             @Query("bldgno") String bldgno,
             @Query("street") String street,
@@ -68,16 +64,31 @@ public interface RetrofitArrayApi {
             @Query("zip") String zip,
             @Query("latitude") Double latitude,
             @Query("longitude") Double longitude,
-            @Query("rating") Float ratings,
             @Query("phone") String phone,
             @Query("email") String email,
             @Query("website") String website,
             @Query("twitter") String twitter,
-            @Query("facebook") String facebook,
-           // @Field("video") File video,
-            //@Query("business_hours") String hours,
-            @Part MultipartBody.Part featured_image,
-            @Part MultipartBody.Part body,
-            @Part MultipartBody.Part image);
+            @Query("facebook") String facebook);
+
+    @Multipart
+    @POST("wp-json/geodir/v2/business/")
+    Call<List<BusinessListings>> postReview(
+            @Query("link") String link,
+            @Query("title") String title,
+            @Query("status") String status,
+            @Query("rating") Float rating,
+            @Query("post_type")String content,
+            @Query("city") String city,
+            @Query("region") String state,
+            @Query("country") String country,
+            @Query("zip") String zip,
+            @Query("latitude") Double latitude,
+            @Query("longitude") Double longitude,
+            @Part MultipartBody.Part image00,
+            @Part MultipartBody.Part image01,
+            @Part MultipartBody.Part image02,
+            @Part MultipartBody.Part image03,
+            @Part MultipartBody.Part image04,
+            @Part MultipartBody.Part image05);
  }
 

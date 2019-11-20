@@ -1,6 +1,5 @@
 package com.sable.businesslistingapi;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,9 +13,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-
-
-import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -36,6 +32,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         this.mContext = context;
     }
 
+
     public static class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, tvStreet, tvCity, tvRegion, tvZip, tvHours, tvisOpen, tvContent, tvPhone,
@@ -44,6 +41,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ImageView image;
         RatingBar simpleRatingBar;
         ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook;
+
+
 
         public ImageTypeViewHolder(final View itemView) {
             super(itemView);
@@ -94,6 +93,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                     String lat = tvLat.getText().toString();
                     String lng = tvLng.getText().toString();
 
+
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=" + lat +"," + lng);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
@@ -105,8 +105,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     String siteURL = tvWebsite.getText().toString();
-                    Intent website = new Intent(Intent.ACTION_VIEW, Uri.parse(siteURL));
-                    itemView.getContext().startActivity(website);
+                    Intent email = new Intent(Intent.ACTION_VIEW, Uri.parse(siteURL));
+                    itemView.getContext().startActivity(email);
                     }
             });
 
