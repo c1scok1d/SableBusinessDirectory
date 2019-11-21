@@ -112,7 +112,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
 
-                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude +"," + longitude);
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + MainActivity.latitude +"," + MainActivity.longitude);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     itemView.getContext().startActivity(mapIntent);
@@ -164,9 +164,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         final ListingsModel object = dataset.get(position);
 
-
-
-
         name = (object.title);
         id = (object.id);
         link = (object.link);
@@ -177,7 +174,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         bldgno = (object.bldgno);
         street = (object.street);
         city = (object.city); state = (object.state); country = (object.country);
-        zipcode = (object.zipcode); latitude = (object.latitude); longitude = (object.longitude);
+        zipcode = (object.zipcode); /*this.latitude = (object.latitude); this.longitude = (object.longitude);*/
         rating = (object.rating); ratingCount = (object.ratingCount); phone = (object.phone);
         email = (object.email); website = (object.website); twitter = (object.twitter);
         facebook = (object.facebook); video = (object.video); hours = (object.hours);
@@ -193,8 +190,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         locationA.setLongitude(object.longitude); //listing lng
 
         Location locationB = new Location("point B");
-        locationB.setLatitude(latitude); //device lat
-        locationB.setLongitude(longitude); //device lng
+        locationB.setLatitude(MainActivity.latitude); //device lat
+        locationB.setLongitude(MainActivity.longitude); //device lng
 
         double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
 
