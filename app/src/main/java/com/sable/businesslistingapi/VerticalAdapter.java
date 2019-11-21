@@ -43,13 +43,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvStreet, tvCity, tvState, tvHours, tvisOpen, tvContent, tvPhone,
                 tvRating, tvRatingCount, tvLatitude, tvLongitude, tvBldNo, tvWebsite, tvEmail, tvTwitter,
-                tvFacebook, tvFeatured, tvDistance, tvZipcode;
+                tvFacebook, tvFeatured, tvDistance, tvZipcode, tvCall;
 
 
         ImageView image;
         RatingBar simpleRatingBar;
         ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
-       // ArrayList<ListingsModel> locationReview = new ArrayList<>();
+        // ArrayList<ListingsModel> locationReview = new ArrayList<>();
 
 
 
@@ -71,6 +71,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             tvPhone = itemView.findViewById(R.id.tvPhone);
             image = itemView.findViewById(R.id.ivImage);
             btnCall = itemView.findViewById(R.id.btnCall);
+            tvCall = itemView.findViewById(R.id.tvCall);
             btnDirections = itemView.findViewById(R.id.btnDirections);
             tvLatitude = itemView.findViewById(R.id.tvLat);
             tvLongitude = itemView.findViewById(R.id.tvLng);
@@ -112,7 +113,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
 
-                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + MainActivity.latitude +"," + MainActivity.longitude);
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude +"," + longitude);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     itemView.getContext().startActivity(mapIntent);
@@ -125,7 +126,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                     String siteURL = tvWebsite.getText().toString();
                     Intent email = new Intent(Intent.ACTION_VIEW, Uri.parse(siteURL));
                     itemView.getContext().startActivity(email);
-                    }
+                }
             });
 
             btnTwitter.setOnClickListener(new View.OnClickListener() {
@@ -212,26 +213,55 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         if ( object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
-       // } else {
-       //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
-       }
+            // } else {
+            //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
+        }
 
         if (object.twitter.equals("null") || object.twitter.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnTwitter.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
-        //} else {
-        //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
+            //} else {
+            //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
         if (object.email.equals("null") || object.email.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
-        //} else {
-        //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+            //} else {
+            //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         }
         if (object.featured.equals("true")){
             String isFeatured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
             ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
-        //} else {
-        //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+            //} else {
+            //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+
+        }
+        if(object.isOpen.equals("Closed now")){
+            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
+        }
+
+        if ( object.phone.equals("null") || object.phone.isEmpty()) {
+            ((ImageTypeViewHolder) holder).btnCall.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
+            ((ImageTypeViewHolder) holder).tvCall.setTextColor(Color.rgb(211,211,211));
+            // } else {
+            //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
+        }
+
+        if (object.latitude.equals("null") || object.latitude.toString().isEmpty() || (object.longitude.equals("null") || object.longitude.toString().isEmpty())) {
+            ((ImageTypeViewHolder) holder).btnDirections.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
+            //} else {
+            //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
+        }
+        /*if (object.email.equals("null") || object.email.isEmpty()) {
+            ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
+            //} else {
+            //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+        }*/
+        if (object.featured.equals("true")){
+            String isFeatured = "Featured";
+            ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
+            //} else {
+            //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
 
         }
         if(object.isOpen.equals("Closed now")){

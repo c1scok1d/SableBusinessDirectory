@@ -23,18 +23,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
             <ImageView
                 android:id="@+id/ivFeaturedImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 app:srcCompat="@mipmap/ic_launcher" />
 
         </LinearLayout>
@@ -81,11 +73,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
-                                android:text="Business Name"
+                                android:text="Name"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorAccent"
-                                android:textStyle="bold"
-                                tools:text="Business Name" />
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/BusinessCategory"
@@ -118,7 +109,7 @@
                             android:gravity="start"
                             android:textColor="@color/black"
                             android:textStyle="bold"
-                            tools:text="Business Name" />
+                            tools:text="business name" />
 
                         <TextView
                             android:id="@+id/tvPostCategory"
@@ -127,7 +118,7 @@
                             android:layout_gravity="start|center_vertical"
                             android:layout_weight="1"
                             android:gravity="start"
-                            android:text="PostCategory"
+                            android:text="category"
                             android:textAllCaps="false"
                             android:textColor="@color/black"
                             android:textStyle="bold" />
@@ -142,10 +133,10 @@
                         <TextView
                             android:id="@+id/tvAddress"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|center_vertical"
-                            android:text="location address"
+                            android:gravity="center_vertical"
+                            android:text="address"
                             android:textAllCaps="true"
                             android:textColor="@color/colorAccent"
                             android:textStyle="bold" />
@@ -276,9 +267,8 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:hint="Tap here to add website"
+                                    android:hint="Tap to add website"
                                     android:text="http://www.companywebsite.com"
-                                    android:textAllCaps="false"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
 
@@ -302,7 +292,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:hint="Tap here to add email"
+                                    android:hint="Tap to add email address"
                                     android:text="listing@thesablebusinessdirectory.com"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
@@ -326,8 +316,6 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="start|center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:layout_weight="1"
-                                    android:gravity="center_horizontal|center_vertical"
                                     android:text="@string/hours"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
@@ -336,23 +324,11 @@
                                     android:id="@+id/tvIsOpen"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:layout_gravity="center_horizontal|center_vertical"
+                                    android:layout_marginStart="10dp"
                                     android:layout_weight="1"
-                                    android:gravity="center_horizontal|center_vertical"
-                                    android:text="@string/isOpen"
+                                    android:text="isOpen"
                                     android:textAllCaps="true"
-                                    android:textColor="@android:color/holo_green_dark"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    tools:text="isOpen" />
-
-                                <TextView
-                                    android:id="@+id/tvRating"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:gravity="center_horizontal|center_vertical"
-                                    android:text="TextView" />
+                                    android:textStyle="bold" />
 
                             </LinearLayout>
 
@@ -374,7 +350,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:hint="Tap here to add Twitter handle"
+                                    android:hint="Tap to add Twitter handle"
                                     android:textColor="@color/black"
                                     android:textStyle="bold"
                                     tools:text="https://www.twitter.com/listing_name" />
@@ -431,6 +407,45 @@
                         android:textColor="@color/black"
                         android:textStyle="bold" />
 
+                    <LinearLayout
+                        android:id="@+id/ratingLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="number of ratings"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorAccent"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:text="rating"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvFirstRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight="1"
+                            android:text="Be the first to rate"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            tools:text="be the first to rate" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -469,43 +484,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/camera_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    app:srcCompat="@android:drawable/ic_menu_camera" />
-
-                <ImageButton
-                    android:id="@+id/gallery_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    app:srcCompat="@android:drawable/ic_menu_gallery" />
-
-                <ImageButton
-                    android:id="@+id/camera_video_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    app:srcCompat="@android:drawable/ic_menu_camera" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <EditText
@@ -519,6 +497,51 @@
                     android:hint="Tell us what you loved"
                     android:inputType="textMultiLine"
                     android:lines="5" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/camera_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/customborder"
+                        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+                    <ImageButton
+                        android:id="@+id/gallery_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/customborder"
+                        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+                    <ImageButton
+                        android:id="@+id/camera_video_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/customborder"
+                        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imageAddRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <Button
                     android:id="@+id/btnSubmit"

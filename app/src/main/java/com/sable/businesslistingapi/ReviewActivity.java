@@ -68,11 +68,11 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     TextView mRatingScale;
     EditText mFeedback;
     Button mSendFeedback;
-    ImageButton btnPic, btnPicUpload;
+    ImageButton ivLogo, btnPicUpload;
     TextView tvPost_title, tvPost_status, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvEmail, tvWebsite, tvTwitter, tvFacebook,
-            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvTimestamp, tvPostCategory, tvName;
-    ImageView ivFeaturedImage, ivImage1, ivImage02;
+            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvTimestamp, tvPostCategory, tvName, tvFirstRate;
+    ImageView ivFeaturedImage;
     RatingBar simpleRatingBar;
     String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
             password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", filePath;
@@ -124,6 +124,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         ivFeaturedImage = findViewById(R.id.ivFeaturedImage);
         tvRating = findViewById(R.id.tvRating);
         tvIsOpen = findViewById(R.id.tvIsOpen);
+        tvFirstRate = findViewById(R.id.tvFirstRate);
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -168,7 +169,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             tvName.setText(locationReview.get(0).title);
             tvPostCategory.setText(locationReview.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationReview.get(0).featured_image)).into(ivFeaturedImage);
+            builder.build().load(getIntent().getStringExtra(locationReview.get(0).logo)).into(ivFeaturedImage);
             tvBldgno.setText(locationReview.get(0).bldgno);
             tvStreet.setText(locationReview.get(0).street);
             tvCity.setText(locationReview.get(0).city);
@@ -191,6 +192,14 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             if(locationReview.get(0).isOpen.equals("Closed now")){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
+            }
+            if (locationReview.get(0).ratingCount == 0){
+                String isFeatured = "Be the first to rate";
+                tvFirstRate.setText(isFeatured);
+                tvFirstRate.setTextColor(Color.rgb(0, 255, 0)); //orange
+                //} else {
+                //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
+
             }
 
         } else if (locationMatch == null) {
@@ -218,7 +227,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
 
             tvName.setText(locationMatch.get(0).title);
             tvPostCategory.setText(locationMatch.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).featured_image)).into(ivFeaturedImage);
+            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).logo)).into(ivFeaturedImage);
             tvBldgno.setText(locationMatch.get(0).bldgno);
             tvStreet.setText(locationMatch.get(0).street);
             tvCity.setText(locationMatch.get(0).city);
@@ -326,7 +335,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             }
         });
 
-        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.imageAddRecycler);
         //galleryButton = findViewById(R.id.gallery_button);
 
         if (savedInstanceState != null) {
