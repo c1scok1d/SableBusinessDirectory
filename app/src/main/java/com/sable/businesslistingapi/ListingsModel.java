@@ -10,11 +10,11 @@ import java.util.List;
 
 public class ListingsModel implements Parcelable {
     public static final int IMAGE_TYPE = 1;
-    public String title, status, category, featured_image,
-            bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, isOpen, content, image, logo, timestamp, link, featured, ratingCount;
-    public int rating, id;
+    public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
+            hours, isOpen, content, image, logo, timestamp, link;
+    public int rating, id, ratingCount;
     public Double latitude, longitude;
+    Boolean featured;
 
 
 
@@ -30,7 +30,7 @@ public class ListingsModel implements Parcelable {
         this.link = link;
         this.status = status;
         this.category = category;
-        this.featured = featured.toString();
+        this.featured = featured;
         this.featured_image = featuredImage;
         this.bldgno = bldgNo;
         this.street = street;
@@ -41,7 +41,7 @@ public class ListingsModel implements Parcelable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = rating;
-        this.ratingCount = ratingCount.toString();
+        this.ratingCount = ratingCount;
         this.phone = phone;
         this.email = email;
         this.website = website;
@@ -66,7 +66,7 @@ public class ListingsModel implements Parcelable {
         dest.writeString(link);
         dest.writeString(status);
         dest.writeString(category);
-        dest.writeString(featured);
+        dest.writeBoolean(featured);
         dest.writeString(featured_image);
         dest.writeString(bldgno);
         dest.writeString(street);
@@ -77,7 +77,7 @@ public class ListingsModel implements Parcelable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeInt(rating);
-        dest.writeString(ratingCount);
+        dest.writeInt(ratingCount);
         dest.writeString(phone);
         dest.writeString(email);
         dest.writeString(website);
@@ -100,7 +100,7 @@ public class ListingsModel implements Parcelable {
         link = parcel.readString();
         status = parcel.readString();
         category = parcel.readString();
-        featured = parcel.readString();
+        featured = parcel.readBoolean();
         featured_image = parcel.readString();
         bldgno = parcel.readString();
         street = parcel.readString();
@@ -111,7 +111,7 @@ public class ListingsModel implements Parcelable {
         latitude = parcel.readDouble();
         longitude = parcel.readDouble();
         rating = parcel.readInt();
-        ratingCount = parcel.readString();
+        ratingCount = parcel.readInt();
         phone = parcel.readString();
         email = parcel.readString();
         website = parcel.readString();

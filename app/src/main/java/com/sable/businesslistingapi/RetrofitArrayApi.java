@@ -50,6 +50,7 @@ public interface RetrofitArrayApi {
  // @GET
   //Call<List<BusinessListings>> getPostInfo(@Url String url);
 //
+    @Multipart
     @POST("wp-json/geodir/v2/business/")
     Call<List<BusinessListings>> postData(
             @Query("title") String title,
@@ -68,7 +69,8 @@ public interface RetrofitArrayApi {
             @Query("email") String email,
             @Query("website") String website,
             @Query("twitter") String twitter,
-            @Query("facebook") String facebook);
+            @Query("facebook") String facebook,
+            @Part MultipartBody.Part logo);
 
     @Multipart
     @POST("wp-json/geodir/v2/business/")

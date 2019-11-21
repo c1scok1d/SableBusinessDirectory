@@ -227,8 +227,6 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("order", "asc");
                             //query.put("orderby",  "distance");
 
-                            //getRetrofit(query);
-
                             texty.setText(radius);
                             break;
                     }
@@ -325,7 +323,6 @@ public class MainActivity extends AppCompatActivity implements
 
         getRetrofitWoo(); //call to woocommerce products api
     }
-
     /**
      * Location listener to get device current lat/lng
      */

@@ -51,7 +51,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/title"
+                        android:id="@+id/tvTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
@@ -166,7 +166,7 @@
                         android:textColor="@color/colorAccent" />
 
                     <TextView
-                        android:id="@+id/tvZip"
+                        android:id="@+id/tvZipcode"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="3dp"
@@ -274,6 +274,41 @@
                                 android:textSize="12sp" />
 
                         </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/reviewBtnLayout"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/customborder"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/btnReview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="@string/click_to_call"
+                            app:srcCompat="@drawable/rate"
+                            tools:srcCompat="@drawable/rate" />
+
+                        <TextView
+                            android:id="@+id/tvReview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal|top|center_vertical"
+                            android:text=" rate"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorAccent"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 

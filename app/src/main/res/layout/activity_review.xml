@@ -18,11 +18,27 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <ImageView
+                android:id="@+id/ivFeaturedImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <ScrollView
@@ -33,16 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="TAP TEXT TO EDIT"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="10sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -75,6 +81,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
+                                android:text="Business Name"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorAccent"
                                 android:textStyle="bold"
@@ -138,7 +145,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal|center_vertical"
-                            android:text="current location address"
+                            android:text="location address"
                             android:textAllCaps="true"
                             android:textColor="@color/colorAccent"
                             android:textStyle="bold" />
@@ -269,7 +276,9 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
+                                    android:hint="Tap here to add website"
                                     android:text="http://www.companywebsite.com"
+                                    android:textAllCaps="false"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
 
@@ -293,6 +302,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
+                                    android:hint="Tap here to add email"
                                     android:text="listing@thesablebusinessdirectory.com"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
@@ -313,12 +323,36 @@
                                 <TextView
                                     android:id="@+id/tvHours"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     android:layout_gravity="start|center_vertical"
                                     android:layout_marginStart="3dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal|center_vertical"
                                     android:text="@string/hours"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvIsOpen"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center_horizontal|center_vertical"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal|center_vertical"
+                                    android:text="@string/isOpen"
+                                    android:textAllCaps="true"
+                                    android:textColor="@android:color/holo_green_dark"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    tools:text="isOpen" />
+
+                                <TextView
+                                    android:id="@+id/tvRating"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal|center_vertical"
+                                    android:text="TextView" />
 
                             </LinearLayout>
 
@@ -340,6 +374,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
+                                    android:hint="Tap here to add Twitter handle"
                                     android:textColor="@color/black"
                                     android:textStyle="bold"
                                     tools:text="https://www.twitter.com/listing_name" />

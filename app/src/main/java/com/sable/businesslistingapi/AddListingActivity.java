@@ -48,8 +48,11 @@ import java.util.Locale;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.aprilapps.easyphotopicker.ChooserType;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -301,31 +304,6 @@ public class AddListingActivity extends AppCompatActivity implements
                 }
             }
         });
-
-
-        /*findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
-                if (arePermissionsGranted(necessaryPermissions)) {
-                    easyImage.openCameraForImage(AddListingActivity.this);
-                } else {
-                    requestPermissionsCompat(necessaryPermissions, CAMERA_REQUEST_CODE);
-                }
-            }
-        });
-
-        findViewById(R.id.camera_video_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
-                if (arePermissionsGranted(necessaryPermissions)) {
-                    easyImage.openCameraForVideo(AddListingActivity.this);
-                } else {
-                    requestPermissionsCompat(necessaryPermissions, CAMERA_VIDEO_REQUEST_CODE);
-                }
-            }
-        }); */
     }
 
     @Override
@@ -333,13 +311,6 @@ public class AddListingActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putSerializable(PHOTOS_KEY, photos);
     }
-
-   /* private void checkGalleryAppAvailability() {
-        if (!easyImage.canDeviceHandleGallery()) {
-            //Device has no app that handles gallery intent
-            galleryButton.setVisibility(View.GONE);
-        }
-    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -580,36 +551,25 @@ public class AddListingActivity extends AppCompatActivity implements
         if(addresses.size() > 0) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
-           /* String maddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
-            String mbldgNo = addresses.get(0).getSubThoroughfare();
-            String mstreet = addresses.get(0).getThoroughfare();
-            String mcity = addresses.get(0).getLocality();
-            String mstate = addresses.get(0).getAdminArea();
-            String mzipcode = addresses.get(0).getPostalCode();
-            String mcountry = addresses.get(0).getCountryName();
+            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
+            bldgNo = addresses.get(0).getSubThoroughfare();
+            street = addresses.get(0).getThoroughfare();
+            city = addresses.get(0).getLocality();
+            state = addresses.get(0).getAdminArea();
+            zipcode = addresses.get(0).getPostalCode();
+            country = addresses.get(0).getCountryName();
             String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
             String lat = Double.toString(latitude);
-            String lng = Double.toString(longitude);*/
+            String lng = Double.toString(longitude);
 
 
 //        tvAddress.setText(address);
-            tvZip.setText(addresses.get(0).getPostalCode());
-            tvState.setText(addresses.get(0).getAdminArea());
-            tvCity.setText(addresses.get(0).getLocality());
-            tvStreet.setText(addresses.get(0).getThoroughfare());
-            tvBldgNo.setText(addresses.get(0).getSubThoroughfare());
-            tvCountry.setText(addresses.get(0).getCountryName());
-
-
-           /* addresses.get(0).getAdminArea();
-            address = maddress;
-            bldgNo = mbldgNo;
-            street = mstreet;
-            state = mstate;
-            city = mcity;
-            zipcode = mzipcode;
-            country = mcountry;
-//            tvLng.setText(lng);*/
+            tvZip.setText(zipcode);
+            tvState.setText(state);
+            tvCity.setText(city);
+            tvStreet.setText(street);
+            tvBldgNo.setText(bldgNo);
+            tvCountry.setText(country);
         }
 
     }
@@ -690,6 +650,11 @@ public class AddListingActivity extends AppCompatActivity implements
 
     private void submitData(){
 
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), image);
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part logo  = MultipartBody.Part.createFormData("logo", image.getName(), requestFile);
+
+
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -724,7 +689,8 @@ public class AddListingActivity extends AppCompatActivity implements
                 email,
                 website,
                 twitter,
-                facebook);
+                facebook,
+                logo);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
