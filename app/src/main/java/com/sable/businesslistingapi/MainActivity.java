@@ -603,7 +603,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("main_activity", " response " + response.body());
+               // Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();
@@ -619,7 +619,7 @@ public class MainActivity extends AppCompatActivity implements
                          */
                         if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
 
-                            Log.e("LocationMatch ", " ID: " + response.body().get(i).getId());
+                           /* Log.e("LocationMatch ", " ID: " + response.body().get(i).getId());
                             Log.e("LocationMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
                             Log.e("LocationMatch ", " Link: " + response.body().get(i).getLink());
                             Log.e("LocationMatch ", " Status: " + response.body().get(i).getStatus());
@@ -646,11 +646,11 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
                             Log.e("LocationMatch ", " Logo: " + response.body().get(i).getLogo());
                             Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
-                            Log.e("LocationMatch ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
+                            Log.e("LocationMatch ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());*/
                             BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
-                            if(businessHours == null){
+                            /*if(businessHours == null){
                                 String today= "null";
-                                Log.e("Location ", " Today: " +today);
+                               Log.e("Location ", " Today: " +today);
                                 Log.e("Location ", " IsOpen" +today);
                             } else {
                                 Log.e("Location ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
@@ -659,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " Logo: " + response.body().get(i).getLogo());
                             Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
                             Log.e("Location ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
-//                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
+//                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()); */
 
                             if(businessHours == null){
                                 String today= "null";
@@ -668,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements
                             } else {
                                 todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                                 isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
-                            }
+                                }
 
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -720,7 +720,7 @@ public class MainActivity extends AppCompatActivity implements
                              * if no location match continue to pars JSON data
                              */
 
-                            Log.e("Location ", " ID: " + response.body().get(i).getId());
+                           /* Log.e("Location ", " ID: " + response.body().get(i).getId());
                             Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
                             Log.e("Location ", " Link: " + response.body().get(i).getLink());
                             Log.e("Location ", " Status: " + response.body().get(i).getStatus());
@@ -742,31 +742,16 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e("Location ", " Website: " + response.body().get(i).getWebsite());
                             Log.e("Location ", " Twitter: " + response.body().get(i).getTwitter());
                             Log.e("Location ", " Facebook: " + response.body().get(i).getFacebook());
-                            Log.e("Location ", " Video: " + response.body().get(i).getVideo());
-                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
+                            Log.e("Location ", " Video: " + response.body().get(i).getVideo()); */
+                           BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                             if(businessHours == null){
                                 String today= "null";
-                                Log.e("Location ", " Today: " +today);
-                                Log.e("Location ", " IsOpen" +today);
-                            } else {
-                                Log.e("Location ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                                Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                            }
-                            Log.e("Location ", " Logo: " + response.body().get(i).getLogo());
-                            Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
-                            Log.e("Location ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
-//                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat());
-
-                            if(businessHours == null){
-                                String today= "null";
-                                Log.e("Location ", " Today: " +today);
-                                Log.e("Location ", " IsOpen: " +today);
+                                //Log.e("Location ", " Today: " +today);
+                                //Log.e("Location ", " IsOpen: " +today);
                             } else {
                                 todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                                 isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
-                            }
-
-
+                                }
                             verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
@@ -803,7 +788,7 @@ public class MainActivity extends AppCompatActivity implements
                             //spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_s
                             // pinner_dropdown_item, category));
 
-                            Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
+                            //Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
                         }
                         verticalAdapter.notifyDataSetChanged();
 
@@ -849,7 +834,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<WooProducts>>() {
             @Override
             public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
-                Log.e("WooCommerce", " response " + response.body());
+                //Log.e("WooCommerce", " response " + response.body());
 
                 //mListPost = response.body();
                 progressBar.setVisibility(View.GONE); //hide progressBar
@@ -862,14 +847,14 @@ public class MainActivity extends AppCompatActivity implements
                     //ifStatement to skip json object from array if value is empty/null
 
 
-                    Log.e("Product ", "id: " + response.body().get(i).getId());
+                    /* Log.e("Product ", "id: " + response.body().get(i).getId());
                     Log.e("Product ", "Title: " + response.body().get(i).getName());
                     Log.e("Product ", "Description" + response.body().get(i).getName());
                     Log.e("Product ", "Rating: " + response.body().get(i).getAverageRating());
                     Log.e("Product ", "Rating Count: " + response.body().get(i).getRatingCount());
                     Log.e("Product ", "Price: " + response.body().get(i).getPrice());
                     Log.e("Product ", "Image: " + response.body().get(i).getImages().get(0).getSrc());
-//                    Log.e("main ", " Image1: " + response.body().get(i).getImages().get(1).getSrc());
+//                    Log.e("main ", " Image1: " + response.body().get(i).getImages().get(1).getSrc()); */
 
                     //parse response based on WooModel class and add to list array ( get category name, description and image)
                     horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,

@@ -8,7 +8,7 @@ public class ListingsAddModel implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String name, category, description, address, state, country, zipcode,  city, bldgNo, street, email, website, twitter, facebook, phone, link;
     public int type, rating, ratingCount, addCategory;
-    public Double lat, lng;
+    public Double latitude, longitude;
 
     public ListingsAddModel(int mtype, String mName, String mCategory, Integer addCategory, String  mDescription, Double longitude, Double latitude, String maddress,
                             String mstate, String mCountry, String mZipcode,
@@ -19,8 +19,8 @@ public class ListingsAddModel implements Parcelable {
         this.category = mCategory;
         this.addCategory = addCategory;
         this.description = mDescription;
-        this.lng = longitude;
-        this.lat = latitude;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.address = maddress;
         this.state = mstate;
         this.country = mCountry;
@@ -44,8 +44,8 @@ public class ListingsAddModel implements Parcelable {
         dest.writeString(category);
         dest.writeInt(addCategory);
         dest.writeString(description);
-        dest.writeDouble(lng);
-        dest.writeDouble(lat);
+        dest.writeDouble(longitude);
+        dest.writeDouble(latitude);
         dest.writeString(address);
         dest.writeString(state);
         dest.writeString(country);
@@ -68,8 +68,8 @@ public class ListingsAddModel implements Parcelable {
         category = parcel.readString();
         addCategory = parcel.readInt();
         description = parcel.readString();
-        lng = parcel.readDouble();
-        lat = parcel.readDouble();
+        longitude = parcel.readDouble();
+        latitude = parcel.readDouble();
         address = parcel.readString();
         state = parcel.readString();
         country = parcel.readString();

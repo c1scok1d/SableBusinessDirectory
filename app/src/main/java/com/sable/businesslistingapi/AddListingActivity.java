@@ -43,8 +43,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -99,6 +101,8 @@ public class AddListingActivity extends AppCompatActivity implements
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
     private ArrayList<MediaFile> photos = new ArrayList<>();
+    Map<String, RequestBody> parts = new HashMap<>();
+
     String name, description, catName, phone, email, website, twitter, facebook, link, status = "publish", Document_img1 = "";
     Integer catNum;
     private static final String PHOTOS_KEY = "easy_image_photos_list";
@@ -111,6 +115,8 @@ public class AddListingActivity extends AppCompatActivity implements
     private ImagesAdapter imagesAdapter;
     private EasyImage easyImage;
     File image;
+    MultipartBody.Part folder =
+            MultipartBody.Part.createFormData("folder", "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
 
 
 
@@ -159,8 +165,12 @@ public class AddListingActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
-                if (etName.getText().toString().isEmpty() || spnCategory == null && spnCategory.getSelectedItem() == null || etDescription.getText().toString().isEmpty()) {
-                    Toast.makeText(AddListingActivity.this, "Please fill all sections...", Toast.LENGTH_LONG).show();
+                if (etName.getText().toString().isEmpty()) {
+                    Toast.makeText(AddListingActivity.this, "Please Enter The Business Name...", Toast.LENGTH_LONG).show();
+                } else if (spnCategory.getSelectedItem().equals("Category")) {
+                    Toast.makeText(AddListingActivity.this, "Please select a Category...", Toast.LENGTH_LONG).show();
+                } else if (etDescription.getText().toString().isEmpty()) {
+                    Toast.makeText(AddListingActivity.this, "Please enter a description...", Toast.LENGTH_LONG).show();
                 } else {
 
                     getRetrofitCategories();
@@ -242,11 +252,9 @@ public class AddListingActivity extends AppCompatActivity implements
                     call.enqueue(new Callback<List<ListingsCategories>>() {
                         @Override
                         public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-                            // addCategory = null;
+
                             // loop through JSON response get parse and output to log
                             for (int i = 0; i < response.body().size(); i++) {
-                                String selected = spnCategory.getSelectedItem().toString();
-                                String replied = response.body().get(i).getName();
 
                                 if (spnCategory.getSelectedItem().toString().equals(response.body().get(i).getName())) {
                                     catNum = (response.body().get(i).getId());
@@ -328,7 +336,6 @@ public class AddListingActivity extends AppCompatActivity implements
             easyImage.openDocuments(AddListingActivity.this);
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -336,10 +343,17 @@ public class AddListingActivity extends AppCompatActivity implements
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
+
                 for (MediaFile imageFile : imageFiles) {
                     //body = imageFile.getFile();
                     image = imageFile.getFile();
-                    Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                    String filename = image.getName();
+                    //Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                    if (image != null) {
+                        RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), image);
+                        //parts.put("https://www.thesablebusinessdirectory.com/wp-content/uploads/image.png\"", fileBody, fileBody);
+                        parts.put("featured_image=" +filename, fileBody);
+                    }
                 }
                 onPhotosReturned(imageFiles);
             }
@@ -549,7 +563,7 @@ public class AddListingActivity extends AppCompatActivity implements
         }
 
         if(addresses.size() > 0) {
-            Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
+           // Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
             address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
             bldgNo = addresses.get(0).getSubThoroughfare();
@@ -625,7 +639,7 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override
             public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-                Log.e("main_activity", " response " + response.body());
+               // Log.e("main_activity", " response " + response.body());
                 // mListPost = response.body();
                 //progressBar.setVisibility(View.GONE); //hide progressBar
               category.add("Category"); //add heading to category spinner
@@ -638,7 +652,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     //category.add(response.body().get(i).getId().toString());
                     // display category array list in spinner
                     spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
-                    Log.e("main ", " Category: " + response.body().get(i).getName());
+                   // Log.e("main ", " Category: " + response.body().get(i).getName());
                 }
                // adapter.notifyDataSetChanged();
             }
@@ -648,13 +662,9 @@ public class AddListingActivity extends AppCompatActivity implements
         });
     }
 
+    //private static Retrofit retrofit = null;
     private void submitData(){
-
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), image);
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part logo  = MultipartBody.Part.createFormData("logo", image.getName(), requestFile);
-
-
+        //Add the interceptor to the client builder.
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -664,11 +674,11 @@ public class AddListingActivity extends AppCompatActivity implements
                 .build();
 
         //Defining retrofit api service
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         Call<List<BusinessListings>> call = service.postData(/*id,*/
@@ -690,13 +700,13 @@ public class AddListingActivity extends AppCompatActivity implements
                 website,
                 twitter,
                 facebook,
-                logo);
+                parts);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("add_listing", " response " + response.body());
+                //Log.e("add_listing", " response " + response.body());
 
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 if(response.isSuccessful()){

@@ -30,7 +30,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -73,19 +75,20 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     ImageView ivFeaturedImage, ivImage1, ivImage02;
     RatingBar simpleRatingBar;
     String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business";
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", filePath;
     Double latitude, longitude;
     MultipartBody.Part image00, image01, image02, image03, image04, image05;
     Integer category;
     Float rating;
     File image;
-    /**
-     * submit to api
-     */
-    MultipartBody.Part body;
+
+
+    MultipartBody.Part folder =
+            MultipartBody.Part.createFormData("folder", "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
     private ProgressBar progressBar;
     private ImagesAdapter imagesAdapter;
     private ArrayList<MediaFile> photos = new ArrayList<>();
+    List<MultipartBody.Part> parts = new ArrayList<>();
     private EasyImage easyImage;
 
     @Override
@@ -208,8 +211,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationAdd.get(0).description);
             category = locationAdd.get(0).addCategory;
             link = locationAdd.get(0).link;
-            latitude = locationAdd.get(0).lat;
-            longitude = locationAdd.get(0).lng;
+            latitude = locationAdd.get(0).latitude;
+            longitude = locationAdd.get(0).longitude;
 
         } else {
 
@@ -234,7 +237,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationMatch.get(0).content);
             link = locationMatch.get(0).link;
             latitude = locationMatch.get(0).latitude;
-            longitude = locationAdd.get(0).lng;
+            longitude = locationAdd.get(0).longitude;
         }
 
 
@@ -416,6 +419,10 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         }
     }
 
+    // add the params part within the multipart request
+    RequestBody param1 = RequestBody.create(MediaType.parse("text/plain"), "post_images=");
+    RequestBody param2 = RequestBody.create(MediaType.parse("text/plain"), "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -423,10 +430,14 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
+                Map<String, RequestBody> parts = new HashMap<>();
                 for (MediaFile imageFile : imageFiles) {
-                    //body = imageFile.getFile();
                     image = imageFile.getFile();
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                    if (image != null) {
+                        RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), image);
+                        parts.put("https://www.thesablebusinessdirectory.com/wp-content/uploads\"; filename=\"image.png\"", fileBody);
+                    }
                 }
                 onPhotosReturned(imageFiles);
             }
@@ -473,17 +484,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         country = tvCity.getText().toString();
         rating = ratingBar.getRating();
 
-        for (int i = 00; i <=06; i++) {
-            String filename = "image"+i;
-
-            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), image);
-            // MultipartBody.Part is used to send also the actual file name
-            MultipartBody.Part part  = MultipartBody.Part.createFormData(filename, image.getName(), requestFile);
-
-             //MultipartBody.Part filename = body;
-             //filename = body;
-
-        }
 
 
         //Add the interceptor to the client builder.
@@ -515,12 +515,7 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 zipcode,
                 latitude,
                 longitude,
-                image00,
-                image01,
-                image02,
-                image03,
-                image04,
-                image05);
+                parts);
 
 
         call.enqueue(new Callback<List<BusinessListings>>() {

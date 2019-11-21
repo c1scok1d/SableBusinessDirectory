@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -14,6 +16,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -70,7 +73,7 @@ public interface RetrofitArrayApi {
             @Query("website") String website,
             @Query("twitter") String twitter,
             @Query("facebook") String facebook,
-            @Part MultipartBody.Part logo);
+            @PartMap Map<String, RequestBody> parts);
 
     @Multipart
     @POST("wp-json/geodir/v2/business/")
@@ -86,11 +89,6 @@ public interface RetrofitArrayApi {
             @Query("zip") String zip,
             @Query("latitude") Double latitude,
             @Query("longitude") Double longitude,
-            @Part MultipartBody.Part image00,
-            @Part MultipartBody.Part image01,
-            @Part MultipartBody.Part image02,
-            @Part MultipartBody.Part image03,
-            @Part MultipartBody.Part image04,
-            @Part MultipartBody.Part image05);
+            @PartMap List<MultipartBody.Part> params);
  }
 

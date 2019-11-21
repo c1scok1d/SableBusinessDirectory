@@ -174,7 +174,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         bldgno = (object.bldgno);
         street = (object.street);
         city = (object.city); state = (object.state); country = (object.country);
-        zipcode = (object.zipcode); /*this.latitude = (object.latitude); this.longitude = (object.longitude);*/
+        zipcode = (object.zipcode); latitude = (object.latitude); longitude = (object.longitude);
         rating = (object.rating); ratingCount = (object.ratingCount); phone = (object.phone);
         email = (object.email); website = (object.website); twitter = (object.twitter);
         facebook = (object.facebook); video = (object.video); hours = (object.hours);
