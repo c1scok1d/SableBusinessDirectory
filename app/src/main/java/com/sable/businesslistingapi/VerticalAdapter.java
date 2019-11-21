@@ -23,6 +23,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ListingsModel> dataset;
     private ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    //ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    String link, bldgno, street, city, state, zipcode, hours, isOpen, content, phone,
+            website, email, twitter, facebook, name, category, country, status,
+            featuredImage, video, logo;
+    Integer id, rating, ratingCount;
+    Boolean featured;
+    Double latitude, longitude;
 
 
     private Context mContext;
@@ -94,9 +101,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             btnCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //String phone = tvPhone.toString();
 
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:" + tvPhone.toString()));
+                    callIntent.setData(Uri.parse("tel:" + phone));
                     itemView.getContext().startActivity(callIntent);
                 }
             });
@@ -104,7 +112,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
 
-                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + tvLatitude.toString() +"," + tvLongitude.toString());
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude +"," + longitude);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     itemView.getContext().startActivity(mapIntent);
@@ -148,8 +156,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     }
 
-    //ArrayList<ListingsModel> locationReview = new ArrayList<>();
-
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
@@ -159,12 +165,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         final ListingsModel object = dataset.get(position);
 
 
-        String link, bldgno, street, city, state, zipcode, hours, isOpen, content, phone,
-                website, email, twitter, facebook, name, category, country, status,
-                featuredImage, video, logo;
-        Integer id, rating, ratingCount;
-        Boolean featured;
-        Double latitude, longitude;
+
 
         name = (object.title);
         id = (object.id);
