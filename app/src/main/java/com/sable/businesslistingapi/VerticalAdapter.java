@@ -167,8 +167,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
-
-            if (!tvPhone.getText().toString().isEmpty()) {
+            if (!tvPhone.getText().toString().isEmpty() || tvPhone.getText().toString().equals("null") ) {
                 btnCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -191,7 +190,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             }
 
 
-            if (!tvWebsite.getText().toString().isEmpty()) {
+            if (!tvWebsite.getText().toString().isEmpty() || tvWebsite.getText().toString().equals("null")) {
                 tvWebsite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -201,7 +200,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 });
             }
 
-            if (!tvEmail.getText().toString().isEmpty()) {
+            if (!tvEmail.getText().toString().isEmpty() || tvEmail.getText().toString().equals("null")) {
                 btnEmail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -211,7 +210,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 });
             }
 
-            if (!tvTwitter.getText().toString().isEmpty()) {
+            if (!tvTwitter.getText().toString().isEmpty() || tvTwitter.getText().toString().equals("null")) {
                 btnTwitter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -222,7 +221,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             }
 
 
-            if(!tvFacebook.getText().toString().isEmpty()) {
+            if(!tvFacebook.getText().toString().isEmpty() ||  tvFacebook.getText().toString().equals("null")) {
                 btnFacebook.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

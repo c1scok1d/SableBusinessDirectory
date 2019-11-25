@@ -21,15 +21,16 @@
         <LinearLayout
             android:id="@+id/logoLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="9"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/ivFeaturedImage"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/customborder"
-                app:srcCompat="@mipmap/ic_launcher" />
+                android:scaleType="fitXY" />
 
         </LinearLayout>
 
@@ -114,7 +115,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="5dp"
                             android:numStars="5" />
 
                         <TextView
@@ -130,11 +130,11 @@
                         <TextView
                             android:id="@+id/tvFirstRate"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginStart="5dp"
                             android:layout_weight="1"
                             android:textAllCaps="true"
-                            android:textColor="@android:color/holo_green_dark"
+                            android:textColor="@color/highlighted_text"
                             android:textStyle="bold"
                             tools:text="be the first to rate" />
                     </LinearLayout>
@@ -148,9 +148,8 @@
                         <TextView
                             android:id="@+id/tvBldgNo"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             tools:text="bldgno" />
@@ -158,9 +157,9 @@
                         <TextView
                             android:id="@+id/tvStreet"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
+                            android:layout_marginStart="3dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             tools:text="street" />
@@ -168,9 +167,9 @@
                         <TextView
                             android:id="@+id/tvCity"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
+                            android:layout_marginStart="3dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             tools:text="city" />
@@ -178,9 +177,9 @@
                         <TextView
                             android:id="@+id/tvState"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
+                            android:layout_marginStart="3dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             tools:text="state" />
@@ -188,9 +187,9 @@
                         <TextView
                             android:id="@+id/tvZip"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
+                            android:layout_marginStart="3dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             tools:text="zipcode" />
@@ -198,12 +197,14 @@
                         <TextView
                             android:id="@+id/tvCountry"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
+                            android:layout_marginStart="3dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
-                            tools:text="country" />
+                            android:visibility="gone"
+                            tools:text="country"
+                            tools:visibility="visible" />
 
                     </LinearLayout>
 
@@ -324,6 +325,7 @@
                                     android:gravity="start|center_vertical"
                                     android:text="isOpen"
                                     android:textAllCaps="true"
+                                    android:textColor="@color/highlighted_text"
                                     android:textStyle="bold" />
 
                             </LinearLayout>
@@ -392,78 +394,83 @@
                         tools:text="About us" />
 
                     <TextView
-                        android:id="@+id/tvDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="clip_vertical|start"
-                        android:layout_marginBottom="5dp"
-                        android:gravity="start|center_vertical"
-                        android:lineSpacingExtra="2dp"
-                        android:maxLines="3"
-                        tools:text="description" />
-
-                    <TextView
                         android:id="@+id/tvContent"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="start"
                         android:lineSpacingExtra="2dp"
                         android:maxLines="3"
                         android:textColor="@color/black"
-                        android:textStyle="bold" />
+                        tools:text="content" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvRateYourExperience"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginTop="10dp"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="Rate your experience"
-                android:textSize="20sp"
-                android:textStyle="italic" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:numStars="5"
-                android:stepSize="1" />
-
-            <TextView
-                android:id="@+id/tvRatingScale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="Awesome. I love it"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/customborder"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvRateYourExperience"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Rate your experience"
+                    android:textSize="20sp"
+                    android:textStyle="italic" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:numStars="5"
+                    android:stepSize="1" />
+
+                <TextView
+                    android:id="@+id/tvRatingScale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Awesome. I love it"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etFeedback"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
                     android:background="@android:color/transparent"
                     android:ems="10"
                     android:gravity="top"
                     android:hint="Tell us what you loved"
                     android:inputType="textMultiLine"
                     android:lines="5" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imageAddRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1">
+
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <ImageButton
                     android:id="@+id/gallery_button"
@@ -472,18 +479,11 @@
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/customborder"
                     android:backgroundTint="@color/colorAccent"
                     app:srcCompat="@android:drawable/ic_menu_gallery" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/imageAddRecycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                </androidx.recyclerview.widget.RecyclerView>
 
                 <Button
                     android:id="@+id/btnSubmit"
