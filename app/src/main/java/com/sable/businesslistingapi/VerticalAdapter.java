@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +14,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class VerticalAdapter extends RecyclerView.Adapter {
@@ -30,14 +24,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     private ArrayList<ListingsModel> dataset;
     ArrayList<ListingsModel> locationReview = new ArrayList<ListingsModel>();
     ArrayList<ListingsModel> locationFoo = new ArrayList<>();
-
-    /*String link, bldgno, street, city, state, zipcode, hours, isOpen, content, phone,
-            website, email, twitter, facebook, title, category, country, status,
-            featuredImage, video, logo;
-    Integer rating, ratingCount, id;
-    Boolean featured;
-    Double latitude, longitude;*/
-
 
     private Context mContext;
 
@@ -114,21 +100,14 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
                     for (int i = 0; i < locationReview.size(); i++) {
 
-                        int locationID = locationReview.get(i).id;
-                        int currentID = Integer.parseInt(tvId.getText().toString());
-                        String name = locationReview.get(i).title;
-                        String link = locationReview.get(i).link;
-                        String status = locationReview.get(i).status;
-                        String category = locationReview.get(i).category;
-
                         if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
 
                             locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                    locationID,
-                                    name,
-                                    link,
-                                    status,
-                                    category,
+                                    locationReview.get(i).id,
+                                    locationReview.get(i).title,
+                                    locationReview.get(i).link,
+                                    locationReview.get(i).status,
+                                    locationReview.get(i).category,
                                     locationReview.get(i).featured,
                                     locationReview.get(i).featured_image,
                                     locationReview.get(i).bldgno,
@@ -162,7 +141,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                             break;
                         } else {
                             Log.e("VerticalAdapter", "no matcon on locationReview");
-
                         }
                     }
                 }
@@ -322,8 +300,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.image,
                 object.content,
                 object.image));
-
-
 
         if ( object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey

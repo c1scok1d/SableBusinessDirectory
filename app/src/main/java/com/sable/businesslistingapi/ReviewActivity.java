@@ -68,7 +68,6 @@ public class ReviewActivity extends AppCompatActivity implements
     TextView mRatingScale;
     EditText mFeedback;
     Button mSendFeedback;
-    ImageButton ivLogo, btnPicUpload;
     TextView tvFeatured, tvStatus, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvEmail, tvWebsite, tvTwitter, tvFacebook,
             tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate;
@@ -233,7 +232,7 @@ public class ReviewActivity extends AppCompatActivity implements
         } else {
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationReview.get(0).featured_image)).into(ivFeaturedImage);
+            builder.build().load(getIntent().getStringExtra(locationReview.get(0).image)).into(ivFeaturedImage);
             tvBldgno.setText(locationReview.get(0).bldgno);
             tvStreet.setText(locationReview.get(0).street);
             tvCity.setText(locationReview.get(0).city);
@@ -254,7 +253,6 @@ public class ReviewActivity extends AppCompatActivity implements
             link = locationReview.get(0).link;
             latitude = locationReview.get(0).latitude;
             longitude = locationReview.get(0).longitude;
-            //tvFeatured = locationReview.get(0).featured;
             if(locationReview.get(0).isOpen.equals("Closed now")){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
