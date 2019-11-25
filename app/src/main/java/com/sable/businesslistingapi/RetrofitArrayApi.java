@@ -20,6 +20,7 @@ import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 
 /**
  * Created by Jaink on 14-09-2017.
@@ -34,14 +35,13 @@ public interface RetrofitArrayApi {
             @QueryMap Map<String, String> options
     );
 
-    @GET("wp-json/geodir/v2/business/?post_type=gd_business")
-    Call<List<BusinessListings>> getSearch(
-            @Query("search") String query);
+    @GET
+    Call<List<BusinessListings>> getDynamic(
+            @Url String url);
 
-    @GET("wp-json/geodir/v2/business/?post_type=gd_business")
-    Call<List<BusinessListings>> getRadius(
-            @QueryMap Map<String, String> options
-    );
+    @GET("wp-json/geodir/v2/business/")
+    Call<List<BusinessListings>> addReview(
+            @Query("search") String query);
 
     @GET("wp-json/wc/v3/products?consumer_key=ck_c3addab1f230fa55025a2f78969d18f518ebbc5e&consumer_secret=cs_aaf9c39669e92ebd745a0e91a9a5810e9222cc92")
     Call<List<WooProducts>> getPostWooInfo();
@@ -49,10 +49,6 @@ public interface RetrofitArrayApi {
     @GET("wp-json/geodir/v2/business/categories")
     Call<List<ListingsCategories>> getCategory();
 
-/// to make call to dynamic URL
- // @GET
-  //Call<List<BusinessListings>> getPostInfo(@Url String url);
-//
     @Multipart
     @POST("wp-json/geodir/v2/business/")
     Call<List<BusinessListings>> postData(
@@ -76,8 +72,9 @@ public interface RetrofitArrayApi {
             @PartMap Map<String, RequestBody> parts);
 
     @Multipart
-    @POST("wp-json/geodir/v2/business/")
+    @POST("wp-json/geodir/v2/reviews/")
     Call<List<BusinessListings>> postReview(
+            @Query("id") Integer id,
             @Query("link") String link,
             @Query("title") String title,
             @Query("status") String status,
@@ -89,6 +86,6 @@ public interface RetrofitArrayApi {
             @Query("zip") String zip,
             @Query("latitude") Double latitude,
             @Query("longitude") Double longitude,
-            @PartMap List<MultipartBody.Part> params);
+            @PartMap Map<String, RequestBody> parts);
  }
 

@@ -8,22 +8,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ListingsModel implements Parcelable {
+public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, isOpen, content, image, logo, timestamp, link;
+            hours, content, image, logo, timestamp, link, isOpen;
     public int rating, id, ratingCount;
     public Double latitude, longitude;
     Boolean featured;
 
 
 
-    public ListingsModel(int imageType, Integer id, String title, String link, String status,
-                         String category, Boolean featured, String featuredImage, String bldgNo, String street,
-                         String city, String state, String country, String zipcode, Double latitude, Double longitude,
-                         Integer rating, Integer ratingCount, String phone, String email, String website, String twitter,
-                         String facebook, String video, String businessHours, String commentStatus, String logo,
-                         String content, String image){
+    public ListingsModel(int imageType,
+                         Integer id,
+                         String title,
+                         String link,
+                         String status,
+                         String category,
+                         Boolean featured,
+                         String featuredImage,
+                         String bldgNo,
+                         String street,
+                         String city,
+                         String state,
+                         String country,
+                         String zipcode,
+                         Double latitude,
+                         Double longitude,
+                         Integer rating,
+                         Integer ratingCount,
+                         String phone,
+                         String email,
+                         String website,
+                         String twitter,
+                         String facebook,
+                         String video,
+                         String businessHours,
+                         String isOpen,
+                         String logo,
+                         String content,
+                         String image){
 
         this.id = id;
         this.title = title;
@@ -49,7 +72,7 @@ public class ListingsModel implements Parcelable {
         this.facebook = facebook;
         this.video = video;
         this.hours = businessHours;
-        this.isOpen = commentStatus;
+        this.isOpen = isOpen;
         this.logo = logo;
         this.content = content;
         this.image = image;

@@ -37,7 +37,6 @@ import java.util.Map;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -54,7 +53,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class ReviewActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class ReviewActivity extends AppCompatActivity implements
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String PHOTOS_KEY = "easy_image_photos_list";
     private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
@@ -69,26 +69,29 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     EditText mFeedback;
     Button mSendFeedback;
     ImageButton ivLogo, btnPicUpload;
-    TextView tvPost_title, tvPost_status, tvState,
+    TextView tvFeatured, tvStatus, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvEmail, tvWebsite, tvTwitter, tvFacebook,
-            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvTimestamp, tvPostCategory, tvName, tvFirstRate;
-    ImageView ivFeaturedImage;
+            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate;
+    ImageView logo, ivFeaturedImage;
     RatingBar simpleRatingBar;
-    String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", id = "12345", username = "android_app",
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", filePath;
+    String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", todayRange, isOpen;
     Double latitude, longitude;
-    MultipartBody.Part image00, image01, image02, image03, image04, image05;
-    Integer category;
-    Float rating;
+    Integer category, id, rating;
     File image;
+    float newRating;
+    public static List<BusinessListings> mListPost;
 
 
-    MultipartBody.Part folder =
-            MultipartBody.Part.createFormData("folder", "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
     private ProgressBar progressBar;
     private ImagesAdapter imagesAdapter;
     private ArrayList<MediaFile> photos = new ArrayList<>();
-    List<MultipartBody.Part> parts = new ArrayList<>();
+    Map<String, RequestBody> parts = new HashMap<>();
+    ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    ArrayList<ListingsModel> locationMatch = new ArrayList<>();
+    ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
+
+
     private EasyImage easyImage;
 
     @Override
@@ -115,16 +118,18 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         tvContent = findViewById(R.id.tvContent);
         tvPhone = findViewById(R.id.tvPhone);
         //btnPic = findViewById(R.id.btnPic);
-        tvPostCategory = findViewById(R.id.tvPostCategory);
+        tvCategory = findViewById(R.id.tvCategory);
         tvEmail = findViewById(R.id.tvEmail);
         tvWebsite = findViewById(R.id.tvWebsite);
         tvTwitter = findViewById(R.id.tvTwitter);
         tvFacebook = findViewById(R.id.tvFacebook);
         tvName = findViewById(R.id.tvName);
         ivFeaturedImage = findViewById(R.id.ivFeaturedImage);
-        tvRating = findViewById(R.id.tvRating);
+        //rating = findViewById(R.id.simpleRatingBar);
+        tvRatingCount = findViewById(R.id.tvRatingCount);
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvFirstRate = findViewById(R.id.tvFirstRate);
+        tvFeatured = findViewById(R.id.tvFeatured);
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -149,85 +154,28 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     default:
                         mRatingScale.setText("");
                 }
-                rating = ratingBar.getRating();
+                newRating = ratingBar.getRating();
             }
         });
+
 
         /**
          *
          * gets Extras if stored lat/lng equals current lat/lng (onLocationMatch)
          *
          */
-        ArrayList<ListingsModel> locationMatch;
-        ArrayList<ListingsAddModel> locationAdd;
-        ArrayList<ListingsModel> locationReview;
-
         locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
-        locationReview = this.getIntent().getExtras().getParcelableArrayList("locationReview");
-        if (locationReview != null){
+        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReview");
+        //locationReviewBundle.getParcelable("locationReview");
+        //Intent foo = getIntent();
+        //String fooId = foo.getStringExtra("id");
 
-            tvName.setText(locationReview.get(0).title);
-            tvPostCategory.setText(locationReview.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationReview.get(0).logo)).into(ivFeaturedImage);
-            tvBldgno.setText(locationReview.get(0).bldgno);
-            tvStreet.setText(locationReview.get(0).street);
-            tvCity.setText(locationReview.get(0).city);
-            tvState.setText(locationReview.get(0).state);
-            tvCountry.setText(locationReview.get(0).country);
-            tvZip.setText(locationReview.get(0).zipcode);
-            tvRating.setText(String.valueOf(locationReview.get(0).rating));
-            tvPhone.setText(locationReview.get(0).phone);
-            tvEmail.setText(locationReview.get(0).email);
-            tvWebsite.setText(locationReview.get(0).website);
-            tvTwitter.setText(locationReview.get(0).twitter);
-            tvFacebook.setText(locationReview.get(0).facebook);
-//            tvVideo.setText(locationReview.get(0).video);
-            tvHours.setText(locationReview.get(0).hours);
-            tvIsOpen.setText(locationReview.get(0).isOpen);
-            tvContent.setText(locationReview.get(0).content);
-            link = locationReview.get(0).link;
-            latitude = locationReview.get(0).latitude;
-            longitude = locationReview.get(0).longitude;
-
-            if(locationReview.get(0).isOpen.equals("Closed now")){
-                tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
-            }
-            if (locationReview.get(0).ratingCount == 0){
-                String isFeatured = "Be the first to rate";
-                tvFirstRate.setText(isFeatured);
-                tvFirstRate.setTextColor(Color.rgb(0, 255, 0)); //orange
-                //} else {
-                //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
-
-            }
-
-        } else if (locationMatch == null) {
-
-            tvName.setText(locationAdd.get(0).name);
-            tvPostCategory.setText(locationAdd.get(0).category);
-            tvBldgno.setText(locationAdd.get(0).bldgNo);
-            tvStreet.setText(locationAdd.get(0).street);
-            tvCity.setText(locationAdd.get(0).city);
-            tvState.setText(locationAdd.get(0).state);
-            tvCountry.setText(locationAdd.get(0).country);
-            tvZip.setText(locationAdd.get(0).zipcode);
-            tvPhone.setText(locationAdd.get(0).phone);
-            tvEmail.setText(locationAdd.get(0).email);
-            tvWebsite.setText(locationAdd.get(0).website);
-            tvTwitter.setText(locationAdd.get(0).twitter);
-            tvFacebook.setText(locationAdd.get(0).facebook);
-            tvContent.setText(locationAdd.get(0).description);
-            category = locationAdd.get(0).addCategory;
-            link = locationAdd.get(0).link;
-            latitude = locationAdd.get(0).latitude;
-            longitude = locationAdd.get(0).longitude;
-
-        } else {
+        if (locationMatch != null) {
 
             tvName.setText(locationMatch.get(0).title);
-            tvPostCategory.setText(locationMatch.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).logo)).into(ivFeaturedImage);
+            tvCategory.setText(locationMatch.get(0).category);
+            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).image)).into(ivFeaturedImage);
             tvBldgno.setText(locationMatch.get(0).bldgno);
             tvStreet.setText(locationMatch.get(0).street);
             tvCity.setText(locationMatch.get(0).city);
@@ -246,9 +194,82 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
             tvContent.setText(locationMatch.get(0).content);
             link = locationMatch.get(0).link;
             latitude = locationMatch.get(0).latitude;
-            longitude = locationAdd.get(0).longitude;
-        }
+            longitude = locationMatch.get(0).longitude;
+            //tvFeatured = locationMatch.get(0).featured;
+            if(locationMatch.get(0).isOpen.equals("Closed now")){
+                tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
+            }
+            if(locationMatch.get(0).featured.equals(true)){
+                String featured = "FEATURED";
+                tvFeatured.setText(featured);
+                tvFeatured.setTextColor(Color.rgb(255, 128, 0 )); //red
+            }
 
+            if (locationMatch.get(0).ratingCount == 0){
+                String FirstRate = "Be the first to rate";
+                tvFirstRate.setText(FirstRate);
+                tvFirstRate.setTextColor(Color.rgb(0, 255, 0)); //orange
+            }
+
+        } else if (locationAdd!= null) {
+            tvName.setText(locationAdd.get(0).name);
+            tvCategory.setText(locationAdd.get(0).category);
+            tvBldgno.setText(locationAdd.get(0).bldgNo);
+            tvStreet.setText(locationAdd.get(0).street);
+            tvCity.setText(locationAdd.get(0).city);
+            tvState.setText(locationAdd.get(0).state);
+            tvCountry.setText(locationAdd.get(0).country);
+            tvZip.setText(locationAdd.get(0).zipcode);
+            tvPhone.setText(locationAdd.get(0).phone);
+            tvEmail.setText(locationAdd.get(0).email);
+            tvWebsite.setText(locationAdd.get(0).website);
+            tvTwitter.setText(locationAdd.get(0).twitter);
+            tvFacebook.setText(locationAdd.get(0).facebook);
+            tvContent.setText(locationAdd.get(0).description);
+            category = locationAdd.get(0).addCategory;
+            link = locationAdd.get(0).link;
+            latitude = locationAdd.get(0).latitude;
+            longitude = locationAdd.get(0).longitude;
+        } else {
+            tvName.setText(locationReview.get(0).title);
+            tvCategory.setText(locationReview.get(0).category);
+            builder.build().load(getIntent().getStringExtra(locationReview.get(0).featured_image)).into(ivFeaturedImage);
+            tvBldgno.setText(locationReview.get(0).bldgno);
+            tvStreet.setText(locationReview.get(0).street);
+            tvCity.setText(locationReview.get(0).city);
+            tvState.setText(locationReview.get(0).state);
+            tvCountry.setText(locationReview.get(0).country);
+            tvZip.setText(locationReview.get(0).zipcode);
+            simpleRatingBar.setNumStars(locationReview.get(0).rating);
+            tvRatingCount.setText(String.valueOf(locationReview.get(0).ratingCount));
+            tvPhone.setText(locationReview.get(0).phone);
+            tvEmail.setText(locationReview.get(0).email);
+            tvWebsite.setText(locationReview.get(0).website);
+            tvTwitter.setText(locationReview.get(0).twitter);
+            tvFacebook.setText(locationReview.get(0).facebook);
+//            tvVideo.setText(locationReview.get(0).video);
+            tvHours.setText(locationReview.get(0).hours);
+            tvIsOpen.setText(locationReview.get(0).isOpen);
+            tvContent.setText(locationReview.get(0).content);
+            link = locationReview.get(0).link;
+            latitude = locationReview.get(0).latitude;
+            longitude = locationReview.get(0).longitude;
+            //tvFeatured = locationReview.get(0).featured;
+            if(locationReview.get(0).isOpen.equals("Closed now")){
+                tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
+            }
+            if(locationReview.get(0).featured.equals(true)){
+                String featured = "FEATURED";
+                tvFeatured.setText(featured);
+                tvFeatured.setTextColor(Color.rgb(255, 128, 0 )); //red
+            }
+
+            if (locationReview.get(0).ratingCount == 0){
+                String FirstRate = "Be the first to rate";
+                tvFirstRate.setText(FirstRate);
+                tvFirstRate.setTextColor(Color.rgb(0, 255, 0)); //orange
+            }
+        }
 
         findViewById(R.id.tvName).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,7 +357,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         });
 
         recyclerView = findViewById(R.id.imageAddRecycler);
-        //galleryButton = findViewById(R.id.gallery_button);
 
         if (savedInstanceState != null) {
             photos = savedInstanceState.getParcelableArrayList(PHOTOS_KEY);
@@ -368,31 +388,6 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                     easyImage.openGallery(ReviewActivity.this);
                 } else {
                     requestPermissionsCompat(necessaryPermissions, GALLERY_REQUEST_CODE);
-                }
-            }
-        });
-
-
-        findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
-                if (arePermissionsGranted(necessaryPermissions)) {
-                    easyImage.openCameraForImage(ReviewActivity.this);
-                } else {
-                    requestPermissionsCompat(necessaryPermissions, CAMERA_REQUEST_CODE);
-                }
-            }
-        });
-
-        findViewById(R.id.camera_video_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String[] necessaryPermissions = new String[]{Manifest.permission.CAMERA};
-                if (arePermissionsGranted(necessaryPermissions)) {
-                    easyImage.openCameraForVideo(ReviewActivity.this);
-                } else {
-                    requestPermissionsCompat(necessaryPermissions, CAMERA_VIDEO_REQUEST_CODE);
                 }
             }
         });
@@ -429,8 +424,8 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     }
 
     // add the params part within the multipart request
-    RequestBody param1 = RequestBody.create(MediaType.parse("text/plain"), "post_images=");
-    RequestBody param2 = RequestBody.create(MediaType.parse("text/plain"), "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
+    //RequestBody param1 = RequestBody.create(MediaType.parse("text/plain"), "post_images=");
+    //RequestBody param2 = RequestBody.create(MediaType.parse("text/plain"), "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -439,13 +434,12 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
-                Map<String, RequestBody> parts = new HashMap<>();
                 for (MediaFile imageFile : imageFiles) {
                     image = imageFile.getFile();
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                     if (image != null) {
                         RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), image);
-                        parts.put("https://www.thesablebusinessdirectory.com/wp-content/uploads\"; filename=\"image.png\"", fileBody);
+                        parts.put("post_images", fileBody);
                     }
                 }
                 onPhotosReturned(imageFiles);
@@ -486,12 +480,13 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
     private void submitData() {
 
         title = tvName.getText().toString();
-        status = tvPost_status.getText().toString();
+        status = "approved";
         state = tvState.getText().toString();
         city = tvCity.getText().toString();
         zipcode = tvZip.getText().toString();
         country = tvCity.getText().toString();
-        rating = ratingBar.getRating();
+        newRating = ratingBar.getRating();
+
 
 
 
@@ -512,11 +507,11 @@ public class ReviewActivity extends AppCompatActivity implements ActivityCompat.
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postReview(/*id,*/
+        Call<List<BusinessListings>> call = service.postReview(id,
                 link,
                 title,
                 status,
-                rating,
+                newRating,
                 post_type,
                 city,
                 state,

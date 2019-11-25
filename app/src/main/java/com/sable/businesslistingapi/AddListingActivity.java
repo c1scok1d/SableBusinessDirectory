@@ -188,7 +188,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
                     locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
                             name,
-                            /*link,*/
+                            link,
                             catName,
                             catNum,
                             description,
@@ -351,7 +351,6 @@ public class AddListingActivity extends AppCompatActivity implements
                     //Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                     if (image != null) {
                         RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), image);
-                        //parts.put("https://www.thesablebusinessdirectory.com/wp-content/uploads/image.png\"", fileBody, fileBody);
                         parts.put("featured_image=" +filename, fileBody);
                     }
                 }

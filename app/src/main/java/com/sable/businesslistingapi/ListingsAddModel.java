@@ -10,12 +10,12 @@ public class ListingsAddModel implements Parcelable {
     public int type, rating, ratingCount, addCategory;
     public Double latitude, longitude;
 
-    public ListingsAddModel(int mtype, String mName, String mCategory, Integer addCategory, String  mDescription, Double longitude, Double latitude, String maddress,
+    public ListingsAddModel(int mtype, String mName, String mlink, String mCategory, Integer addCategory, String  mDescription, Double longitude, Double latitude, String maddress,
                             String mstate, String mCountry, String mZipcode,
                             String mCity, String mbldgNo, String mstreet, String mPhone, String mEmail, String mWebsite,
                             String mTwitter, String mFacebook) {
         this.name = mName;
-        //this.link = mlink;
+        this.link = mlink;
         this.category = mCategory;
         this.addCategory = addCategory;
         this.description = mDescription;

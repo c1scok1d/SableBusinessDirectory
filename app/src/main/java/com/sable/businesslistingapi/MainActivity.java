@@ -56,7 +56,6 @@ import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
     String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
-            zipcode, city, street, bldgno, todayRange, isOpen, username = "android_app",
+            zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen,
             password = "mroK zH6o wOW7 X094 MTKy fwmY";
 
     ArrayList<ListingsModel> verticalList;
@@ -603,7 +602,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-               // Log.e("main_activity", " response " + response.body());
+                Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();
@@ -619,47 +618,7 @@ public class MainActivity extends AppCompatActivity implements
                          */
                         if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
 
-                           /* Log.e("LocationMatch ", " ID: " + response.body().get(i).getId());
-                            Log.e("LocationMatch ", " Title: " + response.body().get(i).getTitle().getRaw());
-                            Log.e("LocationMatch ", " Link: " + response.body().get(i).getLink());
-                            Log.e("LocationMatch ", " Status: " + response.body().get(i).getStatus());
-                            Log.e("LocationMatch ", " Category " + response.body().get(i).getPostCategory().get(0).getName());
-                            Log.e("LocationMatch ", " Featured: " + response.body().get(i).getFeatured());
-                            Log.e("LocationMatch ", " Featured Image: " + response.body().get(i).getFeaturedImage().getSrc());
-                            Log.e("LocationMatch ", " BldgNo: " + response.body().get(i).getBldgNo());
-                            Log.e("LocationMatch ", " Street: " + response.body().get(i).getStreet());
-                            Log.e("LocationMatch ", " City: " + response.body().get(i).getCity());
-                            Log.e("LocationMatch ", " State: " + response.body().get(i).getRegion());
-                            Log.e("LocationMatch ", " Country: " + response.body().get(i).getCountry());
-                            Log.e("LocationMatch ", " Zip: " + response.body().get(i).getZip());
-                            Log.e("LocationMatch ", " Latitude: " + response.body().get(i).getLatitude());
-                            Log.e("LocationMatch ", " Longitude: " + response.body().get(i).getLongitude());
-                            Log.e("LocationMatch ", " Rating: " + response.body().get(i).getRating());
-                            Log.e("LocationMatch ", " Rating Count: " + response.body().get(i).getRatingCount());
-                            Log.e("LocationMatch ", " Telephone: " + response.body().get(i).getPhone());
-                            Log.e("LocationMatch ", " Email: " + response.body().get(i).getEmail());
-                            Log.e("LocationMatch ", " Website: " + response.body().get(i).getWebsite());
-                            Log.e("LocationMatch ", " Twitter: " + response.body().get(i).getTwitter());
-                            Log.e("LocationMatch ", " Facebook: " + response.body().get(i).getFacebook());
-                            Log.e("LocationMatch ", " Video: " + response.body().get(i).getVideo());
-                            Log.e("LocationMatch ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                            Log.e("LocationMatch ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                            Log.e("LocationMatch ", " Logo: " + response.body().get(i).getLogo());
-                            Log.e("LocationMatch ", " Content: " + response.body().get(i).getContent().getRaw());
-                            Log.e("LocationMatch ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());*/
                             BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
-                            /*if(businessHours == null){
-                                String today= "null";
-                               Log.e("Location ", " Today: " +today);
-                                Log.e("Location ", " IsOpen" +today);
-                            } else {
-                                Log.e("Location ", " Today: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange());
-                                Log.e("Location ", " IsOpen: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel());
-                            }
-                            Log.e("Location ", " Logo: " + response.body().get(i).getLogo());
-                            Log.e("Location ", " Content: " + response.body().get(i).getContent().getRaw());
-                            Log.e("Location ", " Image: " + response.body().get(i).getFeaturedImage().getSrc());
-//                            Log.e("Location ", " Timestamp: " + response.body().get(i).getBusinessHours().getRendered().getExtra().getFullDateFormat()); */
 
                             if(businessHours == null){
                                 String today= "null";
@@ -695,8 +654,8 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getTwitter(),
                                     response.body().get(i).getFacebook(),
                                     response.body().get(i).getVideo(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange(),
-                                    response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel(),
+                                    todayRange,
+                                    isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc()));
@@ -720,29 +679,6 @@ public class MainActivity extends AppCompatActivity implements
                              * if no location match continue to pars JSON data
                              */
 
-                           /* Log.e("Location ", " ID: " + response.body().get(i).getId());
-                            Log.e("Location ", " Title: " + response.body().get(i).getTitle().getRaw());
-                            Log.e("Location ", " Link: " + response.body().get(i).getLink());
-                            Log.e("Location ", " Status: " + response.body().get(i).getStatus());
-                            Log.e("Location ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
-                            Log.e("Location ", " Featured: " + response.body().get(i).getFeatured());
-                            Log.e("Location ", " Featured Image: " + response.body().get(i).getFeaturedImage().getSrc());
-                            Log.e("Location ", " BldgNo: " +response.body().get(i).getBldgNo());
-                            Log.e("Location ", " Street: " + response.body().get(i).getStreet());
-                            Log.e("Location ", " City: " + response.body().get(i).getCity());
-                            Log.e("Location ", " State: " + response.body().get(i).getRegion());
-                            Log.e("Location ", " Country: " + response.body().get(i).getCountry());
-                            Log.e("Location ", " Zip: " + response.body().get(i).getZip());
-                            Log.e("Location ", " Latitude: " +response.body().get(i).getLatitude());
-                            Log.e("Location ", " Longitude: " + response.body().get(i).getLongitude());
-                            Log.e("Location ", " Rating: " + response.body().get(i).getRating());
-                            Log.e("Location ", " Rating Count: " + response.body().get(i).getRatingCount());
-                            Log.e("Location ", " Telephone: " + response.body().get(i).getPhone());
-                            Log.e("Location ", " Email: " + response.body().get(i).getEmail());
-                            Log.e("Location ", " Website: " + response.body().get(i).getWebsite());
-                            Log.e("Location ", " Twitter: " + response.body().get(i).getTwitter());
-                            Log.e("Location ", " Facebook: " + response.body().get(i).getFacebook());
-                            Log.e("Location ", " Video: " + response.body().get(i).getVideo()); */
                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                             if(businessHours == null){
                                 String today= "null";
