@@ -71,33 +71,12 @@ public interface RetrofitArrayApi {
             @Query("facebook") String facebook,
             @PartMap Map<String, RequestBody> parts);
 
-    @Multipart
+    //@Multipart
     @POST("wp-json/geodir/v2/reviews/")
     Call<List<BusinessListings>> postReview(
-            @Query("id") Integer id,
-            @Query("title") String title,
-            //@Query("link") String link,
-            @Query("status") String status,
-            @Query("category") String category,
-            @Query("bldgno") String bldgno,
-            @Query("street") String street,
-            @Query("city") String city,
-            @Query("state")String state,
-            @Query("country") String country,
-            @Query("zipcode") String zipcode,
-            @Query("latitude") Double latitude,
-            @Query("longitude") Double longitude,
-            @Query("rating") Integer rating,
-            @Query("phone") String phone,
-            @Query("email") String email,
-            @Query("website") String website,
-            @Query("twitter") String twitter,
-            @Query("facebook")String facebook,
-            //@Query("video") String video,
-            @Query("hours") String hours,
-            @Query("isOpen")String isOpen,
-            //@Query("logo") String logo,
-            @Query("feedback") String content,
-            @PartMap Map<String, RequestBody> parts);
+            @Query("post") Integer id,
+            @Query("rating[overall]") Integer rating,
+            @Query("author") Integer author,
+            @Query("content") String content);
  }
 

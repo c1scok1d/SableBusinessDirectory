@@ -91,7 +91,8 @@
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:text="rating count" />
+                        android:textColor="@color/colorAccent"
+                        tools:text="rating count" />
 
                     <TextView
                         android:id="@+id/tvFeatured"
@@ -280,7 +281,7 @@
                                 android:layout_gravity="center_horizontal|center_vertical"
                                 android:layout_marginStart="5dp"
                                 android:textAllCaps="true"
-                                android:textColor="@color/colorPrimaryDark"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="12sp"
                                 tools:text="isOpen" />
 
@@ -347,6 +348,7 @@
                             android:id="@+id/websiteLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -354,7 +356,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginStart="3dp"
                                 android:clickable="false"
                                 android:text="http://www.companywebsite.com"
                                 android:textColor="@color/link"

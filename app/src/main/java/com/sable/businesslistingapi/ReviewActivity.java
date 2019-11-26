@@ -76,7 +76,6 @@ public class ReviewActivity extends AppCompatActivity implements
             password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", todayRange, isOpen;
     Double latitude, longitude;
     Integer category, id, rating;
-    File image;
     float newRating;
     public static List<BusinessListings> mListPost;
 
@@ -156,7 +155,7 @@ public class ReviewActivity extends AppCompatActivity implements
                     default:
                         mRatingScale.setText("");
                 }
-                newRating = ratingBar.getRating();
+                rating = ((int) ratingBar.getRating());
             }
         });
 
@@ -434,7 +433,7 @@ public class ReviewActivity extends AppCompatActivity implements
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 for (MediaFile imageFile : imageFiles) {
-                    image = imageFile.getFile();
+                    File image = imageFile.getFile();
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                     if (image != null) {
                         RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), image);
@@ -494,38 +493,11 @@ public class ReviewActivity extends AppCompatActivity implements
                 .client(client)
                 .build();
 
-        String fooName = tvName.getText().toString();
-        //String fooLink = tvLink.getText().toString();
-        String fooStatus = tvStatus.getText().toString();
-        String fooCat = tvCategory.getText().toString();
-        String fooId = tvId.getText().toString();
-
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postReview(Integer.valueOf(tvId.getText().toString()),
-                tvName.getText().toString(),
-                //tvLink.getText().toString(),
-                tvStatus.getText().toString(),
-                tvCategory.getText().toString(),
-                tvBldgno.getText().toString(),
-                tvStreet.getText().toString(),
-                tvCity.getText().toString(),
-                tvState.getText().toString(),
-                tvCountry.getText().toString(),
-                tvZip.getText().toString(),
-                Double.valueOf(tvLatitude.getText().toString()),
-                Double.valueOf(tvLongitude.getText().toString()),
-                simpleRatingBar.getNumStars(),
-                tvPhone.getText().toString(),
-                tvEmail.getText().toString(),
-                tvWebsite.getText().toString(),
-                tvTwitter.getText().toString(),
-                tvFacebook.getText().toString(),
-                //tvVideo.getText().toString(),
-                tvHours.getText().toString(),
-                tvIsOpen.getText().toString(),
-                //ivFeaturedImage.getText().toString(),
-                etFeedBack.getText().toString(),
-                parts);
+        Call<List<BusinessListings>> call = service.postReview(
+                Integer.valueOf(tvId.getText().toString()),
+               rating,
+                2, etFeedBack.getText().toString());
 
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override

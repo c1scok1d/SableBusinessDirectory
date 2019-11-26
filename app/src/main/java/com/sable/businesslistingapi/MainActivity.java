@@ -29,19 +29,20 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.GsonBuilder;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,6 @@ import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements
     SearchView searchView;
 
     private GoogleMap mMap;
+    private FusedLocationProviderClient fusedLocationClient;
+
 
     /**
      * @param savedInstanceState
@@ -308,6 +310,13 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         /**
+         *  get last known location
+         */
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLastLocation();
+
+        /**
          *  location manager to get current location
          */
 
@@ -316,12 +325,35 @@ public class MainActivity extends AppCompatActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
+
+
         /**
          *  api calls to get listings and marketplace products
          */
 
         getRetrofitWoo(); //call to woocommerce products api
     }
+
+    /**
+     *  get last known location
+     */
+
+    private void fetchLastLocation() {
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            Log.e("LAST LOCATION: ", location.toString());
+                        }
+                    }
+                });
+
+    }
+
     /**
      * Location listener to get device current lat/lng
      */
@@ -389,6 +421,7 @@ public class MainActivity extends AppCompatActivity implements
 
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
+        fetchLastLocation();
         enableMyLocation(); //permission check
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
