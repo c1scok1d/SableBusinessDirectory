@@ -56,6 +56,7 @@ public interface RetrofitArrayApi {
             @Query("status") String status,
             @Query("post_category") Integer category,
             @Query("content")String content,
+            @Query("address")String address,
             @Query("bldgno") String bldgno,
             @Query("street") String street,
             @Query("city") String city,

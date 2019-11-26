@@ -685,6 +685,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 status,
                 catNum,
                 description,
+                address,
                 bldgNo,
                 street,
                 city,
