@@ -184,20 +184,22 @@ public class ReviewActivity extends AppCompatActivity implements
             tvState.setText(locationMatch.get(0).state);
             tvCountry.setText(locationMatch.get(0).country);
             tvZip.setText(locationMatch.get(0).zipcode);
-            tvRating.setText(locationMatch.get(0).rating);
+            simpleRatingBar.setNumStars(locationMatch.get(0).rating);
+            tvRatingCount.setText(String.valueOf(locationMatch.get(0).ratingCount));
             tvPhone.setText(locationMatch.get(0).phone);
             tvEmail.setText(locationMatch.get(0).email);
             tvWebsite.setText(locationMatch.get(0).website);
             tvTwitter.setText(locationMatch.get(0).twitter);
             tvFacebook.setText(locationMatch.get(0).facebook);
-            tvVideo.setText(locationMatch.get(0).video);
+            //tvVideo.setText(locationMatch.get(0).video);
             tvHours.setText(locationMatch.get(0).hours);
             tvIsOpen.setText(locationMatch.get(0).isOpen);
             tvContent.setText(locationMatch.get(0).content);
-            link = locationMatch.get(0).link;
-            latitude = locationMatch.get(0).latitude;
-            longitude = locationMatch.get(0).longitude;
-            //tvFeatured = locationMatch.get(0).featured;
+            tvLink.setText(locationMatch.get(0).link);
+            tvLatitude.setText(String.valueOf(locationMatch.get(0).latitude));
+            tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
+            tvId.setText(String.valueOf(locationMatch.get(0).id));
+            tvStatus.setText(locationMatch.get(0).status);
             if(locationMatch.get(0).isOpen.equals("Closed now")){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }

@@ -337,8 +337,8 @@ public class MainActivity extends AppCompatActivity implements
 
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            query.put("latitude", Double.toString(latitude));
-            query.put("longitude", Double.toString(longitude));
+            query.put("latitude", String.format(Locale.US, "%10.4f", latitude));
+            query.put("longitude", String.format(Locale.US, "%10.4f", longitude));
             query.put("distance", "5");
             query.put("order", "asc");
             //query.put("orderby",  "distance");
@@ -615,8 +615,16 @@ public class MainActivity extends AppCompatActivity implements
                         /**
                          * onLocationMatch
                          * if device lat/lng equals stored listing lat/lng locationMatch = true
+                         *
                          */
-                        if (response.body().get(i).getLatitude().equals(latitude) && response.body().get(i).getLongitude().equals(longitude)) {
+
+                        String latFoo = String.format(Locale.US, "%10.4f", latitude);
+                        String latFoo1 = String.format(Locale.US, "%10.4f", response.body().get(i).getLatitude());
+                        String lngFoo = String.format(Locale.US, "%10.4f", longitude);
+                        String lngFoo1 = String.format(Locale.US, "%10.4f", response.body().get(i).getLongitude());
+
+                        if (String.format(Locale.US, "%10.4f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.4f", latitude)) &&
+                                String.format(Locale.US, "%10.4f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.4f", longitude))) {
 
                             BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
 
