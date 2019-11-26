@@ -176,7 +176,7 @@ public class ReviewActivity extends AppCompatActivity implements
 
             tvName.setText(locationMatch.get(0).title);
             tvCategory.setText(locationMatch.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationMatch.get(0).image)).into(ivFeaturedImage);
+            builder.build().load(locationMatch.get(0).featured_image).into(ivFeaturedImage);
             tvBldgno.setText(locationMatch.get(0).bldgno);
             tvStreet.setText(locationMatch.get(0).street);
             tvCity.setText(locationMatch.get(0).city);
@@ -236,7 +236,7 @@ public class ReviewActivity extends AppCompatActivity implements
         } else {
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
-            builder.build().load(getIntent().getStringExtra(locationReview.get(0).image)).into(ivFeaturedImage);
+            builder.build().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
             tvBldgno.setText(locationReview.get(0).bldgno);
             tvStreet.setText(locationReview.get(0).street);
             tvCity.setText(locationReview.get(0).city);
@@ -511,6 +511,7 @@ public class ReviewActivity extends AppCompatActivity implements
                                     " Body: " + response.body().get(0).getContent() +
                                     " PostId: " + response.body().get(0).getId(), Toast.LENGTH_LONG).show();
                 }
+
             }
 
             @Override

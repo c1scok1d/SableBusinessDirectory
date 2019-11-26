@@ -651,11 +651,6 @@ public class MainActivity extends AppCompatActivity implements
                          *
                          */
 
-                        String latFoo = String.format(Locale.US, "%10.4f", latitude);
-                        String latFoo1 = String.format(Locale.US, "%10.4f", response.body().get(i).getLatitude());
-                        String lngFoo = String.format(Locale.US, "%10.4f", longitude);
-                        String lngFoo1 = String.format(Locale.US, "%10.4f", response.body().get(i).getLongitude());
-
                         if (String.format(Locale.US, "%10.4f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.4f", latitude)) &&
                                 String.format(Locale.US, "%10.4f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.4f", longitude))) {
 
@@ -669,6 +664,8 @@ public class MainActivity extends AppCompatActivity implements
                                 todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                                 isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
                                 }
+
+                            String imageFoo = response.body().get(i).getFeaturedImage().getSrc();
 
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
