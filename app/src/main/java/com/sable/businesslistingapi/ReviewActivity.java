@@ -426,10 +426,6 @@ public class ReviewActivity extends AppCompatActivity implements
         }
     }
 
-    // add the params part within the multipart request
-    //RequestBody param1 = RequestBody.create(MediaType.parse("text/plain"), "post_images=");
-    //RequestBody param2 = RequestBody.create(MediaType.parse("text/plain"), "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
