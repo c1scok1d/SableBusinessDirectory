@@ -91,6 +91,15 @@
                             tools:visibility="visible" />
 
                         <TextView
+                            android:id="@+id/tvId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="gone"
+                            tools:text="listNo"
+                            tools:visibility="visible" />
+
+                        <TextView
                             android:id="@+id/tvFeatured"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -134,7 +143,7 @@
                             android:layout_marginStart="5dp"
                             android:layout_weight="1"
                             android:textAllCaps="true"
-                            android:textColor="@color/highlighted_text"
+                            android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
                             tools:text="be the first to rate" />
                     </LinearLayout>
@@ -204,6 +213,23 @@
                             android:textStyle="bold"
                             android:visibility="gone"
                             tools:text="country"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/tvLatitude"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            tools:text="latitude"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/tvLongitude"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="gone"
+                            tools:text="longitude"
                             tools:visibility="visible" />
 
                     </LinearLayout>
@@ -382,6 +408,22 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:text="status"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tvLink"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:text="link"
+                        tools:visibility="visible" />
+
+                    <TextView
                         android:id="@+id/tvAboutUs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -446,7 +488,7 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/etFeedback"
+                    android:id="@+id/etFeedBack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

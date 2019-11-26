@@ -115,7 +115,9 @@
                     android:textColor="@color/highlighted_text"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    tools:text="category" />
+                    android:visibility="gone"
+                    tools:text="category"
+                    tools:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/ratingsLayout"
@@ -316,7 +318,7 @@
                                 tools:text="facebook" />
 
                             <TextView
-                                android:id="@+id/tvLink"
+                                android:id="@+id/tvStatus"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"

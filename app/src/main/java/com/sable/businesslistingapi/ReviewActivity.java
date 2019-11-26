@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -66,11 +65,11 @@ public class ReviewActivity extends AppCompatActivity implements
     protected View galleryButton;
     RatingBar ratingBar;
     TextView mRatingScale;
-    EditText mFeedback;
+    EditText etFeedBack;
     Button mSendFeedback;
     TextView tvFeatured, tvStatus, tvState,
-            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvEmail, tvWebsite, tvTwitter, tvFacebook,
-            tvVideo, tvHours, tvIsOpen, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate;
+            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook,
+            tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate;
     ImageView logo, ivFeaturedImage;
     RatingBar simpleRatingBar;
     String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
@@ -102,10 +101,10 @@ public class ReviewActivity extends AppCompatActivity implements
 
         ratingBar = findViewById(R.id.ratingBar);
         mRatingScale = findViewById(R.id.tvRatingScale);
-        mFeedback = findViewById(R.id.etFeedback);
+        etFeedBack = findViewById(R.id.etFeedBack);
         mSendFeedback = findViewById(R.id.btnSubmit);
         simpleRatingBar = findViewById(R.id.simpleRatingBar);
-        //tvPost_title = findViewById(R.id.tvName);
+        tvId = findViewById(R.id.tvId);
         tvBldgno = findViewById(R.id.tvBldgNo);
         tvState = findViewById(R.id.tvState);
         tvStreet = findViewById(R.id.tvStreet);
@@ -129,6 +128,10 @@ public class ReviewActivity extends AppCompatActivity implements
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvFirstRate = findViewById(R.id.tvFirstRate);
         tvFeatured = findViewById(R.id.tvFeatured);
+        tvLink = findViewById(R.id.tvLink);
+        tvStatus = findViewById(R.id.tvStatus);
+        tvLatitude = findViewById(R.id.tvLatitude);
+        tvLongitude = findViewById(R.id.tvLongitude);
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -250,9 +253,11 @@ public class ReviewActivity extends AppCompatActivity implements
             tvHours.setText(locationReview.get(0).hours);
             tvIsOpen.setText(locationReview.get(0).isOpen);
             tvContent.setText(locationReview.get(0).content);
-            link = locationReview.get(0).link;
-            latitude = locationReview.get(0).latitude;
-            longitude = locationReview.get(0).longitude;
+            tvLink.setText(locationReview.get(0).link);
+            tvLatitude.setText(String.valueOf(locationReview.get(0).latitude));
+            tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
+            tvId.setText(String.valueOf(locationReview.get(0).id));
+            tvStatus.setText(locationReview.get(0).status);
             if(locationReview.get(0).isOpen.equals("Closed now")){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
@@ -343,12 +348,10 @@ public class ReviewActivity extends AppCompatActivity implements
         mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mFeedback.getText().toString().isEmpty()) {
+                if (etFeedBack.getText().toString().isEmpty()) {
                     Toast.makeText(ReviewActivity.this, "Please fill in feedback text box", Toast.LENGTH_LONG).show();
                 } else {
 
-                    mFeedback.setText("");
-                    //rating = ratingBar.getRating();
                     submitData();
                 }
             }
@@ -477,17 +480,6 @@ public class ReviewActivity extends AppCompatActivity implements
 
     private void submitData() {
 
-        title = tvName.getText().toString();
-        status = "approved";
-        state = tvState.getText().toString();
-        city = tvCity.getText().toString();
-        zipcode = tvZip.getText().toString();
-        country = tvCity.getText().toString();
-        newRating = ratingBar.getRating();
-
-
-
-
         //Add the interceptor to the client builder.
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -504,21 +496,38 @@ public class ReviewActivity extends AppCompatActivity implements
                 .client(client)
                 .build();
 
-        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postReview(id,
-                link,
-                title,
-                status,
-                newRating,
-                post_type,
-                city,
-                state,
-                country,
-                zipcode,
-                latitude,
-                longitude,
-                parts);
+        String fooName = tvName.getText().toString();
+        //String fooLink = tvLink.getText().toString();
+        String fooStatus = tvStatus.getText().toString();
+        String fooCat = tvCategory.getText().toString();
+        String fooId = tvId.getText().toString();
 
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+        Call<List<BusinessListings>> call = service.postReview(Integer.valueOf(tvId.getText().toString()),
+                tvName.getText().toString(),
+                //tvLink.getText().toString(),
+                tvStatus.getText().toString(),
+                tvCategory.getText().toString(),
+                tvBldgno.getText().toString(),
+                tvStreet.getText().toString(),
+                tvCity.getText().toString(),
+                tvState.getText().toString(),
+                tvCountry.getText().toString(),
+                tvZip.getText().toString(),
+                Double.valueOf(tvLatitude.getText().toString()),
+                Double.valueOf(tvLongitude.getText().toString()),
+                simpleRatingBar.getNumStars(),
+                tvPhone.getText().toString(),
+                tvEmail.getText().toString(),
+                tvWebsite.getText().toString(),
+                tvTwitter.getText().toString(),
+                tvFacebook.getText().toString(),
+                //tvVideo.getText().toString(),
+                tvHours.getText().toString(),
+                tvIsOpen.getText().toString(),
+                //ivFeaturedImage.getText().toString(),
+                etFeedBack.getText().toString(),
+                parts);
 
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override

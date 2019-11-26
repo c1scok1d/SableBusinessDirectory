@@ -82,7 +82,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             btnReview = itemView.findViewById(R.id.btnReview);
             tvLongitude = itemView.findViewById(R.id.tvLng);
             tvLatitude = itemView.findViewById(R.id.tvLat);
-            tvLink = itemView.findViewById(R.id.tvLink);
+            tvLink = itemView.findViewById(R.id.tvStatus);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvVideo = itemView.findViewById(R.id.tvVideo);
