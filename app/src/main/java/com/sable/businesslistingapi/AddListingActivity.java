@@ -372,7 +372,7 @@ public class AddListingActivity extends AppCompatActivity implements
         builder.setType(MultipartBody.FORM);
 
         // Single Image
-        builder.addFormDataPart("logo",photos.get(0).toString(),RequestBody.create(MediaType.parse("image/*"), photos.get(0).toString()));
+        builder.addFormDataPart("logo", photos.get(0).toString(),RequestBody.create(MediaType.parse("image/*"), photos.get(0).getFile()));
 
         // Multiple Images
         /* for (int i = 0; i <photos.size() ; i++) {
@@ -712,7 +712,7 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                //Log.e("add_listing", " response " + response.body());
+                Log.e("AddListingActivity", " response " + response.body());
 
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 if(response.isSuccessful()){

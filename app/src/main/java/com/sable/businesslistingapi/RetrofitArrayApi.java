@@ -49,7 +49,7 @@ public interface RetrofitArrayApi {
     @GET("wp-json/geodir/v2/business/categories")
     Call<List<ListingsCategories>> getCategory();
 
-    @Multipart
+    //@Multipart
     @POST("wp-json/geodir/v2/business/")
     Call<List<BusinessListings>> postData(
             @Query("title") String title,

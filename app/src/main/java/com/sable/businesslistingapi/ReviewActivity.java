@@ -516,7 +516,7 @@ public class ReviewActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("add_listing", " response " + response.body());
+                Log.e("ReviewActivity", " response " + response.body());
 
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 if (response.isSuccessful()) {
