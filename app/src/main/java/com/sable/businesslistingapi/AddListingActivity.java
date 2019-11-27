@@ -343,16 +343,8 @@ public class AddListingActivity extends AppCompatActivity implements
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
-
                 for (MediaFile imageFile : imageFiles) {
-                    //body = imageFile.getFile();
-                    image = imageFile.getFile();
-                    String filename = image.getName();
-                    //Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
-                    if (image != null) {
-                        RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), image);
-                        parts.put("featured_image=" +filename, fileBody);
-                    }
+                    Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
                 onPhotosReturned(imageFiles);
             }
@@ -369,13 +361,27 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
     }
+    MultipartBody.Builder builder = new MultipartBody.Builder();
+    MultipartBody requestBody;
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
-        //Bitmap bitmap = BitmapFactory.decodeFile(image.toString());
-        ivLogo.setImageBitmap(BitmapFactory.decodeFile(image.toString()));
-        //photos.addAll(Arrays.asList(returnedPhotos));
+        photos.addAll(Arrays.asList(returnedPhotos));
         //imagesAdapter.notifyDataSetChanged();
-        //ivLogo.scrollToPosition(photos.size() - 1);
+        ivLogo.setImageBitmap(BitmapFactory.decodeFile(photos.get(0).getFile().toString()));
+
+        builder.setType(MultipartBody.FORM);
+
+        // Single Image
+        builder.addFormDataPart("logo",photos.get(0).toString(),RequestBody.create(MediaType.parse("image/*"), photos.get(0).toString()));
+
+        // Multiple Images
+        /* for (int i = 0; i <photos.size() ; i++) {
+            File file = new File(photos.get(i).toString());
+            //RequestBody requestImage = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            builder.addFormDataPart("event_images[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).toString()));
+        } */
+
+        requestBody = builder.build();
     }
 
     private boolean arePermissionsGranted(String[] permissions) {
@@ -700,7 +706,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 website,
                 twitter,
                 facebook,
-                parts);
+                requestBody);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {

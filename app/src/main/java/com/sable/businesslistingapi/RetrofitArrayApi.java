@@ -70,7 +70,8 @@ public interface RetrofitArrayApi {
             @Query("website") String website,
             @Query("twitter") String twitter,
             @Query("facebook") String facebook,
-            @PartMap Map<String, RequestBody> parts);
+            //@Part("description") RequestBody description,
+            @Body RequestBody images);
 
     //@Multipart
     @POST("wp-json/geodir/v2/reviews/")
@@ -78,6 +79,7 @@ public interface RetrofitArrayApi {
             @Query("post") Integer id,
             @Query("rating[overall]") Integer rating,
             @Query("author") Integer author,
-            @Query("content") String content);
+            @Query("content") String content,
+            @Body RequestBody images);
  }
 

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import java.util.Map;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -433,12 +436,7 @@ public class ReviewActivity extends AppCompatActivity implements
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 for (MediaFile imageFile : imageFiles) {
-                    File image = imageFile.getFile();
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
-                    if (image != null) {
-                        RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), image);
-                        parts.put("post_images", fileBody);
-                    }
                 }
                 onPhotosReturned(imageFiles);
             }
@@ -455,11 +453,27 @@ public class ReviewActivity extends AppCompatActivity implements
             }
         });
     }
+    MultipartBody.Builder builder = new MultipartBody.Builder();
+    MultipartBody requestBody;
+
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         photos.addAll(Arrays.asList(returnedPhotos));
         imagesAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(photos.size() - 1);
+
+        builder.setType(MultipartBody.FORM);
+
+
+        // Multiple Images
+        for (int i = 0; i <photos.size() ; i++) {
+            File file = photos.get(i).getFile();
+            //RequestBody requestImage = RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile());
+            builder.addFormDataPart("post_images", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile()));
+        }
+
+        requestBody = builder.build();
+
     }
 
     private boolean arePermissionsGranted(String[] permissions) {
@@ -497,7 +511,7 @@ public class ReviewActivity extends AppCompatActivity implements
         Call<List<BusinessListings>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
-                2, etFeedBack.getText().toString());
+                2, etFeedBack.getText().toString(), requestBody);
 
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
