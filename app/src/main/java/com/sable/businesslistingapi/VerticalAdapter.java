@@ -82,7 +82,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             btnReview = itemView.findViewById(R.id.btnReview);
             tvLongitude = itemView.findViewById(R.id.tvLng);
             tvLatitude = itemView.findViewById(R.id.tvLat);
-            tvLink = itemView.findViewById(R.id.tvStatus);
+            tvLink = itemView.findViewById(R.id.tvLink);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvVideo = itemView.findViewById(R.id.tvVideo);
@@ -90,7 +90,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             btnReview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    locationFoo = new ArrayList();
 
                     Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
 
@@ -135,8 +134,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
                             LocationReview.putExtra("locationReview", locationFoo);
-                            //LocationMatch.getSerializableExtra("locationMatchBundle", locationMatchBundle);
-                            //startActivity(matchAnimation);
                             itemView.getContext().startActivity(LocationReview);
                             break;
                         } else {
@@ -321,9 +318,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             String isFeatured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
             ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
-            //} else {
-            //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
-
+            } else {
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 255)); //white
         }
         if ( object.phone.equals("null") || object.phone.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnCall.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
@@ -332,20 +328,20 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
         }
 
-        if (object.latitude.equals("null") || object.latitude.toString().isEmpty() || (object.longitude.equals("null") || object.longitude.toString().isEmpty())) {
+        if (object.latitude.toString().equals("null") || object.latitude.toString().isEmpty() || (object.longitude.toString().equals("null") || object.longitude.toString().isEmpty())) {
             ((ImageTypeViewHolder) holder).btnDirections.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
             //} else {
             //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
 
-        if (object.featured.equals("true")){
+        /*if (object.featured.equals("true")){
             String isFeatured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
             ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
             //} else {
             //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
 
-        }
+        }*/
         if(object.isOpen.equals("Closed now")){
             ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
         }

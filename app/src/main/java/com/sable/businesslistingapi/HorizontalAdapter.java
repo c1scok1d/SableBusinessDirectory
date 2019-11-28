@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter {
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtRestaurantName, txtDesc, tvPrice;
+        TextView txtRestaurantName, txtDesc, tvPrice, tvLink;
         ImageView image;
         RatingBar simpleRatingBar;
 
@@ -39,9 +40,20 @@ public class HorizontalAdapter extends RecyclerView.Adapter {
             this.txtDesc = view.findViewById(R.id.txtDesc);
             this.tvPrice = view.findViewById(R.id.tvPrice);
             this.simpleRatingBar = view.findViewById(R.id.simpleRatingBar);
-           // this.tvRating = view.findViewById(R.id.tvRatingCount);
+            this.tvLink = view.findViewById(R.id.tvLink);
             this.image = view.findViewById(R.id.imgRestaurant);
+
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), WooProductDetail.class);
+                    intent.putExtra("url", tvLink.getText().toString());
+                    itemView.getContext().startActivity(intent);
+                }
+            });
         }
+
+
     }
 
 
@@ -63,8 +75,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter {
         ((MyViewHolder) holder).txtRestaurantName.setText(object.name);
         ((MyViewHolder) holder).txtDesc.setText(object.description);
         ((MyViewHolder) holder).tvPrice.setText(object.price);
-        ((MyViewHolder) holder).simpleRatingBar.setRating(object.averageRating);
-//        ((MyViewHolder) holder).tvRating.setText((object.ratingCount));
+        ((MyViewHolder) holder).simpleRatingBar.setRating(Float.valueOf(object.averageRating));
+        ((MyViewHolder) holder).tvLink.setText((object.link));
         builder.build().load(dataset.get(position).image).into(((MyViewHolder) holder).image);
     }
 

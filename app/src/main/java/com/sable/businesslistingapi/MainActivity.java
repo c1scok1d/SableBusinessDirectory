@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements
     Spinner spnCategory, spnRadius;
 
 
-    Button btnAdd;
+    Button btnAdd, btnShop;
     SearchView searchView;
 
     private GoogleMap mMap;
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         btnAdd = findViewById(R.id.btnAdd);
+        btnShop = findViewById(R.id.btnShop);
         //spnCategory = findViewById(R.id.spnCategory);
         //spnRadius = findViewById(R.id.spnRadius);
 
@@ -283,6 +284,14 @@ public class MainActivity extends AppCompatActivity implements
                     startActivity(intent);
                 }
 
+            }
+        });
+
+        btnShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
+                    startActivity(intent);
             }
         });
 
@@ -701,7 +710,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
-                            //Intent matchAnimation = new Intent(MainActivity.this, WPPostDetails.class);
+                            //Intent matchAnimation = new Intent(MainActivity.this, WooProductDetail.class);
 
                             Bundle locationMatchBundle = new Bundle();
                             locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
@@ -833,9 +842,10 @@ public class MainActivity extends AppCompatActivity implements
                     //parse response based on WooModel class and add to list array ( get category name, description and image)
                     horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,
                             response.body().get(i).getName(),
-                            response.body().get(i).getName(),
+                            response.body().get(i).getPermalink(),
                             response.body().get(i).getAverageRating(),
                             response.body().get(i).getRatingCount(),
+                            response.body().get(i).getDescription(),
                             response.body().get(i).getPrice(),
                             response.body().get(i).getImages().get(0).getSrc()));
 

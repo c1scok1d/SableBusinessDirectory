@@ -103,7 +103,8 @@
                         android:gravity="center_horizontal"
                         android:textAllCaps="true"
                         android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="featured" />
 
                 </LinearLayout>
 
@@ -319,7 +320,7 @@
                                 tools:text="facebook" />
 
                             <TextView
-                                android:id="@+id/tvStatus"
+                                android:id="@+id/tvLink"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"

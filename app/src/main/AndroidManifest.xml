@@ -48,7 +48,7 @@
                 android:resource="@layout/searchable" />
         </activity>
 
-        <activity android:name=".WPPostDetails"
+        <activity android:name=".WooProductDetail"
             android:label="@string/app_name">
         </activity>
 

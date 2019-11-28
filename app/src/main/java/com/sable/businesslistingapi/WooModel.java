@@ -1,21 +1,22 @@
 package com.sable.businesslistingapi;
 
 public class WooModel {
-    public String name, description, price, image, ratingCount;
+    public String name, description, price, image, link;
     public static final int IMAGE_TYPE = 1;
-    public int  type;
-    float averageRating;
+    public int  type, rating, ratingCount;
+    public String averageRating;
 
-    public WooModel(int mtype, String mname, String mdesc, String mstars, int mratingCount, String mprice, String mimage) {
+    public WooModel(int mtype, String mname, String mlink, String mrating, Integer ratingCount, String mdesc, String mprice, String mimage) {
 
-        String rating = Integer.toString(mratingCount);
+        //String rating = Integer.toString(mratingCount);
        // doubleStars = Integer.parseInt(mstars);
-        float stars = Float.parseFloat(mstars);
+        //float stars = Float.parseFloat(mstars);
         this.type = mtype;
         this.name = mname;
+        this.link = mlink;
         this.description = mdesc;
-        this.averageRating = stars;
-        this.ratingCount = rating;
+        this.averageRating = mrating;
+        this.ratingCount = ratingCount;
         this.price = mprice;
         this.image = mimage;
     }
