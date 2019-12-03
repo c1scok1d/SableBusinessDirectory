@@ -243,7 +243,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvisOpen.setText(object.isOpen);
         ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setRating(object.rating);
-        ((ImageTypeViewHolder) holder).tvDistance.setText(String.format( Locale.US, "%10.2f", distance));
+        ((ImageTypeViewHolder) holder).tvDistance.setText(String.format(Locale.US, "%10.2f", distance));
         ((ImageTypeViewHolder) holder).tvWebsite.setText(object.website);
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setNumStars(object.rating);
@@ -265,7 +265,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
         builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
-
 
 
         locationReview.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -298,7 +297,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.content,
                 object.image));
 
-        if ( object.facebook.equals("null") || object.facebook.isEmpty()) {
+        if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
             // } else {
             //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
@@ -314,16 +313,16 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             //} else {
             //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
         }
-        if (object.featured.equals(true)){
+        if (object.featured.equals(true)) {
             String isFeatured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
             ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
-            } else {
+        } else {
             ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 255)); //white
         }
-        if ( object.phone.equals("null") || object.phone.isEmpty()) {
+        if (object.phone.equals("null") || object.phone.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnCall.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
-            ((ImageTypeViewHolder) holder).tvCall.setTextColor(Color.rgb(211,211,211));
+            ((ImageTypeViewHolder) holder).tvCall.setTextColor(Color.rgb(211, 211, 211));
             // } else {
             //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
         }
@@ -333,17 +332,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             //} else {
             //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
-
-        /*if (object.featured.equals("true")){
-            String isFeatured = "Featured";
-            ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
-            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
-            //} else {
-            //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
-
-        }*/
-        if(object.isOpen.equals("Closed now")){
-            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
+        if (object.hours.equals("Closed")) {
+            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 255, 255)); //white (hidden)
+            String closed = "Closed Now";
+            ((ImageTypeViewHolder) holder).tvHours.setText(closed);
+            ((ImageTypeViewHolder) holder).tvHours.setTextColor(Color.rgb(255, 0, 0)); //red
+        } else if (object.isOpen.equals("Closed now")) {
+            ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0)); //red
         }
     }
     @Override

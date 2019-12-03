@@ -845,7 +845,7 @@ public class MainActivity extends AppCompatActivity implements
                             response.body().get(i).getPermalink(),
                             response.body().get(i).getAverageRating(),
                             response.body().get(i).getRatingCount(),
-                            response.body().get(i).getDescription(),
+                            response.body().get(i).getName(),
                             response.body().get(i).getPrice(),
                             response.body().get(i).getImages().get(0).getSrc()));
 

@@ -41,8 +41,10 @@ public class WooProductDetail extends AppCompatActivity {
         if( getIntent().getExtras() == null){
 
             url = "https://www.thesablebusinessdirectory.com/shop/";
+
         } else {
             url = getIntent().getStringExtra("url");
+
         }
 
        new MyAsynTask().execute();
@@ -60,6 +62,7 @@ public class WooProductDetail extends AppCompatActivity {
                 document.getElementsByClass("navbar").remove();
                 document.getElementsByClass("woocommerce-products-header").remove();
 
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,12 +79,14 @@ public class WooProductDetail extends AppCompatActivity {
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
             webView.getSettings().setBuiltInZoomControls(true);
+//            progressBar.setVisibility(View.GONE); //hide progressBar
+
 
             webView.setWebViewClient(new WebViewClient(){
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                     view.loadUrl(url);
-                    progressBar.setVisibility(View.GONE); //hide progressBar
+
 
                     return super.shouldOverrideUrlLoading(view, request);
                 }
