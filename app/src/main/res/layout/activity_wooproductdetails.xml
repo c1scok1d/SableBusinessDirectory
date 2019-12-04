@@ -7,22 +7,24 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hRecycler"
+        android:id="@+id/horizontalRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" >
 
     </androidx.recyclerview.widget.RecyclerView>
 
     <WebView
         android:id="@+id/productwebview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </WebView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

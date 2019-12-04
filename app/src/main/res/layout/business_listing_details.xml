@@ -49,6 +49,27 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_weight="1"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        tools:text="category"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal|center_vertical"
                     android:orientation="horizontal">
@@ -57,6 +78,7 @@
                         android:id="@+id/tvTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_marginStart="3dp"
                         android:layout_weight="1"
                         android:gravity="start"
@@ -82,7 +104,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical"
-                        android:numStars="5" />
+                        android:layout_weight="0"
+                        android:numStars="5"
+                        android:progressTint="#e9be06"
+                        android:secondaryProgressTint="#e9be06" />
 
                     <TextView
                         android:id="@+id/tvRatingCount"
@@ -108,20 +133,6 @@
                         tools:text="featured" />
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_weight="1"
-                    android:textAllCaps="true"
-                    android:textColor="@color/highlighted_text"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="category"
-                    tools:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/ratingsLayout"
@@ -273,6 +284,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_horizontal|center_vertical"
                                 android:layout_marginStart="3dp"
+                                android:gravity="center_horizontal|center_vertical"
                                 android:textColor="@color/colorAccent"
                                 android:textSize="12sp"
                                 tools:text="hours" />
@@ -283,9 +295,11 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_horizontal|center_vertical"
                                 android:layout_marginStart="5dp"
+                                android:gravity="center_horizontal|center_vertical"
                                 android:textAllCaps="true"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="#006400"
                                 android:textSize="12sp"
+                                android:textStyle="bold"
                                 tools:text="isOpen" />
 
                         </LinearLayout>

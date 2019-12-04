@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
     VerticalAdapter verticalAdapter, verticalAdapter2;
-    HorizontalAdapter horizontalAdapter;
+   // HorizontalAdapter horizontalAdapter;
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
     String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     //ArrayList<String> category;
-    ArrayList<WooModel> horizontalList;
+   // ArrayList<WooModel> horizontalList;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     Spinner spnCategory, spnRadius;
@@ -119,16 +119,16 @@ public class MainActivity extends AppCompatActivity implements
         /* Display current location address */
         tvAddress = findViewById(R.id.tvAddress);
 
-        /* Set Horizontal LinearLayout to RecyclerView */
+        /* Set Horizontal LinearLayout to RecyclerView
         horizontalRecyclervView = findViewById(R.id.horizontalRecyclerView);
         horizontalRecyclervView.setHasFixedSize(true);
         hLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
         horizontalRecyclervView.setLayoutManager(hLayoutManager);
         horizontalList = new ArrayList<>();
 
-        /* Set HorizontalAdapter to RecyclerView */
+        /* Set HorizontalAdapter to RecyclerView
         horizontalAdapter = new HorizontalAdapter(horizontalList, MainActivity.this);
-        horizontalRecyclervView.setAdapter(horizontalAdapter);
+        horizontalRecyclervView.setAdapter(horizontalAdapter); */
         /*
             BEGIN vertical Recycler View
          */
@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements
          *  api calls to get listings and marketplace products
          */
 
-        getRetrofitWoo(); //call to woocommerce products api
+       // getRetrofitWoo(); //call to woocommerce products api
     }
 
     /**
@@ -667,7 +667,7 @@ public class MainActivity extends AppCompatActivity implements
                                 isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
                                 }
 
-                            String imageFoo = response.body().get(i).getFeaturedImage().getSrc();
+                            //String imageFoo = response.body().get(i).getFeaturedImage().getSrc();
 
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -786,7 +786,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Query API for WooStore data
      */
-    public void getRetrofitWoo() {
+    /* public void getRetrofitWoo() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -839,5 +839,5 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-    }
+    } */
 }

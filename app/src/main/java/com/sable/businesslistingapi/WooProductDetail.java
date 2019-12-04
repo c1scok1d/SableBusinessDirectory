@@ -12,16 +12,34 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WooProductDetail extends AppCompatActivity {
     TextView title;
     WebView webView;
     String url;
     private ProgressBar progressBar;
+    RecyclerView horizontalRecyclervView;
+    HorizontalAdapter horizontalAdapter;
+    ArrayList<WooModel> horizontalList;
+    LinearLayoutManager hLayoutManager;
+    String baseURL = "https://www.thesablebusinessdirectory.com";
 
 
 
@@ -36,7 +54,17 @@ public class WooProductDetail extends AppCompatActivity {
 
         title = findViewById(R.id.title);
         webView = findViewById(R.id.productwebview);
-        progressBar = findViewById(R.id.progressbar);
+        progressBar = findViewById(R.id.progressBar);
+        /* Set Horizontal LinearLayout to RecyclerView */
+        horizontalRecyclervView = findViewById(R.id.horizontalRecyclerView);
+        horizontalRecyclervView.setHasFixedSize(true);
+        hLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        horizontalRecyclervView.setLayoutManager(hLayoutManager);
+        horizontalList = new ArrayList<>();
+
+        /* Set HorizontalAdapter to RecyclerView */
+        horizontalAdapter = new HorizontalAdapter(horizontalList, getApplicationContext());
+        horizontalRecyclervView.setAdapter(horizontalAdapter);
 
         if( getIntent().getExtras() == null){
 
@@ -48,6 +76,7 @@ public class WooProductDetail extends AppCompatActivity {
         }
 
        new MyAsynTask().execute();
+        getRetrofitWoo(); //call to woocommerce products api
 
 
     }
@@ -93,6 +122,65 @@ public class WooProductDetail extends AppCompatActivity {
             });
 
         }
+    }
+
+    /**
+     * Query API for WooStore data
+     */
+    public void getRetrofitWoo() {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);  // <-- this is the important line!
+        // httpClient.addInterceptor(logging);  // <-- this is the important line!
+
+
+        // String baseURL = "https://www.thesablebusinessdirectory.com";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+
+        // pass JSON data to BusinessListings class for filtering
+        Call<List<WooProducts>> call = service.getPostWooInfo();
+
+        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+        call.enqueue(new Callback<List<WooProducts>>() {
+            @Override
+            public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
+                //Log.e("WooCommerce", " response " + response.body());
+
+                //mListPost = response.body();
+//                progressBar.setVisibility(View.GONE); //hide progressBar
+                progressBar.setVisibility(View.GONE);
+
+
+                // loop through JSON response get parse and output to log
+
+                for (int i = 0; i < response.body().size(); i++) {
+
+                    //parse response based on WooModel class and add to list array ( get category name, description and image)
+                    horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,
+                            response.body().get(i).getName(),
+                            response.body().get(i).getPermalink(),
+                            response.body().get(i).getAverageRating(),
+                            response.body().get(i).getRatingCount(),
+                            response.body().get(i).getName(),
+                            response.body().get(i).getPrice(),
+                            response.body().get(i).getImages().get(0).getSrc()));
+
+                }
+                horizontalAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<WooProducts>> call, Throwable t) {
+            }
+        });
+
     }
 }
 
