@@ -49,6 +49,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             simpleRatingBar = itemView.findViewById(R.id.simpleRatingBar);
+            simpleRatingBar.setNumStars(5);
             tvId = itemView.findViewById(R.id.tvId);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvRating = itemView.findViewById(R.id.ratingBar);
@@ -264,7 +265,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvCountry.setText(object.country);
         ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
-        builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
+//        builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
 
 
         locationReview.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -332,12 +333,12 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             //} else {
             //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
-        if (object.hours.equals("Closed")) {
+        if (object.hours == "Closed") {
             ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 255, 255)); //white (hidden)
             String closed = "Closed Now";
             ((ImageTypeViewHolder) holder).tvHours.setText(closed);
             ((ImageTypeViewHolder) holder).tvHours.setTextColor(Color.rgb(255, 0, 0)); //red
-        } else if (object.isOpen.equals("Closed now")) {
+        } else if (object.isOpen =="Closed now") {
             ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 0, 0)); //red
         }
     }

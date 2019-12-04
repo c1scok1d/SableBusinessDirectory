@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "10");
                             query.put("order", "asc");
-                            //query.put("orderby",  "distance");
+                            query.put("orderby",  "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "15");
                             query.put("order", "asc");
-                            //query.put("orderby",  "distance");
+                            query.put("orderby",  "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "20");
                             query.put("order", "asc");
-                            //query.put("orderby",  "distance");
+                            query.put("orderby",  "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "5");
                             query.put("order", "asc");
-                            //query.put("orderby",  "distance");
+                            query.put("orderby",  "distance");
 
                             texty.setText(radius);
                             break;
@@ -311,9 +311,9 @@ public class MainActivity extends AppCompatActivity implements
         if (Intent.ACTION_SEARCH.equals(search.getAction())) {
             Map<String, String> query = new HashMap<>();
 
-            query.put("distance", "5");
+            //query.put("distance", "5");
             query.put("order", "asc");
-            //query.put("orderby",  "distance");
+            query.put("orderby",  "distance");
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
         }
@@ -380,9 +380,9 @@ public class MainActivity extends AppCompatActivity implements
             longitude = location.getLongitude();
             query.put("latitude", String.format(Locale.US, "%10.4f", latitude));
             query.put("longitude", String.format(Locale.US, "%10.4f", longitude));
-            query.put("distance", "5");
+            //query.put("distance", "5");
             query.put("order", "asc");
-            //query.put("orderby",  "distance");
+            query.put("orderby",  "distance");
 
             // zoom to current location on map
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -581,13 +581,6 @@ public class MainActivity extends AppCompatActivity implements
             country = addresses.get(0).getCountryName(); //get country
             tvAddress.setText(address);
             addresses.get(0).getAdminArea();
-           /* address = maddress;
-            bldgno = mbldgno;
-            street = mstreet;
-            state = mstate;
-            city = mcity;
-            zipcode = mzipcode;
-            country = mcountry;*/
         }
 
     }
@@ -826,18 +819,6 @@ public class MainActivity extends AppCompatActivity implements
                 // loop through JSON response get parse and output to log
 
                 for (int i = 0; i < response.body().size(); i++) {
-
-                    //ifStatement to skip json object from array if value is empty/null
-
-
-                    /* Log.e("Product ", "id: " + response.body().get(i).getId());
-                    Log.e("Product ", "Title: " + response.body().get(i).getName());
-                    Log.e("Product ", "Description" + response.body().get(i).getName());
-                    Log.e("Product ", "Rating: " + response.body().get(i).getAverageRating());
-                    Log.e("Product ", "Rating Count: " + response.body().get(i).getRatingCount());
-                    Log.e("Product ", "Price: " + response.body().get(i).getPrice());
-                    Log.e("Product ", "Image: " + response.body().get(i).getImages().get(0).getSrc());
-//                    Log.e("main ", " Image1: " + response.body().get(i).getImages().get(1).getSrc()); */
 
                     //parse response based on WooModel class and add to list array ( get category name, description and image)
                     horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,

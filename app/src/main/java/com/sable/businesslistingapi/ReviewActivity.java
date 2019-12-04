@@ -262,7 +262,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
-            if(locationReview.get(0).isOpen.equals("Closed now")){
+            if(locationReview.get(0).isOpen =="Closed now"){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
             if(locationReview.get(0).featured.equals(true)){
@@ -357,6 +357,8 @@ public class ReviewActivity extends AppCompatActivity implements
                 } else {
 
                     submitData();
+                    Intent mainActivity = new Intent(view.getContext(), MainActivity.class);
+                    startActivity(mainActivity);
                 }
             }
         });
@@ -470,6 +472,7 @@ public class ReviewActivity extends AppCompatActivity implements
             File file = photos.get(i).getFile();
             //RequestBody requestImage = RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile());
             builder.addFormDataPart("post_images", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile()));
+            //Uri.parse("Image"+i, fooUri);
         }
 
         requestBody = builder.build();

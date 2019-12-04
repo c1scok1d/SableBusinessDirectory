@@ -39,10 +39,6 @@ public interface RetrofitArrayApi {
     Call<List<BusinessListings>> getDynamic(
             @Url String url);
 
-    @GET("wp-json/geodir/v2/business/")
-    Call<List<BusinessListings>> addReview(
-            @Query("search") String query);
-
     @GET("wp-json/wc/v3/products?consumer_key=ck_c3addab1f230fa55025a2f78969d18f518ebbc5e&consumer_secret=cs_aaf9c39669e92ebd745a0e91a9a5810e9222cc92")
     Call<List<WooProducts>> getPostWooInfo();
 
@@ -77,7 +73,7 @@ public interface RetrofitArrayApi {
     @POST("wp-json/geodir/v2/reviews/")
     Call<List<BusinessListings>> postReview(
             @Query("post") Integer id,
-            @Query("rating[overall]") Integer rating,
+            @Query("rating") Integer rating,
             @Query("author") Integer author,
             @Query("content") String content,
             @Body RequestBody images);
