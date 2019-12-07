@@ -457,6 +457,9 @@ public class ReviewActivity extends AppCompatActivity implements
     }
     MultipartBody.Builder builder = new MultipartBody.Builder();
     MultipartBody requestBody;
+    RequestBody requestFile;
+    HashMap<String, RequestBody> map = new HashMap<>();
+    String image1;
 
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
@@ -467,12 +470,18 @@ public class ReviewActivity extends AppCompatActivity implements
         builder.setType(MultipartBody.FORM);
 
 
+
         // Multiple Images
         for (int i = 0; i <photos.size() ; i++) {
             File file = photos.get(i).getFile();
-            //RequestBody requestImage = RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile());
+            Uri uri = Uri.fromFile(photos.get(i).getFile());
+            String path = file.getPath();
+            String filename = path.substring(path.lastIndexOf("/")+1);
+
+
+            //String requestImage =  file.getName(photos.get(i));
             builder.addFormDataPart("post_images", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile()));
-            //Uri.parse("Image"+i, fooUri);
+            image1 = "https://www.thesablebusinessdirectory.com/wp-json/wp/v2/media/" + filename;
         }
 
         requestBody = builder.build();
@@ -514,7 +523,7 @@ public class ReviewActivity extends AppCompatActivity implements
         Call<List<BusinessListings>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
-                2, etFeedBack.getText().toString(), requestBody);
+                2, etFeedBack.getText().toString(), image1, requestBody);
 
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
