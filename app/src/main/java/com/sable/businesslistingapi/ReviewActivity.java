@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -25,6 +26,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,9 +86,10 @@ public class ReviewActivity extends AppCompatActivity implements
     Integer category, id, rating;
     float newRating;
     public static List<BusinessListings> mListPost;
+    //private ProgressDialog pDialog;
 
 
-    private ProgressBar progressBar;
+    private ProgressBar pDialog;
     private ImagesAdapter imagesAdapter;
     private ArrayList<MediaFile> photos = new ArrayList<>();
     Map<String, RequestBody> parts = new HashMap<>();
@@ -100,6 +106,7 @@ public class ReviewActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_review);
 
         Picasso.Builder builder = new Picasso.Builder(this);
+        pDialog = new ProgressBar(this);
 
         ratingBar = findViewById(R.id.ratingBar);
         mRatingScale = findViewById(R.id.tvRatingScale);
@@ -435,11 +442,20 @@ public class ReviewActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
-            @Override
-            public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
-                for (MediaFile imageFile : imageFiles) {
-                    Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
-                }
+                    @Override
+                    public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
+                        for (MediaFile imageFile : imageFiles) {
+                            Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                        }
+                        //int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
+
+                        for (int i = 0; i < photos.size(); i++) {
+                            Uri imageUri = Uri.fromFile(photos.get(i).getFile());
+                            String path = imageUri.getPath();
+                        }
+
+                        uploadFiles(imageFiles);
+
                 onPhotosReturned(imageFiles);
             }
 
@@ -455,11 +471,11 @@ public class ReviewActivity extends AppCompatActivity implements
             }
         });
     }
-    MultipartBody.Builder builder = new MultipartBody.Builder();
-    MultipartBody requestBody;
-    RequestBody requestFile;
-    HashMap<String, RequestBody> map = new HashMap<>();
-    String image1;
+    //MultipartBody.Builder builder = new MultipartBody.Builder();
+    //MultipartBody requestBody;
+    //RequestBody requestFile;
+    //HashMap<String, RequestBody> map = new HashMap<>();
+    //String image1;
 
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
@@ -467,25 +483,106 @@ public class ReviewActivity extends AppCompatActivity implements
         imagesAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(photos.size() - 1);
 
-        builder.setType(MultipartBody.FORM);
+        //builder.setType(MultipartBody.FORM);
 
 
 
         // Multiple Images
-        for (int i = 0; i <photos.size() ; i++) {
-            File file = photos.get(i).getFile();
-            Uri uri = Uri.fromFile(photos.get(i).getFile());
-            String path = file.getPath();
-            String filename = path.substring(path.lastIndexOf("/")+1);
+       // for (int i = 0; i <photos.size() ; i++) {
+          //  File file = photos.get(i).getFile();
+          //  Uri imageUri = Uri.fromFile(photos.get(i).getFile());
+           // String imageFilepath = file.getPath();
+           // String filename = path.substring(path.lastIndexOf("/")+1);
 
 
             //String requestImage =  file.getName(photos.get(i));
-            builder.addFormDataPart("post_images", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile()));
-            image1 = "https://www.thesablebusinessdirectory.com/wp-json/wp/v2/media/" + filename;
+            //builder.addFormDataPart("post_images", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile()));
+            //image1 = "https://www.thesablebusinessdirectory.com/wp-content/uploads/geodir_temp/" + filename;
+        //}
+
+        //requestBody = builder.build();
+
+    }
+
+
+    //ArrayList<String> filesToUploadfoo = new ArrayList<>();
+    File[] filesToUpload;
+
+    public void uploadFiles(@NonNull MediaFile[] returnedPhotos){
+        photos.addAll(Arrays.asList(returnedPhotos));
+
+        filesToUpload = new File[photos.size()];
+
+        for(int i=0; i< photos.size(); i++){
+            filesToUpload[i] = new File(photos.get(i).getFile().toString());
+           /* String path = photos.get(i).getFile().toString();
+            // it contains your image path...I'm using a temp string...
+            String filename = path.substring(path.lastIndexOf("/")+1);
+            filesToUploadfoo.add(photos.get(i).getFile().toString());*/
         }
+        showProgress("Uploading media ...");
+        FileUploader fileUploader = new FileUploader();
+        fileUploader.uploadFiles("wp-json/wp/v2/media", "file", filesToUpload, new FileUploader.FileUploaderCallback() {
+            @Override
+            public void onError() {
+                hideProgress();
+            }
+            String foo;
 
-        requestBody = builder.build();
+            @Override
+            public void onFinish(String[] responses) {
+                hideProgress();
+                for(int i=0; i< responses.length; i++){
+                    String str = responses[i];
+                    try {
+                        final JSONObject obj = new JSONObject(responses[i]);
+                        final JSONObject geodata = obj.getJSONObject("guid");
+                        //String person = geodata.getJSONObject("rendered");
+                        foo = geodata.getString("rendered");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    filesToUploadfoo.add(foo);
+                    Log.e("RESPONSE "+i, responses[i]);
+                }
+            }
 
+            @Override
+            public void onProgressUpdate(int currentpercent, int totalpercent, int filenumber) {
+                updateProgress(totalpercent,"Uploading file "+filenumber,"");
+                Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
+            }
+        });
+    }
+
+    public void updateProgress(int val, String title, String msg){
+       // pDialog.setTitle(title);
+        //pDialog.setMessage(msg);
+        pDialog.setProgress(val);
+    }
+
+    public void showProgress(String str){
+        try{
+           // pDialog.setCancelable(false);
+           // pDialog.setTitle("Please wait");
+            //pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pDialog.setMax(100); // Progress Dialog Max Value
+           // pDialog.setMessage(str);
+            //if (pDialog.isShowing())
+            //    pDialog.dismiss();
+           // pDialog.show();
+        }catch (Exception e){
+
+        }
+    }
+
+    public void hideProgress() {
+        try {
+           // if (pDialog.isH())
+           //     pDialog.dismiss();
+        } catch (Exception e) {
+
+        }
     }
 
     private boolean arePermissionsGranted(String[] permissions) {
@@ -501,6 +598,7 @@ public class ReviewActivity extends AppCompatActivity implements
         ActivityCompat.requestPermissions(ReviewActivity.this, permissions, requestCode);
     }
 
+ArrayList<String> filesToUploadfoo = new ArrayList<>();
     private void submitData() {
 
         //Add the interceptor to the client builder.
@@ -523,7 +621,7 @@ public class ReviewActivity extends AppCompatActivity implements
         Call<List<BusinessListings>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
-                2, etFeedBack.getText().toString(), image1, requestBody);
+                /*2,*/ etFeedBack.getText().toString(), filesToUploadfoo);
 
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override

@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public interface RetrofitArrayApi {
     Call<List<ListingsCategories>> getCategory();
 
     //@Multipart
-    @POST("wp-json/geodir/v2/business/")
+    @POST("wp-json/geodir/v2/business")
     Call<List<BusinessListings>> postData(
             @Query("title") String title,
             @Query("status") String status,
@@ -71,13 +72,14 @@ public interface RetrofitArrayApi {
             @Body RequestBody images);
 
     //@Multipart
-    @POST("wp-json/geodir/v2/reviews/")
+    @FormUrlEncoded
+    @POST("wp-json/geodir/v2/reviews")
     Call<List<BusinessListings>> postReview(
             @Query("post") Integer id,
             @Query("rating") Integer rating,
-            @Query("author") Integer author,
+           // @Query("author") Integer author,
             @Query("content") String content,
-            @Query("images") String image1,
-            @Body RequestBody images);
+            @Field("images") ArrayList<String> filesToUpload
+            /*@Body RequestBody images*/);
  }
 
