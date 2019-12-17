@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -346,6 +350,8 @@ public class AddListingActivity extends AppCompatActivity implements
                 for (MediaFile imageFile : imageFiles) {
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
+                uploadFiles(imageFiles);
+
                 onPhotosReturned(imageFiles);
             }
 
@@ -361,27 +367,99 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
     }
-    MultipartBody.Builder builder = new MultipartBody.Builder();
-    MultipartBody requestBody;
+
+    //ArrayList<String> filesToUploadfoo = new ArrayList<>();
+    File[] filesToUpload;
+    ArrayList<String> filesToUploadfoo = new ArrayList<>();
+
+
+    public void uploadFiles(@NonNull MediaFile[] returnedPhotos){
+        photos.addAll(Arrays.asList(returnedPhotos));
+
+        filesToUpload = new File[photos.size()];
+
+
+        for(int i=0; i< photos.size(); i++){
+            filesToUpload[i] = new File(photos.get(i).getFile().toString());
+           /* String path = photos.get(i).getFile().toString();
+            // it contains your image path...I'm using a temp string...
+            String filename = path.substring(path.lastIndexOf("/")+1);
+            filesToUploadfoo.add(photos.get(i).getFile().toString());*/
+        }
+        showProgress("Uploading media ...");
+        FileUploader fileUploader = new FileUploader();
+        fileUploader.uploadFiles("wp-json/wp/v2/media", "file", filesToUpload, new FileUploader.FileUploaderCallback() {
+            @Override
+            public void onError() {
+                hideProgress();
+            }
+            String foo;
+
+            @Override
+            public void onFinish(String[] responses) {
+                hideProgress();
+                for(int i=0; i< responses.length; i++){
+                    //String str = responses[i];
+                    try {
+                        final JSONObject obj = new JSONObject(responses[i]);
+                        final JSONObject geodata = obj.getJSONObject("guid");
+                        //String person = geodata.getJSONObject("rendered");
+                        foo = geodata.getString("rendered");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    filesToUploadfoo.add(foo);
+                    Log.e("RESPONSE "+i, responses[i]);
+                }
+            }
+
+            @Override
+            public void onProgressUpdate(int currentpercent, int totalpercent, int filenumber) {
+                updateProgress(totalpercent,"Uploading file "+filenumber,"");
+                Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
+            }
+        });
+    }
+    private ProgressBar pDialog;
+
+
+    public void updateProgress(int val, String title, String msg){
+        // pDialog.setTitle(title);
+        //pDialog.setMessage(msg);
+//        pDialog.setProgress(val);
+    }
+
+
+    public void showProgress(String str){
+        try{
+            // pDialog.setCancelable(false);
+            // pDialog.setTitle("Please wait");
+            //pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+          //  pDialog.setMax(100); // Progress Dialog Max Value
+            // pDialog.setMessage(str);
+            //if (pDialog.isShowing())
+            //    pDialog.dismiss();
+            // pDialog.show();
+        }catch (Exception e){
+
+        }
+    }
+
+    public void hideProgress() {
+        try {
+            // if (pDialog.isH())
+            //     pDialog.dismiss();
+        } catch (Exception e) {
+
+        }
+    }
+
+
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         photos.addAll(Arrays.asList(returnedPhotos));
         //imagesAdapter.notifyDataSetChanged();
         ivLogo.setImageBitmap(BitmapFactory.decodeFile(photos.get(0).getFile().toString()));
-
-        builder.setType(MultipartBody.FORM);
-
-        // Single Image
-        builder.addFormDataPart("logo", photos.get(0).toString(),RequestBody.create(MediaType.parse("image/*"), photos.get(0).getFile()));
-
-        // Multiple Images
-        /* for (int i = 0; i <photos.size() ; i++) {
-            File file = new File(photos.get(i).toString());
-            //RequestBody requestImage = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            builder.addFormDataPart("event_images[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).toString()));
-        } */
-
-        requestBody = builder.build();
     }
 
     private boolean arePermissionsGranted(String[] permissions) {
@@ -577,9 +655,9 @@ public class AddListingActivity extends AppCompatActivity implements
             state = addresses.get(0).getAdminArea();
             zipcode = addresses.get(0).getPostalCode();
             country = addresses.get(0).getCountryName();
-            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+           /* String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
             String lat = Double.toString(latitude);
-            String lng = Double.toString(longitude);
+            String lng = Double.toString(longitude);*/
 
 
 //        tvAddress.setText(address);
@@ -669,6 +747,11 @@ public class AddListingActivity extends AppCompatActivity implements
 
     //private static Retrofit retrofit = null;
     private void submitData(){
+        String fooLat = String.format(Locale.US, "%10.4f", latitude);
+        String fooLng = String.format(Locale.US, "%10.4f", longitude);
+
+        latitude = Double.valueOf(fooLat);
+        longitude = Double.valueOf(fooLng);
         //Add the interceptor to the client builder.
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -706,7 +789,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 website,
                 twitter,
                 facebook,
-                requestBody);
+                filesToUploadfoo);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {

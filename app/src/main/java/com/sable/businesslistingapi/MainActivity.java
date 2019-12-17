@@ -353,11 +353,33 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
+                        Map<String, String> query = new HashMap<>();
+
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                        query.put("latitude", String.format(Locale.US, "%10.4f", latitude));
+                        query.put("longitude", String.format(Locale.US, "%10.4f", longitude));
+                        //query.put("distance", "5");
+                        query.put("order", "asc");
+                        query.put("orderby",  "distance");
+
+                        // zoom to current location on map
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                                .zoom(17)                   // Sets the zoom
+                                .bearing(90)                // Sets the orientation of the camera to east
+                                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                                .build();                   // Creates a CameraPosition from the builder
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+                        setAddress(latitude, longitude);  // method to reverse geocode to physical address
+                       /* if (location != null) {
                             // Logic to handle location object
                             Log.e("LAST LOCATION: ", location.toString());
-                        }
+                        }*/
                     }
                 });
 
@@ -483,8 +505,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMyLocationClick(Location location) {
         //get location address
-        this.latitude = location.getLatitude();
-        this.longitude = location.getLongitude();
+      //  this.latitude = location.getLatitude();
+        //this.longitude = location.getLongitude();
         Map<String, String> query = new HashMap<>();
 
         query.put("latitude", Double.toString(latitude));
@@ -556,8 +578,8 @@ public class MainActivity extends AppCompatActivity implements
      * @param longitude
      */
     public void setAddress(Double latitude, Double longitude){
-       this.latitude = latitude;
-       this.longitude = longitude;
+       //this.latitude = latitude;
+       //this.longitude = longitude;
 
         Geocoder geocoder;
         List<Address> addresses = null;
@@ -703,13 +725,10 @@ public class MainActivity extends AppCompatActivity implements
 
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
-                            //Intent matchAnimation = new Intent(MainActivity.this, WooProductDetail.class);
 
                             Bundle locationMatchBundle = new Bundle();
                             locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
                             LocationMatch.putExtra("locationMatch", locationMatch);
-                            //LocationMatch.getSerializableExtra("locationMatchBundle", locationMatchBundle);
-                            //startActivity(matchAnimation);
                             startActivity(LocationMatch);
                             break;
                         } else {
@@ -722,8 +741,6 @@ public class MainActivity extends AppCompatActivity implements
                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                             if(businessHours == null){
                                 String today= "null";
-                                //Log.e("Location ", " Today: " +today);
-                                //Log.e("Location ", " IsOpen: " +today);
                             } else {
                                 todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                                 isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
@@ -760,11 +777,6 @@ public class MainActivity extends AppCompatActivity implements
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
-                            // display category array list in spinner
-                            //spnCategory.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_s
-                            // pinner_dropdown_item, category));
-
-                            //Log.e("main ", " Category: " + response.body().get(i).getPostCategory().get(0).getName());
                         }
                         verticalAdapter.notifyDataSetChanged();
 
@@ -782,62 +794,4 @@ public class MainActivity extends AppCompatActivity implements
         });
 
     }
-
-    /**
-     * Query API for WooStore data
-     */
-    /* public void getRetrofitWoo() {
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
-       // httpClient.addInterceptor(logging);  // <-- this is the important line!
-
-
-       // String baseURL = "https://www.thesablebusinessdirectory.com";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-
-        // pass JSON data to BusinessListings class for filtering
-        Call<List<WooProducts>> call = service.getPostWooInfo();
-
-        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
-        call.enqueue(new Callback<List<WooProducts>>() {
-            @Override
-            public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
-                //Log.e("WooCommerce", " response " + response.body());
-
-                //mListPost = response.body();
-                progressBar.setVisibility(View.GONE); //hide progressBar
-
-
-                // loop through JSON response get parse and output to log
-
-                for (int i = 0; i < response.body().size(); i++) {
-
-                    //parse response based on WooModel class and add to list array ( get category name, description and image)
-                    horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,
-                            response.body().get(i).getName(),
-                            response.body().get(i).getPermalink(),
-                            response.body().get(i).getAverageRating(),
-                            response.body().get(i).getRatingCount(),
-                            response.body().get(i).getName(),
-                            response.body().get(i).getPrice(),
-                            response.body().get(i).getImages().get(0).getSrc()));
-
-                }
-                horizontalAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<WooProducts>> call, Throwable t) {
-            }
-        });
-
-    } */
 }

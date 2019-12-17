@@ -335,7 +335,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         }
         if (object.hours == "Closed") {
             ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(255, 255, 255)); //white (hidden)
-            String closed = "Closed Now";
+            String closed = "Closed";
             ((ImageTypeViewHolder) holder).tvHours.setText(closed);
             ((ImageTypeViewHolder) holder).tvHours.setTextColor(Color.rgb(255, 0, 0)); //red
         } else if (object.isOpen =="Closed now") {

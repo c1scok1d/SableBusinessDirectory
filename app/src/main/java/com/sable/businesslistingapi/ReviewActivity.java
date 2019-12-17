@@ -449,10 +449,10 @@ public class ReviewActivity extends AppCompatActivity implements
                         }
                         //int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
 
-                        for (int i = 0; i < photos.size(); i++) {
+                        /*for (int i = 0; i < photos.size(); i++) {
                             Uri imageUri = Uri.fromFile(photos.get(i).getFile());
                             String path = imageUri.getPath();
-                        }
+                        }*/
 
                         uploadFiles(imageFiles);
 
@@ -533,7 +533,7 @@ public class ReviewActivity extends AppCompatActivity implements
             public void onFinish(String[] responses) {
                 hideProgress();
                 for(int i=0; i< responses.length; i++){
-                    String str = responses[i];
+                    //String str = responses[i];
                     try {
                         final JSONObject obj = new JSONObject(responses[i]);
                         final JSONObject geodata = obj.getJSONObject("guid");
@@ -618,20 +618,28 @@ ArrayList<String> filesToUploadfoo = new ArrayList<>();
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<BusinessListings>> call = service.postReview(
+        Call<List<ListReviewActivity>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
                 /*2,*/ etFeedBack.getText().toString(), filesToUploadfoo);
 
-        call.enqueue(new Callback<List<BusinessListings>>() {
+        call.enqueue(new Callback<List<ListReviewActivity>>() {
             @Override
-            public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("ReviewActivity", " response " + response.body());
+            public void onResponse(Call<List<ListReviewActivity>> call, Response<List<ListReviewActivity>> response) {
+                Log.e("ReviewActivity", " response " + response.body().get(0).getId());
+                Log.e("ReviewActivity", " response " + response.body().get(0).getCity());
+                Log.e("ReviewActivity", " response " + response.body().get(0).getRegion());
+                Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getLabel());
+                Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getRating());
+                Log.e("ReviewActivity", " response " + response.body().get(0).getImages().getRendered().get(0).getThumbnail());
+                Log.e("ReviewActivity", " response " + response.body().get(0).getContent());
+
+
 
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(),
-                            "Post Updated Title: " + response.body().get(0).getTitle() +
+                            "Post Updated Title: " + response.body().get(0).getId() +
                                     " Body: " + response.body().get(0).getContent() +
                                     " PostId: " + response.body().get(0).getId(), Toast.LENGTH_LONG).show();
                 }
@@ -639,7 +647,7 @@ ArrayList<String> filesToUploadfoo = new ArrayList<>();
             }
 
             @Override
-            public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
+            public void onFailure(Call<List<ListReviewActivity>> call, Throwable t) {
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }

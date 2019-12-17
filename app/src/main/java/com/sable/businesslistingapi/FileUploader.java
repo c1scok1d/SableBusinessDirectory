@@ -5,16 +5,9 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -145,11 +138,9 @@ public class FileUploader {
         }
     }
 
-    ArrayList<String> filesToUploadfoo = new ArrayList<>();
     private void uploadSingleFile(final int index){
         PRRequestBody fileBody = new PRRequestBody(files[index]);
         MultipartBody.Part filePart = MultipartBody.Part.createFormData(filekey, files[index].getName(), fileBody);
-        //Call<List<ReviewImagesResponse>> call;
         Call<JsonElement> call;
         if(auth_token.isEmpty()){
             call  = uploadInterface.uploadFile(uploadURL, filePart);

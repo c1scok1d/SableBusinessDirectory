@@ -48,6 +48,8 @@ public interface RetrofitArrayApi {
     Call<List<ListingsCategories>> getCategory();
 
     //@Multipart
+    @FormUrlEncoded
+
     @POST("wp-json/geodir/v2/business")
     Call<List<BusinessListings>> postData(
             @Query("title") String title,
@@ -69,12 +71,12 @@ public interface RetrofitArrayApi {
             @Query("twitter") String twitter,
             @Query("facebook") String facebook,
             //@Part("description") RequestBody description,
-            @Body RequestBody images);
+            @Field("logo") ArrayList<String> filesToUpload);
 
     //@Multipart
     @FormUrlEncoded
     @POST("wp-json/geodir/v2/reviews")
-    Call<List<BusinessListings>> postReview(
+    Call<List<ListReviewActivity>> postReview(
             @Query("post") Integer id,
             @Query("rating") Integer rating,
            // @Query("author") Integer author,
