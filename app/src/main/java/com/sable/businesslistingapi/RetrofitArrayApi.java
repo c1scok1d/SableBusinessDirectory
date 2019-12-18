@@ -56,7 +56,7 @@ public interface RetrofitArrayApi {
             @Query("status") String status,
             @Query("post_category") Integer category,
             @Query("content")String content,
-            @Query("address")String address,
+            //@Query("address")String address,
             @Query("bldgno") String bldgno,
             @Query("street") String street,
             @Query("city") String city,
@@ -70,8 +70,8 @@ public interface RetrofitArrayApi {
             @Query("website") String website,
             @Query("twitter") String twitter,
             @Query("facebook") String facebook,
-            //@Part("description") RequestBody description,
-            @Field("logo") ArrayList<String> filesToUpload);
+            @Query("type") String type,
+            @Field("post_images") ArrayList<String> filesToUpload);
 
     //@Multipart
     @FormUrlEncoded

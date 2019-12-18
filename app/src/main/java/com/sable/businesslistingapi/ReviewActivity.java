@@ -209,7 +209,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
-            if(locationMatch.get(0).isOpen.equals("Closed now")){
+            if(locationMatch.get(0).isOpen == "Closed now"){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
             if(locationMatch.get(0).featured.equals(true)){

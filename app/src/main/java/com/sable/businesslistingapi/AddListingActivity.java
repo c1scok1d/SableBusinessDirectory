@@ -744,7 +744,7 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
     }
-
+String type = "gd_business";
     //private static Retrofit retrofit = null;
     private void submitData(){
         String fooLat = String.format(Locale.US, "%10.4f", latitude);
@@ -774,7 +774,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 status,
                 catNum,
                 description,
-                address,
+                /*address,*/
                 bldgNo,
                 street,
                 city,
@@ -789,6 +789,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 website,
                 twitter,
                 facebook,
+                type,
                 filesToUploadfoo);
 
         //calling the api
