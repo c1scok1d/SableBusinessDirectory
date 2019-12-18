@@ -598,8 +598,25 @@ public class ReviewActivity extends AppCompatActivity implements
         ActivityCompat.requestPermissions(ReviewActivity.this, permissions, requestCode);
     }
 
-ArrayList<String> filesToUploadfoo = new ArrayList<>();
+    StringBuilder sb = new StringBuilder();
+    String main;
+
+    ArrayList<String> filesToUploadfoo = new ArrayList<>();
     private void submitData() {
+
+        int nestingDepth = 0;
+
+        for (int i = 0 ;i < filesToUploadfoo.size(); i++) {
+            sb.append(filesToUploadfoo.get(i)).append("::");
+            nestingDepth ++;
+        }
+        // Append last element due to special casing
+        /*sb.append(filesToUploadfoo.get(0));
+        for (int i = 0; i < nestingDepth; i++) {
+            sb.append(')');
+        }*/
+
+        main = sb.toString();
 
         //Add the interceptor to the client builder.
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -621,7 +638,7 @@ ArrayList<String> filesToUploadfoo = new ArrayList<>();
         Call<List<ListReviewActivity>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
-                /*2,*/ etFeedBack.getText().toString(), filesToUploadfoo);
+                /*2,*/ etFeedBack.getText().toString(), main);
 
         call.enqueue(new Callback<List<ListReviewActivity>>() {
             @Override

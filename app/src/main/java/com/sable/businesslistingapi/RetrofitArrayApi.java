@@ -74,14 +74,14 @@ public interface RetrofitArrayApi {
             @Field("post_images") ArrayList<String> filesToUpload);
 
     //@Multipart
-    @FormUrlEncoded
+    //@FormUrlEncoded
     @POST("wp-json/geodir/v2/reviews")
     Call<List<ListReviewActivity>> postReview(
             @Query("post") Integer id,
             @Query("rating") Integer rating,
            // @Query("author") Integer author,
             @Query("content") String content,
-            @Field("images") ArrayList<String> filesToUpload
+            @Query("images") String filesToUpload
             /*@Body RequestBody images*/);
  }
 
