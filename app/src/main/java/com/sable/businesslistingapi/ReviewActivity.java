@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -551,14 +552,14 @@ public class ReviewActivity extends AppCompatActivity implements
                         e.printStackTrace();
                     }
                     filesToUploadfoo.add(foo);
-                    Log.e("RESPONSE "+i, responses[i]);
+                    //Log.e("RESPONSE "+i, responses[i]);
                 }
             }
 
             @Override
             public void onProgressUpdate(int currentpercent, int totalpercent, int filenumber) {
                 updateProgress(totalpercent);
-                Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
+                //Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
             }
         });
     }
@@ -582,6 +583,11 @@ public class ReviewActivity extends AppCompatActivity implements
 
     private void requestPermissionsCompat(String[] permissions, int requestCode) {
         ActivityCompat.requestPermissions(ReviewActivity.this, permissions, requestCode);
+    }
+
+    public void onBackPressed() {
+        Intent onBack = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(onBack);
     }
 
     StringBuilder sb = new StringBuilder();
@@ -629,13 +635,13 @@ public class ReviewActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListReviewActivity>>() {
             @Override
             public void onResponse(Call<List<ListReviewActivity>> call, Response<List<ListReviewActivity>> response) {
-                Log.e("ReviewActivity", " response " + response.body().get(0).getId());
-                Log.e("ReviewActivity", " response " + response.body().get(0).getCity());
-                Log.e("ReviewActivity", " response " + response.body().get(0).getRegion());
-                Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getLabel());
-                Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getRating());
-                Log.e("ReviewActivity", " response " + response.body().get(0).getImages().getRendered().get(0).getThumbnail());
-                Log.e("ReviewActivity", " response " + response.body().get(0).getContent());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getId());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getCity());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getRegion());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getLabel());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getRating());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getImages().getRendered().get(0).getThumbnail());
+                //Log.e("ReviewActivity", " response " + response.body().get(0).getContent());
 
 
 

@@ -42,11 +42,6 @@ public class WooProductDetail extends AppCompatActivity {
     String baseURL = "https://www.thesablebusinessdirectory.com";
 
 
-
-   /* public WooProductDetail() {
-        // Required empty public constructor
-    }*/
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +70,7 @@ public class WooProductDetail extends AppCompatActivity {
 
         }
 
-       new MyAsynTask().execute();
+        new MyAsynTask().execute();
         getRetrofitWoo(); //call to woocommerce products api
 
 
@@ -108,8 +103,6 @@ public class WooProductDetail extends AppCompatActivity {
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
             webView.getSettings().setBuiltInZoomControls(true);
-//            progressBar.setVisibility(View.GONE); //hide progressBar
-
 
             webView.setWebViewClient(new WebViewClient(){
                 @Override
@@ -120,6 +113,8 @@ public class WooProductDetail extends AppCompatActivity {
                     return super.shouldOverrideUrlLoading(view, request);
                 }
             });
+            progressBar.setVisibility(View.GONE); //hide progressBar
+
 
         }
     }
@@ -132,10 +127,7 @@ public class WooProductDetail extends AppCompatActivity {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);  // <-- this is the important line!
-        // httpClient.addInterceptor(logging);  // <-- this is the important line!
 
-
-        // String baseURL = "https://www.thesablebusinessdirectory.com";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -151,12 +143,6 @@ public class WooProductDetail extends AppCompatActivity {
         call.enqueue(new Callback<List<WooProducts>>() {
             @Override
             public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
-                //Log.e("WooCommerce", " response " + response.body());
-
-                //mListPost = response.body();
-//                progressBar.setVisibility(View.GONE); //hide progressBar
-                progressBar.setVisibility(View.GONE);
-
 
                 // loop through JSON response get parse and output to log
 

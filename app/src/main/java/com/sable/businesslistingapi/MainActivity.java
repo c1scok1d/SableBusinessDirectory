@@ -338,9 +338,6 @@ public class MainActivity extends AppCompatActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
-
-
-
         /**
          *  api calls to get listings and marketplace products
          */
@@ -379,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements
                                 .build();                   // Creates a CameraPosition from the builder
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+                        //getRetrofit(query); //api call; pass current lat/lng to check if current location in database
                         setAddress(lstKnownLat, lstKnownLng);  // method to reverse geocode to physical address
                        /* if (location != null) {
                             // Logic to handle location object
@@ -577,6 +574,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
+
+
     /**
      * geocode location address using lat/lng
      * @param latitude
@@ -642,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new BasicAuthInterceptor(username, password))
-                .addInterceptor(logging)
+                //.addInterceptor(logging)
                 .build();
 
 
@@ -664,7 +663,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("main_activity", " response " + response.body());
+                //Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();
@@ -677,8 +676,8 @@ public class MainActivity extends AppCompatActivity implements
 
                         if(businessHours == null){
                             String today= "null";
-                            Log.e("Location ", " Today: " +today);
-                            Log.e("Location ", " IsOpen: " +today);
+                            //Log.e("Location ", " Today: " +today);
+                            //Log.e("Location ", " IsOpen: " +today);
                         } else {
                             todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                             isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();

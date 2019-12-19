@@ -671,6 +671,11 @@ public class AddListingActivity extends AppCompatActivity implements
 
     }
 
+    public void onBackPressed() {
+        Intent onBack = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(onBack);
+    }
+
     /**
      * Query API for listings data
      * set URL and make call to API
