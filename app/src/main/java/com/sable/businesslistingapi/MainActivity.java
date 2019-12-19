@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
 
-    public static Double latitude, longitude;
+    public static Double latitude, longitude, lstKnownLat, lstKnownLng;
 
     TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
@@ -319,6 +319,11 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         /**
+         *  location permissions
+         */
+        enableMyLocation();
+
+        /**
          *  get last known location
          */
 
@@ -330,9 +335,9 @@ public class MainActivity extends AppCompatActivity implements
          */
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        enableMyLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
+
 
 
 
@@ -355,10 +360,10 @@ public class MainActivity extends AppCompatActivity implements
                     public void onSuccess(Location location) {
                         Map<String, String> query = new HashMap<>();
 
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                        query.put("latitude", String.format(Locale.US, "%10.4f", latitude));
-                        query.put("longitude", String.format(Locale.US, "%10.4f", longitude));
+                        lstKnownLat = location.getLatitude();
+                        lstKnownLng = location.getLongitude();
+                        query.put("latitude", String.format(Locale.US, "%10.4f", lstKnownLat));
+                        query.put("longitude", String.format(Locale.US, "%10.4f", lstKnownLng));
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby",  "distance");
@@ -375,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-                        setAddress(latitude, longitude);  // method to reverse geocode to physical address
+                        setAddress(lstKnownLat, lstKnownLng);  // method to reverse geocode to physical address
                        /* if (location != null) {
                             // Logic to handle location object
                             Log.e("LAST LOCATION: ", location.toString());
@@ -453,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
         fetchLastLocation();
-        enableMyLocation(); //permission check
+        //enableMyLocation(); //permission check
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 
@@ -668,29 +673,25 @@ public class MainActivity extends AppCompatActivity implements
 
                     for (int i = 0; i < response.body().size(); i++) {
 
+                        BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
 
+                        if(businessHours == null){
+                            String today= "null";
+                            Log.e("Location ", " Today: " +today);
+                            Log.e("Location ", " IsOpen: " +today);
+                        } else {
+                            todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
+                            isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
+                        }
                         /**
                          * onLocationMatch
                          * if device lat/lng equals stored listing lat/lng locationMatch = true
+                         * add all matching data to array and launch Review Activity
                          *
                          */
 
                         if (String.format(Locale.US, "%10.4f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.4f", latitude)) &&
                                 String.format(Locale.US, "%10.4f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.4f", longitude))) {
-
-                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
-
-                            if(businessHours == null){
-                                String today= "null";
-                                Log.e("Location ", " Today: " +today);
-                                Log.e("Location ", " IsOpen: " +today);
-                            } else {
-                                todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
-                                isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
-                                }
-
-                            //String imageFoo = response.body().get(i).getFeaturedImage().getSrc();
-
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
@@ -722,29 +723,16 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc()));
 
-
-
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
-
                             Bundle locationMatchBundle = new Bundle();
                             locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
                             LocationMatch.putExtra("locationMatch", locationMatch);
                             startActivity(LocationMatch);
                             break;
                         } else {
-                            //parse response based on ListingsModel class and add to list array ( get category name, description and image)
-
                             /**
-                             * if no location match continue to pars JSON data
+                             * populate vertical recycler in Main Activity
                              */
-
-                           BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
-                            if(businessHours == null){
-                                String today= "null";
-                            } else {
-                                todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
-                                isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
-                                }
                             verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),

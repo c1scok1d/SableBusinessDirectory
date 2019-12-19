@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.Credentials;
@@ -77,7 +80,7 @@ public class ReviewActivity extends AppCompatActivity implements
     Button mSendFeedback;
     TextView tvFeatured, tvStatus, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook,
-            tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate;
+            tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
     ImageView logo, ivFeaturedImage;
     RatingBar simpleRatingBar;
     String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
@@ -85,14 +88,16 @@ public class ReviewActivity extends AppCompatActivity implements
     Double latitude, longitude;
     Integer category, id, rating;
     float newRating;
-    public static List<BusinessListings> mListPost;
+    //public static List<BusinessListings> mListPost;
     //private ProgressDialog pDialog;
 
 
     private ProgressBar pDialog;
+    private int progressStatus = 0;
+    private Handler handler = new Handler();
     private ImagesAdapter imagesAdapter;
     private ArrayList<MediaFile> photos = new ArrayList<>();
-    Map<String, RequestBody> parts = new HashMap<>();
+    //Map<String, RequestBody> parts = new HashMap<>();
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
@@ -124,7 +129,7 @@ public class ReviewActivity extends AppCompatActivity implements
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvContent = findViewById(R.id.tvContent);
         tvPhone = findViewById(R.id.tvPhone);
-        //btnPic = findViewById(R.id.btnPic);
+        tvFirstRate = findViewById(R.id.tvFirstRate);
         tvCategory = findViewById(R.id.tvCategory);
         tvEmail = findViewById(R.id.tvEmail);
         tvWebsite = findViewById(R.id.tvWebsite);
@@ -135,12 +140,16 @@ public class ReviewActivity extends AppCompatActivity implements
         //rating = findViewById(R.id.simpleRatingBar);
         tvRatingCount = findViewById(R.id.tvRatingCount);
         tvIsOpen = findViewById(R.id.tvIsOpen);
-        tvFirstRate = findViewById(R.id.tvFirstRate);
+        tvDistance = findViewById(R.id.tvDistance);
         tvFeatured = findViewById(R.id.tvFeatured);
         tvLink = findViewById(R.id.tvLink);
         tvStatus = findViewById(R.id.tvStatus);
         tvLatitude = findViewById(R.id.tvLatitude);
         tvLongitude = findViewById(R.id.tvLongitude);
+        pDialog = findViewById(R.id.progressBar);
+        tvProgressStatus = findViewById(R.id.tvProgressStatus);
+
+        pDialog.setVisibility(View.GONE);
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -178,9 +187,6 @@ public class ReviewActivity extends AppCompatActivity implements
         locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
         locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReview");
-        //locationReviewBundle.getParcelable("locationReview");
-        //Intent foo = getIntent();
-        //String fooId = foo.getStringExtra("id");
 
         if (locationMatch != null) {
 
@@ -209,6 +215,19 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
+
+
+            Location locationA = new Location("point A");
+            locationA.setLatitude(locationMatch.get(0).latitude); //listing lat
+            locationA.setLongitude(locationMatch.get(0).longitude); //listing lng
+
+
+            Location locationB = new Location("point B");
+            locationB.setLatitude(MainActivity.latitude); //device lat
+            locationB.setLongitude(MainActivity.longitude); //device lng
+
+            double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
+            tvDistance.setText(String.format(Locale.US, "%10.2f", distance));
             if(locationMatch.get(0).isOpen == "Closed now"){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
@@ -221,7 +240,7 @@ public class ReviewActivity extends AppCompatActivity implements
             if (locationMatch.get(0).ratingCount == 0){
                 String FirstRate = "Be the first to rate";
                 tvFirstRate.setText(FirstRate);
-                tvFirstRate.setTextColor(Color.rgb(0, 255, 0)); //orange
+                //tvFirstRate.setTextColor(Color.rgb(0, 255, 0)); //orange
             }
 
         } else if (locationAdd!= null) {
@@ -269,6 +288,18 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
+
+            Location locationA = new Location("point A");
+            locationA.setLatitude(locationReview.get(0).latitude); //listing lat
+            locationA.setLongitude(locationReview.get(0).longitude); //listing lng
+
+
+            Location locationB = new Location("point B");
+            locationB.setLatitude(MainActivity.latitude); //device lat
+            locationB.setLongitude(MainActivity.longitude); //device lng
+
+            double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
+            tvDistance.setText(String.format(Locale.US, "%10.2f", distance));
             if(locationReview.get(0).isOpen =="Closed now"){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
@@ -281,7 +312,7 @@ public class ReviewActivity extends AppCompatActivity implements
             if (locationReview.get(0).ratingCount == 0){
                 String FirstRate = "Be the first to rate";
                 tvFirstRate.setText(FirstRate);
-                tvFirstRate.setTextColor(Color.rgb(22, 53, 64)); //green
+                //tvFirstRate.setTextColor(Color.rgb(22, 53, 64)); //green
             }
         }
 
@@ -405,6 +436,7 @@ public class ReviewActivity extends AppCompatActivity implements
                 }
             }
         });
+
     }
 
     @Override
@@ -447,17 +479,8 @@ public class ReviewActivity extends AppCompatActivity implements
                         for (MediaFile imageFile : imageFiles) {
                             Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                         }
-                        //int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
-
-                        /*for (int i = 0; i < photos.size(); i++) {
-                            Uri imageUri = Uri.fromFile(photos.get(i).getFile());
-                            String path = imageUri.getPath();
-                        }*/
-
-                        uploadFiles(imageFiles);
-
-                onPhotosReturned(imageFiles);
-            }
+                        onPhotosReturned(imageFiles);
+                    }
 
             @Override
             public void onImagePickerError(@NonNull Throwable error, @NonNull MediaSource source) {
@@ -471,41 +494,16 @@ public class ReviewActivity extends AppCompatActivity implements
             }
         });
     }
-    //MultipartBody.Builder builder = new MultipartBody.Builder();
-    //MultipartBody requestBody;
-    //RequestBody requestFile;
-    //HashMap<String, RequestBody> map = new HashMap<>();
-    //String image1;
-
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         photos.addAll(Arrays.asList(returnedPhotos));
         imagesAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(photos.size() - 1);
+        uploadFiles(returnedPhotos);
 
-        //builder.setType(MultipartBody.FORM);
-
-
-
-        // Multiple Images
-       // for (int i = 0; i <photos.size() ; i++) {
-          //  File file = photos.get(i).getFile();
-          //  Uri imageUri = Uri.fromFile(photos.get(i).getFile());
-           // String imageFilepath = file.getPath();
-           // String filename = path.substring(path.lastIndexOf("/")+1);
-
-
-            //String requestImage =  file.getName(photos.get(i));
-            //builder.addFormDataPart("post_images", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), photos.get(i).getFile()));
-            //image1 = "https://www.thesablebusinessdirectory.com/wp-content/uploads/geodir_temp/" + filename;
-        //}
-
-        //requestBody = builder.build();
 
     }
 
-
-    //ArrayList<String> filesToUploadfoo = new ArrayList<>();
     File[] filesToUpload;
 
     public void uploadFiles(@NonNull MediaFile[] returnedPhotos){
@@ -515,29 +513,25 @@ public class ReviewActivity extends AppCompatActivity implements
 
         for(int i=0; i< photos.size(); i++){
             filesToUpload[i] = new File(photos.get(i).getFile().toString());
-           /* String path = photos.get(i).getFile().toString();
-            // it contains your image path...I'm using a temp string...
-            String filename = path.substring(path.lastIndexOf("/")+1);
-            filesToUploadfoo.add(photos.get(i).getFile().toString());*/
         }
-        showProgress("Uploading media ...");
+        pDialog.setVisibility(View.VISIBLE);
         FileUploader fileUploader = new FileUploader();
         fileUploader.uploadFiles("wp-json/wp/v2/media", "file", filesToUpload, new FileUploader.FileUploaderCallback() {
             @Override
             public void onError() {
-                hideProgress();
+
+                pDialog.setVisibility(View.GONE);
             }
             String foo;
 
             @Override
             public void onFinish(String[] responses) {
-                hideProgress();
+                pDialog.setVisibility(View.GONE);
+                tvProgressStatus.setText("Media upload complete!");
                 for(int i=0; i< responses.length; i++){
-                    //String str = responses[i];
                     try {
                         final JSONObject obj = new JSONObject(responses[i]);
                         final JSONObject geodata = obj.getJSONObject("guid");
-                        //String person = geodata.getJSONObject("rendered");
                         foo = geodata.getString("rendered");
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -549,41 +543,19 @@ public class ReviewActivity extends AppCompatActivity implements
 
             @Override
             public void onProgressUpdate(int currentpercent, int totalpercent, int filenumber) {
-                updateProgress(totalpercent,"Uploading file "+filenumber,"");
+                updateProgress(totalpercent);
                 Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
             }
         });
     }
 
-    public void updateProgress(int val, String title, String msg){
-       // pDialog.setTitle(title);
-        //pDialog.setMessage(msg);
+    public void updateProgress(int val){
         pDialog.setProgress(val);
+        tvProgressStatus.setText("Uploading media ..."+ val+"%");
     }
 
-    public void showProgress(String str){
-        try{
-           // pDialog.setCancelable(false);
-           // pDialog.setTitle("Please wait");
-            //pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pDialog.setMax(100); // Progress Dialog Max Value
-           // pDialog.setMessage(str);
-            //if (pDialog.isShowing())
-            //    pDialog.dismiss();
-           // pDialog.show();
-        }catch (Exception e){
+    private TextView tvProgressStatus;
 
-        }
-    }
-
-    public void hideProgress() {
-        try {
-           // if (pDialog.isH())
-           //     pDialog.dismiss();
-        } catch (Exception e) {
-
-        }
-    }
 
     private boolean arePermissionsGranted(String[] permissions) {
         for (String permission : permissions) {
@@ -606,15 +578,15 @@ public class ReviewActivity extends AppCompatActivity implements
 
         int nestingDepth = 0;
 
-        for (int i = 0 ;i < filesToUploadfoo.size(); i++) {
+        for (int i = 0; i < filesToUploadfoo.size(); i++) {
             sb.append(filesToUploadfoo.get(i)).append("::");
             nestingDepth ++;
         }
         // Append last element due to special casing
-        /*sb.append(filesToUploadfoo.get(0));
+        sb.append(filesToUploadfoo.get(0));
         for (int i = 0; i < nestingDepth; i++) {
             sb.append(')');
-        }*/
+        }
 
         main = sb.toString();
 
