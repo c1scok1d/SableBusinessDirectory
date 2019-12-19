@@ -314,6 +314,20 @@ public class ReviewActivity extends AppCompatActivity implements
                 tvFirstRate.setText(FirstRate);
                 //tvFirstRate.setTextColor(Color.rgb(22, 53, 64)); //green
             }
+            if (locationReview.get(0).hours == "null" || locationReview.get(0).isOpen == "null" || locationReview.get(0).hours == null || locationReview.get(0).isOpen == null) {
+                tvIsOpen.setVisibility(View.GONE);
+                tvHours.setVisibility(View.GONE);
+            } else if (locationReview.get(0).hours == "Closed" ||  locationReview.get(0).isOpen =="Closed now" ) {
+                String closed = "Closed";
+                tvHours.setText(closed);
+                tvHours.setTextColor(Color.rgb(255, 0, 0)); //red
+                tvIsOpen.setText(closed);
+                tvIsOpen.setTextColor(Color.rgb(255, 0, 0)); //red
+            } else {
+                String open = "Open";
+                tvIsOpen.setText(open);
+                tvIsOpen.setTextColor(Color.rgb(51, 165, 50)); //green
+            }
         }
 
         findViewById(R.id.tvName).setOnClickListener(new View.OnClickListener() {

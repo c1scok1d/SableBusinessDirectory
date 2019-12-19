@@ -87,12 +87,12 @@
                                 android:id="@+id/tvFirstRate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorAccent"
                                 android:textSize="10sp"
+                                android:textStyle="bold"
                                 tools:text="be the first to rate" />
 
                             <TextView
@@ -100,6 +100,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_horizontal|center_vertical"
+                                android:layout_marginStart="5dp"
                                 android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="center_vertical|end"
@@ -1046,7 +1047,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@android:color/transparent"
+                android:background="@drawable/customborder"
                 android:ems="10"
                 android:gravity="top"
                 android:hint="Tell us what you loved"
@@ -1066,6 +1067,16 @@
                     android:layout_weight="1">
 
                 </androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/tvTapToUpload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:text="Tap here to add images to your review."
+                    android:textColor="@color/colorAccent"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/gallery_button"
