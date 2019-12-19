@@ -103,12 +103,13 @@
         <Spinner
             android:id="@+id/spnCategory"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="0" />
 
         <SearchView
             android:id="@+id/search"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:iconifiedByDefault="true"
