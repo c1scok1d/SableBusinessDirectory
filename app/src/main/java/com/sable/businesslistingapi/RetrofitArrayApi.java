@@ -1,25 +1,14 @@
 package com.sable.businesslistingapi;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.MultipartBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Part;
-import retrofit2.http.PartMap;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
@@ -34,6 +23,11 @@ public interface RetrofitArrayApi {
 
     @GET("wp-json/geodir/v2/business")
     Call<List<BusinessListings>> getPostInfo(
+            @QueryMap Map<String, String> options
+    );
+
+    @GET("wp-json/geodir/v2/business")
+    Call<List<ListReviewPOJO>> getPostReview(
             @QueryMap Map<String, String> options
     );
 
@@ -76,7 +70,7 @@ public interface RetrofitArrayApi {
     //@Multipart
     //@FormUrlEncoded
     @POST("wp-json/geodir/v2/reviews")
-    Call<List<ListReviewActivity>> postReview(
+    Call<List<ListReviewPOJO>> postReview(
             @Query("post") Integer id,
             @Query("rating") Integer rating,
            // @Query("author") Integer author,

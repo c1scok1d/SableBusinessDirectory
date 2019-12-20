@@ -1,13 +1,10 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -30,27 +27,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.aprilapps.easyphotopicker.ChooserType;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -200,7 +190,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvState.setText(locationMatch.get(0).state);
             tvCountry.setText(locationMatch.get(0).country);
             tvZip.setText(locationMatch.get(0).zipcode);
-            simpleRatingBar.setNumStars(locationMatch.get(0).rating);
+            simpleRatingBar.setRating(locationMatch.get(0).rating);
             tvRatingCount.setText(String.valueOf(locationMatch.get(0).ratingCount));
             tvPhone.setText(locationMatch.get(0).phone);
             tvEmail.setText(locationMatch.get(0).email);
@@ -273,7 +263,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvState.setText(locationReview.get(0).state);
             tvCountry.setText(locationReview.get(0).country);
             tvZip.setText(locationReview.get(0).zipcode);
-            simpleRatingBar.setNumStars(locationReview.get(0).rating);
+            simpleRatingBar.setRating(locationReview.get(0).rating);
             tvRatingCount.setText(String.valueOf(locationReview.get(0).ratingCount));
             tvPhone.setText(locationReview.get(0).phone);
             tvEmail.setText(locationReview.get(0).email);
@@ -432,7 +422,7 @@ public class ReviewActivity extends AppCompatActivity implements
                 .setCopyImagesToPublicGalleryFolder(false)
 //                .setChooserType(ChooserType.CAMERA_AND_DOCUMENTS)
                 .setChooserType(ChooserType.CAMERA_AND_GALLERY)
-                .setFolderName("EasyImage sample")
+                .setFolderName("sableTemp")
                 .allowMultiple(true)
                 .build();
 
@@ -627,14 +617,14 @@ public class ReviewActivity extends AppCompatActivity implements
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<ListReviewActivity>> call = service.postReview(
+        Call<List<ListReviewPOJO>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
                 /*2,*/ etFeedBack.getText().toString(), main);
 
-        call.enqueue(new Callback<List<ListReviewActivity>>() {
+        call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override
-            public void onResponse(Call<List<ListReviewActivity>> call, Response<List<ListReviewActivity>> response) {
+            public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
                 //Log.e("ReviewActivity", " response " + response.body().get(0).getId());
                 //Log.e("ReviewActivity", " response " + response.body().get(0).getCity());
                 //Log.e("ReviewActivity", " response " + response.body().get(0).getRegion());
@@ -656,7 +646,7 @@ public class ReviewActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(Call<List<ListReviewActivity>> call, Throwable t) {
+            public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }

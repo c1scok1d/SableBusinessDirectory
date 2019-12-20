@@ -128,7 +128,7 @@ public class BusinessListings {
     private Claimed claimed;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private Float rating;
     @SerializedName("featured_media")
     @Expose
     private Integer featuredMedia;
@@ -468,11 +468,11 @@ public class BusinessListings {
         this.claimed = claimed;
     }
 
-    public Integer getRating() {
+    public Float getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
 

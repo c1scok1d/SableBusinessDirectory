@@ -12,8 +12,9 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
             hours, content, image, logo, timestamp, link, isOpen;
-    public int rating, id, ratingCount;
+    public int id, ratingCount;
     public Double latitude, longitude;
+    Float rating;
     Boolean featured;
 
 
@@ -34,7 +35,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
                          String zipcode,
                          Double latitude,
                          Double longitude,
-                         Integer rating,
+                         Float rating,
                          Integer ratingCount,
                          String phone,
                          String email,
@@ -99,7 +100,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(zipcode);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeInt(rating);
+        dest.writeFloat(rating);
         dest.writeInt(ratingCount);
         dest.writeString(phone);
         dest.writeString(email);
@@ -133,7 +134,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         zipcode = parcel.readString();
         latitude = parcel.readDouble();
         longitude = parcel.readDouble();
-        rating = parcel.readInt();
+        rating = parcel.readFloat();
         ratingCount = parcel.readInt();
         phone = parcel.readString();
         email = parcel.readString();

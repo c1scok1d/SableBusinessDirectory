@@ -49,7 +49,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             simpleRatingBar = itemView.findViewById(R.id.simpleRatingBar);
-            simpleRatingBar.setNumStars(5);
+            //simpleRatingBar.setNumStars(5);
             tvId = itemView.findViewById(R.id.tvId);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvRating = itemView.findViewById(R.id.ratingBar);
@@ -247,7 +247,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvDistance.setText(String.format(Locale.US, "%10.2f", distance));
         ((ImageTypeViewHolder) holder).tvWebsite.setText(object.website);
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
-        ((ImageTypeViewHolder) holder).simpleRatingBar.setNumStars(object.rating);
+        //((ImageTypeViewHolder) holder).simpleRatingBar.setNumStars(object.rating);
         ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(object.ratingCount));
         ((ImageTypeViewHolder) holder).tvId.setText(String.valueOf(object.id));
         ((ImageTypeViewHolder) holder).tvLatitude.setText(String.valueOf(object.latitude));
