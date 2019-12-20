@@ -586,17 +586,16 @@ public class ReviewActivity extends AppCompatActivity implements
     ArrayList<String> filesToUploadfoo = new ArrayList<>();
     private void submitData() {
 
-        int nestingDepth = 0;
+        //int nestingDepth = 0;
 
         for (int i = 0; i < filesToUploadfoo.size(); i++) {
             sb.append(filesToUploadfoo.get(i)).append("::");
-            nestingDepth ++;
         }
-        // Append last element due to special casing
+        /* Append last element due to special casing
         sb.append(filesToUploadfoo.get(0));
         for (int i = 0; i < nestingDepth; i++) {
             sb.append(')');
-        }
+        }*/
 
         main = sb.toString();
 
