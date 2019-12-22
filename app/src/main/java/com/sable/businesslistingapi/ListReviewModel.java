@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String longitude, status, category, ratingTitle, latitude, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, content, image, author, timestamp, link, isOpen;
+            hours, content, image, author, date, link, isOpen;
     public int ratingNumber, id, ratingCount;
     //public Double latitude, longitude;
 
@@ -27,9 +27,8 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
                            String latitude,
                            String longitude,
                            String ratingTitle,
-                           Integer ratingNumber/*,
-                           ArrayList<String> image,
-                           Integer rating*/
+                           Integer ratingNumber,
+                           String date
                            ){
 
         this.id = id;
@@ -44,6 +43,7 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         this.ratingTitle = ratingTitle;
         this.ratingNumber = ratingNumber;
         this.content = content;
+        this.date = date;
    }
 
 
@@ -55,7 +55,7 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         dest.writeInt(id);
         dest.writeString(link);
         dest.writeString(author);
-        //dest.writeString(image);
+        dest.writeString(date);
         dest.writeString(city);
         dest.writeString(state);
         dest.writeString(country);
@@ -72,7 +72,7 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         id = parcel.readInt();
         link = parcel.readString();
         author = parcel.readString();
-       // image = parcel.readString();
+        date = parcel.readString();
         city = parcel.readString();
         state = parcel.readString();
         country = parcel.readString();

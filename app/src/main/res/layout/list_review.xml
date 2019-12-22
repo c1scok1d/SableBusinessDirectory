@@ -3,8 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/customborder"
     android:orientation="vertical"
     android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tvCreatedBy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Created by:"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvAuthor"
@@ -13,19 +23,12 @@
         tools:text="author" />
 
     <TextView
-        android:id="@+id/tvContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:textSize="12sp"
-        tools:text="content" />
-
-    <TextView
         android:id="@+id/tvRatingTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:textColor="@color/colorAccent"
         android:textSize="12sp"
+        android:textStyle="bold"
         tools:text="ratingCategory" />
 
     <RatingBar
@@ -33,6 +36,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:numStars="5" />
+
+    <TextView
+        android:id="@+id/tvContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        tools:text="content" />
+
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location:"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,7 +61,6 @@
             android:id="@+id/tvCity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:textSize="12sp"
             tools:text="city" />
 
@@ -52,7 +69,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:layout_marginBottom="5dp"
             android:textSize="12sp"
             tools:text="state" />
 
@@ -61,9 +77,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:layout_marginBottom="5dp"
             android:textSize="12sp"
             tools:text="country" />
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCreatedOn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Created On:"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="date" />
 
 </LinearLayout>

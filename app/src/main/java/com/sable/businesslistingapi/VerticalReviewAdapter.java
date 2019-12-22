@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class VerticalReviewAdapter extends RecyclerView.Adapter {
 
@@ -29,7 +33,7 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        TextView  tvContent, tvRatingTitle, tvCity, tvState, tvCountry, tvAuthor;
+        TextView  tvContent, tvRatingTitle, tvCity, tvState, tvCountry, tvAuthor, tvDate;
         RatingBar ratingBar;
 
         public MyViewHolder(View view) {
@@ -41,6 +45,7 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
             this.tvState = view.findViewById(R.id.tvState);
             this.ratingBar = view.findViewById(R.id.ratingBar);
             this.tvAuthor = view.findViewById(R.id.tvAuthor);
+            this.tvDate = view.findViewById(R.id.tvDate);
         }
     }
 
@@ -66,6 +71,7 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
         ((MyViewHolder) holder).tvState.setText(dataset.get(position).state);
         ((MyViewHolder) holder).tvCountry.setText(dataset.get(position).country);
         ((MyViewHolder) holder).tvAuthor.setText(dataset.get(position).author);
+        ((MyViewHolder) holder).tvDate.setText(dataset.get(position).date);
 
         // holder.textView.setText(mDataset.get(0).city);
     }

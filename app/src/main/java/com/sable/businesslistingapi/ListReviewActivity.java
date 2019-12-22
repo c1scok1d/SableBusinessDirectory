@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -476,7 +477,7 @@ public class ListReviewActivity extends AppCompatActivity {
                              */
                             verticalList.add(new ListReviewModel(ListReviewModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
-                                    response.body().get(i).getContent().getRendered(),
+                                    Html.fromHtml(response.body().get(i).getContent().getRendered()).toString(),
                                     response.body().get(i).getLink(),
                                     //response.body().get(i).getStatus(),
                                     //response.body().get(i).getImages().getRendered().get(0).getSrc(),
@@ -491,15 +492,23 @@ public class ListReviewActivity extends AppCompatActivity {
                                     response.body().get(i).getLatitude(),
                                     response.body().get(i).getLongitude(),
                                     response.body().get(i).getRating().getLabel(),
-                                    response.body().get(i).getRating().getRating()));
+                                    response.body().get(i).getRating().getRating(),
+                                    response.body().get(i).getDateGmt()));
                         }
                         verticalReviewAdapter.notifyDataSetChanged();
 
-                        for (int i = 0; i < response.body().get(i).getImages().getRendered().size(); i++) {
-                            for (int n = 0; n < response.body().get(i).getImages().getRendered().size(); n++ ) {
-                                horizontalList.add(response.body().get(i).getImages().getRendered().get(n).getSrc());
+
+
+                        for (int i = 0; i < response.body().size(); i++) {
+                            if (!response.body().get(i).getImages().getRendered().isEmpty()) {
+                             /*   break;
+                            } else { */
+                                // horizontalList.add(response.body().get(i).getImages().getRendered().get(i).getSrc());
+                                for (int n = 0; n < response.body().get(i).getImages().getRendered().size(); n++) {
+                                    horizontalList.add(response.body().get(i).getImages().getRendered().get(n).getSrc());
+                                }
+                                horizontalImageAdapter.notifyDataSetChanged();
                             }
-                            horizontalImageAdapter.notifyDataSetChanged();
                         }
                         // imagesAdapter.notifyDataSetChanged();
                       //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
