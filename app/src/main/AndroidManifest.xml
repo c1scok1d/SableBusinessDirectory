@@ -59,6 +59,11 @@
             android:label="@string/app_name">
         </activity>
 
+        <activity android:name=".ListReviewActivity"
+            android:label="@string/app_name">
+        </activity>
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA0z-StPb8vOytQ2vY1KhFhJBkm1X5CBXs"/>

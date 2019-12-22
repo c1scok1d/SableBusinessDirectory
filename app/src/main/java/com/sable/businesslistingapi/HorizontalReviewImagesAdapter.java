@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 
-public class HorizontalAdapter extends RecyclerView.Adapter {
+public class HorizontalReviewImagesAdapter extends RecyclerView.Adapter {
 
     private ArrayList<WooModel> dataset;
     private Context mContext;
 
-    public HorizontalAdapter(ArrayList<WooModel> mlist, Context context) {
+    public HorizontalReviewImagesAdapter(ArrayList<WooModel> mlist, Context context) {
         this.dataset = mlist;
         this.mContext = context;
     }

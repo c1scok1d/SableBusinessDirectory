@@ -27,7 +27,7 @@
                 android:id="@+id/ivImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0"
+                android:clickable="true"
                 android:contentDescription="@string/business_logo"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ic_launcher" />
@@ -382,7 +382,6 @@
                                 android:id="@+id/tvWebsite"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:clickable="false"
                                 android:textColor="@color/link"
                                 android:textSize="10sp"
                                 tools:text="http://www.companywebsite.com" />
@@ -445,7 +444,6 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:clickable="false"
                             android:contentDescription="@string/click_to_call"
                             app:srcCompat="@drawable/phone"
                             tools:srcCompat="@drawable/phone" />

@@ -11,7 +11,7 @@ import java.util.List;
 public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, content, image, logo, timestamp, link, isOpen;
+            hours, content, image, logo, timestamp, link, isOpen, reviews;
     public int id, ratingCount;
     public Double latitude, longitude;
     Float rating;
@@ -144,6 +144,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         video = parcel.readString();
         hours = parcel.readString();
         isOpen = parcel.readString();
+        reviews = parcel.readString();
         logo = parcel.readString();
         content = parcel.readString();
         image = parcel.readString();

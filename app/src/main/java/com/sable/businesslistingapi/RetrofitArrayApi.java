@@ -26,7 +26,7 @@ public interface RetrofitArrayApi {
             @QueryMap Map<String, String> options
     );
 
-    @GET("wp-json/geodir/v2/business")
+    @GET("wp-json/geodir/v2/reviews")
     Call<List<ListReviewPOJO>> getPostReview(
             @QueryMap Map<String, String> options
     );

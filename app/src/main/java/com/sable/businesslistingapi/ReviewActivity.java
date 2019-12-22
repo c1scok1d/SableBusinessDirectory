@@ -482,7 +482,7 @@ public class ReviewActivity extends AppCompatActivity implements
                     @Override
                     public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                         for (MediaFile imageFile : imageFiles) {
-                            Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                            Log.e("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                         }
                         onPhotosReturned(imageFiles);
                     }
@@ -501,7 +501,7 @@ public class ReviewActivity extends AppCompatActivity implements
     }
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
-        photos.addAll(Arrays.asList(returnedPhotos));
+       photos.addAll(Arrays.asList(returnedPhotos));
         imagesAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(photos.size() - 1);
         uploadFiles(returnedPhotos);

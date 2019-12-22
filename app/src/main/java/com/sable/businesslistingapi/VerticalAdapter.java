@@ -22,8 +22,10 @@ import java.util.Locale;
 public class VerticalAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ListingsModel> dataset;
-    ArrayList<ListingsModel> locationReview = new ArrayList<ListingsModel>();
+    ArrayList<ListingsModel> locationReview = new ArrayList<>();
     ArrayList<ListingsModel> locationFoo = new ArrayList<>();
+    ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
+
 
     private Context mContext;
 
@@ -32,12 +34,11 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         this.mContext = context;
     }
 
-
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvStreet, tvCity, tvState, tvHours, tvisOpen, tvContent, tvPhone,
                 tvRating, tvRatingCount, tvLatitude, tvLongitude, tvBldNo, tvWebsite, tvEmail, tvTwitter,
                 tvFacebook, tvFeatured, tvDistance, tvZipcode, tvCall, tvId, tvLink, tvStatus, tvCategory,
-                tvCountry, tvVideo;
+                tvCountry, tvVideo, tvReviews;
 
         ImageView image;
         RatingBar simpleRatingBar;
@@ -64,7 +65,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             tvisOpen = itemView.findViewById(R.id.tvIsOpen);
             tvContent = itemView.findViewById(R.id.tvDescription);
             tvPhone = itemView.findViewById(R.id.tvPhone);
-            image = itemView.findViewById(R.id.ivImage);
+            //image = itemView.findViewById(R.id.ivImage);
             btnCall = itemView.findViewById(R.id.btnCall);
             tvCall = itemView.findViewById(R.id.tvCall);
             btnDirections = itemView.findViewById(R.id.btnDirections);
@@ -87,6 +88,60 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvVideo = itemView.findViewById(R.id.tvVideo);
+            tvReviews = itemView.findViewById(R.id.tvReviews);
+
+
+             image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
+
+
+
+                    for (int i = 0; i < locationReview.size(); i++) {
+
+                        if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+
+                            locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    locationReview.get(i).id,
+                                    locationReview.get(i).title,
+                                    locationReview.get(i).link,
+                                    locationReview.get(i).status,
+                                    locationReview.get(i).category,
+                                    locationReview.get(i).featured,
+                                    locationReview.get(i).featured_image,
+                                    locationReview.get(i).bldgno,
+                                    locationReview.get(i).street,
+                                    locationReview.get(i).city,
+                                    locationReview.get(i).state,
+                                    locationReview.get(i).country,
+                                    locationReview.get(i).zipcode,
+                                    locationReview.get(i).latitude,
+                                    locationReview.get(i).longitude,
+                                    locationReview.get(i).rating,
+                                    locationReview.get(i).ratingCount,
+                                    locationReview.get(i).phone,
+                                    locationReview.get(i).email,
+                                    locationReview.get(i).website,
+                                    locationReview.get(i).twitter,
+                                    locationReview.get(i).facebook,
+                                    locationReview.get(i).video,
+                                    locationReview.get(i).hours,
+                                    locationReview.get(i).isOpen,
+                                    locationReview.get(i).logo,
+                                    locationReview.get(i).content,
+                                    locationReview.get(i).featured_image)));
+                            Bundle locationReviewBundle = new Bundle();
+                            locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
+                            showReviews.putExtra("locationReview", locationReviewShow);
+                            itemView.getContext().startActivity(showReviews);
+                            break;
+                        }
+                    }
+                }
+            });
+
 
             btnReview.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,6 +198,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
+
             if (!tvPhone.getText().toString().isEmpty() || tvPhone.getText().toString().equals("null") ) {
                 btnCall.setOnClickListener(new View.OnClickListener() {
                     @Override

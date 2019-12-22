@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String longitude, status, category, ratingTitle, latitude, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, content, image, logo, timestamp, link, isOpen;
+            hours, content, image, author, timestamp, link, isOpen;
     public int ratingNumber, id, ratingCount;
     //public Double latitude, longitude;
 
@@ -19,8 +19,9 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
                            Integer id,
                            String content,
                            String link,
-                           String status,
+                           String author,
                            String city,
+                          // Integer ratings,
                            String state,
                            String country,
                            String latitude,
@@ -33,7 +34,8 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
 
         this.id = id;
         this.link = link;
-        this.status = status;
+        this.author = author;
+        //this.image = image;
         this.city = city;
         this.state = state;
         this.country = country;
@@ -41,6 +43,7 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         this.longitude = longitude;
         this.ratingTitle = ratingTitle;
         this.ratingNumber = ratingNumber;
+        this.content = content;
    }
 
 
@@ -51,7 +54,8 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         //write all properties to the parcel
         dest.writeInt(id);
         dest.writeString(link);
-        dest.writeString(status);
+        dest.writeString(author);
+        //dest.writeString(image);
         dest.writeString(city);
         dest.writeString(state);
         dest.writeString(country);
@@ -59,6 +63,7 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         dest.writeString(longitude);
         dest.writeString(ratingTitle);
         dest.writeInt(ratingNumber);
+        dest.writeString(content);
     }
 
     //constructor used for parcel
@@ -66,7 +71,8 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         //read and set saved values from parcel
         id = parcel.readInt();
         link = parcel.readString();
-        status = parcel.readString();
+        author = parcel.readString();
+       // image = parcel.readString();
         city = parcel.readString();
         state = parcel.readString();
         country = parcel.readString();
@@ -74,8 +80,8 @@ public class ListReviewModel extends ArrayList<Parcelable> implements Parcelable
         longitude = parcel.readString();
         ratingTitle = parcel.readString();
         ratingNumber = parcel.readInt();
+        content = parcel.readString();
     }
-
     //creator - used when un-parceling our parcle (creating the object)
     public static final Creator<ListReviewModel> CREATOR = new Creator<ListReviewModel>(){
 
