@@ -512,7 +512,7 @@ public class ReviewActivity extends AppCompatActivity implements
     File[] filesToUpload;
 
     public void uploadFiles(@NonNull MediaFile[] returnedPhotos){
-        photos.addAll(Arrays.asList(returnedPhotos));
+       // photos.addAll(Arrays.asList(returnedPhotos));
 
         filesToUpload = new File[photos.size()];
 
