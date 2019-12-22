@@ -177,7 +177,7 @@ public class ReviewActivity extends AppCompatActivity implements
          */
         locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
-        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationFoo");
+        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReview");
 
         if (locationMatch != null) {
 
@@ -501,7 +501,7 @@ public class ReviewActivity extends AppCompatActivity implements
     }
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
-       photos.addAll(Arrays.asList(returnedPhotos));
+      // photos.addAll(Arrays.asList(returnedPhotos));
         imagesAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(photos.size() - 1);
         uploadFiles(returnedPhotos);
@@ -512,7 +512,7 @@ public class ReviewActivity extends AppCompatActivity implements
     File[] filesToUpload;
 
     public void uploadFiles(@NonNull MediaFile[] returnedPhotos){
-       // photos.addAll(Arrays.asList(returnedPhotos));
+       photos.addAll(Arrays.asList(returnedPhotos));
 
         filesToUpload = new File[photos.size()];
 

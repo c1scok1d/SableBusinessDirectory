@@ -18,6 +18,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +45,7 @@ public class ListReviewActivity extends AppCompatActivity {
     TextView tvFeatured, tvStatus, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvBldNo,
             tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
-    //ImageView logo, ivFeaturedImage;
+    ImageView ivFeaturedImage;
     RatingBar simpleRatingBar;
     String title, content, city, /*state, zipcode, */country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
             password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved";//, post_type = "business", todayRange, isOpen;
@@ -77,7 +80,7 @@ public class ListReviewActivity extends AppCompatActivity {
         locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReviewShow");
 
 
-       // Picasso.Builder builder = new Picasso.Builder(this);
+       Picasso.Builder builder = new Picasso.Builder(this);
         pDialog = new ProgressBar(this);
 
         horizontalRecyclerView = findViewById(R.id.horizontalRecyclerView);
@@ -128,7 +131,7 @@ public class ListReviewActivity extends AppCompatActivity {
         btnDirections = findViewById(R.id.btnDirections);
         //tvLatitude = findViewById(R.id.tvLat);
         //tvLongitude = findViewById(R.id.tvLng);
-       // image = findViewById(R.id.ivImage);
+        ivFeaturedImage = findViewById(R.id.ivFeaturedImage);
         tvWebsite = findViewById(R.id.tvWebsite);
         tvEmail = findViewById(R.id.tvEmail);
         tvTwitter = findViewById(R.id.tvTwitter);
@@ -157,7 +160,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
         tvName.setText(locationReview.get(0).title);
         tvCategory.setText(locationReview.get(0).category);
-//        builder.build().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
+        builder.build().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
 //        tvBldgno.setText(locationReview.get(0).bldgno);
         tvStreet.setText(locationReview.get(0).street);
         tvCity.setText(locationReview.get(0).city);

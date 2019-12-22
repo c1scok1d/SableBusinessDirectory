@@ -188,8 +188,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                     locationReview.get(i).featured_image)));
 
                             Bundle locationReviewBundle = new Bundle();
-                            locationReviewBundle.putParcelableArrayList("locationFooBundle", locationFoo);
-                            LocationReview.putExtra("locationFoo", locationFoo);
+                            locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
+                            LocationReview.putExtra("locationReview", locationFoo);
                             itemView.getContext().startActivity(LocationReview);
                             break;
                         } else {
