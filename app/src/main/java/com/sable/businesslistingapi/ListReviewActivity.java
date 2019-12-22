@@ -17,7 +17,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,18 +37,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListReviewActivity extends AppCompatActivity {
 
-    RatingBar ratingBar;
-    TextView mRatingScale;
-    EditText etFeedBack;
-    Button mSendFeedback;
     ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
     TextView tvFeatured, tvStatus, tvState,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvBldNo,
             tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
-    ImageView logo, ivFeaturedImage;
+    //ImageView logo, ivFeaturedImage;
     RatingBar simpleRatingBar;
-    String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", todayRange, isOpen;
+    String title, content, city, /*state, zipcode, */country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved";//, post_type = "business", todayRange, isOpen;
     Double latitude, longitude;
     Integer category, id, rating;
 
@@ -59,7 +54,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
     RecyclerView verticalRecyclerView, horizontalRecyclerView;
 
-    //HorizontalAdapter horizontalAdapter;
+    HorizontalImageAdapter horizontalImageAdapter;
     VerticalReviewAdapter verticalReviewAdapter;
     private ImagesAdapter imagesAdapter;
 
@@ -69,7 +64,7 @@ public class ListReviewActivity extends AppCompatActivity {
     ArrayList<ListReviewModel> verticalList;
     ArrayList<ListingsModel> locationFoo = new ArrayList<>();
 
-    LinearLayoutManager hLayoutManager, vLayoutManager;
+    //LinearLayoutManager hLayoutManager, vLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,27 +78,27 @@ public class ListReviewActivity extends AppCompatActivity {
 
        // Picasso.Builder builder = new Picasso.Builder(this);
         pDialog = new ProgressBar(this);
-//        horizontalList.add(locationReview.get(0).image);
 
-
-        /* Horizontal Image Recycler View */
         horizontalRecyclerView = findViewById(R.id.horizontalRecyclerView);
-
-        //imagesAdapter = new ImagesAdapter(this, horizontalList);
-        horizontalRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         horizontalRecyclerView.setHasFixedSize(true);
-        horizontalRecyclerView.setAdapter(imagesAdapter);
 
+        LinearLayoutManager hLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        horizontalRecyclerView.setLayoutManager(hLayoutManager);
+        horizontalImageAdapter = new HorizontalImageAdapter(horizontalList, horizontalList, this);
+        // specify an adapter (see also next example)
+        horizontalRecyclerView.setAdapter(horizontalImageAdapter);
+//      /* Set Horizontal LinearLayout to RecyclerView */
+        //horizontalRecyclerView.setLayoutManager(hLayoutManager);
 
-        //setContentView(R.layout.list_review);
 
         /* Veritcal Review Listing Recycler View */
         verticalRecyclerView =  findViewById(R.id.verticalRecyclerView);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         verticalRecyclerView.setHasFixedSize(true);
+
         // use a linear layout manager
-        vLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager vLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         verticalRecyclerView.setLayoutManager(vLayoutManager);
         verticalReviewAdapter = new VerticalReviewAdapter(verticalList, getApplicationContext());
         // specify an adapter (see also next example)
@@ -501,16 +496,16 @@ public class ListReviewActivity extends AppCompatActivity {
                         verticalReviewAdapter.notifyDataSetChanged();
 
                         for (int i = 0; i < response.body().get(i).getImages().getRendered().size(); i++) {
-                            horizontalList.add(response.body().get(i).getImages().getRendered().get(i).getSrc());
+                            for (int n = 0; n < response.body().get(i).getImages().getRendered().size(); n++ ) {
+                                horizontalList.add(response.body().get(i).getImages().getRendered().get(n).getSrc());
+                            }
+                            horizontalImageAdapter.notifyDataSetChanged();
                         }
                         // imagesAdapter.notifyDataSetChanged();
-                        horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
+                      //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
                     }
                 }
-            }/* else {
-                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
-                }*/
-
+            }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
 

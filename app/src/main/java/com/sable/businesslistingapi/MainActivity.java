@@ -359,8 +359,8 @@ public class MainActivity extends AppCompatActivity implements
 
                         lstKnownLat = location.getLatitude();
                         lstKnownLng = location.getLongitude();
-                        query.put("latitude", String.format(Locale.US, "%10.4f", lstKnownLat));
-                        query.put("longitude", String.format(Locale.US, "%10.4f", lstKnownLng));
+                        query.put("latitude", String.format(Locale.US, "%10.6f", lstKnownLat));
+                        query.put("longitude", String.format(Locale.US, "%10.6f", lstKnownLng));
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby",  "distance");
@@ -402,8 +402,8 @@ public class MainActivity extends AppCompatActivity implements
 
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            query.put("latitude", String.format(Locale.US, "%10.4f", latitude));
-            query.put("longitude", String.format(Locale.US, "%10.4f", longitude));
+            query.put("latitude", String.format(Locale.US, "%10.6f", latitude));
+            query.put("longitude", String.format(Locale.US, "%10.6f", longitude));
             //query.put("distance", "5");
             query.put("order", "asc");
             query.put("orderby",  "distance");
@@ -689,8 +689,8 @@ public class MainActivity extends AppCompatActivity implements
                          *
                          */
 
-                        if (String.format(Locale.US, "%10.4f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.4f", latitude)) &&
-                                String.format(Locale.US, "%10.4f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.4f", longitude))) {
+                        if (String.format(Locale.US, "%10.6f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.6f", latitude)) &&
+                                String.format(Locale.US, "%10.6f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.6f", longitude))) {
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),

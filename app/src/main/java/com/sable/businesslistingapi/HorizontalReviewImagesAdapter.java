@@ -20,10 +20,10 @@ import java.util.ArrayList;
 
 public class HorizontalReviewImagesAdapter extends RecyclerView.Adapter {
 
-    private ArrayList<WooModel> dataset;
+    private ArrayList<ListReviewModel> dataset;
     private Context mContext;
 
-    public HorizontalReviewImagesAdapter(ArrayList<WooModel> mlist, Context context) {
+    public HorizontalReviewImagesAdapter(ArrayList<ListReviewModel> mlist, Context context) {
         this.dataset = mlist;
         this.mContext = context;
     }
@@ -36,11 +36,11 @@ public class HorizontalReviewImagesAdapter extends RecyclerView.Adapter {
 
         public MyViewHolder(View view) {
             super(view);
-            this.txtRestaurantName = view.findViewById(R.id.txtRestaurantName);
+           /* this.txtRestaurantName = view.findViewById(R.id.txtRestaurantName);
             this.txtDesc = view.findViewById(R.id.txtDesc);
             this.tvPrice = view.findViewById(R.id.tvPrice);
             this.simpleRatingBar = view.findViewById(R.id.simpleRatingBar);
-            this.tvLink = view.findViewById(R.id.tvLink);
+            this.tvLink = view.findViewById(R.id.tvLink);*/
             this.image = view.findViewById(R.id.imgRestaurant);
 
             image.setOnClickListener(new View.OnClickListener() {
@@ -72,11 +72,11 @@ public class HorizontalReviewImagesAdapter extends RecyclerView.Adapter {
         Picasso.Builder builder = new Picasso.Builder(mContext);
 
 
-        ((MyViewHolder) holder).txtRestaurantName.setText(dataset.get(position).name);
+        /*((MyViewHolder) holder).txtRestaurantName.setText(dataset.get(position).name);
         ((MyViewHolder) holder).txtDesc.setText(dataset.get(position).description);
         ((MyViewHolder) holder).tvPrice.setText(dataset.get(position).price);
         ((MyViewHolder) holder).simpleRatingBar.setRating(Float.valueOf(dataset.get(position).averageRating));
-        ((MyViewHolder) holder).tvLink.setText((dataset.get(position).link));
+        ((MyViewHolder) holder).tvLink.setText((dataset.get(position).link));*/
         builder.build().load(dataset.get(position).image).into(((MyViewHolder) holder).image);
     }
 
