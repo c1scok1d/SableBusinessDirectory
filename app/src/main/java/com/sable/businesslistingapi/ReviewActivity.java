@@ -177,7 +177,7 @@ public class ReviewActivity extends AppCompatActivity implements
          */
         locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
-        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReview");
+        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationFoo");
 
         if (locationMatch != null) {
 

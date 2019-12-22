@@ -104,7 +104,7 @@
             android:id="@+id/spnCategory"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0" />
+            android:layout_weight="1" />
 
         <SearchView
             android:id="@+id/search"
@@ -115,7 +115,8 @@
             android:iconifiedByDefault="true"
             android:queryBackground="@android:color/transparent"
             android:queryHint="Search businesses..."
-            android:theme="@style/AppSearchView">
+            android:theme="@style/AppSearchView"
+            android:visibility="gone">
 
         </SearchView>
     </LinearLayout>

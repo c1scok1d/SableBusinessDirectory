@@ -109,6 +109,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         *  location permissions
+         */
+        enableMyLocation();
+
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
@@ -119,16 +125,6 @@ public class MainActivity extends AppCompatActivity implements
         /* Display current location address */
         tvAddress = findViewById(R.id.tvAddress);
 
-        /* Set Horizontal LinearLayout to RecyclerView
-        horizontalRecyclervView = findViewById(R.id.horizontalRecyclerView);
-        horizontalRecyclervView.setHasFixedSize(true);
-        hLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        horizontalRecyclervView.setLayoutManager(hLayoutManager);
-        horizontalList = new ArrayList<>();
-
-        /* Set HorizontalAdapter to RecyclerView
-        horizontalAdapter = new HorizontalAdapter(horizontalList, MainActivity.this);
-        horizontalRecyclervView.setAdapter(horizontalAdapter); */
         /*
             BEGIN vertical Recycler View
          */
@@ -317,11 +313,6 @@ public class MainActivity extends AppCompatActivity implements
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
         }
-
-        /**
-         *  location permissions
-         */
-        enableMyLocation();
 
         /**
          *  get last known location
