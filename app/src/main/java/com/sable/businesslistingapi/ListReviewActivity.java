@@ -43,7 +43,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
     ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
     TextView tvFeatured, tvStatus, tvState,
-            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvBldNo,
+            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvWebsite, /* tvEmail, tvTwitter, tvFacebook, */tvBldNo,
             tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
     ImageView ivFeaturedImage;
     RatingBar simpleRatingBar;
@@ -60,7 +60,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
     HorizontalImageAdapter horizontalImageAdapter;
     VerticalReviewAdapter verticalReviewAdapter;
-    private ImagesAdapter imagesAdapter;
+    //private ImagesAdapter imagesAdapter;
 
 
 
@@ -133,10 +133,10 @@ public class ListReviewActivity extends AppCompatActivity {
         //tvLongitude = findViewById(R.id.tvLng);
         ivFeaturedImage = findViewById(R.id.ivFeaturedImage);
         tvWebsite = findViewById(R.id.tvWebsite);
-        tvEmail = findViewById(R.id.tvEmail);
+        /*tvEmail = findViewById(R.id.tvEmail);
         tvTwitter = findViewById(R.id.tvTwitter);
         tvFacebook = findViewById(R.id.tvFacebook);
-        btnEmail = findViewById(R.id.btnEmail);
+        btnEmail = findViewById(R.id.btnEmail);*/
         btnTwitter = findViewById(R.id.btnTwitter);
         btnFacebook = findViewById(R.id.btnFacebook);
         tvFeatured = findViewById(R.id.tvFeatured);
@@ -170,10 +170,10 @@ public class ListReviewActivity extends AppCompatActivity {
         simpleRatingBar.setRating(locationReview.get(0).rating);
         tvRatingCount.setText(String.valueOf(locationReview.get(0).ratingCount));
         tvPhone.setText(locationReview.get(0).phone);
-        tvEmail.setText(locationReview.get(0).email);
+        //tvEmail.setText(locationReview.get(0).email);
         tvWebsite.setText(locationReview.get(0).website);
-        tvTwitter.setText(locationReview.get(0).twitter);
-        tvFacebook.setText(locationReview.get(0).facebook);
+        //tvTwitter.setText(locationReview.get(0).twitter);
+        //tvFacebook.setText(locationReview.get(0).facebook);
 //            tvVideo.setText(locationReview.get(0).video);
         tvHours.setText(locationReview.get(0).hours);
         tvIsOpen.setText(locationReview.get(0).isOpen);
@@ -318,7 +318,7 @@ public class ListReviewActivity extends AppCompatActivity {
             });
         }
 
-        if (!tvEmail.getText().toString().isEmpty() || tvEmail.getText().toString().equals("null")) {
+      /*  if (!tvEmail.getText().toString().isEmpty() || tvEmail.getText().toString().equals("null")) {
             btnEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -347,7 +347,7 @@ public class ListReviewActivity extends AppCompatActivity {
                     startActivity(facebook);
                 }
             });
-        }
+        }*/
 
         Map<String, String> query = new HashMap<>();
 
