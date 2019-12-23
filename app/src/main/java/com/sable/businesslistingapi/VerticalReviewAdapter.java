@@ -34,7 +34,8 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        TextView  tvContent, tvRatingTitle, tvCity, tvState, tvCountry, tvAuthor, tvDate;
+        TextView  tvContent, tvRatingTitle, tvCity, tvState, tvCountry, tvAuthor, tvDays, tvHours, textView, textView2, textView3, textView5,
+        tvMinutes, tvSeconds;
         RatingBar ratingBar;
 
         public MyViewHolder(View view) {
@@ -46,7 +47,14 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
             this.tvState = view.findViewById(R.id.tvState);
             this.ratingBar = view.findViewById(R.id.ratingBar);
             this.tvAuthor = view.findViewById(R.id.tvAuthor);
-            this.tvDate = view.findViewById(R.id.tvDate);
+            this.tvDays = view.findViewById(R.id.tvDays);
+            this.tvHours = view.findViewById(R.id.tvHours);
+            this.tvMinutes = view.findViewById(R.id.tvMinutes);
+            this.tvSeconds = view.findViewById(R.id.tvSeconds);
+            this.textView = view.findViewById(R.id.textView);
+            this.textView2 = view.findViewById(R.id.textView2);
+            this.textView3 = view.findViewById(R.id.textView3);
+            this.textView5 = view.findViewById(R.id.textView5);
         }
     }
 
@@ -103,8 +111,30 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
             String Time = "PostDate : " + date1 +
                     "\nCurrDate : "+ date2 +
                     "\nPosted: "+ elapsedDays + " days " + elapsedHours + " hours " + elapsedMinutes + " minutes " + elapsedSeconds + " seconds ago";
-            ((MyViewHolder) holder).tvDate.setText(Time);
+            if(elapsedHours == 1){
+                String hour = "hour";
+                ((MyViewHolder) holder).textView2.setText(hour);
+            }
 
+            if(elapsedDays == 1){
+                String day = "day";
+                ((MyViewHolder) holder).textView.setText(day);
+            }
+            if(elapsedDays == 0){
+                ((MyViewHolder) holder).tvDays.setVisibility(View.GONE);
+                ((MyViewHolder) holder).textView.setVisibility(View.GONE);
+                ((MyViewHolder) holder).tvHours.setText(String.valueOf(elapsedHours));
+                ((MyViewHolder) holder).tvMinutes.setText(String.valueOf(elapsedMinutes));
+                ((MyViewHolder) holder).tvSeconds.setText(String.valueOf(elapsedSeconds));
+            } else {
+                ((MyViewHolder) holder).tvMinutes.setVisibility(View.GONE);
+                ((MyViewHolder) holder).tvHours.setVisibility(View.GONE);
+                ((MyViewHolder) holder).tvSeconds.setVisibility(View.GONE);
+                ((MyViewHolder) holder).textView2.setVisibility(View.GONE);
+                ((MyViewHolder) holder).textView3.setVisibility(View.GONE);
+                ((MyViewHolder) holder).textView5.setVisibility(View.GONE);
+                ((MyViewHolder) holder).tvDays.setText(String.valueOf(elapsedDays));
+            }
 
         } catch (java.text.ParseException e) {
             e.printStackTrace();
