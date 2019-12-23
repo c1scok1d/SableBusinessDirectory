@@ -62,9 +62,6 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int position) {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-
         ((MyViewHolder) holder).tvContent.setText(dataset.get(position).content);
         ((MyViewHolder) holder).ratingBar.setRating(dataset.get(position).ratingNumber);
         ((MyViewHolder) holder).tvRatingTitle.setText(dataset.get(position).ratingTitle);
@@ -73,9 +70,12 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
         ((MyViewHolder) holder).tvCountry.setText(dataset.get(position).country);
         ((MyViewHolder) holder).tvAuthor.setText(dataset.get(position).author);
         try {
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             String currDate = simpleDateFormat.format(new Date());
 
-            Date date1 = simpleDateFormat.parse(dataset.get(position).date);
+            Date date1 = simpleDateFormat.parse((dataset.get(position).date));
             Date date2 = simpleDateFormat.parse(currDate);
 
             long different = date2.getTime() - date1.getTime();
