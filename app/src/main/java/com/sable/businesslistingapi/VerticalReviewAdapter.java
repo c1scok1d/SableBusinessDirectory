@@ -61,12 +61,9 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int position) {
-        //DateTimeUtils obj = new DateTimeUtils();
-        SimpleDateFormat simpleDateFormat =
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-        //Date date1 = simpleDateFormat.parse("10/10/2013 11:30:10");
-        //Date date2 = simpleDateFormat.parse("13/10/2013 20:35:55");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
 
         ((MyViewHolder) holder).tvContent.setText(dataset.get(position).content);
         ((MyViewHolder) holder).ratingBar.setRating(dataset.get(position).ratingNumber);
@@ -75,9 +72,6 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
         ((MyViewHolder) holder).tvState.setText(dataset.get(position).state);
         ((MyViewHolder) holder).tvCountry.setText(dataset.get(position).country);
         ((MyViewHolder) holder).tvAuthor.setText(dataset.get(position).author);
-        ((MyViewHolder) holder).tvDate.setText(dataset.get(position).date);
-
-
         try {
             String currDate = simpleDateFormat.format(new Date());
 
@@ -115,48 +109,10 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
-
-        // holder.textView.setText(mDataset.get(0).city);
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return dataset.size();
     }
-
-    //1 minute = 60 seconds
-    //1 hour = 60 x 60 = 3600
-    //1 day = 3600 x 24 = 86400
-   /* public void printDifference(Date startDate, Date endDate){
-
-        //milliseconds
-        long different = endDate.getTime() - startDate.getTime();
-
-        System.out.println("startDate : " + startDate);
-        System.out.println("endDate : "+ endDate);
-        System.out.println("different : " + different);
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long elapsedDays = different / daysInMilli;
-        different = different % daysInMilli;
-
-        long elapsedHours = different / hoursInMilli;
-        different = different % hoursInMilli;
-
-        long elapsedMinutes = different / minutesInMilli;
-        different = different % minutesInMilli;
-
-        long elapsedSeconds = different / secondsInMilli;
-
-
-        return
-                elapsedDays,
-                elapsedHours, elapsedMinutes, elapsedSeconds;
-
-    } */
 }
