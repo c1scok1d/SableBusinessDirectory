@@ -195,7 +195,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                      */
                     //accessTokenTracker.startTracking();
 
-                    if (accessToken != null || !accessToken.isExpired()) {
+                    if (accessToken == null) {
+
+                        Intent loginIntent = new Intent(v.getContext(),LoginActivity.class);
+                        itemView.getContext().startActivity(loginIntent);
 
                         //goto login activity get username and email via facebook create account, return here to check again and proceed
 
@@ -334,7 +337,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 });
             }
 
-           /* LoginManager.getInstance().registerCallback(fbLogincallbackManager,
+            fbLogincallbackManager = CallbackManager.Factory.create();
+
+            LoginManager.getInstance().registerCallback(fbLogincallbackManager,
                     new FacebookCallback<LoginResult>() {
                         @Override
                         public void onSuccess(LoginResult loginResult) {
@@ -350,7 +355,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                         public void onError(FacebookException exception) {
                             // App code
                         }
-                    }); */
+                    });
         }
 
     }
