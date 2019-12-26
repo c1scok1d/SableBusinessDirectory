@@ -48,10 +48,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
      CallbackManager fbLoginCallbackManager, callbackManager;
     //private LoginButton loginButton;
-    AccessToken accessToken = AccessToken.getCurrentAccessToken();
     String userName, userEmail, userImage;
     CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
+    AccessToken accessToken;
 
 
     private Context mContext;
@@ -62,9 +62,12 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         this.userName = userName;
         this.userImage = userImage;
         this.userEmail = userEmail;
+        accessToken = AccessToken.getCurrentAccessToken();
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        useLoginInformation(accessToken);
+
+        if (accessToken != null) {
+            useLoginInformation(accessToken);
+        }
     }
 
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
@@ -90,7 +93,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 @Override
                 protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                     // currentAccessToken is null if the user is logged out
-                    if (currentAccessToken != null || !currentAccessToken.isExpired()) {
+                    if (currentAccessToken != null) {
                         accessToken = currentAccessToken;
                         useLoginInformation(currentAccessToken);
                     }else{
