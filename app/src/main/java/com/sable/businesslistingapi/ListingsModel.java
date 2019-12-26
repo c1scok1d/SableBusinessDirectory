@@ -11,7 +11,7 @@ import java.util.List;
 public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, content, image, logo, timestamp, link, isOpen, reviews;
+            hours, content, image, logo, timestamp, link, isOpen, reviews, userName, userEmail, userImage;
     public int id, ratingCount;
     public Double latitude, longitude;
     Float rating;
@@ -47,7 +47,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
                          String isOpen,
                          String logo,
                          String content,
-                         String image){
+                         String image, String userName, String userEmail, String userImage){
 
         this.id = id;
         this.title = title;
@@ -77,7 +77,11 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         this.logo = logo;
         this.content = content;
         this.image = image;
-   }
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userImage = userImage;
+
+    }
 
 
 
@@ -113,7 +117,11 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(logo);
         dest.writeString(content);
         dest.writeString(image);
+        dest.writeString(userImage);
+        dest.writeString(userEmail);
+        dest.writeString(userName);
         dest.writeString(timestamp);
+
     }
 
     //constructor used for parcel
@@ -148,6 +156,9 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         logo = parcel.readString();
         content = parcel.readString();
         image = parcel.readString();
+        userImage = parcel.readString();
+        userEmail = parcel.readString();
+        userName = parcel.readString();
         timestamp = parcel.readString();
     }
 

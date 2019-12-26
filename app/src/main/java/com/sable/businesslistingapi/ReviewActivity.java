@@ -70,10 +70,11 @@ public class ReviewActivity extends AppCompatActivity implements
     TextView mRatingScale;
     EditText etFeedBack;
     Button mSendFeedback;
-    TextView tvFeatured, tvStatus, tvState,
-            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook,
-            tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
-    ImageView logo, ivFeaturedImage;
+    TextView tvFeatured, tvStatus, tvState, tvStreet, tvCity, tvZip, tvCountry, tvUserName,
+            tvUserEmail, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvHours, tvIsOpen, tvLink,
+            tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory,
+            tvName, tvFirstRate, tvDistance;
+    ImageView ivUserImage, ivFeaturedImage;
     RatingBar simpleRatingBar;
     String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
             password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", todayRange, isOpen;
@@ -85,8 +86,8 @@ public class ReviewActivity extends AppCompatActivity implements
 
 
     private ProgressBar pDialog;
-    private int progressStatus = 0;
-    private Handler handler = new Handler();
+   // private int progressStatus = 0;
+    //private Handler handler = new Handler();
     private ImagesAdapter imagesAdapter;
     private ArrayList<MediaFile> photos = new ArrayList<>();
     //Map<String, RequestBody> parts = new HashMap<>();
@@ -140,6 +141,10 @@ public class ReviewActivity extends AppCompatActivity implements
         tvLongitude = findViewById(R.id.tvLongitude);
         pDialog = findViewById(R.id.progressBar);
         tvProgressStatus = findViewById(R.id.tvProgressStatus);
+        tvUserName = findViewById(R.id.tvUserName);
+        tvUserEmail = findViewById(R.id.tvUserEmail);
+        ivUserImage = findViewById(R.id.ivUserImage);
+
 
         pDialog.setVisibility(View.GONE);
 
@@ -180,6 +185,16 @@ public class ReviewActivity extends AppCompatActivity implements
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
         locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReview");
 
+       // ArrayList<ListingsAddModel> locationReviewFoo = new ArrayList<>();
+        //locationReviewFoo = this.getIntent().getParcelableArrayListExtra("locationReview");
+        String usernameFoo = this.getIntent().getExtras().getString("username");
+        String useremailFoo = this.getIntent().getExtras().getString("useremail");
+        String userimageFoo = this.getIntent().getExtras().getString("userimage");
+
+        //Bundle bundleFoo = foo.getBundleExtra().getParcelableArrayList("locationReview");
+        //Intent foo = getIntent();
+                //this.getIntent().getExtras().get("username", "useremail", "userimage");
+
         if (locationMatch != null) {
 
             tvName.setText(locationMatch.get(0).title);
@@ -207,6 +222,9 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
+            tvUserName.setText(this.getIntent().getExtras().getString("username"));
+            tvUserEmail.setText(this.getIntent().getExtras().getString("useremail"));
+            builder.build().load(this.getIntent().getExtras().getString("userimage")).into(ivUserImage);
 
 
             Location locationA = new Location("point A");
@@ -254,6 +272,9 @@ public class ReviewActivity extends AppCompatActivity implements
             link = locationAdd.get(0).link;
             latitude = locationAdd.get(0).latitude;
             longitude = locationAdd.get(0).longitude;
+            //tvUserName.setText(locationAdd.get(0).userName);
+            //tvUserEmail.setText(locationAdd.get(0).userEmail);
+            //builder.build().load(locationAdd.get(0).userImage).into(ivUserImage);
         } else {
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
@@ -280,6 +301,9 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
+            tvUserName.setText(locationReview.get(0).userName);
+            tvUserEmail.setText(locationReview.get(0).userEmail);
+            builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
 
             Location locationA = new Location("point A");
             locationA.setLatitude(locationReview.get(0).latitude); //listing lat
@@ -623,7 +647,11 @@ public class ReviewActivity extends AppCompatActivity implements
         Call<List<ListReviewPOJO>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
-                /*2,*/ etFeedBack.getText().toString(), main);
+                etFeedBack.getText().toString(),
+                main,
+                Integer.valueOf(tvUserEmail.getText().toString()),
+                Integer.valueOf(tvUserName.getText().toString())
+                /*ivUserImage.getText().toString()*/);
 
         call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override

@@ -42,4 +42,6 @@
     <string name="tvLong">Longitude</string>
     <string name="call">CALL</string>
     <string name="directions">DIRECTIONS</string>
+    <string name="facebook_app_id">2106220289466501</string>
+    <string name="fb_login_protocol_scheme">fb2106220289466501</string>
 </resources>

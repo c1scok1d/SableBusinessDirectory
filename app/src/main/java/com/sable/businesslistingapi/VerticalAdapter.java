@@ -10,14 +10,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class VerticalAdapter extends RecyclerView.Adapter {
 
@@ -25,6 +46,12 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
     ArrayList<ListingsModel> locationFoo = new ArrayList<>();
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
+     CallbackManager fbLoginCallbackManager, callbackManager;
+    //private LoginButton loginButton;
+    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    String userName, userEmail, userImage;
+    CallbackManager fbLogincallbackManager;
+    private AccessTokenTracker accessTokenTracker;
 
 
     private Context mContext;
@@ -38,16 +65,33 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         TextView tvTitle, tvStreet, tvCity, tvState, tvHours, tvisOpen, tvContent, tvPhone,
                 tvRating, tvRatingCount, tvLatitude, tvLongitude, tvBldNo, tvWebsite, tvEmail, tvTwitter,
                 tvFacebook, tvFeatured, tvDistance, tvZipcode, tvCall, tvId, tvLink, tvStatus, tvCategory,
-                tvCountry, tvVideo, tvReviews;
+                tvCountry, tvVideo, tvReviews;//, tvUserName, tvUserEmail;
+//        boolean isLoggedIn = !accessToken.isExpired() || accessToken != null;
 
         ImageView image;
         RatingBar simpleRatingBar;
         ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
+        private LoginButton loginButton;
 
 
 
-        public ImageTypeViewHolder(final View itemView ) {
+
+        public ImageTypeViewHolder(final View itemView) {
             super(itemView);
+
+            //fbLogincallbackManager = CallbackManager.Factory.create();
+            accessTokenTracker = new AccessTokenTracker() {
+                @Override
+                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                    // currentAccessToken is null if the user is logged out
+                    if (currentAccessToken != null || !currentAccessToken.isExpired()) {
+                        accessToken = currentAccessToken;
+                        useLoginInformation(currentAccessToken);
+                    }else{
+                        //displayName.setText("Not Logged In");
+                    }
+                }
+            };
 
             simpleRatingBar = itemView.findViewById(R.id.simpleRatingBar);
             //simpleRatingBar.setNumStars(5);
@@ -91,12 +135,11 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             tvReviews = itemView.findViewById(R.id.tvReviews);
 
 
-             image.setOnClickListener(new View.OnClickListener() {
+            image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
-
 
 
                     for (int i = 0; i < locationReview.size(); i++) {
@@ -131,7 +174,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).logo,
                                     locationReview.get(i).content,
-                                    locationReview.get(i).featured_image)));
+                                    locationReview.get(i).featured_image, userName, userEmail, userImage)));
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
                             showReviews.putExtra("locationReview", locationReviewShow);
@@ -147,59 +190,87 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
 
-                    Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
-
                     /**
-                     * for each array space if id != skip or else...
+                     * check validity of facebook access token
                      */
+                    //accessTokenTracker.startTracking();
 
-                    for (int i = 0; i < locationReview.size(); i++) {
+                    if (accessToken != null || !accessToken.isExpired()) {
 
-                        if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+                        //goto login activity get username and email via facebook create account, return here to check again and proceed
 
-                            locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                    locationReview.get(i).id,
-                                    locationReview.get(i).title,
-                                    locationReview.get(i).link,
-                                    locationReview.get(i).status,
-                                    locationReview.get(i).category,
-                                    locationReview.get(i).featured,
-                                    locationReview.get(i).featured_image,
-                                    locationReview.get(i).bldgno,
-                                    locationReview.get(i).street,
-                                    locationReview.get(i).city,
-                                    locationReview.get(i).state,
-                                    locationReview.get(i).country,
-                                    locationReview.get(i).zipcode,
-                                    locationReview.get(i).latitude,
-                                    locationReview.get(i).longitude,
-                                    locationReview.get(i).rating,
-                                    locationReview.get(i).ratingCount,
-                                    locationReview.get(i).phone,
-                                    locationReview.get(i).email,
-                                    locationReview.get(i).website,
-                                    locationReview.get(i).twitter,
-                                    locationReview.get(i).facebook,
-                                    locationReview.get(i).video,
-                                    locationReview.get(i).hours,
-                                    locationReview.get(i).isOpen,
-                                    locationReview.get(i).logo,
-                                    locationReview.get(i).content,
-                                    locationReview.get(i).featured_image)));
+                        Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
+                    } else {
 
-                            Bundle locationReviewBundle = new Bundle();
-                            locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
-                            LocationReview.putExtra("locationReview", locationFoo);
-                            itemView.getContext().startActivity(LocationReview);
-                            break;
-                        } else {
-                            Log.e("VerticalAdapter", "no matcon on locationReview");
+                        //AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                        useLoginInformation(accessToken);
+
+                        String usernameFoo = userName;
+                        String useremailFoo = userEmail;
+                        String userimageFoo = userImage;
+
+                        Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
+
+                        /**
+                         * for each array space if id != skip or else...
+                         */
+
+                        for (int i = 0; i < locationReview.size(); i++) {
+
+                            if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+
+                                locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                        locationReview.get(i).id,
+                                        locationReview.get(i).title,
+                                        locationReview.get(i).link,
+                                        locationReview.get(i).status,
+                                        locationReview.get(i).category,
+                                        locationReview.get(i).featured,
+                                        locationReview.get(i).featured_image,
+                                        locationReview.get(i).bldgno,
+                                        locationReview.get(i).street,
+                                        locationReview.get(i).city,
+                                        locationReview.get(i).state,
+                                        locationReview.get(i).country,
+                                        locationReview.get(i).zipcode,
+                                        locationReview.get(i).latitude,
+                                        locationReview.get(i).longitude,
+                                        locationReview.get(i).rating,
+                                        locationReview.get(i).ratingCount,
+                                        locationReview.get(i).phone,
+                                        locationReview.get(i).email,
+                                        locationReview.get(i).website,
+                                        locationReview.get(i).twitter,
+                                        locationReview.get(i).facebook,
+                                        locationReview.get(i).video,
+                                        locationReview.get(i).hours,
+                                        locationReview.get(i).isOpen,
+                                        locationReview.get(i).logo,
+                                        locationReview.get(i).content,
+                                        locationReview.get(i).featured_image,
+                                        userName,
+                                        userEmail,
+                                        userImage)));
+
+                                Bundle locationReviewBundle = new Bundle();
+                                locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
+
+                                /*locationReviewBundle.putString("username", userName);
+                                locationReviewBundle.putString("useremail", userEmail);
+                                locationReviewBundle.putString("userimage", userImage);*/
+                               // showReviews.putExtra("locationReview", locationReviewShow);
+                                LocationReview.putExtra("locationReview", locationFoo);
+                                itemView.getContext().startActivity(LocationReview);
+                                break;
+                            } else {
+                                Log.e("VerticalAdapter", "no matcon on locationReview");
+                            }
                         }
                     }
                 }
             });
 
-            if (!tvPhone.getText().toString().isEmpty() || tvPhone.getText().toString().equals("null") ) {
+            if (!tvPhone.getText().toString().isEmpty() || tvPhone.getText().toString().equals("null")) {
                 btnCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -253,7 +324,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             }
 
 
-            if(!tvFacebook.getText().toString().isEmpty() ||  tvFacebook.getText().toString().equals("null")) {
+            if (!tvFacebook.getText().toString().isEmpty() || tvFacebook.getText().toString().equals("null")) {
                 btnFacebook.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -262,17 +333,68 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                     }
                 });
             }
+
+           /* LoginManager.getInstance().registerCallback(fbLogincallbackManager,
+                    new FacebookCallback<LoginResult>() {
+                        @Override
+                        public void onSuccess(LoginResult loginResult) {
+                            // App code
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            // App code
+                        }
+
+                        @Override
+                        public void onError(FacebookException exception) {
+                            // App code
+                        }
+                    }); */
         }
+
     }
+
+
+    public void useLoginInformation(AccessToken accessToken) {
+        /**
+         Creating the GraphRequest to fetch user details
+         1st Param - AccessToken
+         2nd Param - Callback (which will be invoked once the request is successful)
+         **/
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            //OnCompleted is invoked once the GraphRequest is successful
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    userName = object.getString("name");
+                    userEmail = object.getString("email");
+                    userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                       /* displayName.setText(name);
+                        emailID.setText(email);*/
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        // We set parameters to the GraphRequest using a Bundle.
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,picture.width(200)");
+        request.setParameters(parameters);
+        // Initiate the GraphRequest
+        request.executeAsync();
+    }
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fbLogincallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }*/
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.business_listing_details, parent, false);
         return new ImageTypeViewHolder(view);
-
-
     }
-
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
@@ -352,7 +474,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.isOpen,
                 object.image,
                 object.content,
-                object.image));
+                object.image, userName, userEmail, userImage));
 
         if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
@@ -392,7 +514,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         if (object.hours == "null" || object.isOpen == "null" || object.hours == null || object.isOpen == null) {
             ((ImageTypeViewHolder) holder).tvisOpen.setVisibility(View.GONE);
             ((ImageTypeViewHolder) holder).tvHours.setVisibility(View.GONE);
-        } else if (object.hours == "Closed" ||  object.isOpen =="Closed now" ) {
+        } else if (object.hours == "Closed" || object.isOpen == "Closed now") {
             String closed = "Closed";
             ((ImageTypeViewHolder) holder).tvHours.setText(closed);
             ((ImageTypeViewHolder) holder).tvHours.setTextColor(Color.rgb(255, 0, 0)); //red
@@ -404,8 +526,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             ((ImageTypeViewHolder) holder).tvisOpen.setTextColor(Color.rgb(51, 165, 50)); //green
         }
     }
+
     @Override
-    public int getItemCount () {
+    public int getItemCount() {
         return dataset.size();
     }
 }

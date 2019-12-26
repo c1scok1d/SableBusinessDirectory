@@ -73,9 +73,9 @@ public interface RetrofitArrayApi {
     Call<List<ListReviewPOJO>> postReview(
             @Query("post") Integer id,
             @Query("rating") Integer rating,
-           // @Query("author") Integer author,
             @Query("content") String content,
-            @Query("images") String filesToUpload
-            /*@Body RequestBody images*/);
+            @Query("images") String filesToUpload,
+            @Query("author_name") Integer authorName,
+            @Query("author_email") Integer authorEmail);
  }
 

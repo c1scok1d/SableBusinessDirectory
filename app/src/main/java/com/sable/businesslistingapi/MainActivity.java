@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -30,6 +32,17 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,11 +52,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -74,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude, lstKnownLat, lstKnownLng;
 
-    TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo;
+    TextView tvAddress, tvUserName, tvUserEmail, tvCity, tvBldgNo;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
@@ -83,8 +100,8 @@ public class MainActivity extends AppCompatActivity implements
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
     String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
-            zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen,
-            password = "mroK zH6o wOW7 X094 MTKy fwmY";
+            zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage;
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
@@ -93,13 +110,25 @@ public class MainActivity extends AppCompatActivity implements
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     Spinner spnCategory, spnRadius;
+    ImageView ivUserImage;
+
+
 
 
     Button btnAdd, btnShop;
+
+
     SearchView searchView;
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
+    CallbackManager fbLogincallbackManager;
+    private AccessTokenTracker accessTokenTracker;
+
+
+    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+   // boolean isLoggedIn;
+
 
 
     /**
@@ -112,25 +141,51 @@ public class MainActivity extends AppCompatActivity implements
          *  location permissions
          */
         enableMyLocation();
+        //accessToken  = AccessToken.getCurrentAccessToken();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
+
+        //isLoggedIn = accessToken !=null || accessToken.isExpired();
+/**
+ * login via facebook
+ */
+        //accessToken = AccessToken.getCurrentAccessToken();
+
+        //FacebookSdk.sdkInitialize(this.getApplicationContext());
+        fbLogincallbackManager = CallbackManager.Factory.create();
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken != null) {
+                    // AccessToken is not null implies user is logged in and hence we sen the GraphRequest
+                    useLoginInformation(currentAccessToken);
+                } else {
+                    tvUserName.setText("Not Logged In");
+                }
+            }
+        };
+
 
         spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
 
         /* Display current location address */
         tvAddress = findViewById(R.id.tvAddress);
+        tvUserName = findViewById(R.id.tvUserName);
+        tvUserEmail = findViewById(R.id.tvUserEmail);
+        ivUserImage = findViewById(R.id.ivUserImage);
 
         /*
             BEGIN vertical Recycler View
          */
         verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
-       // verticalRecyclerView2 = findViewById(R.id.verticalRecyclerView2);
+        // verticalRecyclerView2 = findViewById(R.id.verticalRecyclerView2);
 
         progressBar = findViewById(R.id.progressbar);
 
@@ -143,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements
         verticalList = new ArrayList<>();
         locationMatch = new ArrayList<>();
 
+       // useLoginInformation(accessToken);
 
         verticalAdapter = new VerticalAdapter(verticalList, MainActivity.this);
         //verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
@@ -181,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 Map<String, String> query = new HashMap<>();
                 if (parent != null) {
-                    switch(position){
+                    switch (position) {
                         case 1:
                             radius = "Within' 10 miles of your current location";
 
@@ -189,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "10");
                             query.put("order", "asc");
-                            query.put("orderby",  "distance");
+                            query.put("orderby", "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
@@ -201,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "15");
                             query.put("order", "asc");
-                            query.put("orderby",  "distance");
+                            query.put("orderby", "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
@@ -213,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "20");
                             query.put("order", "asc");
-                            query.put("orderby",  "distance");
+                            query.put("orderby", "distance");
 
                             getRetrofit(query);
                             texty.setText(radius);
@@ -224,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("longitude", Double.toString(latitude));
                             query.put("distance", "5");
                             query.put("order", "asc");
-                            query.put("orderby",  "distance");
+                            query.put("orderby", "distance");
 
                             texty.setText(radius);
                             break;
@@ -240,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        category.add("Select Category"); //add heading to category spinner
+        category.add("Category"); //add heading to category spinner
         ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, category);
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnCategory.setAdapter(adapterCategory);
@@ -249,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (spnCategory.getSelectedItem() != "Select Category") {
+                if (spnCategory.getSelectedItem() != "Category") {
 
                     Map<String, String> query = new HashMap<>();
                     query.put("category", spnCategory.getSelectedItem().toString());
@@ -287,8 +343,8 @@ public class MainActivity extends AppCompatActivity implements
         btnShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
-                    startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
+                startActivity(intent);
             }
         });
 
@@ -310,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements
 
             //query.put("distance", "5");
             query.put("order", "asc");
-            query.put("orderby",  "distance");
+            query.put("orderby", "distance");
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
         }
@@ -330,12 +386,94 @@ public class MainActivity extends AppCompatActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
-        /**
-         *  api calls to get listings and marketplace products
-         */
+        fbLogincallbackManager = CallbackManager.Factory.create();
 
-       // getRetrofitWoo(); //call to woocommerce products api
+        LoginManager.getInstance().registerCallback(fbLogincallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code   
+                    }
+                });
     }
+
+    public void onStart() {
+        super.onStart();
+//This starts the access token tracking
+        accessTokenTracker.startTracking();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null) {
+            useLoginInformation(accessToken);
+        } else {
+            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
+            loggedInLayout.setVisibility(View.GONE);
+        }
+        //useLoginInformation(accessToken);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        // We stop the tracking before destroying the activity
+        accessTokenTracker.stopTracking();
+    }
+
+    private void useLoginInformation(AccessToken accessToken) {
+
+
+        /**
+         Creating the GraphRequest to fetch user details
+         1st Param - AccessToken
+         2nd Param - Callback (which will be invoked once the request is successful)
+         **/
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            //OnCompleted is invoked once the GraphRequest is successful
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                Picasso.Builder builder = new Picasso.Builder(getApplicationContext());
+                try {
+                    userName = object.getString("name");
+                    userEmail = object.getString("email");
+                    userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                   // String FooImage = userImage;
+                    tvUserName.setText(object.getString("name"));
+                    tvUserEmail.setText(object.getString("email"));
+                    builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
+
+                       /* displayName.setText(name);
+                        emailID.setText(email);*/
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        // We set parameters to the GraphRequest using a Bundle.
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,picture.width(200)");
+        request.setParameters(parameters);
+        // Initiate the GraphRequest
+        request.executeAsync();
+    }
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fbLogincallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 
     /**
      *  get last known location
@@ -656,7 +794,6 @@ public class MainActivity extends AppCompatActivity implements
         Call<List<BusinessListings>> call = service.getPostInfo(query);
 
 
-
         // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
@@ -718,7 +855,7 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc()));
+                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage));
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             Bundle locationMatchBundle = new Bundle();
@@ -727,6 +864,7 @@ public class MainActivity extends AppCompatActivity implements
                             startActivity(LocationMatch);
                             break;
                         } else {
+
                             /**
                              * populate vertical recycler in Main Activity
                              */
@@ -758,7 +896,7 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc()));
+                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());

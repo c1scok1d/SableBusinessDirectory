@@ -544,6 +544,13 @@
                                 android:background="@drawable/customborder"
                                 app:srcCompat="@drawable/facebook" />
 
+                            <com.facebook.login.widget.LoginButton
+                                android:id="@+id/login_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp" />
+
+
                         </LinearLayout>
 
                     </LinearLayout>

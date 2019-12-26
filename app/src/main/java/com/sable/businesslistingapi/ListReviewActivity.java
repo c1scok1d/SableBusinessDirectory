@@ -19,7 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +68,8 @@ public class ListReviewActivity extends AppCompatActivity {
 
     HorizontalImageAdapter horizontalImageAdapter;
     VerticalReviewAdapter verticalReviewAdapter;
-    //private ImagesAdapter imagesAdapter;
+    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    String userName, userEmail, userImage;
 
 
 
@@ -76,6 +83,7 @@ public class ListReviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_review_activity);
+
 
         verticalList = new ArrayList<>();
 
@@ -235,53 +243,79 @@ public class ListReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
-
                 /**
-                 * for each array space if id != skip or else...
+                 * check validity of facebook access token
                  */
+                //accessTokenTracker.startTracking();
+                boolean isLoggedIn = !accessToken.isExpired() || accessToken != null;
 
-                for (int i = 0; i < locationReview.size(); i++) {
 
-                    if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
 
-                        locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                locationReview.get(i).id,
-                                locationReview.get(i).title,
-                                locationReview.get(i).link,
-                                locationReview.get(i).status,
-                                locationReview.get(i).category,
-                                locationReview.get(i).featured,
-                                locationReview.get(i).featured_image,
-                                locationReview.get(i).bldgno,
-                                locationReview.get(i).street,
-                                locationReview.get(i).city,
-                                locationReview.get(i).state,
-                                locationReview.get(i).country,
-                                locationReview.get(i).zipcode,
-                                locationReview.get(i).latitude,
-                                locationReview.get(i).longitude,
-                                locationReview.get(i).rating,
-                                locationReview.get(i).ratingCount,
-                                locationReview.get(i).phone,
-                                locationReview.get(i).email,
-                                locationReview.get(i).website,
-                                locationReview.get(i).twitter,
-                                locationReview.get(i).facebook,
-                                locationReview.get(i).video,
-                                locationReview.get(i).hours,
-                                locationReview.get(i).isOpen,
-                                locationReview.get(i).logo,
-                                locationReview.get(i).content,
-                                locationReview.get(i).featured_image)));
+                if (!isLoggedIn) {
+                    //goto login activity get username and email via facebook create account, return here to check again and proceed
 
-                        Bundle locationReviewBundle = new Bundle();
-                        locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
-                        LocationReview.putExtra("locationReview", locationFoo);
-                        startActivity(LocationReview);
-                        break;
-                    } else {
-                        Log.e("VerticalAdapter", "no matcon on locationReview");
+                } else {
+
+                    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                    useLoginInformation(accessToken);
+
+                    Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
+
+                    /**
+                     * for each array space if id != skip or else...
+                     */
+
+                    for (int i = 0; i < locationReview.size(); i++) {
+
+                        if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+
+                            locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    locationReview.get(i).id,
+                                    locationReview.get(i).title,
+                                    locationReview.get(i).link,
+                                    locationReview.get(i).status,
+                                    locationReview.get(i).category,
+                                    locationReview.get(i).featured,
+                                    locationReview.get(i).featured_image,
+                                    locationReview.get(i).bldgno,
+                                    locationReview.get(i).street,
+                                    locationReview.get(i).city,
+                                    locationReview.get(i).state,
+                                    locationReview.get(i).country,
+                                    locationReview.get(i).zipcode,
+                                    locationReview.get(i).latitude,
+                                    locationReview.get(i).longitude,
+                                    locationReview.get(i).rating,
+                                    locationReview.get(i).ratingCount,
+                                    locationReview.get(i).phone,
+                                    locationReview.get(i).email,
+                                    locationReview.get(i).website,
+                                    locationReview.get(i).twitter,
+                                    locationReview.get(i).facebook,
+                                    locationReview.get(i).video,
+                                    locationReview.get(i).hours,
+                                    locationReview.get(i).isOpen,
+                                    locationReview.get(i).logo,
+                                    locationReview.get(i).content,
+                                    locationReview.get(i).featured_image, userName, userEmail, userImage)));
+
+                            Bundle locationReviewBundle = new Bundle();
+                            locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
+
+                            String usernameFoo = userName;
+                            String useremailFoo = userEmail;
+                            String userimageFoo = userImage;
+
+                                /*locationReviewBundle.putString("username", userName);
+                                locationReviewBundle.putString("useremail", userEmail);
+                                locationReviewBundle.putString("userimage", userImage);*/
+                            // showReviews.putExtra("locationReview", locationReviewShow);
+                            LocationReview.putExtra("locationReview", locationFoo);
+                            startActivity(LocationReview);
+                            break;
+                        } else {
+                            Log.e("VerticalAdapter", "no matcon on locationReview");
+                        }
                     }
                 }
             }
@@ -320,37 +354,6 @@ public class ListReviewActivity extends AppCompatActivity {
             });
         }
 
-      /*  if (!tvEmail.getText().toString().isEmpty() || tvEmail.getText().toString().equals("null")) {
-            btnEmail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent email = new Intent(Intent.ACTION_VIEW, Uri.parse(tvEmail.getText().toString()));
-                    startActivity(email);
-                }
-            });
-        }
-
-        if (!tvTwitter.getText().toString().isEmpty() || tvTwitter.getText().toString().equals("null")) {
-            btnTwitter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent twitter = new Intent(Intent.ACTION_VIEW, Uri.parse(tvTwitter.getText().toString()));
-                    startActivity(twitter);
-                }
-            });
-        }
-
-
-        if(!tvFacebook.getText().toString().isEmpty() ||  tvFacebook.getText().toString().equals("null")) {
-            btnFacebook.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent facebook = new Intent(Intent.ACTION_VIEW, Uri.parse(tvFacebook.getText().toString()));
-                    startActivity(facebook);
-                }
-            });
-        }*/
-
         Map<String, String> query = new HashMap<>();
 
         query.put("post", String.valueOf(locationReview.get(0).id));
@@ -358,6 +361,34 @@ public class ListReviewActivity extends AppCompatActivity {
     }
 
 
+    private void useLoginInformation(AccessToken accessToken) {
+        /**
+         Creating the GraphRequest to fetch user details
+         1st Param - AccessToken
+         2nd Param - Callback (which will be invoked once the request is successful)
+         **/
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            //OnCompleted is invoked once the GraphRequest is successful
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    userName = object.getString("name");
+                    userEmail = object.getString("email");
+                    userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                       /* displayName.setText(name);
+                        emailID.setText(email);*/
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        // We set parameters to the GraphRequest using a Bundle.
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,picture.width(200)");
+        request.setParameters(parameters);
+        // Initiate the GraphRequest
+        request.executeAsync();
+    }
 
     public void onBackPressed() {
         Intent onBack = new Intent(getApplicationContext(), MainActivity.class);
@@ -468,7 +499,8 @@ public class ListReviewActivity extends AppCompatActivity {
                                         locationReview.get(i).isOpen,
                                         locationReview.get(i).logo,
                                         locationReview.get(i).content,
-                                        locationReview.get(i).featured_image)));
+                                        locationReview.get(i).featured_image, userName, userEmail, userImage)));
+
 
                                 Bundle locationReviewBundle = new Bundle();
                                 locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
