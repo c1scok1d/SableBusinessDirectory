@@ -571,7 +571,7 @@
             <LinearLayout
                 android:id="@+id/verticalRecyclerLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -581,7 +581,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:lineSpacingExtra="2dp"
-                    android:maxLines="3"
                     android:text="Our Reviews"
                     android:textColor="@color/colorAccent"
                     android:textStyle="bold" />
@@ -589,7 +588,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/verticalRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="230dp"
+                    android:clipToPadding="false">
 
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>

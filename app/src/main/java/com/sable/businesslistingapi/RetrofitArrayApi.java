@@ -31,6 +31,12 @@ public interface RetrofitArrayApi {
             @QueryMap Map<String, String> options
     );
 
+    @GET("api/user/fb_connect")
+    Call<UserAuthPOJO> getUserInfo(
+            @Query ("access_token")String query
+            );
+
+
     @GET
     Call<List<BusinessListings>> getDynamic(
             @Url String url);

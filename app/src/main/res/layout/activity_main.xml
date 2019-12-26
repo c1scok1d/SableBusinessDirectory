@@ -126,6 +126,7 @@
         android:id="@+id/loggedInLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -135,6 +136,7 @@
             app:srcCompat="@mipmap/launcher" />
 
         <LinearLayout
+            android:id="@+id/userProfileLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -148,57 +150,66 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="userEmail"
-                android:visibility="visible"
-                tools:text="useremail" />
+                android:visibility="gone"
+                tools:text="useremail"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvWpUserLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <LinearLayout
-                android:id="@+id/btnLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/btnEmail"
+                <LinearLayout
+                    android:id="@+id/userPreflayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    app:srcCompat="@drawable/email" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/btnTwitter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    app:srcCompat="@drawable/twitter" />
+                    <ImageButton
+                        android:id="@+id/btnEmail"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:background="@drawable/customborder"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@mipmap/edit_profile" />
 
-                <ImageButton
-                    android:id="@+id/btnFacebook"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    app:srcCompat="@drawable/facebook" />
+                    <ImageButton
+                        android:id="@+id/btnFavorites"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/customborder"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@mipmap/favorites" />
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -210,37 +221,45 @@
 
                 <TextView
                     android:id="@+id/tvUserName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
                     android:text="userName"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorAccent"
                     tools:text="username" />
+
+                <TextView
+                    android:id="@+id/tvWpUserId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvThankYou"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is where we will thank the user for their review and encrouage them to continue to help us grow the directory."
-                android:textColor="@color/colorAccent" />
+                android:text="This is where we will thank the user for their review and encrouage them to continue to help us grow the directory." />
         </LinearLayout>
 
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="5dp"
-        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:orientation="vertical">
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/customborder"
+                android:gravity="center_horizontal|center_vertical" />
 
             <ProgressBar
                 android:id="@+id/progressbar"
@@ -251,19 +270,18 @@
             <LinearLayout
                 android:id="@+id/verticalRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="5dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/verticalRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp">
+                    android:paddingBottom="5dp"
+                    android:clipToPadding="false">
 
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
 
 </LinearLayout>

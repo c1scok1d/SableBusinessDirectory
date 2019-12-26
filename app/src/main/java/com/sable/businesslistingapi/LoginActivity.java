@@ -2,9 +2,7 @@ package com.sable.businesslistingapi;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +22,22 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Credentials;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,7 +46,10 @@ public class LoginActivity extends AppCompatActivity {
     private TextView displayName, emailID;
     private ImageView displayImage;
     CallbackManager fbLogincallbackManager;
-
+    //Map<Object, Object> query = new HashMap<>();
+    ArrayList<UserAuthModel> userinfo = new ArrayList<>();
+    String baseURL = "https://www.thesablebusinessdirectory.com", userImage, userName, userEmail;
+    AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        AccessToken accessToken = loginResult.getAccessToken();
+                        accessToken = loginResult.getAccessToken();
                     }
 
                     @Override
@@ -84,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
                         // App code
                     }
                 });
-
     }
 
     @Override
@@ -109,7 +124,10 @@ public class LoginActivity extends AppCompatActivity {
         accessTokenTracker.stopTracking();
     }
 
-        private void useLoginInformation(AccessToken accessToken) {
+        private void useLoginInformation(final AccessToken accessToken) {
+
+            //String mAccessToken = accessToken;
+            //query.put("access_token", String.valueOf(accessToken));
         /**
          Creating the GraphRequest to fetch user details
          1st Param - AccessToken
@@ -118,31 +136,128 @@ public class LoginActivity extends AppCompatActivity {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             Picasso.Builder builder = new Picasso.Builder(getApplicationContext());
 
+
+
             //OnCompleted is invoked once the GraphRequest is successful
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 try {
-                    String name = object.getString("name");
-                    String email = object.getString("email");
-                    String image = object.getString("picture");
-                    //String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
-                    displayName.setText(name);
-                    emailID.setText(email);
-                    builder.build().load(image).into(displayImage);
+
+
+                    userName = object.getString("name");
+                    userEmail = object.getString("email");
+                    userImage = object.getString("picture");
+                    displayName.setText(object.getString("name"));
+                    emailID.setText(object.getString("email"));
+                    builder.build().load(object.getString("picture")).into(displayImage);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                getRetrofit(accessToken.getToken());
             }
+
         });
-        // We set parameters to the GraphRequest using a Bundle.
+
+
+            // We set parameters to the GraphRequest using a Bundle.
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,email,picture.width(200)");
         request.setParameters(parameters);
         // Initiate the GraphRequest
         request.executeAsync();
     }
+
+    /**
+     * Query API for listings data
+     * set URL and make call to API
+     */
+
+    public class BasicAuthInterceptor implements Interceptor {
+
+        private String credentials;
+
+        public BasicAuthInterceptor(String user, String password) {
+            this.credentials = Credentials.basic(user, password);
+        }
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            Request authenticatedRequest = request.newBuilder()
+                    .header("Authorization", credentials).build();
+            return chain.proceed(authenticatedRequest);
+        }
+
+    }
+
+    private static Retrofit retrofit = null;
+    public void getRetrofit(final String query) {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                //.addInterceptor(BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
+                .build();
+
+
+        if(retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+        }
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+
+        // pass JSON data to BusinessListings class for filtering
+        Call<UserAuthPOJO> call = service.getUserInfo(query);
+
+
+        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+        call.enqueue(new Callback<UserAuthPOJO>() {
+            @Override
+            public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
+                //Log.e("main_activity", " response " + response.body());
+                if (response.isSuccessful()) {
+
+                    // mListPost = response.body();
+                    //progressBar.setVisibility(View.GONE); //hide progressBar
+                    // loop through JSON response get parse and output to log
+
+                   // for (int i = 0; i < response.body().size(); i++) {
+
+                        // if (String.format(Locale.US, "%10.6f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.6f", latitude)) &&
+                        //         String.format(Locale.US, "%10.6f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.6f", longitude))) {
+
+                        userinfo.add(new UserAuthModel(UserAuthModel.IMAGE_TYPE,
+                                response.body().getStatus(),
+                                response.body().getMsg(),
+                                response.body().getWpUserId(),
+                                response.body().getCookie(),
+                                response.body().getUserLogin(), userName, userImage, userEmail));
+
+                        Intent MainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                        Bundle locationMatchBundle = new Bundle();
+                        locationMatchBundle.putParcelableArrayList("userinfo", userinfo);
+                        MainActivity.putExtra("userinfo", userinfo);
+                        startActivity(MainActivity);
+                   // }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
+
+            }
+        });
+    }
 }
-
-
-

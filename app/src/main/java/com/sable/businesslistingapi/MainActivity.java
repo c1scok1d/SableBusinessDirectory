@@ -31,18 +31,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.facebook.login.widget.LoginButton;
+
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,13 +54,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.squareup.picasso.Picasso;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -78,6 +76,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude, lstKnownLat, lstKnownLng;
 
-    TextView tvAddress, tvUserName, tvUserEmail, tvCity, tvBldgNo;
+    TextView tvAddress, tvUserName, tvUserEmail, getTvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvWpCookie, tvWpUserLogin;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
@@ -99,14 +99,14 @@ public class MainActivity extends AppCompatActivity implements
    // HorizontalAdapter horizontalAdapter;
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
+    public static List<UserAuthPOJO> userinfo;
     String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage;
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, wpStatus, wpMsg, wpUserId, wpCookie, wpUserLogin;
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-    //ArrayList<String> category;
-   // ArrayList<WooModel> horizontalList;
+    private LoginButton loginButton;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     Spinner spnCategory, spnRadius;
@@ -151,7 +151,9 @@ public class MainActivity extends AppCompatActivity implements
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
 
-        //isLoggedIn = accessToken !=null || accessToken.isExpired();
+//userinfo = this.getIntent().getExtras().getParcelableArrayList("userinfo");
+
+
 /**
  * login via facebook
  */
@@ -159,14 +161,34 @@ public class MainActivity extends AppCompatActivity implements
 
         //FacebookSdk.sdkInitialize(this.getApplicationContext());
         fbLogincallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(fbLogincallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if (currentAccessToken != null) {
-                    // AccessToken is not null implies user is logged in and hence we sen the GraphRequest
+                    accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
                 } else {
-                    tvUserName.setText("Not Logged In");
+                    // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
+                    Intent goHome = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(goHome);
                 }
             }
         };
@@ -180,6 +202,12 @@ public class MainActivity extends AppCompatActivity implements
         tvUserName = findViewById(R.id.tvUserName);
         tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
+        tvUserEmail = findViewById(R.id.tvUserEmail);
+       // tvWpStatus = findViewById(R.id.tvWpStatus);
+       // tvWpMsg = findViewById(R.id.tvWpMsg);
+        tvWpUserId = findViewById(R.id.tvWpUserId);
+       // tvWpCookie = findViewById(R.id.tvWpCookie);
+        tvWpUserLogin = findViewById(R.id.tvWpUserLogin);
 
         /*
             BEGIN vertical Recycler View
@@ -386,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
-        fbLogincallbackManager = CallbackManager.Factory.create();
+       /* fbLogincallbackManager = CallbackManager.Factory.create();
 
         LoginManager.getInstance().registerCallback(fbLogincallbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -404,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void onError(FacebookException exception) {
                         // App code   
                     }
-                });
+                });*/
     }
 
     public void onStart() {
@@ -419,6 +447,9 @@ public class MainActivity extends AppCompatActivity implements
             loggedInLayout.setVisibility(View.GONE);
         }
         //useLoginInformation(accessToken);
+        //Map<Object, Object> query = new HashMap<>();
+        //query.put("access_token", accessToken);
+        loginUser(accessToken.getToken());
     }
 
     public void onDestroy() {
@@ -445,7 +476,11 @@ public class MainActivity extends AppCompatActivity implements
                     userEmail = object.getString("email");
                     userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
                    // String FooImage = userImage;
-                    tvUserName.setText(object.getString("name"));
+
+                    String[] parts = (object.getString("name").split(" "));
+                    String firstName = parts[0];
+                    String lastName = parts[1];
+                    tvUserName.setText(firstName);
                     tvUserEmail.setText(object.getString("email"));
                     builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
@@ -456,6 +491,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+
         // We set parameters to the GraphRequest using a Bundle.
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,email,picture.width(200)");
@@ -916,5 +952,63 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    //Retrofit retrofit = null;
+    public void loginUser(String query) {
+        Retrofit retrofit = null;
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                //.addInterceptor(BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
+                .build();
+
+
+        if(retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+        }
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+
+        // pass JSON data to BusinessListings class for filtering
+        Call<UserAuthPOJO> call = service.getUserInfo(query);
+
+
+        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+        call.enqueue(new Callback<UserAuthPOJO>() {
+            @Override
+            public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
+                Log.e("Login2WP", " response " + response.body());
+                if (response.isSuccessful()) {
+
+                    String status = response.body().getStatus();
+
+                        String WpStatus = response.body().getStatus();
+                        String WpMsg = response.body().getMsg();
+                        tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
+                        String WpCookie = response.body().getCookie();
+                        tvWpUserLogin.setText(response.body().getUserLogin());
+                } else {
+                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
+                Log.e("SNAFU ", " UserAuthPOJO Failure!!! :)");
+
+            }
+        });
     }
 }
