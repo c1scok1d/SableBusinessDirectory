@@ -46,10 +46,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
     ArrayList<ListingsModel> locationFoo = new ArrayList<>();
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
-     CallbackManager fbLoginCallbackManager, callbackManager;
+    // CallbackManager fbLoginCallbackManager, callbackManager;
     //private LoginButton loginButton;
     String userName, userEmail, userImage;
-    CallbackManager fbLogincallbackManager;
+    //CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
 
@@ -80,7 +80,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ImageView image;
         RatingBar simpleRatingBar;
         ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
-        private LoginButton loginButton;
+       // private LoginButton loginButton;
 
 
 
@@ -345,7 +345,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 });
             }
 
-            fbLogincallbackManager = CallbackManager.Factory.create();
+           /* fbLogincallbackManager = CallbackManager.Factory.create();
 
             LoginManager.getInstance().registerCallback(fbLogincallbackManager,
                     new FacebookCallback<LoginResult>() {
@@ -363,7 +363,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                         public void onError(FacebookException exception) {
                             // App code
                         }
-                    });
+                    });*/
         }
 
     }

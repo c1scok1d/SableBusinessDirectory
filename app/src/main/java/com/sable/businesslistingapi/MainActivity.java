@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements
         //useLoginInformation(accessToken);
         //Map<Object, Object> query = new HashMap<>();
         //query.put("access_token", accessToken);
-        loginUser(accessToken.getToken());
+       // loginUser(accessToken.getToken());
     }
 
     public void onDestroy() {

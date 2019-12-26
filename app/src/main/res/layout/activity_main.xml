@@ -252,20 +252,25 @@
             android:layout_marginTop="5dp"
             android:orientation="vertical">
 
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/login_button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/customborder"
-                android:gravity="center_horizontal|center_vertical" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/progressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/login_button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="5dp"
+                    android:gravity="center_horizontal|center_vertical" />
+
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/verticalRecycler"
