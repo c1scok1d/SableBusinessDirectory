@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements
 
        // useLoginInformation(accessToken);
 
-        verticalAdapter = new VerticalAdapter(verticalList, MainActivity.this);
+        verticalAdapter = new VerticalAdapter(verticalList, userEmail, userImage, userEmail,MainActivity.this);
         //verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
 
         verticalRecyclerView.setAdapter(verticalAdapter);

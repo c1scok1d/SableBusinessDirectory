@@ -56,8 +56,8 @@ public class LoginActivity extends AppCompatActivity {
                 // currentAccessToken is null if the user is logged out
                 if (currentAccessToken != null) {
                     useLoginInformation(currentAccessToken);
-                    //Intent loginIntent = new Intent(LoginActivity.this,MainActivity.class);
-                    //startActivity(loginIntent);
+                    Intent loginIntent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(loginIntent);
 
                 } else {
                     displayName.setText("Please try again...");
@@ -100,10 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
             useLoginInformation(accessToken);
-        } /*else {
-            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
-            loggedInLayout.setVisibility(View.GONE);
-        }*/
+        }
     }
 
     public void onDestroy() {

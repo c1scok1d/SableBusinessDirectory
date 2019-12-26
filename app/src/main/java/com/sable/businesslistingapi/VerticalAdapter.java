@@ -56,9 +56,15 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
 
-    public VerticalAdapter(ArrayList<ListingsModel> mlist, Context context) {
+    public VerticalAdapter(ArrayList<ListingsModel> mlist, String userName, String userImage, String userEmail, Context context) {
         this.dataset = mlist;
         this.mContext = context;
+        this.userName = userName;
+        this.userImage = userImage;
+        this.userEmail = userEmail;
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        useLoginInformation(accessToken);
     }
 
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
@@ -88,8 +94,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                         accessToken = currentAccessToken;
                         useLoginInformation(currentAccessToken);
                     }else{
-                        //displayName.setText("Not Logged In");
-                    }
+
+                       // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
+                        Intent goHome = new Intent(getApplicationContext(),MainActivity.class);
+                        itemView.getContext().startActivity(goHome);                    }
                 }
             };
 
@@ -204,9 +212,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
                         Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
                     } else {
-
-                        //AccessToken accessToken = AccessToken.getCurrentAccessToken();
-                        useLoginInformation(accessToken);
 
                         String usernameFoo = userName;
                         String useremailFoo = userEmail;

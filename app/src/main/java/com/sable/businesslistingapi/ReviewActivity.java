@@ -188,8 +188,8 @@ public class ReviewActivity extends AppCompatActivity implements
        // ArrayList<ListingsAddModel> locationReviewFoo = new ArrayList<>();
         //locationReviewFoo = this.getIntent().getParcelableArrayListExtra("locationReview");
         String usernameFoo = this.getIntent().getExtras().getString("username");
+        String userimageFoo = locationReview.get(0).userImage;
         String useremailFoo = this.getIntent().getExtras().getString("useremail");
-        String userimageFoo = this.getIntent().getExtras().getString("userimage");
 
         //Bundle bundleFoo = foo.getBundleExtra().getParcelableArrayList("locationReview");
         //Intent foo = getIntent();
