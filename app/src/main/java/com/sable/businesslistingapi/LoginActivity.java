@@ -3,6 +3,9 @@ package com.sable.businesslistingapi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -46,40 +49,31 @@ public class LoginActivity extends AppCompatActivity {
 
     private AccessTokenTracker accessTokenTracker;
     private LoginButton loginButton;
-    private TextView displayName, emailID;
-    private ImageView displayImage;
+    private TextView tvSecureMsg, tvGreeting, textView6, textView7 ;
+    private ImageView ivGreeter, ivLogo;
     CallbackManager fbLogincallbackManager;
     //Map<Object, Object> query = new HashMap<>();
     ArrayList<UserAuthModel> userinfo = new ArrayList<>();
     String baseURL = "https://www.thesablebusinessdirectory.com", userImage, userName, userEmail;
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
+    Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
+            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        displayName = findViewById(R.id.display_name);
-        emailID = findViewById(R.id.email);
-        displayImage = findViewById(R.id.image_view);
-        loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
-        VideoView videoView =(VideoView)findViewById(R.id.vdVw);
+       tvSecureMsg = findViewById(R.id.tvSecureMsg);
+       tvGreeting = findViewById(R.id.tvGreeting);
+       textView6 = findViewById(R.id.textView6);
+       textView7 = findViewById(R.id.textView7);
+       ivGreeter = findViewById(R.id.ivGreeter);
+       ivLogo = findViewById(R.id.ivLogo);
+       loginButton = findViewById(R.id.login_button);
+       loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
 
-        //Set MediaController  to enable play, pause, forward, etc options.
-        MediaController mediaController= new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        //Location of Media File
-        //Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video1);
-        String videwUrl = "https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/sableWelcomeWide.mp4";
-        //Starting VideView By Setting MediaController and URI
-        //videoView.setMediaController(mediaController);
-        //videoView.setVideoURI(videwUrl);
-        videoView.setVideoPath(videwUrl);
-        videoView.requestFocus();
-        videoView.start();
-
-       // fbLogincallbackManager = CallbackManager.Factory.create();
 
 
         // Defining the AccessTokenTracker
@@ -93,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(loginIntent);
 
                 } else {
-                    displayName.setText("Please try again...");
+                    //displayName.setText("Please try again...");
                 }
             }
         };
@@ -117,6 +111,15 @@ public class LoginActivity extends AppCompatActivity {
                         // App code
                     }
                 });
+
+        animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.fade_in);
+        tvSecureMsg.setVisibility(View.VISIBLE);
+        tvSecureMsg.startAnimation(animFadeIn);
+        tvGreeting.setVisibility(View.VISIBLE);
+        tvGreeting.startAnimation(animFadeIn);
+        ivGreeter.setVisibility(View.VISIBLE);
+        ivGreeter.startAnimation(animFadeIn);
     }
 
     @Override
@@ -164,9 +167,9 @@ public class LoginActivity extends AppCompatActivity {
                     userName = object.getString("name");
                     userEmail = object.getString("email");
                     userImage = object.getString("picture");
-                    displayName.setText(object.getString("name"));
-                    emailID.setText(object.getString("email"));
-                    builder.build().load(object.getString("picture")).into(displayImage);
+                   // displayName.setText(object.getString("name"));
+                   // emailID.setText(object.getString("email"));
+                    //builder.build().load(object.getString("picture")).into(displayImage);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
