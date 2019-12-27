@@ -250,11 +250,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).logo,
                                     locationReview.get(i).content,
-                                    //locationReview.get(i).featured_image,
-                                    userName,
-                                    userEmail,
-                                    userImage,
-                                    userId)));
+                                    locationReview.get(i).featured_image)));
+
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
                             showReviews.putExtra("locationReview", locationReviewShow);
@@ -284,11 +281,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
                         Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
                     } else {
-
-                        String usernameFoo = userName;
-                        String useremailFoo = userEmail;
-                        String userimageFoo = userImage;
-                        String useridFoo = userId;
 
                         /**
                          * for each array space if id != skip or else...
@@ -326,11 +318,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                         locationReview.get(i).isOpen,
                                         locationReview.get(i).logo,
                                         locationReview.get(i).content,
-                                        //locationReview.get(i).featured_image,
-                                        userName,
-                                        userEmail,
-                                        userImage,
-                                        userId)));
+                                        locationReview.get(i).featured_image)));
 
                                 Bundle locationReviewBundle = new Bundle();
                                 locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
@@ -561,13 +549,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.video,
                 object.hours,
                 object.isOpen,
-                object.image,
+                object.logo,
                 object.content,
-                //object.image,
-                userName,
-                userEmail,
-                userImage,
-                userId));
+                object.featured_image));
 
         if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey

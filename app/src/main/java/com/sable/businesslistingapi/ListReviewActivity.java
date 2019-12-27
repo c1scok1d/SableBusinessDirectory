@@ -297,23 +297,11 @@ public class ListReviewActivity extends AppCompatActivity {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).logo,
                                     locationReview.get(i).content,
-                                   // locationReview.get(i).featured_image,
-                                    locationReview.get(i).userName,
-                                    locationReview.get(i).userEmail,
-                                    locationReview.get(i).userImage,
-                                    locationReview.get(i).userId)));
+                                    locationReview.get(i).featured_image)));
 
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
 
-                            String usernameFoo = userName;
-                            String useremailFoo = userEmail;
-                            String userimageFoo = userImage;
-
-                                /*locationReviewBundle.putString("username", userName);
-                                locationReviewBundle.putString("useremail", userEmail);
-                                locationReviewBundle.putString("userimage", userImage);*/
-                            // showReviews.putExtra("locationReview", locationReviewShow);
                             LocationReview.putExtra("locationReview", locationFoo);
                             startActivity(LocationReview);
                             break;
@@ -501,13 +489,9 @@ public class ListReviewActivity extends AppCompatActivity {
                                         locationReview.get(i).video,
                                         locationReview.get(i).hours,
                                         locationReview.get(i).isOpen,
-                                        //locationReview.get(i).logo,
+                                        locationReview.get(i).logo,
                                         locationReview.get(i).content,
-                                        locationReview.get(i).featured_image,
-                                        locationReview.get(i).userName,
-                                        locationReview.get(i).userEmail,
-                                        locationReview.get(i).userImage,
-                                        locationReview.get(i).userId)));
+                                        locationReview.get(i).featured_image)));
 
 
                                 Bundle locationReviewBundle = new Bundle();

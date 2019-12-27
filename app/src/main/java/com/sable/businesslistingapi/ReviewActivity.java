@@ -80,22 +80,13 @@ public class ReviewActivity extends AppCompatActivity implements
             password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", todayRange, isOpen;
     Double latitude, longitude;
     Integer category, id, rating;
-    float newRating;
-    //public static List<BusinessListings> mListPost;
-    //private ProgressDialog pDialog;
 
-    String userName = MainActivity.userName;
-    String userEmail = MainActivity.userEmail;
-    String userImage = MainActivity.userImage;
-    String userId = MainActivity.userId;
 
 
     private ProgressBar pDialog;
-   // private int progressStatus = 0;
-    //private Handler handler = new Handler();
+
     private ImagesAdapter imagesAdapter;
     private ArrayList<MediaFile> photos = new ArrayList<>();
-    //Map<String, RequestBody> parts = new HashMap<>();
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
@@ -135,7 +126,6 @@ public class ReviewActivity extends AppCompatActivity implements
         tvFacebook = findViewById(R.id.tvFacebook);
         tvName = findViewById(R.id.tvName);
         ivFeaturedImage = findViewById(R.id.ivFeaturedImage);
-        //rating = findViewById(R.id.simpleRatingBar);
         tvRatingCount = findViewById(R.id.tvRatingCount);
         tvIsOpen = findViewById(R.id.tvIsOpen);
         tvDistance = findViewById(R.id.tvDistance);
@@ -218,10 +208,10 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
-            tvUserName.setText(locationMatch.get(0).userName);
-            tvUserEmail.setText(locationMatch.get(0).userEmail);
-            builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
-            tvUserId.setText(locationMatch.get(0).userId);
+            tvUserName.setText(MainActivity.userName);
+            tvUserEmail.setText(MainActivity.userEmail);
+            builder.build().load(MainActivity.userImage).into(ivUserImage);
+            tvUserId.setText(MainActivity.userId);
 
 
             Location locationA = new Location("point A");
@@ -269,9 +259,10 @@ public class ReviewActivity extends AppCompatActivity implements
             link = locationAdd.get(0).link;
             latitude = locationAdd.get(0).latitude;
             longitude = locationAdd.get(0).longitude;
-            //tvUserName.setText(locationAdd.get(0).userName);
-            //tvUserEmail.setText(locationAdd.get(0).userEmail);
-           // builder.build().load(locationAdd.get(0).userImage).into(ivUserImage);
+            tvUserName.setText(MainActivity.userName);
+            tvUserEmail.setText(MainActivity.userEmail);
+            builder.build().load(MainActivity.userImage).into(ivUserImage);
+            tvUserId.setText(MainActivity.userId);
         } else {
 
             tvName.setText(locationReview.get(0).title);
@@ -280,7 +271,6 @@ public class ReviewActivity extends AppCompatActivity implements
             tvBldgno.setText(locationReview.get(0).bldgno);
             tvStreet.setText(locationReview.get(0).street);
             tvCity.setText(locationReview.get(0).city);
-            //String fooCity = locationReview.get(0).city;
             tvState.setText(locationReview.get(0).state);
             tvCountry.setText(locationReview.get(0).country);
             tvZip.setText(locationReview.get(0).zipcode);
@@ -291,7 +281,6 @@ public class ReviewActivity extends AppCompatActivity implements
             tvWebsite.setText(locationReview.get(0).website);
             tvTwitter.setText(locationReview.get(0).twitter);
             tvFacebook.setText(locationReview.get(0).facebook);
-//            tvVideo.setText(locationReview.get(0).video);
             tvHours.setText(locationReview.get(0).hours);
             tvIsOpen.setText(locationReview.get(0).isOpen);
             tvContent.setText(locationReview.get(0).content);
@@ -300,15 +289,10 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
-           // String fooStatus = locationReview.get(0).status;
-            tvUserName.setText(userName);
-            //String fooUserName = locationReview.get(0).userName;
-            tvUserEmail.setText(userEmail);
-            //String fooUserEmail = locationReview.get(0).userEmail;
-            builder.build().load(userImage).into(ivUserImage);
-           // builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
-            //String fooUserId = locationReview.get(0).userId;
-            tvUserId.setText(userId);
+            tvUserName.setText(MainActivity.userName);
+            tvUserEmail.setText(MainActivity.userEmail);
+            builder.build().load(MainActivity.userImage).into(ivUserImage);
+            tvUserId.setText(MainActivity.userId);
 
             Location locationA = new Location("point A");
             locationA.setLatitude(locationReview.get(0).latitude); //listing lat
@@ -572,14 +556,12 @@ public class ReviewActivity extends AppCompatActivity implements
                         e.printStackTrace();
                     }
                     filesToUploadfoo.add(foo);
-                    //Log.e("RESPONSE "+i, responses[i]);
                 }
             }
 
             @Override
             public void onProgressUpdate(int currentpercent, int totalpercent, int filenumber) {
                 updateProgress(totalpercent);
-                //Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
             }
         });
     }
@@ -647,13 +629,6 @@ public class ReviewActivity extends AppCompatActivity implements
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-
-        Integer idFoo = Integer.valueOf(tvId.getText().toString());
-        Integer ratingFoo = rating;
-        String feedbackFoo = etFeedBack.getText().toString();
-//        Integer useridFoo = Integer.valueOf(tvUserId.getText().toString());
-        String emailFoo = tvUserEmail.getText().toString();
-        String moreUseridFoo = locationReview.get(0).userId;
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         Call<List<ListReviewPOJO>> call = service.postReview(

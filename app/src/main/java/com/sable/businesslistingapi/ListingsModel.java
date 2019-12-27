@@ -47,11 +47,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
                          String isOpen,
                          String logo,
                          String content,
-                         //String image,
-                         String userName,
-                         String userEmail,
-                         String userImage,
-                         String userid){
+                         String image){
 
         this.id = id;
         this.title = title;
@@ -81,11 +77,6 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         this.logo = logo;
         this.content = content;
         this.image = image;
-        this.userName = userName;
-        this.userEmail = userEmail;
-        this.userImage = userImage;
-        this.userId = userid;
-
     }
 
 
@@ -122,10 +113,6 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(logo);
         dest.writeString(content);
         dest.writeString(image);
-        dest.writeString(userImage);
-        dest.writeString(userEmail);
-        dest.writeString(userName);
-        dest.writeString(userId);
         dest.writeString(timestamp);
 
 
@@ -163,11 +150,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         logo = parcel.readString();
         content = parcel.readString();
         image = parcel.readString();
-        userImage = parcel.readString();
-        userEmail = parcel.readString();
-        userName = parcel.readString();
         timestamp = parcel.readString();
-        userId = parcel.readString();
     }
 
     //creator - used when un-parceling our parcle (creating the object)

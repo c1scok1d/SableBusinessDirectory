@@ -883,9 +883,9 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getVideo(),
                                     todayRange,
                                     isOpen,
-                                    //response.body().get(i).getLogo(),
+                                    response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, wpUserId));
+                                    response.body().get(i).getFeaturedImage().getSrc()));
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             Bundle locationMatchBundle = new Bundle();
@@ -929,9 +929,9 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getVideo(),
                                     todayRange,
                                     isOpen,
-                                    //response.body().get(i).getLogo(),
+                                    response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, userId));
+                                    response.body().get(i).getFeaturedImage().getSrc()));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
