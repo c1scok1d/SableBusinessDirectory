@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
     public static List<UserAuthPOJO> userinfo;
-    String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
+    public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, wpStatus, wpMsg, wpUserId, wpCookie, wpUserLogin;
 
@@ -179,33 +179,35 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
+        Boolean isLoggedIn = accessToken != null;
+
+        if (isLoggedIn) {
+            //accessToken = currentAccessToken;
+            useLoginInformation(accessToken);
+            //useLoginInformation(accessToken);
+        } else {
+            // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
+            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
+            loggedInLayout.setVisibility(View.GONE);
+        }
+
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if (currentAccessToken != null) {
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
+                    //useLoginInformation(accessToken);
+                    Map<Object, Object> query = new HashMap<>();
+                    query.put("access_token", accessToken);
+                    loginUser(accessToken.getToken());
                 } else {
                     // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
-                    Intent goHome = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(goHome);
+                    LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
+                    loggedInLayout.setVisibility(View.GONE);
                 }
             }
         };
-
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null) {
-            useLoginInformation(accessToken);
-            //useLoginInformation(accessToken);
-            Map<Object, Object> query = new HashMap<>();
-            query.put("access_token", accessToken);
-            loginUser(accessToken.getToken());
-        } else {
-            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
-            loggedInLayout.setVisibility(View.GONE);
-        }
-
-
 
         spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
@@ -241,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements
 
        // useLoginInformation(accessToken);
 
-        verticalAdapter = new VerticalAdapter(verticalList, wpUserId, userName, userImage, userEmail,MainActivity.this);
+        verticalAdapter = new VerticalAdapter(verticalList, userName, userEmail, userImage, userId, MainActivity.this);
         //verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
 
         verticalRecyclerView.setAdapter(verticalAdapter);
@@ -426,26 +428,6 @@ public class MainActivity extends AppCompatActivity implements
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
-
-       /* fbLogincallbackManager = CallbackManager.Factory.create();
-
-        LoginManager.getInstance().registerCallback(fbLogincallbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code   
-                    }
-                });*/
     }
 
     public void onStart() {
@@ -460,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements
         accessTokenTracker.stopTracking();
     }
 
-    private void useLoginInformation(AccessToken accessToken) {
+    public void useLoginInformation(final AccessToken accessToken) {
 
 
         /**
@@ -474,10 +456,10 @@ public class MainActivity extends AppCompatActivity implements
             public void onCompleted(JSONObject object, GraphResponse response) {
                 Picasso.Builder builder = new Picasso.Builder(getApplicationContext());
                 try {
+                    AccessToken mAccessToken = accessToken;
                     userName = object.getString("name");
                     userEmail = object.getString("email");
                     userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
-                   // String FooImage = userImage;
 
                     String[] parts = (object.getString("name").split(" "));
                     String firstName = parts[0];
@@ -486,7 +468,17 @@ public class MainActivity extends AppCompatActivity implements
                     tvUserEmail.setText(object.getString("email"));
                     builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
-                       /* displayName.setText(name);
+                    //Map<Object, Object> query = new HashMap<>();
+                    //query.put("access_token", accessToken);
+                    loginUser(mAccessToken.getToken());
+
+                   /* String userNameFoo = userName;
+                    String userEmailFoo = userEmail;
+                    String userImageFoo = userImage;
+                    String userIdFoo = userId;
+                    String FirstNameFoo = firstName;
+
+                        displayName.setText(name);
                         emailID.setText(email);*/
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -891,7 +883,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getVideo(),
                                     todayRange,
                                     isOpen,
-                                    response.body().get(i).getLogo(),
+                                    //response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, wpUserId));
 
@@ -902,6 +894,11 @@ public class MainActivity extends AppCompatActivity implements
                             startActivity(LocationMatch);
                             break;
                         } else {
+
+                            String userNameFoo = userName;
+                            String userEmailFoo = userEmail;
+                            String userImageFoo = userImage;
+                            String userIdFoo = userId;
 
                             /**
                              * populate vertical recycler in Main Activity
@@ -932,9 +929,9 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getVideo(),
                                     todayRange,
                                     isOpen,
-                                    response.body().get(i).getLogo(),
+                                    //response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, wpUserId));
+                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, userId));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
@@ -998,10 +995,10 @@ public class MainActivity extends AppCompatActivity implements
 
                         String WpStatus = response.body().getStatus();
                         String WpMsg = response.body().getMsg();
-                        wpUserId = String.valueOf(response.body().getWpUserId());
+                        userId = String.valueOf(response.body().getWpUserId());
                         tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
                         String WpCookie = response.body().getCookie();
-                        tvWpUserLogin.setText(response.body().getUserLogin());
+                        //tvWpUserLogin.setText(response.body().getUserLogin());
                 } else {
                     Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
                 }

@@ -84,6 +84,11 @@ public class ReviewActivity extends AppCompatActivity implements
     //public static List<BusinessListings> mListPost;
     //private ProgressDialog pDialog;
 
+    String userName = MainActivity.userName;
+    String userEmail = MainActivity.userEmail;
+    String userImage = MainActivity.userImage;
+    String userId = MainActivity.userId;
+
 
     private ProgressBar pDialog;
    // private int progressStatus = 0;
@@ -186,16 +191,6 @@ public class ReviewActivity extends AppCompatActivity implements
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
         locationReview = this.getIntent().getExtras().getParcelableArrayList("locationReview");
 
-       // ArrayList<ListingsAddModel> locationReviewFoo = new ArrayList<>();
-        //locationReviewFoo = this.getIntent().getParcelableArrayListExtra("locationReview");
-        String usernameFoo = locationReview.get(0).userName;
-        //String userimageFoo = locationReview.get(0).userImage;
-        //String useremailFoo = locationReview.get(0).userEmail;
-
-        //Bundle bundleFoo = foo.getBundleExtra().getParcelableArrayList("locationReview");
-        //Intent foo = getIntent();
-                //this.getIntent().getExtras().get("username", "useremail", "userimage");
-
         if (locationMatch != null) {
 
             tvName.setText(locationMatch.get(0).title);
@@ -278,6 +273,7 @@ public class ReviewActivity extends AppCompatActivity implements
             //tvUserEmail.setText(locationAdd.get(0).userEmail);
            // builder.build().load(locationAdd.get(0).userImage).into(ivUserImage);
         } else {
+
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
             builder.build().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
@@ -305,14 +301,14 @@ public class ReviewActivity extends AppCompatActivity implements
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
            // String fooStatus = locationReview.get(0).status;
-            tvUserName.setText(locationReview.get(0).userName);
-            //String fooUsername = locationReview.get(0).userName;
-            tvUserEmail.setText(locationReview.get(0).userEmail);
-           // String fooemail = locationReview.get(0).userEmail;
-            builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
+            tvUserName.setText(userName);
+            //String fooUserName = locationReview.get(0).userName;
+            tvUserEmail.setText(userEmail);
+            //String fooUserEmail = locationReview.get(0).userEmail;
+            builder.build().load(userImage).into(ivUserImage);
            // builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
-            String fooId = locationReview.get(0).userId;
-            tvUserId.setText(locationReview.get(0).userId);
+            //String fooUserId = locationReview.get(0).userId;
+            tvUserId.setText(userId);
 
             Location locationA = new Location("point A");
             locationA.setLatitude(locationReview.get(0).latitude); //listing lat
@@ -652,28 +648,25 @@ public class ReviewActivity extends AppCompatActivity implements
                 .client(client)
                 .build();
 
+        Integer idFoo = Integer.valueOf(tvId.getText().toString());
+        Integer ratingFoo = rating;
+        String feedbackFoo = etFeedBack.getText().toString();
+//        Integer useridFoo = Integer.valueOf(tvUserId.getText().toString());
+        String emailFoo = tvUserEmail.getText().toString();
+        String moreUseridFoo = locationReview.get(0).userId;
+
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         Call<List<ListReviewPOJO>> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
                 etFeedBack.getText().toString(),
                 main,
-                Integer.valueOf(tvUserEmail.getText().toString()),
-                Integer.valueOf(tvUserName.getText().toString())
-                /*ivUserImage.getText().toString()*/);
+                Integer.valueOf(MainActivity.userId),
+                MainActivity.userEmail);
 
         call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override
             public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getId());
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getCity());
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getRegion());
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getLabel());
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getRating().getRating());
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getImages().getRendered().get(0).getThumbnail());
-                //Log.e("ReviewActivity", " response " + response.body().get(0).getContent());
-
-
 
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 if (response.isSuccessful()) {

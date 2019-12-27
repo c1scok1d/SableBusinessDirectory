@@ -81,7 +81,7 @@ public interface RetrofitArrayApi {
             @Query("rating") Integer rating,
             @Query("content") String content,
             @Query("images") String filesToUpload,
-            @Query("author_name") Integer authorName,
-            @Query("author_email") Integer authorEmail);
+            @Query("author") Integer userId,
+            @Query("author_email") String authorEmail);
  }
 

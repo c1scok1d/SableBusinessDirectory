@@ -47,7 +47,11 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
                          String isOpen,
                          String logo,
                          String content,
-                         String image, String userName, String userEmail, String userImage, String userid){
+                         //String image,
+                         String userName,
+                         String userEmail,
+                         String userImage,
+                         String userid){
 
         this.id = id;
         this.title = title;
@@ -121,8 +125,9 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(userImage);
         dest.writeString(userEmail);
         dest.writeString(userName);
-        dest.writeString(timestamp);
         dest.writeString(userId);
+        dest.writeString(timestamp);
+
 
     }
 

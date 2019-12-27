@@ -36,8 +36,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -49,7 +60,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
     // CallbackManager fbLoginCallbackManager, callbackManager;
     //private LoginButton loginButton;
-    String userName, userEmail, userImage, userId;
+    String userName, userEmail, userImage, userId, baseURL = "https://www.thesablebusinessdirectory.com";
     //CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
@@ -57,19 +68,71 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
 
-    public VerticalAdapter(ArrayList<ListingsModel> mlist, String userid, String userName, String userImage, String userEmail, Context context) {
+    public VerticalAdapter(ArrayList<ListingsModel> mlist, String wpUserName, String wpUserEmail, String wpUserImage, String wpUserId, Context context) {
         this.dataset = mlist;
         this.mContext = context;
-        this.userName = userName;
-        this.userImage = userImage;
-        this.userEmail = userEmail;
+        this.userName = wpUserName;
+        this.userEmail = wpUserEmail;
+        this.userImage = wpUserImage;
+        this.userId = wpUserId;
         accessToken = AccessToken.getCurrentAccessToken();
-        this.userId = userid;
+
+    }
+    public void loginUser(String query) {
+        Retrofit retrofit = null;
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 
-        if (accessToken != null) {
-            useLoginInformation(accessToken);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                //.addInterceptor(BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
+                .build();
+
+
+        if(retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
         }
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+
+        // pass JSON data to BusinessListings class for filtering
+        Call<UserAuthPOJO> call = service.getUserInfo(query);
+
+
+        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+        call.enqueue(new Callback<UserAuthPOJO>() {
+            @Override
+            public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
+                Log.e("Login2WP", " response " + response.body());
+                if (response.isSuccessful()) {
+
+                    //String status = response.body().getStatus();
+
+                    String WpStatus = response.body().getStatus();
+                    String WpMsg = response.body().getMsg();
+                    userId = String.valueOf(response.body().getWpUserId());
+                    String wpCookie = response.body().getCookie();
+                    String WpUserLogin = response.body().getUserLogin();
+                } else {
+                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
+                Log.e("SNAFU ", " UserAuthPOJO Failure!!! :)");
+
+            }
+        });
     }
 
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
@@ -91,7 +154,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             //fbLogincallbackManager = CallbackManager.Factory.create();
-            accessTokenTracker = new AccessTokenTracker() {
+           /* accessTokenTracker = new AccessTokenTracker() {
                 @Override
                 protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                     // currentAccessToken is null if the user is logged out
@@ -104,7 +167,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                         Intent goHome = new Intent(getApplicationContext(),MainActivity.class);
                         itemView.getContext().startActivity(goHome);                    }
                 }
-            };
+            };*/
 
             simpleRatingBar = itemView.findViewById(R.id.simpleRatingBar);
             //simpleRatingBar.setNumStars(5);
@@ -187,7 +250,11 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).logo,
                                     locationReview.get(i).content,
-                                    locationReview.get(i).featured_image, userEmail, userImage, userName, userId)));
+                                    //locationReview.get(i).featured_image,
+                                    userName,
+                                    userEmail,
+                                    userImage,
+                                    userId)));
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
                             showReviews.putExtra("locationReview", locationReviewShow);
@@ -259,22 +326,22 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                         locationReview.get(i).isOpen,
                                         locationReview.get(i).logo,
                                         locationReview.get(i).content,
-                                        locationReview.get(i).featured_image,
+                                        //locationReview.get(i).featured_image,
+                                        userName,
                                         userEmail,
                                         userImage,
-                                        userName,
                                         userId)));
 
                                 Bundle locationReviewBundle = new Bundle();
                                 locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
 
-                                /*locationReviewBundle.putString("username", userName);
-                                locationReviewBundle.putString("useremail", userEmail);
-                                locationReviewBundle.putString("userimage", userImage);*/
-                               // showReviews.putExtra("locationReview", locationReviewShow);
+                                String userNameFoo = userName;
+                                String userEmailFoo = userEmail;
+                                String userImageFoo = userImage;
+                                String userIdFoo = userId;
                                 Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
 
-                                LocationReview.putExtra("locationReview", locationFoo);
+                                LocationReview.putParcelableArrayListExtra("locationReview", locationFoo);
                                 itemView.getContext().startActivity(LocationReview);
                                 break;
                             } else {
@@ -420,7 +487,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         final ListingsModel object = dataset.get(position);
 
-
         Location locationA = new Location("point A");
         locationA.setLatitude(object.latitude); //listing lat
         locationA.setLongitude(object.longitude); //listing lng
@@ -497,7 +563,11 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.isOpen,
                 object.image,
                 object.content,
-                object.image, userEmail, userImage, userName, userId));
+                //object.image,
+                userName,
+                userEmail,
+                userImage,
+                userId));
 
         if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
