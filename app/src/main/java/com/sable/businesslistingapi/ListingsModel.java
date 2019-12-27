@@ -11,7 +11,7 @@ import java.util.List;
 public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, content, image, logo, timestamp, link, isOpen, reviews, userName, userEmail, userImage;
+            hours, content, image, logo, timestamp, link, isOpen, reviews, userName, userEmail, userImage, userId;
     public int id, ratingCount;
     public Double latitude, longitude;
     Float rating;
@@ -47,7 +47,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
                          String isOpen,
                          String logo,
                          String content,
-                         String image, String userName, String userEmail, String userImage){
+                         String image, String userName, String userEmail, String userImage, String userid){
 
         this.id = id;
         this.title = title;
@@ -80,6 +80,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userImage = userImage;
+        this.userId = userid;
 
     }
 
@@ -121,6 +122,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(userEmail);
         dest.writeString(userName);
         dest.writeString(timestamp);
+        dest.writeString(userId);
 
     }
 
@@ -160,6 +162,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         userEmail = parcel.readString();
         userName = parcel.readString();
         timestamp = parcel.readString();
+        userId = parcel.readString();
     }
 
     //creator - used when un-parceling our parcle (creating the object)

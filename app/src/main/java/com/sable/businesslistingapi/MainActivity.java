@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
     public static List<UserAuthPOJO> userinfo;
     String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, wpStatus, wpMsg, wpUserId, wpCookie, wpUserLogin;
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, wpStatus, wpMsg, wpUserId, wpCookie, wpUserLogin;
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
@@ -193,6 +193,19 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
 
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null) {
+            useLoginInformation(accessToken);
+            //useLoginInformation(accessToken);
+            Map<Object, Object> query = new HashMap<>();
+            query.put("access_token", accessToken);
+            loginUser(accessToken.getToken());
+        } else {
+            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
+            loggedInLayout.setVisibility(View.GONE);
+        }
+
+
 
         spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
@@ -228,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements
 
        // useLoginInformation(accessToken);
 
-        verticalAdapter = new VerticalAdapter(verticalList, userEmail, userImage, userEmail,MainActivity.this);
+        verticalAdapter = new VerticalAdapter(verticalList, wpUserId, userName, userImage, userEmail,MainActivity.this);
         //verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
 
         verticalRecyclerView.setAdapter(verticalAdapter);
@@ -439,17 +452,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null) {
-            useLoginInformation(accessToken);
-        } else {
-            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
-            loggedInLayout.setVisibility(View.GONE);
-        }
-        //useLoginInformation(accessToken);
-        //Map<Object, Object> query = new HashMap<>();
-        //query.put("access_token", accessToken);
-       // loginUser(accessToken.getToken());
     }
 
     public void onDestroy() {
@@ -891,7 +893,7 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage));
+                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, wpUserId));
 
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             Bundle locationMatchBundle = new Bundle();
@@ -932,7 +934,7 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage));
+                                    response.body().get(i).getFeaturedImage().getSrc(), userName, userEmail, userImage, wpUserId));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
@@ -996,6 +998,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         String WpStatus = response.body().getStatus();
                         String WpMsg = response.body().getMsg();
+                        wpUserId = String.valueOf(response.body().getWpUserId());
                         tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
                         String WpCookie = response.body().getCookie();
                         tvWpUserLogin.setText(response.body().getUserLogin());

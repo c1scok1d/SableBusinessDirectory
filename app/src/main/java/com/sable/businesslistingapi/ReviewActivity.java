@@ -73,7 +73,7 @@ public class ReviewActivity extends AppCompatActivity implements
     TextView tvFeatured, tvStatus, tvState, tvStreet, tvCity, tvZip, tvCountry, tvUserName,
             tvUserEmail, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvHours, tvIsOpen, tvLink,
             tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory,
-            tvName, tvFirstRate, tvDistance;
+            tvName, tvFirstRate, tvDistance, tvUserId;
     ImageView ivUserImage, ivFeaturedImage;
     RatingBar simpleRatingBar;
     String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
@@ -144,6 +144,7 @@ public class ReviewActivity extends AppCompatActivity implements
         tvUserName = findViewById(R.id.tvUserName);
         tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
+        tvUserId = findViewById(R.id.tvUserId);
 
 
         pDialog.setVisibility(View.GONE);
@@ -183,13 +184,13 @@ public class ReviewActivity extends AppCompatActivity implements
          */
         locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
         locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
-        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReview");
+        locationReview = this.getIntent().getExtras().getParcelableArrayList("locationReview");
 
        // ArrayList<ListingsAddModel> locationReviewFoo = new ArrayList<>();
         //locationReviewFoo = this.getIntent().getParcelableArrayListExtra("locationReview");
-        String usernameFoo = this.getIntent().getExtras().getString("username");
-        String userimageFoo = locationReview.get(0).userImage;
-        String useremailFoo = this.getIntent().getExtras().getString("useremail");
+        String usernameFoo = locationReview.get(0).userName;
+        //String userimageFoo = locationReview.get(0).userImage;
+        //String useremailFoo = locationReview.get(0).userEmail;
 
         //Bundle bundleFoo = foo.getBundleExtra().getParcelableArrayList("locationReview");
         //Intent foo = getIntent();
@@ -222,9 +223,10 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
-            tvUserName.setText(this.getIntent().getExtras().getString("username"));
-            tvUserEmail.setText(this.getIntent().getExtras().getString("useremail"));
-            builder.build().load(this.getIntent().getExtras().getString("userimage")).into(ivUserImage);
+            tvUserName.setText(locationMatch.get(0).userName);
+            tvUserEmail.setText(locationMatch.get(0).userEmail);
+            builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
+            tvUserId.setText(locationMatch.get(0).userId);
 
 
             Location locationA = new Location("point A");
@@ -274,7 +276,7 @@ public class ReviewActivity extends AppCompatActivity implements
             longitude = locationAdd.get(0).longitude;
             //tvUserName.setText(locationAdd.get(0).userName);
             //tvUserEmail.setText(locationAdd.get(0).userEmail);
-            //builder.build().load(locationAdd.get(0).userImage).into(ivUserImage);
+           // builder.build().load(locationAdd.get(0).userImage).into(ivUserImage);
         } else {
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
@@ -282,6 +284,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvBldgno.setText(locationReview.get(0).bldgno);
             tvStreet.setText(locationReview.get(0).street);
             tvCity.setText(locationReview.get(0).city);
+            //String fooCity = locationReview.get(0).city;
             tvState.setText(locationReview.get(0).state);
             tvCountry.setText(locationReview.get(0).country);
             tvZip.setText(locationReview.get(0).zipcode);
@@ -301,9 +304,15 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
+           // String fooStatus = locationReview.get(0).status;
             tvUserName.setText(locationReview.get(0).userName);
+            //String fooUsername = locationReview.get(0).userName;
             tvUserEmail.setText(locationReview.get(0).userEmail);
+           // String fooemail = locationReview.get(0).userEmail;
             builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
+           // builder.build().load(locationReview.get(0).userImage).into(ivUserImage);
+            String fooId = locationReview.get(0).userId;
+            tvUserId.setText(locationReview.get(0).userId);
 
             Location locationA = new Location("point A");
             locationA.setLatitude(locationReview.get(0).latitude); //listing lat

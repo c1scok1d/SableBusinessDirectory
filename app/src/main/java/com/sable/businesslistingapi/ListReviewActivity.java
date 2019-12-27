@@ -297,7 +297,11 @@ public class ListReviewActivity extends AppCompatActivity {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).logo,
                                     locationReview.get(i).content,
-                                    locationReview.get(i).featured_image, userName, userEmail, userImage)));
+                                    locationReview.get(i).featured_image,
+                                    locationReview.get(i).userName,
+                                    locationReview.get(i).userEmail,
+                                    locationReview.get(i).userImage,
+                                    locationReview.get(i).userId)));
 
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
@@ -499,7 +503,11 @@ public class ListReviewActivity extends AppCompatActivity {
                                         locationReview.get(i).isOpen,
                                         locationReview.get(i).logo,
                                         locationReview.get(i).content,
-                                        locationReview.get(i).featured_image, userName, userEmail, userImage)));
+                                        locationReview.get(i).featured_image,
+                                        locationReview.get(i).userName,
+                                        locationReview.get(i).userEmail,
+                                        locationReview.get(i).userImage,
+                                        locationReview.get(i).userId)));
 
 
                                 Bundle locationReviewBundle = new Bundle();

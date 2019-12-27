@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -48,7 +49,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
     // CallbackManager fbLoginCallbackManager, callbackManager;
     //private LoginButton loginButton;
-    String userName, userEmail, userImage;
+    String userName, userEmail, userImage, userId;
     //CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
@@ -56,13 +57,14 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
 
-    public VerticalAdapter(ArrayList<ListingsModel> mlist, String userName, String userImage, String userEmail, Context context) {
+    public VerticalAdapter(ArrayList<ListingsModel> mlist, String userid, String userName, String userImage, String userEmail, Context context) {
         this.dataset = mlist;
         this.mContext = context;
         this.userName = userName;
         this.userImage = userImage;
         this.userEmail = userEmail;
         accessToken = AccessToken.getCurrentAccessToken();
+        this.userId = userid;
 
 
         if (accessToken != null) {
@@ -185,7 +187,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).logo,
                                     locationReview.get(i).content,
-                                    locationReview.get(i).featured_image, userName, userEmail, userImage)));
+                                    locationReview.get(i).featured_image, userEmail, userImage, userName, userId)));
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
                             showReviews.putExtra("locationReview", locationReviewShow);
@@ -219,8 +221,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                         String usernameFoo = userName;
                         String useremailFoo = userEmail;
                         String userimageFoo = userImage;
-
-                        Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
+                        String useridFoo = userId;
 
                         /**
                          * for each array space if id != skip or else...
@@ -259,9 +260,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                         locationReview.get(i).logo,
                                         locationReview.get(i).content,
                                         locationReview.get(i).featured_image,
-                                        userName,
                                         userEmail,
-                                        userImage)));
+                                        userImage,
+                                        userName,
+                                        userId)));
 
                                 Bundle locationReviewBundle = new Bundle();
                                 locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
@@ -270,6 +272,8 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                 locationReviewBundle.putString("useremail", userEmail);
                                 locationReviewBundle.putString("userimage", userImage);*/
                                // showReviews.putExtra("locationReview", locationReviewShow);
+                                Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
+
                                 LocationReview.putExtra("locationReview", locationFoo);
                                 itemView.getContext().startActivity(LocationReview);
                                 break;
@@ -416,6 +420,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         final ListingsModel object = dataset.get(position);
 
+
         Location locationA = new Location("point A");
         locationA.setLatitude(object.latitude); //listing lat
         locationA.setLongitude(object.longitude); //listing lng
@@ -459,6 +464,11 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 //        builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
 
 
+        // String fooId = String.valueOf(object.id);
+
+
+        //ArrayList<List> fooId = new ArrayList<List>();
+
         locationReview.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                 object.id,
                 object.title,
@@ -487,7 +497,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.isOpen,
                 object.image,
                 object.content,
-                object.image, userName, userEmail, userImage));
+                object.image, userEmail, userImage, userName, userId));
 
         if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
