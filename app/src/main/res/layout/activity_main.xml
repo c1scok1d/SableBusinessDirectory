@@ -51,23 +51,35 @@
         <Spinner
             android:id="@+id/spnRadius"
             style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:spinnerMode="dialog"
             android:textSize="12sp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginStart="3dp"
             android:layout_marginEnd="3dp"
             android:background="@drawable/customborder"
-            android:text="@string/add_listing"
-            android:textSize="12sp" />
+            android:scaleType="fitXY"
+            app:srcCompat="@mipmap/add_listing" />
 
-        <Button
+        <!--Button
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/customborder"
+            android:text="@string/add_listing"
+            android:textSize="12sp" / -->
+
+        <ImageButton
             android:id="@+id/btnShop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -81,9 +93,8 @@
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical" />
     </LinearLayout>
 
@@ -235,10 +246,11 @@
                     android:id="@+id/tvUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
                     android:text="userName"
                     android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
                     tools:text="username" />
 
                 <TextView

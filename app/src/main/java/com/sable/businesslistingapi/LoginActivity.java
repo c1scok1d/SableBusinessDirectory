@@ -1,9 +1,12 @@
 package com.sable.businesslistingapi;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -61,6 +64,20 @@ public class LoginActivity extends AppCompatActivity {
         displayImage = findViewById(R.id.image_view);
         loginButton = findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
+        VideoView videoView =(VideoView)findViewById(R.id.vdVw);
+
+        //Set MediaController  to enable play, pause, forward, etc options.
+        MediaController mediaController= new MediaController(this);
+        mediaController.setAnchorView(videoView);
+        //Location of Media File
+        //Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video1);
+        String videwUrl = "https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/sableWelcomeWide.mp4";
+        //Starting VideView By Setting MediaController and URI
+        //videoView.setMediaController(mediaController);
+        //videoView.setVideoURI(videwUrl);
+        videoView.setVideoPath(videwUrl);
+        videoView.requestFocus();
+        videoView.start();
 
        // fbLogincallbackManager = CallbackManager.Factory.create();
 
