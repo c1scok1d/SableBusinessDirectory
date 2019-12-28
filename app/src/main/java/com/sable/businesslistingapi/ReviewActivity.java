@@ -287,6 +287,10 @@ public class ReviewActivity extends AppCompatActivity implements
            // tvUserId.setText(MainActivity.userId);
         } else {
 
+            String FooCat = locationReview.get(0).content;
+            String fooImage = locationReview.get(0).logo;
+            String fooImageAgain = locationReview.get(0).featured_image;
+
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
             builder.build().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
@@ -305,7 +309,13 @@ public class ReviewActivity extends AppCompatActivity implements
             tvFacebook.setText(locationReview.get(0).facebook);
             tvHours.setText(locationReview.get(0).hours);
             tvIsOpen.setText(locationReview.get(0).isOpen);
-            tvContent.setText(locationReview.get(0).content);
+            /**
+             *  THIS IS WRONG!!!! MUST FIX LIKE YESTERDAY!!!
+             */
+            tvContent.setText(locationReview.get(0).logo);
+            /**
+             *  DID YOU FIX THAT WRONG SHIT YET???
+             */
             tvLink.setText(locationReview.get(0).link);
             tvLatitude.setText(String.valueOf(locationReview.get(0).latitude));
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
