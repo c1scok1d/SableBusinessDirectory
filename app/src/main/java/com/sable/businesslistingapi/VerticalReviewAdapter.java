@@ -88,9 +88,9 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
 
             long different = date2.getTime() - date1.getTime();
 
-            System.out.println("startDate : " + date1);
+            /*System.out.println("startDate : " + date1);
             System.out.println("endDate : "+ date2);
-            System.out.println("different : " + different);
+            System.out.println("different : " + different);*/
 
             long secondsInMilli = 1000;
             long minutesInMilli = secondsInMilli * 60;
@@ -108,9 +108,9 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
 
             long elapsedSeconds = different / secondsInMilli;
 
-            String Time = "PostDate : " + date1 +
+           /* String Time = "PostDate : " + date1 +
                     "\nCurrDate : "+ date2 +
-                    "\nPosted: "+ elapsedDays + " days " + elapsedHours + " hours " + elapsedMinutes + " minutes " + elapsedSeconds + " seconds ago";
+                    "\nPosted: "+ elapsedDays + " days " + elapsedHours + " hours " + elapsedMinutes + " minutes " + elapsedSeconds + " seconds ago";*/
             if(elapsedHours == 1){
                 String hour = "hour";
                 ((MyViewHolder) holder).textView2.setText(hour);

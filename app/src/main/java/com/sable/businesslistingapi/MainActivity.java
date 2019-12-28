@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -14,7 +15,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,8 +28,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -92,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude, lstKnownLat, lstKnownLng;
 
-    TextView tvAddress, tvUserName, tvUserEmail, getTvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvWpCookie, tvWpUserLogin;
+    TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvWpCookie, tvWpUserLogin;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
@@ -104,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, wpStatus, wpMsg, wpUserId, wpCookie, wpUserLogin;
+
+    Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
+            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
@@ -127,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements
 
 
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
-   // boolean isLoggedIn;
 
-
+    private TextSwitcher textSwitcher;
+    private int count =0;
 
     /**
      * @param savedInstanceState
@@ -179,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-        Boolean isLoggedIn = accessToken != null;
+        Boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
         if (isLoggedIn) {
             //accessToken = currentAccessToken;
@@ -198,9 +208,9 @@ public class MainActivity extends AppCompatActivity implements
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
                     //useLoginInformation(accessToken);
-                    Map<Object, Object> query = new HashMap<>();
-                    query.put("access_token", accessToken);
-                    loginUser(accessToken.getToken());
+                    Map<String, String> query = new HashMap<>();
+                    query.put("access_token", accessToken.getToken());
+                    loginUser(query);
                 } else {
                     // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
                     LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
@@ -218,11 +228,22 @@ public class MainActivity extends AppCompatActivity implements
         tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvUserEmail = findViewById(R.id.tvUserEmail);
-       // tvWpStatus = findViewById(R.id.tvWpStatus);
-       // tvWpMsg = findViewById(R.id.tvWpMsg);
         tvWpUserId = findViewById(R.id.tvWpUserId);
-       // tvWpCookie = findViewById(R.id.tvWpCookie);
-        tvWpUserLogin = findViewById(R.id.tvWpUserLogin);
+        textSwitcher =  findViewById(R.id.textSwitcher);
+
+        textSwitcher.setCurrentText("Lorem Ipsum is simply dummy text of the printing industry." +
+                " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.");
+
+        /*Animation textAnimationIn =  AnimationUtils.
+                loadAnimation(this,   android.R.anim.fade_in);
+        textAnimationIn.setDuration(800);
+
+        Animation textAnimationOut =  AnimationUtils.
+                loadAnimation(this,   android.R.anim.fade_out);
+        textAnimationOut.setDuration(800);*/
+
+        textSwitcher.setInAnimation(animFadeIn);
+        textSwitcher.setOutAnimation(animFadeOut);
 
         /*
             BEGIN vertical Recycler View
@@ -430,6 +451,15 @@ public class MainActivity extends AppCompatActivity implements
                 400, LocationListener);
     }
 
+    public void showNextText(View view){
+        count++;
+        if(count%2 == 0){
+            textSwitcher.setText("Learn android with examples");
+        }else{
+            textSwitcher.setText("Welcome to android tutorials");
+        }
+    }
+
     public void onStart() {
         super.onStart();
 //This starts the access token tracking
@@ -465,21 +495,13 @@ public class MainActivity extends AppCompatActivity implements
                     String firstName = parts[0];
                     String lastName = parts[1];
                     tvUserName.setText(firstName);
-                    tvUserEmail.setText(object.getString("email"));
+                //    tvUserEmail.setText(object.getString("email"));
                     builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
-                    //Map<Object, Object> query = new HashMap<>();
-                    //query.put("access_token", accessToken);
-                    loginUser(mAccessToken.getToken());
+                    Map<String, String> query = new HashMap<>();
+                    query.put("access_token", mAccessToken.getToken());
+                    loginUser(query);
 
-                   /* String userNameFoo = userName;
-                    String userEmailFoo = userEmail;
-                    String userImageFoo = userImage;
-                    String userIdFoo = userId;
-                    String FirstNameFoo = firstName;
-
-                        displayName.setText(name);
-                        emailID.setText(email);*/
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -828,6 +850,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
+                Log.e("getRetrofit_METHOD_SUCCESS ", " response " + response.body());
                 //Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
 
@@ -894,12 +917,6 @@ public class MainActivity extends AppCompatActivity implements
                             startActivity(LocationMatch);
                             break;
                         } else {
-
-                            String userNameFoo = userName;
-                            String userEmailFoo = userEmail;
-                            String userImageFoo = userImage;
-                            String userIdFoo = userId;
-
                             /**
                              * populate vertical recycler in Main Activity
                              */
@@ -941,20 +958,21 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
                 else {
-                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
+                    Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-
+                Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
+                getRetrofit(query);
             }
         });
 
     }
 
     //Retrofit retrofit = null;
-    public void loginUser(String query) {
+    public void loginUser(final Map<String, String> query) {
         Retrofit retrofit = null;
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -988,7 +1006,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<UserAuthPOJO>() {
             @Override
             public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
-                Log.e("Login2WP", " response " + response.body());
+                Log.e("loginUser_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     String status = response.body().getStatus();
@@ -1000,13 +1018,14 @@ public class MainActivity extends AppCompatActivity implements
                         String WpCookie = response.body().getCookie();
                         //tvWpUserLogin.setText(response.body().getUserLogin());
                 } else {
-                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
+                    Log.e("loginUser_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
 
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
-                Log.e("SNAFU ", " UserAuthPOJO Failure!!! :)");
+                Log.e("loginUser_METHOD_FAILURE ", " Re-running method...");
+                loginUser(query);
 
             }
         });

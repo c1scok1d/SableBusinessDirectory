@@ -39,7 +39,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="We value the privacy  and safety of our members as well as the integrity of our site.  To insure as safe and secure environment for our users and high quality ratings and reviews login is required to add a listing or review.  To make this easy login below with your facebook login credentials and you can instantly comment on or add listing with The Sable Business Directory."
-                    android:textColor="#838383"
+                    android:textColor="#e9774f"
                     android:textSize="18sp" />
 
                 <TextView

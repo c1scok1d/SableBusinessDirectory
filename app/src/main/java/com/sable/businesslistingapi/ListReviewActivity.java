@@ -445,7 +445,7 @@ public class ListReviewActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override
             public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
-                Log.e("getPostReview", " response " + response.body());
+                Log.e("getPostReview_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();
@@ -545,10 +545,14 @@ public class ListReviewActivity extends AppCompatActivity {
                         // imagesAdapter.notifyDataSetChanged();
                       //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
                     }
+                } else {
+                    Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
+                Log.e("getPostReview_METHOD_FAILURE ", " Re-running method...");
+                getPostReview(query);
 
             }
         });

@@ -33,7 +33,7 @@ public interface RetrofitArrayApi {
 
     @GET("api/user/fb_connect")
     Call<UserAuthPOJO> getUserInfo(
-            @Query ("access_token")String query
+            @QueryMap Map<String, String> accessToken
             );
 
 

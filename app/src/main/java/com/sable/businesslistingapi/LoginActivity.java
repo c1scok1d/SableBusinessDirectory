@@ -31,7 +31,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
@@ -52,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvSecureMsg, tvGreeting, textView6, textView7 ;
     private ImageView ivGreeter, ivLogo;
     CallbackManager fbLogincallbackManager;
-    //Map<Object, Object> query = new HashMap<>();
+   // Map<Object, Object> query = new HashMap<>();
     ArrayList<UserAuthModel> userinfo = new ArrayList<>();
     String baseURL = "https://www.thesablebusinessdirectory.com", userImage, userName, userEmail;
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -174,8 +176,9 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                getRetrofit(accessToken.getToken());
+                Map<String, String> query = new HashMap<>();
+                query.put("access_token", accessToken.getToken());
+                getRetrofit(query);
             }
 
         });
@@ -213,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private static Retrofit retrofit = null;
-    public void getRetrofit(final String query) {
+    public void getRetrofit(final Map<String, String> query) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);

@@ -78,7 +78,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         accessToken = AccessToken.getCurrentAccessToken();
 
     }
-    public void loginUser(String query) {
+   /* public void loginUser(String query) {
         Retrofit retrofit = null;
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -133,7 +133,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
             }
         });
-    }
+    } */
 
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvStreet, tvCity, tvState, tvHours, tvisOpen, tvContent, tvPhone,
@@ -152,22 +152,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
         public ImageTypeViewHolder(final View itemView) {
             super(itemView);
-
-            //fbLogincallbackManager = CallbackManager.Factory.create();
-           /* accessTokenTracker = new AccessTokenTracker() {
-                @Override
-                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                    // currentAccessToken is null if the user is logged out
-                    if (currentAccessToken != null) {
-                        accessToken = currentAccessToken;
-                        useLoginInformation(currentAccessToken);
-                    }else{
-
-                       // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
-                        Intent goHome = new Intent(getApplicationContext(),MainActivity.class);
-                        itemView.getContext().startActivity(goHome);                    }
-                }
-            };*/
 
             simpleRatingBar = itemView.findViewById(R.id.simpleRatingBar);
             //simpleRatingBar.setNumStars(5);
@@ -320,15 +304,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                         locationReview.get(i).content,
                                         locationReview.get(i).featured_image)));
 
-                                Bundle locationReviewBundle = new Bundle();
-                                locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
-
-                                String userNameFoo = userName;
-                                String userEmailFoo = userEmail;
-                                String userImageFoo = userImage;
-                                String userIdFoo = userId;
                                 Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
 
+                                Bundle locationReviewBundle = new Bundle();
+                                locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
                                 LocationReview.putParcelableArrayListExtra("locationReview", locationFoo);
                                 itemView.getContext().startActivity(LocationReview);
                                 break;
