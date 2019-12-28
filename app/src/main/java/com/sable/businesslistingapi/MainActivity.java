@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements
     public static List<UserAuthPOJO> userinfo;
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, wpStatus, wpMsg, wpUserId, wpCookie, wpUserLogin;
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName, wpUserId, wpCookie, wpUserLogin;
 
     Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
             ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
@@ -225,9 +225,9 @@ public class MainActivity extends AppCompatActivity implements
         /* Display current location address */
         tvAddress = findViewById(R.id.tvAddress);
         tvUserName = findViewById(R.id.tvUserName);
-        tvUserEmail = findViewById(R.id.tvUserEmail);
+       // tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
-        tvUserEmail = findViewById(R.id.tvUserEmail);
+        //tvUserEmail = findViewById(R.id.tvUserEmail);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher =  findViewById(R.id.textSwitcher);
 
@@ -492,8 +492,8 @@ public class MainActivity extends AppCompatActivity implements
                     userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
 
                     String[] parts = (object.getString("name").split(" "));
-                    String firstName = parts[0];
-                    String lastName = parts[1];
+                    firstName = parts[0];
+                    lastName = parts[1];
                     tvUserName.setText(firstName);
                 //    tvUserEmail.setText(object.getString("email"));
                     builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);

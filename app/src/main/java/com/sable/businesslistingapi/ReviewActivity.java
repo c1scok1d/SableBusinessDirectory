@@ -10,11 +10,13 @@ import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,15 +73,18 @@ public class ReviewActivity extends AppCompatActivity implements
     EditText etFeedBack;
     Button mSendFeedback;
     TextView tvFeatured, tvStatus, tvState, tvStreet, tvCity, tvZip, tvCountry, tvUserName,
-            tvUserEmail, tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvHours, tvIsOpen, tvLink,
+            tvId, tvEmail, tvWebsite, tvTwitter, tvFacebook, tvHours, tvIsOpen, tvLink,
             tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory,
-            tvName, tvFirstRate, tvDistance, tvUserId;
+            tvName, tvFirstRate, tvDistance;
     ImageView ivUserImage, ivFeaturedImage;
     RatingBar simpleRatingBar;
-    String title, content, city, state, zipcode, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved", post_type = "business", todayRange, isOpen;
+    String title, content, city, country, link, baseURL = "https://www.thesablebusinessdirectory.com", username = "android_app",
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved";
     Double latitude, longitude;
     Integer category, id, rating;
+
+    Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
+            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
 
 
 
@@ -93,6 +98,8 @@ public class ReviewActivity extends AppCompatActivity implements
 
 
     private EasyImage easyImage;
+    private TextSwitcher textSwitcher;
+    private int count =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +144,24 @@ public class ReviewActivity extends AppCompatActivity implements
         pDialog = findViewById(R.id.progressBar);
         tvProgressStatus = findViewById(R.id.tvProgressStatus);
         tvUserName = findViewById(R.id.tvUserName);
-        tvUserEmail = findViewById(R.id.tvUserEmail);
+        //tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
-        tvUserId = findViewById(R.id.tvUserId);
+        //tvUserId = findViewById(R.id.tvUserId);
+        textSwitcher =  findViewById(R.id.textSwitcher);
+
+        textSwitcher.setCurrentText("Lorem Ipsum is simply dummy text of the printing industry." +
+                " Lorem Ipsum has been the standard dummy text ever since the 1500s.");
+
+        /*Animation textAnimationIn =  AnimationUtils.
+                loadAnimation(this,   android.R.anim.fade_in);
+        textAnimationIn.setDuration(800);
+
+        Animation textAnimationOut =  AnimationUtils.
+                loadAnimation(this,   android.R.anim.fade_out);
+        textAnimationOut.setDuration(800);*/
+
+        textSwitcher.setInAnimation(animFadeIn);
+        textSwitcher.setOutAnimation(animFadeOut);
 
 
         pDialog.setVisibility(View.GONE);
@@ -208,10 +230,10 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
-            tvUserName.setText(MainActivity.userName);
-            tvUserEmail.setText(MainActivity.userEmail);
+            tvUserName.setText(MainActivity.firstName);
+           // tvUserEmail.setText(MainActivity.userEmail);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
-            tvUserId.setText(MainActivity.userId);
+           // tvUserId.setText(MainActivity.userId);
 
 
             Location locationA = new Location("point A");
@@ -259,10 +281,10 @@ public class ReviewActivity extends AppCompatActivity implements
             link = locationAdd.get(0).link;
             latitude = locationAdd.get(0).latitude;
             longitude = locationAdd.get(0).longitude;
-            tvUserName.setText(MainActivity.userName);
-            tvUserEmail.setText(MainActivity.userEmail);
+            tvUserName.setText(MainActivity.firstName);
+           // tvUserEmail.setText(MainActivity.userEmail);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
-            tvUserId.setText(MainActivity.userId);
+           // tvUserId.setText(MainActivity.userId);
         } else {
 
             tvName.setText(locationReview.get(0).title);
@@ -289,10 +311,10 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
-            tvUserName.setText(MainActivity.userName);
-            tvUserEmail.setText(MainActivity.userEmail);
+            tvUserName.setText(MainActivity.firstName);
+//            tvUserEmail.setText(MainActivity.userEmail);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
-            tvUserId.setText(MainActivity.userId);
+//            tvUserId.setText(MainActivity.userId);
 
             Location locationA = new Location("point A");
             locationA.setLatitude(locationReview.get(0).latitude); //listing lat
@@ -456,6 +478,15 @@ public class ReviewActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    public void showNextText(View view){
+        count++;
+        if(count%2 == 0){
+            textSwitcher.setText("Learn android with examples");
+        }else{
+            textSwitcher.setText("Welcome to android tutorials");
+        }
     }
 
     @Override
