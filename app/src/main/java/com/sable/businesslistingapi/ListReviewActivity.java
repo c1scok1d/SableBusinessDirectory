@@ -295,8 +295,8 @@ public class ListReviewActivity extends AppCompatActivity {
                                     locationReview.get(i).video,
                                     locationReview.get(i).hours,
                                     locationReview.get(i).isOpen,
-                                    locationReview.get(i).logo,
                                     locationReview.get(i).content,
+                                    locationReview.get(i).logo,
                                     locationReview.get(i).featured_image)));
 
                             Bundle locationReviewBundle = new Bundle();
