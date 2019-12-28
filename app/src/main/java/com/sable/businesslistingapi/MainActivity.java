@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher =  findViewById(R.id.textSwitcher);
 
         textSwitcher.setCurrentText("Lorem Ipsum is simply dummy text of the printing industry." +
-                " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.");
+                " Lorem Ipsum has been the standard dummy text ever since the 1500s.");
 
         /*Animation textAnimationIn =  AnimationUtils.
                 loadAnimation(this,   android.R.anim.fade_in);

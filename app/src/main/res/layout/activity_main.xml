@@ -159,8 +159,8 @@
 
             <ImageView
                 android:id="@+id/ivUserImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
                 android:scaleType="fitXY"
                 app:srcCompat="@mipmap/launcher" />
 
