@@ -339,6 +339,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tvBusinessHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="business hours"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
+
                 <com.bashizip.bhlib.BusinessHoursWeekPicker
                     android:id="@+id/bh_picker"
                     android:layout_width="match_parent"

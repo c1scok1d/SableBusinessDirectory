@@ -167,6 +167,8 @@
                 android:id="@+id/userProfileLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
                 android:orientation="vertical"
                 android:visibility="visible"
                 tools:visibility="visible">
@@ -175,8 +177,6 @@
                     android:id="@+id/btnSupport"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
                     android:layout_weight="1"
                     android:background="@drawable/customborder"
                     android:scaleType="fitCenter"
@@ -186,8 +186,6 @@
                     android:id="@+id/btnSettings"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
                     android:layout_weight="1"
                     android:background="@drawable/customborder"
                     android:scaleType="fitXY"
@@ -197,8 +195,6 @@
                     android:id="@+id/btnFavorites"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
                     android:layout_weight="1"
                     android:background="@drawable/customborder"
                     android:scaleType="fitXY"
@@ -210,7 +206,7 @@
 
         <LinearLayout
             android:id="@+id/userGreetingLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -271,7 +267,7 @@
 
         <ImageView
             android:id="@+id/spokesperson"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             app:srcCompat="@mipmap/spokesman_foreground" />

@@ -109,6 +109,7 @@ public class AddListingActivity extends AppCompatActivity implements
     Spinner spnCategory;
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
+    List<BusinessHours> bhs = new ArrayList<>();
     private ArrayList<MediaFile> photos = new ArrayList<>();
     Map<String, RequestBody> parts = new HashMap<>();
 
@@ -145,7 +146,6 @@ public class AddListingActivity extends AppCompatActivity implements
 
         btn_apply.setOnClickListener(view -> {
 
-            List<BusinessHours> bhs = null;
             try {
 
                 bhs = bh_picker.getBusinessHoursList();
@@ -236,7 +236,8 @@ public class AddListingActivity extends AppCompatActivity implements
                             email,
                             website,
                             twitter,
-                            facebook));
+                            facebook,
+                            bhs));
 
                     submitData();
 
@@ -831,7 +832,8 @@ String type = "gd_business";
                 twitter,
                 facebook,
                 type,
-                filesToUploadfoo);
+                filesToUploadfoo,
+                bhs);
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {

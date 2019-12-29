@@ -3,17 +3,23 @@ package com.sable.businesslistingapi;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bashizip.bhlib.BusinessHours;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ListingsAddModel implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String name, category, description, address, state, country, zipcode,  city, bldgNo, street, email, website, twitter, facebook, phone, link;
     public int type, rating, ratingCount, addCategory;
     public Double latitude, longitude;
+    List<BusinessHours> businessHours = new ArrayList<>();
 
     public ListingsAddModel(int mtype, String mName, String mlink, String mCategory, Integer addCategory, String  mDescription, Double longitude, Double latitude, String maddress,
                             String mstate, String mCountry, String mZipcode,
                             String mCity, String mbldgNo, String mstreet, String mPhone, String mEmail, String mWebsite,
-                            String mTwitter, String mFacebook) {
+                            String mTwitter, String mFacebook, List<BusinessHours> bhs) {
         this.name = mName;
         this.link = mlink;
         this.category = mCategory;
@@ -33,6 +39,7 @@ public class ListingsAddModel implements Parcelable {
         this.website = mWebsite;
         this.twitter = mTwitter;
         this.facebook = mFacebook;
+        this.businessHours = bhs;
     }
 
     //write object values to parcel for storage
@@ -58,6 +65,7 @@ public class ListingsAddModel implements Parcelable {
         dest.writeString(website);
         dest.writeString(twitter);
         dest.writeString(facebook);
+        dest.writeList(businessHours);
     }
 
     //constructor used for parcel
@@ -82,6 +90,7 @@ public class ListingsAddModel implements Parcelable {
         website = parcel.readString();
         twitter = parcel.readString();
         facebook = parcel.readString();
+        businessHours = parcel.readArrayList(BusinessHours.class.getClassLoader());
     }
 
     //creator - used when un-parceling our parcle (creating the object)

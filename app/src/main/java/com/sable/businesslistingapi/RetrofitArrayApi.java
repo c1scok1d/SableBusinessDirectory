@@ -1,5 +1,7 @@
 package com.sable.businesslistingapi;
 
+import com.bashizip.bhlib.BusinessHours;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +73,8 @@ public interface RetrofitArrayApi {
             @Query("twitter") String twitter,
             @Query("facebook") String facebook,
             @Query("type") String type,
-            @Field("post_images") ArrayList<String> filesToUpload);
+            @Field("post_images") ArrayList<String> filesToUpload,
+            @Field("business_hours") List<BusinessHours> business_hours);
 
     //@Multipart
     //@FormUrlEncoded
