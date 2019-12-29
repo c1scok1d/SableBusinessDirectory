@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Criteria;
@@ -14,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,9 +31,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.bashizip.bhlib.BusinessHours;
+import com.bashizip.bhlib.BusinessHoursWeekPicker;
+import com.bashizip.bhlib.BusinessHoursWeekView;
+import com.bashizip.bhlib.ValdationException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,6 +48,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,8 +59,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -71,6 +73,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+
 
 /**
  *
@@ -117,16 +121,12 @@ public class AddListingActivity extends AppCompatActivity implements
     private static final int GALLERY_REQUEST_CODE = 7502;
     private static final int DOCUMENTS_REQUEST_CODE = 7503;
     protected ImageView ivLogo;
-    private ImagesAdapter imagesAdapter;
     private EasyImage easyImage;
-    File image;
-    MultipartBody.Part folder =
-            MultipartBody.Part.createFormData("folder", "https://www.thesablebusinessdirectory.com/wp-content/uploads/");
+    BusinessHoursWeekPicker bh_picker;
 
 
 
-    //ImageView uploadImage1, uploadImage2, uploadImage3;
-
+    public static final String BH_LIST = "bh_list";
 
     /**
      * @param savedInstanceState
@@ -136,6 +136,33 @@ public class AddListingActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_listing);
 
+        BusinessHoursWeekPicker bh_picker = findViewById(R.id.bh_picker);
+        BusinessHoursWeekView businessHoursWeekView = findViewById(R.id.bh_view);
+        Button btn_apply = findViewById(R.id.btn_apply);
+        LinearLayout businessHoursLayout = findViewById(R.id.businessHoursLayout);
+        LinearLayout viewBusinessHoursLayout = findViewById(R.id.viewBusinessHoursLayout);
+        viewBusinessHoursLayout.setVisibility(View.GONE);
+
+        btn_apply.setOnClickListener(view -> {
+
+            List<BusinessHours> bhs = null;
+            try {
+
+                bhs = bh_picker.getBusinessHoursList();
+
+            } catch (ValdationException e) {
+                Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            businessHoursWeekView.setModel(bhs);
+            viewBusinessHoursLayout.setVisibility(View.VISIBLE);
+            businessHoursLayout.setVisibility(View.GONE);
+            //Intent intent = new Intent(this, ViewerActivity.class);
+            //intent.putExtra(BH_LIST, (Serializable) bhs);
+            //startActivity(intent);
+
+        });
 
         tvAddress = findViewById(R.id.tvAddress);
         tvZip = findViewById(R.id.tvZip);
@@ -183,13 +210,12 @@ public class AddListingActivity extends AppCompatActivity implements
                     name = etName.getText().toString();
                     description = etDescription.getText().toString();
                     catName = spnCategory.getSelectedItem().toString();
-                    //addCategory = addCategory;
-                    phone = etPhone.getText().toString();
                     email = etEmail.getText().toString();
-                    website = etWebsite.getText().toString();
-                    twitter = etTwitter.getText().toString();
-                    facebook = etFacebook.getText().toString();
-
+                    website = "http://www."+etWebsite.getText().toString();
+                    twitter = "http://www.twitter.com/"+etTwitter.getText().toString();
+                    facebook = "http://www.facebook.com/"+etFacebook.getText().toString();
+                    phone = etPhone.getText().toString();
+                    //String formattedPhone = phone;
 
                     locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
                             name,

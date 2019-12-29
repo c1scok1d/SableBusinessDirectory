@@ -1,2 +1,2 @@
-include ':app', ':library'
+include ':app', ':library', ':bhlib'
 rootProject.name='Business Listing API'

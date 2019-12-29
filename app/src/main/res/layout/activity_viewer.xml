@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bh="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    tools:context=".ViewerActivity">
+
+    <com.bashizip.bhlib.BusinessHoursWeekView
+        android:layout_centerInParent="true"
+        android:id="@+id/bh_view"
+        android:gravity="center"
+        android:background="#000"
+        bh:bhTextSize="14"
+        bh:bhIcon="@drawable/ic_today_black_24dp"
+        bh:bhTodayIcon="@drawable/ic_lock_open_black_24dp"
+        bh:bhTextColor="#FFFF"
+        bh:bhTodayColor="#ffb300"
+        bh:bhTodayTextSize="16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+</RelativeLayout>
