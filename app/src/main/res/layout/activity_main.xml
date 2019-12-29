@@ -95,7 +95,6 @@
             android:id="@+id/login_button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:gravity="center_horizontal|center_vertical" />
     </LinearLayout>
 
@@ -213,6 +212,7 @@
             android:id="@+id/userGreetingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <LinearLayout
@@ -224,7 +224,8 @@
                     android:id="@+id/tvHello"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hello" />
+                    android:text="Hello"
+                    android:textColor="#e9774f" />
 
                 <TextView
                     android:id="@+id/tvUserName"
@@ -261,11 +262,19 @@
                 <TextView
                     android:id="@+id/tvSwitcher2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/colorAccent" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp" />
             </TextSwitcher>
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/spokesperson"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@mipmap/spokesman_foreground" />
 
     </LinearLayout>
 
