@@ -152,15 +152,10 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        /**
-         *  location permissions
-         */
-        enableMyLocation();
-        //accessToken  = AccessToken.getCurrentAccessToken();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // enableMyLocation();
 
 
         SupportMapFragment mapFragment =
@@ -181,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        // App code
+                        Log.e("Facebook Login Successful ", " response " + loginResult);
                     }
 
                     @Override
@@ -191,20 +186,21 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onError(FacebookException exception) {
-                        // App code
+                        Log.e("Facebook Login Error ", " response " + exception);
                     }
                 });
 
         Boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
         if (isLoggedIn) {
-            //accessToken = currentAccessToken;
             useLoginInformation(accessToken);
-            //useLoginInformation(accessToken);
+            Log.e("onCreate Login", " Access Token: " + accessToken.getToken());
         } else {
             // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
-            LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
-            loggedInLayout.setVisibility(View.GONE);
+            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
+            LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
+            userImageLayout.setVisibility(View.GONE);
+            userNameLayout.setVisibility(View.GONE);
         }
 
         accessTokenTracker = new AccessTokenTracker() {
@@ -213,14 +209,14 @@ public class MainActivity extends AppCompatActivity implements
                 if (currentAccessToken != null) {
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
-                    //useLoginInformation(accessToken);
-                    Map<String, String> query = new HashMap<>();
-                    query.put("access_token", accessToken.getToken());
-                    loginUser(query);
+                    startActivity(getIntent());
                 } else {
                     // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
-                    LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
-                    loggedInLayout.setVisibility(View.GONE);
+                    startActivity(getIntent());
+                    LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
+                    LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
+                    userImageLayout.setVisibility(View.GONE);
+                    userNameLayout.setVisibility(View.GONE);
                 }
             }
         };
@@ -228,77 +224,41 @@ public class MainActivity extends AppCompatActivity implements
         spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
 
-        /* Display current location address */
         tvAddress = findViewById(R.id.tvAddress);
         tvUserName = findViewById(R.id.tvUserName);
-       // tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
-        //tvUserEmail = findViewById(R.id.tvUserEmail);
         tvWpUserId = findViewById(R.id.tvWpUserId);
-
         textSwitcher =  findViewById(R.id.textSwitcher);
-        //textSwitcher.setFa
 
-        Animation in = AnimationUtils.loadAnimation(this,
+        Animation fadeIn = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);
 
-        Animation out = AnimationUtils.loadAnimation(this,
+        Animation fadeOut = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_out);
 
-        textSwitcher.setInAnimation(in);
-        textSwitcher.setOutAnimation(out);
+        textSwitcher.setInAnimation(fadeIn);
+        textSwitcher.setOutAnimation(fadeOut);
 
 
         textSwitcher.setCurrentText("Welcome to The Sable Business Directory!  The Sable Business Directory " +
                 "is a perfect platform for supporting black owned businesses and services providers of any kind.");
 
 
-        /*Animation textAnimationIn =  AnimationUtils.
-                loadAnimation(this,   android.R.anim.fade_in);
-        textAnimationIn.setDuration(800);
-
-        Animation textAnimationOut =  AnimationUtils.
-                loadAnimation(this,   android.R.anim.fade_out);
-        textAnimationOut.setDuration(800);*/
-
-        //textSwitcher.setInAnimation(animFadeIn);
-        //textSwitcher.setOutAnimation(animFadeOut);
-
         /*
             BEGIN vertical Recycler View
          */
         verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
-        // verticalRecyclerView2 = findViewById(R.id.verticalRecyclerView2);
-
         progressBar = findViewById(R.id.progressbar);
-
-        /* Set Vertical LinearLayout to RecyclerView */
         mLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
-        //mLayoutManager2 = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         verticalRecyclerView.setLayoutManager(mLayoutManager);
-        //verticalRecyclerView2.setLayoutManager(mLayoutManager2);
-
         verticalList = new ArrayList<>();
         locationMatch = new ArrayList<>();
-
-       // useLoginInformation(accessToken);
-
         verticalAdapter = new VerticalAdapter(verticalList, userName, userEmail, userImage, userId, MainActivity.this);
-        //verticalAdapter2 = new VerticalAdapter(verticalList, MainActivity.this);
-
         verticalRecyclerView.setAdapter(verticalAdapter);
-        //verticalRecyclerView2.setAdapter(verticalAdapter2);
-
-
         btnAdd = findViewById(R.id.btnAdd);
         btnShop = findViewById(R.id.btnShop);
-        //spnCategory = findViewById(R.id.spnCategory);
-        //spnRadius = findViewById(R.id.spnRadius);
-
-        //category = new ArrayList<>();
 
         final TextView texty = findViewById(R.id.texty);
-        //final Spinner spnRadius = findViewById(R.id.spnRadius);
         /**
          *  radius spinner
          */
@@ -329,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("distance", "10");
                             query.put("order", "asc");
                             query.put("orderby", "distance");
-
+                            // 10 mile distance query
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
@@ -341,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("distance", "15");
                             query.put("order", "asc");
                             query.put("orderby", "distance");
-
+                            //15 mile distance query
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
@@ -353,18 +313,12 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("distance", "20");
                             query.put("order", "asc");
                             query.put("orderby", "distance");
-
+                            // 20 mile distance query
                             getRetrofit(query);
                             texty.setText(radius);
                             break;
                         default:
                             radius = "Within' 5 miles of your current location";
-                            query.put("latitude", Double.toString(longitude));
-                            query.put("longitude", Double.toString(latitude));
-                            query.put("distance", "5");
-                            query.put("order", "asc");
-                            query.put("orderby", "distance");
-
                             texty.setText(radius);
                             break;
                     }
@@ -391,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (spnCategory.getSelectedItem() != "Category") {
 
                     Map<String, String> query = new HashMap<>();
+                    //spinner category query
                     query.put("category", spnCategory.getSelectedItem().toString());
                     getRetrofit(query);
                 }
@@ -411,20 +366,11 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
-                boolean isLoggedIn = accessToken != null;
-
-                if (!isLoggedIn) {
-                    Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
-                    startActivity(loginIntent);
-                    //goto login activity get username and email via facebook create account, return here to check again and proceed
-
-                    Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
-                } else {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                } //else {
+                } else {
                     Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                     startActivity(intent);
                 }
@@ -456,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements
         if (Intent.ACTION_SEARCH.equals(search.getAction())) {
             Map<String, String> query = new HashMap<>();
 
-            //query.put("distance", "5");
+            //search bar query
             query.put("order", "asc");
             query.put("orderby", "distance");
             query.put("search", search.getStringExtra(SearchManager.QUERY));
@@ -512,27 +458,27 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
-        //isRunning = true;
         updateMsg.start();
     }
 
-    // background updating
-  /*  Handler msgUpdate = new Handler() {
-        public void handleMessage(Message msg) {
-            try {
-                int i= msg.getData().getInt(KEY);
-                textSwitcher.setText(""+i);
 
-            } catch (Exception err) {
-            }
-        }
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-    };*/
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(new BasicAuthInterceptor(username, password))
+            .addInterceptor(logging)
+            .build();
 
     public void onStart() {
         super.onStart();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
+        enableMyLocation();
+
     }
     public void onDestroy() {
         super.onDestroy();
@@ -609,8 +555,8 @@ public class MainActivity extends AppCompatActivity implements
 
                         lstKnownLat = location.getLatitude();
                         lstKnownLng = location.getLongitude();
-                        query.put("latitude", String.format(Locale.US, "%10.6f", lstKnownLat));
-                        query.put("longitude", String.format(Locale.US, "%10.6f", lstKnownLng));
+                        query.put("latitude", String.format(Locale.US, "%10.5f", lstKnownLat));
+                        query.put("longitude", String.format(Locale.US, "%10.5f", lstKnownLng));
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby",  "distance");
@@ -625,13 +571,6 @@ public class MainActivity extends AppCompatActivity implements
                                 .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                                 .build();                   // Creates a CameraPosition from the builder
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                        //getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-                        setAddress(lstKnownLat, lstKnownLng);  // method to reverse geocode to physical address
-                       /* if (location != null) {
-                            // Logic to handle location object
-                            Log.e("LAST LOCATION: ", location.toString());
-                        }*/
                     }
                 });
 
@@ -652,8 +591,8 @@ public class MainActivity extends AppCompatActivity implements
 
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            query.put("latitude", String.format(Locale.US, "%10.6f", latitude));
-            query.put("longitude", String.format(Locale.US, "%10.6f", longitude));
+            query.put("latitude", String.format(Locale.US, "%10.5f", latitude));
+            query.put("longitude", String.format(Locale.US, "%10.5f", longitude));
             //query.put("distance", "5");
             query.put("order", "asc");
             query.put("orderby",  "distance");
@@ -798,13 +737,11 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             // Display the missing permission error dialog when the fragments resume.
             mPermissionDenied = true;
-            enableMyLocation();
+          //  enableMyLocation();
         }
     }
 
-    /**
-     *
-     */
+    /*
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
@@ -815,13 +752,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Displays a dialog with error message explaining that the location permission is missing.
-     */
+     // Displays a dialog with error message explaining that the location permission is missing.
+
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
-    }
+    } */
 
 
 
@@ -887,7 +823,7 @@ public class MainActivity extends AppCompatActivity implements
     private static Retrofit retrofit = null;
     public void getRetrofit(final Map<String, String> query) {
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+      /*  HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 
@@ -898,18 +834,16 @@ public class MainActivity extends AppCompatActivity implements
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new BasicAuthInterceptor(username, password))
                 .addInterceptor(logging)
-                .build();
+                .build();*/
 
 
-
-
-        if(retrofit==null){
+        //if(retrofit==null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();
-        }
+       // }
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
         // pass JSON data to BusinessListings class for filtering
@@ -947,8 +881,8 @@ public class MainActivity extends AppCompatActivity implements
                          *
                          */
 
-                        if (String.format(Locale.US, "%10.6f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.6f", latitude)) &&
-                                String.format(Locale.US, "%10.6f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.6f", longitude))) {
+                        if (String.format(Locale.US, "%10.5f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.5f", latitude)) &&
+                                String.format(Locale.US, "%10.5f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.5f", longitude))) {
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
@@ -1034,23 +968,17 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-               // Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
-                if (retryCount++ < TOTAL_RETRIES) {
-                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
-                    //call.clone().enqueue(Call<List<BusinessListings>> call);
-                }
+                Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
+                getRetrofit(query);
             }
         });
 
     }
-    private static final int TOTAL_RETRIES = 3;
-    //private static final String TAG = CallbackWithRetry.class.getSimpleName();
-    private int retryCount = 0;
 
     //Retrofit retrofit = null;
     public void loginUser(final Map<String, String> query) {
         Retrofit retrofit = null;
-
+    /*
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -1062,7 +990,7 @@ public class MainActivity extends AppCompatActivity implements
                 .readTimeout(30, TimeUnit.SECONDS)
                 //.addInterceptor(BasicAuthInterceptor(username, password))
                 .addInterceptor(logging)
-                .build();
+                .build(); */
 
 
         if(retrofit==null){
@@ -1085,13 +1013,13 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("loginUser_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
 
-                    String status = response.body().getStatus();
+                   // String status = response.body().getStatus();
 
-                        String WpStatus = response.body().getStatus();
-                        String WpMsg = response.body().getMsg();
+                       // String WpStatus = response.body().getStatus();
+                        //String WpMsg = response.body().getMsg();
                         userId = String.valueOf(response.body().getWpUserId());
                         tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
-                        String WpCookie = response.body().getCookie();
+                       // String WpCookie = response.body().getCookie();
                         //tvWpUserLogin.setText(response.body().getUserLogin());
                 } else {
                     Log.e("loginUser_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
@@ -1100,10 +1028,8 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
-                if (retryCount++ < TOTAL_RETRIES) {
-                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
-
-                }
+                Log.e("loginUser_METHOD_FAILURE ", " Re-running method...");
+              //  loginUser(query);
 
             }
         });

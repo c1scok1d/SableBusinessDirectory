@@ -108,8 +108,9 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="#4FC1E9"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible" />
 
     <LinearLayout
@@ -153,6 +154,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/userImageLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -212,6 +214,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/userNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
