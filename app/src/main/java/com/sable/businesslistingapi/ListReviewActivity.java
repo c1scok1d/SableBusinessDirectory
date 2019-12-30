@@ -80,6 +80,9 @@ public class ListReviewActivity extends AppCompatActivity {
     ArrayList<String> horizontalList = new ArrayList<>();
     ArrayList<ListReviewModel> verticalList;
     ArrayList<ListingsModel> locationFoo = new ArrayList<>();
+    private static final int TOTAL_RETRIES = 3;
+    //private static final String TAG = CallbackWithRetry.class.getSimpleName();
+    private int retryCount = 0;
 
     //LinearLayoutManager hLayoutManager, vLayoutManager;
 
@@ -251,15 +254,11 @@ public class ListReviewActivity extends AppCompatActivity {
                  * check validity of facebook access token
                  */
                 //accessTokenTracker.startTracking();
-                boolean isLoggedIn = !accessToken.isExpired() || accessToken != null;
-
-
+                Boolean isLoggedIn = accessToken != null;
 
                 if (!isLoggedIn) {
                     Intent loginIntent = new Intent(v.getContext(),LoginActivity.class);
                     startActivity(loginIntent);
-
-                    //goto login activity get username and email via facebook create account, return here to check again and proceed
 
                     Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
                 } else {
@@ -559,12 +558,12 @@ public class ListReviewActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
-                Log.e("getPostReview_METHOD_FAILURE ", " Re-running method...");
-                getPostReview(query);
+                if (retryCount++ < TOTAL_RETRIES) {
+                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
 
+                }
             }
         });
-
 
     }
 }

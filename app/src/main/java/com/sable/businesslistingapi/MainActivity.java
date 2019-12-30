@@ -892,6 +892,8 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
 
 
+
+
         if(retrofit==null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
@@ -1023,12 +1025,18 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-                Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
-                getRetrofit(query);
+               // Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
+                if (retryCount++ < TOTAL_RETRIES) {
+                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
+                    //call.clone().enqueue(Call<List<BusinessListings>> call);
+                }
             }
         });
 
     }
+    private static final int TOTAL_RETRIES = 3;
+    //private static final String TAG = CallbackWithRetry.class.getSimpleName();
+    private int retryCount = 0;
 
     //Retrofit retrofit = null;
     public void loginUser(final Map<String, String> query) {
@@ -1083,8 +1091,10 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
-                Log.e("loginUser_METHOD_FAILURE ", " Re-running method...");
-                loginUser(query);
+                if (retryCount++ < TOTAL_RETRIES) {
+                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
+
+                }
 
             }
         });

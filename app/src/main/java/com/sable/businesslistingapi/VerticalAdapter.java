@@ -256,8 +256,10 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                      */
                     //accessTokenTracker.startTracking();
 
-                    if (accessToken == null) {
 
+                    boolean isLoggedIn = accessToken != null;
+
+                    if (!isLoggedIn) {
                         Intent loginIntent = new Intent(v.getContext(),LoginActivity.class);
                         itemView.getContext().startActivity(loginIntent);
 
