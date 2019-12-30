@@ -411,11 +411,20 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
+                boolean isLoggedIn = accessToken != null;
+
+                if (!isLoggedIn) {
+                    Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                    startActivity(loginIntent);
+                    //goto login activity get username and email via facebook create account, return here to check again and proceed
+
+                    Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
+                } else {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                } else {
+                } //else {
                     Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                     startActivity(intent);
                 }
