@@ -14,6 +14,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -71,6 +73,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
@@ -84,6 +87,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.provider.Contacts.SettingsColumns.KEY;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
@@ -109,21 +113,23 @@ public class MainActivity extends AppCompatActivity implements
     public static List<WooProducts> hListPost;
     public static List<UserAuthPOJO> userinfo;
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
-            zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName, wpUserId, wpCookie, wpUserLogin;
+            zipcode, city, street, bldgno, todayRange, username  = "android_app", isOpen, email,
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
-    Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
-            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
+    /* Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
+            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut; */
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-    private LoginButton loginButton;
+   // private LoginButton loginButton;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     Spinner spnCategory, spnRadius;
     ImageView ivUserImage;
-
-
+    private static final int toValue = 20;
+    private static final int fromValue = 0;
+    private static final int FRAME_TIME_MS = 15000;
+    Thread updateMsg;
 
     ImageButton btnAdd, btnShop;
 
@@ -229,10 +235,23 @@ public class MainActivity extends AppCompatActivity implements
         ivUserImage = findViewById(R.id.ivUserImage);
         //tvUserEmail = findViewById(R.id.tvUserEmail);
         tvWpUserId = findViewById(R.id.tvWpUserId);
-        textSwitcher =  findViewById(R.id.textSwitcher);
 
-        textSwitcher.setCurrentText("Lorem Ipsum is simply dummy text of the printing industry." +
-                " Lorem Ipsum has been the standard dummy text ever since the 1500s.");
+        textSwitcher =  findViewById(R.id.textSwitcher);
+        //textSwitcher.setFa
+
+        Animation in = AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_in);
+
+        Animation out = AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_out);
+
+        textSwitcher.setInAnimation(in);
+        textSwitcher.setOutAnimation(out);
+
+
+        textSwitcher.setCurrentText("Welcome to The Sable Business Directory!  The Sable Business Directory " +
+                "is a perfect platform for supporting black owned businesses and services providers of any kind.");
+
 
         /*Animation textAnimationIn =  AnimationUtils.
                 loadAnimation(this,   android.R.anim.fade_in);
@@ -242,8 +261,8 @@ public class MainActivity extends AppCompatActivity implements
                 loadAnimation(this,   android.R.anim.fade_out);
         textAnimationOut.setDuration(800);*/
 
-        textSwitcher.setInAnimation(animFadeIn);
-        textSwitcher.setOutAnimation(animFadeOut);
+        //textSwitcher.setInAnimation(animFadeIn);
+        //textSwitcher.setOutAnimation(animFadeOut);
 
         /*
             BEGIN vertical Recycler View
@@ -449,23 +468,64 @@ public class MainActivity extends AppCompatActivity implements
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
+
+        updateMsg = new Thread (){
+            @Override
+            public void run() {
+                try {
+                    while (!updateMsg.isInterrupted()) {
+                        updateMsg.sleep(FRAME_TIME_MS);
+                        runOnUiThread(() -> {
+                            Random randomGenerator = new Random();
+                            int randomInt = randomGenerator.nextInt(3);
+                            switch (randomInt) {
+
+                                case 1:
+                                    textSwitcher.setText("We provide a one of a kind online platform that combines" +
+                                            "a searchable geographical based geo-directory, social media and e-commerce platforms" +
+                                            "catered specifically to black owned businesses and service providers. ");
+                                    break;
+
+                                case 2:
+                                    textSwitcher.setText("The Sable Business Directory is designed to help those wanting to support " +
+                                            "and frequent black owned businesses and service providers find black owned " +
+                                            "businesses and service providers.");
+                                    break;
+
+                                default:
+                                    textSwitcher.setText("Tap our spokesman to the right for an introduction and tutorial on what" +
+                                            "The Sable Business Directory is and how it works!!!");
+                                    break;
+                            }
+
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        //isRunning = true;
+        updateMsg.start();
     }
 
-    public void showNextText(View view){
-        count++;
-        if(count%2 == 0){
-            textSwitcher.setText("Learn android with examples");
-        }else{
-            textSwitcher.setText("Welcome to android tutorials");
+    // background updating
+  /*  Handler msgUpdate = new Handler() {
+        public void handleMessage(Message msg) {
+            try {
+                int i= msg.getData().getInt(KEY);
+                textSwitcher.setText(""+i);
+
+            } catch (Exception err) {
+            }
         }
-    }
+
+    };*/
 
     public void onStart() {
         super.onStart();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
     }
-
     public void onDestroy() {
         super.onDestroy();
         // We stop the tracking before destroying the activity
@@ -655,7 +715,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        setAddress(latitude, longitude);
+//        setAddress(latitude, longitude);
     }
 
     /**
