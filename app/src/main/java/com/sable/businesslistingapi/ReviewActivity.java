@@ -11,6 +11,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
@@ -100,6 +102,9 @@ public class ReviewActivity extends AppCompatActivity implements
     private EasyImage easyImage;
     private TextSwitcher textSwitcher;
     private int count =0;
+    Thread updateMsg;
+    private static final int FRAME_TIME_MS = 15000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,20 +153,21 @@ public class ReviewActivity extends AppCompatActivity implements
         ivUserImage = findViewById(R.id.ivUserImage);
         //tvUserId = findViewById(R.id.tvUserId);
         textSwitcher =  findViewById(R.id.textSwitcher);
+        //textSwitcher.setFa
 
-        textSwitcher.setCurrentText("Lorem Ipsum is simply dummy text of the printing industry." +
-                " Lorem Ipsum has been the standard dummy text ever since the 1500s.");
+        Animation in = AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_in);
 
-        /*Animation textAnimationIn =  AnimationUtils.
-                loadAnimation(this,   android.R.anim.fade_in);
-        textAnimationIn.setDuration(800);
+        Animation out = AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_out);
 
-        Animation textAnimationOut =  AnimationUtils.
-                loadAnimation(this,   android.R.anim.fade_out);
-        textAnimationOut.setDuration(800);*/
+        textSwitcher.setInAnimation(in);
+        textSwitcher.setOutAnimation(out);
 
-        textSwitcher.setInAnimation(animFadeIn);
-        textSwitcher.setOutAnimation(animFadeOut);
+
+        textSwitcher.setCurrentText("Thank you for using The Sable Business Directory! " +
+                "This page allows our users to rate and review listings in our directory.");
+
 
 
         pDialog.setVisibility(View.GONE);
@@ -488,6 +494,41 @@ public class ReviewActivity extends AppCompatActivity implements
             }
         });
 
+        updateMsg = new Thread (){
+            @Override
+            public void run() {
+                try {
+                    while (!updateMsg.isInterrupted()) {
+                        updateMsg.sleep(FRAME_TIME_MS);
+                        runOnUiThread(() -> {
+                            Random randomGenerator = new Random();
+                            int randomInt = randomGenerator.nextInt(3);
+                            switch (randomInt) {
+
+                                case 1:
+                                    textSwitcher.setText("Online reviews are important because they have become a " +
+                                            "reference point for buyers across the globe and because so " +
+                                            "many people trust them when making purchasing decisions.");
+                                    break;
+
+                                case 2:
+                                    textSwitcher.setText("86% of people will hesitate to purchase from a business that has negative online reviews." +
+                                            "For nearly 9 in 10 consumers, an online review is as important as a personal recommendation.");
+                                    break;
+
+                                default:
+                                    textSwitcher.setText("To leave a review for the current listing, simply fill in the information " +
+                                            "below.  Provide details and photos of your experience.");
+                                    break;
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        //isRunning = true;
+        updateMsg.start();
     }
 
     public void showNextText(View view){

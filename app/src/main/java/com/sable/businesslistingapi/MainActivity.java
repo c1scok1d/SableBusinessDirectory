@@ -481,8 +481,8 @@ public class MainActivity extends AppCompatActivity implements
                             switch (randomInt) {
 
                                 case 1:
-                                    textSwitcher.setText("We provide a one of a kind online platform that combines" +
-                                            "a searchable geographical based geo-directory, social media and e-commerce platforms" +
+                                    textSwitcher.setText("We provide a one of a kind online platform that combines " +
+                                            "a searchable geographical based geo-directory, social media and e-commerce platforms " +
                                             "catered specifically to black owned businesses and service providers. ");
                                     break;
 
@@ -493,11 +493,10 @@ public class MainActivity extends AppCompatActivity implements
                                     break;
 
                                 default:
-                                    textSwitcher.setText("Tap our spokesman to the right for an introduction and tutorial on what" +
+                                    textSwitcher.setText("Tap our spokesman to the right for an introduction and tutorial on what " +
                                             "The Sable Business Directory is and how it works!!!");
                                     break;
                             }
-
                         });
                     }
                 } catch (InterruptedException e) {
