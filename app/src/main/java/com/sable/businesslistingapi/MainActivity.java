@@ -41,6 +41,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.facebook.login.widget.LoginButton;
 
 
@@ -69,6 +70,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -89,6 +91,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.provider.Contacts.SettingsColumns.KEY;
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.facebook.appevents.ml.ModelManager.initialize;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -98,8 +101,17 @@ public class MainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
 
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private boolean mPermissionDenied = false;
+    /**
+     * permissions request code
+     */
+    private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
+
+    /**
+     * Permissions that need to be explicitly requested from end user.
+     */
+    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
 
     public static Double latitude, longitude, lstKnownLat, lstKnownLng;
 
@@ -108,12 +120,12 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
     VerticalAdapter verticalAdapter, verticalAdapter2;
-   // HorizontalAdapter horizontalAdapter;
+    // HorizontalAdapter horizontalAdapter;
     public static List<BusinessListings> mListPost;
     public static List<WooProducts> hListPost;
     public static List<UserAuthPOJO> userinfo;
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
-            zipcode, city, street, bldgno, todayRange, username  = "android_app", isOpen, email,
+            zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
     /* Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
@@ -121,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-   // private LoginButton loginButton;
+    // private LoginButton loginButton;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     Spinner spnCategory, spnRadius;
@@ -135,9 +147,15 @@ public class MainActivity extends AppCompatActivity implements
 
 
     SearchView searchView;
+    Location location;
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
+
+    Location bestLocation = null;
+    LocationManager locationManager;
+    List<String> providers = new ArrayList<>();
+
     CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
 
@@ -145,7 +163,18 @@ public class MainActivity extends AppCompatActivity implements
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
     private TextSwitcher textSwitcher;
-    private int count =0;
+    // private int count =0;
+
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(new BasicAuthInterceptor(username, password))
+            .addInterceptor(logging)
+            .build();
 
     /**
      * @param savedInstanceState
@@ -155,22 +184,14 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // enableMyLocation();
-
-
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
-
-//userinfo = this.getIntent().getExtras().getParcelableArrayList("userinfo");
 
 
 /**
  * login via facebook
  */
-        //accessToken = AccessToken.getCurrentAccessToken();
-
-        //FacebookSdk.sdkInitialize(this.getApplicationContext());
         fbLogincallbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(fbLogincallbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -228,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
-        textSwitcher =  findViewById(R.id.textSwitcher);
+        textSwitcher = findViewById(R.id.textSwitcher);
 
         Animation fadeIn = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);
@@ -366,16 +387,16 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+               /* if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                } else {
-                    Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
-                    startActivity(intent);
-                }
-
+                } else {*/
+                Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
+                startActivity(intent);
             }
+
+            //}
         });
 
         btnShop.setOnClickListener(new View.OnClickListener() {
@@ -409,22 +430,7 @@ public class MainActivity extends AppCompatActivity implements
             getRetrofit(query);
         }
 
-        /**
-         *  get last known location
-         */
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fetchLastLocation();
-
-        /**
-         *  location manager to get current location
-         */
-
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
-                400, LocationListener);
-
-        updateMsg = new Thread (){
+        updateMsg = new Thread() {
             @Override
             public void run() {
                 try {
@@ -459,27 +465,85 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
         updateMsg.start();
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLastLocation();
+
+
+        /**
+         *  location manager to get current location
+         */
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            checkPermissions();
+            return;
+        }
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
+                400, LocationListener);
+
     }
 
 
-    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+   // List<String> providers;
 
-    OkHttpClient client = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .addInterceptor(new BasicAuthInterceptor(username, password))
-            .addInterceptor(logging)
-            .build();
+
+    /**
+     * Checks the dynamically-controlled permissions and requests missing permissions from end user.
+     */
+    protected void checkPermissions() {
+        final List<String> missingPermissions = new ArrayList<String>();
+        // check all required dynamic permissions
+        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
+            final int result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (!missingPermissions.isEmpty()) {
+            // request all missing permissions
+            final String[] permissions = missingPermissions
+                    .toArray(new String[missingPermissions.size()]);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
+        } else {
+            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
+            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
+            onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
+                    grantResults);
+
+            int [] foo = grantResults;
+            //startActivity(getIntent());
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                for (int index = permissions.length - 1; index >= 0; --index) {
+                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
+                        // exit the app if one permission is not granted
+                        Toast.makeText(this, "Required permission '" + permissions[index]
+                                + "' not granted, exiting", Toast.LENGTH_LONG).show();
+                        finish();
+                        return;
+                    }  else {
+                        startActivity(getIntent());
+                    }
+                }
+                // all permissions were granted
+                break;
+        }
+    }
 
     public void onStart() {
         super.onStart();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
-        enableMyLocation();
-
     }
+
     public void onDestroy() {
         super.onDestroy();
         // We stop the tracking before destroying the activity
@@ -509,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements
                     firstName = parts[0];
                     lastName = parts[1];
                     tvUserName.setText(firstName);
-                //    tvUserEmail.setText(object.getString("email"));
+                    //    tvUserEmail.setText(object.getString("email"));
                     builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
                     Map<String, String> query = new HashMap<>();
@@ -531,14 +595,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         fbLogincallbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 
     /**
@@ -559,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements
                         query.put("longitude", String.format(Locale.US, "%10.5f", lstKnownLng));
                         //query.put("distance", "5");
                         query.put("order", "asc");
-                        query.put("orderby",  "distance");
+                        query.put("orderby", "distance");
 
                         // zoom to current location on map
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -595,7 +656,7 @@ public class MainActivity extends AppCompatActivity implements
             query.put("longitude", String.format(Locale.US, "%10.5f", longitude));
             //query.put("distance", "5");
             query.put("order", "asc");
-            query.put("orderby",  "distance");
+            query.put("orderby", "distance");
 
             // zoom to current location on map
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -618,21 +679,26 @@ public class MainActivity extends AppCompatActivity implements
          * @param extras
          */
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
 
         /**
          * @param provider
          */
         @Override
-        public void onProviderEnabled(String provider) {}
+        public void onProviderEnabled(String provider) {
+        }
 
         /**
          * @param provider
          */
         @Override
-        public void onProviderDisabled(String provider) {}
+        public void onProviderDisabled(String provider) {
+        }
 
     };
+
+   // LocationManager mLocationManager;
 
     /**
      * @param map
@@ -640,43 +706,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-
+        //checkPermissions();
         map.setOnMyLocationButtonClickListener(this);
         map.setOnMyLocationClickListener(this);
-        fetchLastLocation();
-        //enableMyLocation(); //permission check
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        if (location != null) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(17)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-//        setAddress(latitude, longitude);
-    }
-
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     */
-    public void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-        } else if (mMap != null) {
-            // Access to the location has been granted to the app.
-            mMap.setMyLocationEnabled(true);
-        }
     }
 
     /**
@@ -717,51 +749,6 @@ public class MainActivity extends AppCompatActivity implements
         setAddress(latitude, longitude);
         getRetrofit(query);
     }
-
-    /**
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
-        }
-
-        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Enable the my location layer if the permission has been granted.
-
-        } else {
-            // Display the missing permission error dialog when the fragments resume.
-            mPermissionDenied = true;
-          //  enableMyLocation();
-        }
-    }
-
-    /*
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        if (mPermissionDenied) {
-            // Permission was not granted, display error dialog.
-            showMissingPermissionError();
-            mPermissionDenied = false;
-        }
-    }
-
-     // Displays a dialog with error message explaining that the location permission is missing.
-
-    private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getSupportFragmentManager(), "dialog");
-    } */
-
-
-
-
 
     /**
      * geocode location address using lat/lng
