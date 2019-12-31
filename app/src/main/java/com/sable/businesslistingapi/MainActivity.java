@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     Spinner spnCategory, spnRadius;
-    ImageView ivUserImage;
+    ImageView ivUserImage, spokesperson;
     private static final int toValue = 20;
     private static final int fromValue = 0;
     private static final int FRAME_TIME_MS = 15000;
@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements
         verticalRecyclerView.setAdapter(verticalAdapter);
         btnAdd = findViewById(R.id.btnAdd);
         btnShop = findViewById(R.id.btnShop);
+        spokesperson = findViewById(R.id.spokesperson);
 
         final TextView texty = findViewById(R.id.texty);
         /**
@@ -403,6 +404,14 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
+                startActivity(intent);
+            }
+        });
+
+        spokesperson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AboutUs.class);
                 startActivity(intent);
             }
         });
