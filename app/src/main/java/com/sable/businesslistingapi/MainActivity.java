@@ -778,7 +778,7 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        if(addresses.size() > 0) {
+        if(addresses != null) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
             address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
