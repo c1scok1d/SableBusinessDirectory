@@ -164,8 +164,6 @@ public class AddListingActivity extends AppCompatActivity implements
                 //System.out.println(json);
                 System.out.println("Hours String: " +bhs.toString());
 
-
-
             } catch (ValdationException e) {
                 Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
                 return;

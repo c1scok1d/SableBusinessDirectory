@@ -1,6 +1,9 @@
 package com.bashizip.bhlib;
 
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import java.util.ArrayList;
 
 public class BusinessHours extends BasePojo implements Comparable<BusinessHours> {
@@ -80,13 +83,12 @@ public class BusinessHours extends BasePojo implements Comparable<BusinessHours>
         this.from24 = from24;
     }
 
+
     @Override
     public String toString() {
 
-        ArrayList<String> foo = new ArrayList<>();
-
-        foo.add(dayOfWeek + ", " + from + " - " + to);
-        foo.add("\\"+"\""+shortDayOfWeek+ " "+from24+ "-"+to24+"\\"+"\"");
+        String businessHoursFoo = dayOfWeek + ", " + from + " - " + to;
+        String businessHoursFooData = "\\"+"\""+shortDayOfWeek+ " "+from24+ "-"+to24+"\\"+"\"";
 
         return dayOfWeek + ", " + from + " - " + to;
     }
