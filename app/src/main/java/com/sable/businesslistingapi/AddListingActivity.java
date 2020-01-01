@@ -42,7 +42,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -110,8 +113,10 @@ public class AddListingActivity extends AppCompatActivity implements
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
     List<BusinessHours> bhs = new ArrayList<>();
+    List bhsData = new ArrayList();
     private ArrayList<MediaFile> photos = new ArrayList<>();
     Map<String, RequestBody> parts = new HashMap<>();
+    JSONObject bhsJSON;
 
     String name, description, catName, phone, email, website, twitter, facebook, link, status = "publish", Document_img1 = "";
     Integer catNum;
@@ -150,18 +155,27 @@ public class AddListingActivity extends AppCompatActivity implements
 
                 bhs = bh_picker.getBusinessHoursList();
 
+                //JSONObject obj = new JSONObject();
+                Gson gson = new Gson();
+
+                //convert java object to JSON format
+                String json = gson.toJson(bhs);
+
+                //System.out.println(json);
+                System.out.println("Hours String: " +bhs.toString());
+
+
+
             } catch (ValdationException e) {
                 Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
                 return;
             }
-
             businessHoursWeekView.setModel(bhs);
             viewBusinessHoursLayout.setVisibility(View.VISIBLE);
             businessHoursLayout.setVisibility(View.GONE);
             //Intent intent = new Intent(this, ViewerActivity.class);
             //intent.putExtra(BH_LIST, (Serializable) bhs);
             //startActivity(intent);
-
         });
 
         tvAddress = findViewById(R.id.tvAddress);
@@ -217,6 +231,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     phone = etPhone.getText().toString();
                     //String formattedPhone = phone;
 
+
                     locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
                             name,
                             link,
@@ -237,7 +252,7 @@ public class AddListingActivity extends AppCompatActivity implements
                             website,
                             twitter,
                             facebook,
-                            bhs));
+                            String.valueOf(bhsData)));
 
                     submitData();
 

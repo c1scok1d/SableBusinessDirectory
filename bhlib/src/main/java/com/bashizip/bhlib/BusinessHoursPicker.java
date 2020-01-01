@@ -12,6 +12,10 @@ import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SwitchCompat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class BusinessHoursPicker extends LinearLayout {
 
@@ -26,10 +30,11 @@ public class BusinessHoursPicker extends LinearLayout {
     View lyt_hours;
 
     private String dayOfWeek;
+    private String shortDayOfWeek;
     private boolean isOpenDay;
 
     private String from;
-    private String to;
+    private String to, to24, from24;
     private View v;
 
     private BusinessHours businessHours;
@@ -114,6 +119,15 @@ public class BusinessHoursPicker extends LinearLayout {
                 } else {
                     spin_bh_to.setVisibility(VISIBLE);
                     tv_to.setVisibility(VISIBLE);
+                    SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+                    SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+
+                    try {
+                        Date date = parseFormat.parse(adapterView.getItemAtPosition(position).toString());
+                        from24 = displayFormat.format(date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -130,6 +144,7 @@ public class BusinessHoursPicker extends LinearLayout {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 
                 to = adapterView.getItemAtPosition(position).toString();
+
                 String allDay = BusinessHoursPicker.this.getContext().getString(R.string.all_day);
 
                 if (to.equals(allDay)) {
@@ -139,6 +154,14 @@ public class BusinessHoursPicker extends LinearLayout {
                 } else {
                     spin_bh_from.setVisibility(VISIBLE);
                     tv_from.setVisibility(VISIBLE);
+                    SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+                    SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+                    try {
+                        Date date = parseFormat.parse(adapterView.getItemAtPosition(position).toString());
+                        to24 = displayFormat.format(date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -171,9 +194,28 @@ public class BusinessHoursPicker extends LinearLayout {
         return dayOfWeek;
     }
 
+    public String getShortDayOfWeek() {
+        return shortDayOfWeek;
+    }
+
     public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
         tv_dayOfWeek.setText(dayOfWeek);
+    }
+
+    public void setShortDayOfWeek(String shortDayOfWeek) {
+        this.shortDayOfWeek = shortDayOfWeek;
+       // tv_dayOfWeek.setText(dayOfWeek);
+    }
+
+    public void setTo24(String to24) {
+        this.to24 = to24;
+        // tv_dayOfWeek.setText(dayOfWeek);
+    }
+
+    public void setFrom24(String from24) {
+        this.from24 = from24;
+        // tv_dayOfWeek.setText(dayOfWeek);
     }
 
     public String getFrom() {
@@ -197,6 +239,9 @@ public class BusinessHoursPicker extends LinearLayout {
         businessHours.setDayOfWeek(dayOfWeek);
         businessHours.setFrom(from);
         businessHours.setTo(to);
+        businessHours.setShortDayOfWeek(shortDayOfWeek);
+        businessHours.setTo24(to24);
+        businessHours.setFrom24(from24);
 
         if(from.length()<1){
             if(to.length()<1){
@@ -234,4 +279,5 @@ public class BusinessHoursPicker extends LinearLayout {
 
         return businessHours;
     }
+
 }

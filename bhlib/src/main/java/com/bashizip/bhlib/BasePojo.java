@@ -20,4 +20,5 @@ public abstract class BasePojo implements Serializable {
     }
 
 
+  //  public abstract void setTo24(String to24);
 }

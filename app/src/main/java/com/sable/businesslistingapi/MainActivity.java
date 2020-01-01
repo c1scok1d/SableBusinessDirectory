@@ -790,6 +790,10 @@ public class MainActivity extends AppCompatActivity implements
             country = addresses.get(0).getCountryName(); //get country
             tvAddress.setText(address);
             addresses.get(0).getAdminArea();
+        } else {
+
+            Toast.makeText(this, "No GPS location available!  " +
+                    "Please check your mobile device for possible service issues." , Toast.LENGTH_LONG).show();
         }
 
     }
