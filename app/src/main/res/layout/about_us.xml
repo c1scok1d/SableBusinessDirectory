@@ -14,7 +14,7 @@
     <LinearLayout
         android:id="@+id/textSwitcher3Layout"
         android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|right|center_horizontal|end"
         android:background="@drawable/customborder"
         android:orientation="vertical">
@@ -22,7 +22,7 @@
         <TextSwitcher
             android:id="@+id/textSwitcher3"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@color/colorAccent"
             android:padding="10dp" />
@@ -53,21 +53,21 @@
     <LinearLayout
         android:id="@+id/textSwitcherLayout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/customborder"
         android:orientation="vertical">
 
         <TextSwitcher
             android:id="@+id/textSwitcher"
             android:layout_width="fill_parent"
-            android:layout_height="200dp"
+            android:layout_height="fill_parent"
             android:background="@color/colorAccent" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/textSwitcher2Layout"
         android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="start|center_horizontal|center_vertical"
         android:background="@drawable/customborder"
         android:orientation="vertical">
@@ -75,7 +75,7 @@
         <TextSwitcher
             android:id="@+id/textSwitcher2"
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:layout_alignParentBottom="false"
             android:layout_centerHorizontal="false"
             android:layout_weight="1"
@@ -111,13 +111,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_vertical"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnLearnMore"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Button" />
+            android:layout_weight="1"
+            android:text="Learn More" />
+
+        <Button
+            android:id="@+id/btnDirectory"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Directory" />
+
     </LinearLayout>
 
     <ImageSwitcher

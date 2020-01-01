@@ -1,5 +1,6 @@
 package com.sable.businesslistingapi;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +34,7 @@ public class AboutUs extends AppCompatActivity {
     //int images = new ArrayList<>();
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     private boolean firstImage;
-    Button button2;
+    Button btnLearnMore, btnDirectory;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
 
     private Handler imageSwitchHandler;
@@ -53,7 +54,8 @@ public class AboutUs extends AppCompatActivity {
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
         Animation imgAnimationflip =  AnimationUtils.loadAnimation(this,   R.anim.flip);
 
-        button2 = findViewById(R.id.button2);
+        btnLearnMore = findViewById(R.id.btnLearnMore);
+        btnDirectory = findViewById(R.id.btnDirectory);
         textSwitcher =  findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
             TextView textView = new TextView(AboutUs.this);
@@ -174,13 +176,21 @@ public class AboutUs extends AppCompatActivity {
          * end fuckin' around with getting lienarlayouts to fade in and out
          */
 
-        button2.setVisibility(View.GONE);
+        btnDirectory.setVisibility(View.GONE);
+        btnLearnMore.setVisibility(View.GONE);
 
 
-        button2.setOnClickListener(new View.OnClickListener() {
+        btnDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //imageSwitcher.startAnimation(anim);
+                Intent MainActivity = new Intent(AboutUs.this, MainActivity.class);
+                startActivity(MainActivity);
+            }
+        });
+
+        btnLearnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
@@ -295,64 +305,77 @@ public class AboutUs extends AppCompatActivity {
                             "a searchable geographical based geo-directory, social media and e-commerce platforms " +
                             "catered specifically to black owned businesses and service providers. ",
 
-                    "We provide a one of a kind online platform that combines " +
-                            "a searchable geographical based geo-directory, social media and e-commerce platforms " +
-                            "catered specifically to black owned businesses and service providers. ",
+                    "From mobile phones to dentist services, it’s rare to blindly make a purchase decision without reading " +
+                            "through several online reviews. In 2016, 90% of shoppers read at least one online review before deciding " +
+                            "to visiting a business.",
 
                     "Tap 'Continue' to learn more about our geo-directory, social media and e-commerce platforms or " +
                             "tap exit to begin using the director to find black owned bussinesses and service providers near you.",
 
-                    "From mobile phones to dentist services, it’s rare to blindly make a purchase decision without reading " +
-                    "through several online reviews. In 2016, 90% of shoppers read at least one online review before deciding " +
-                    "to visiting a business."};
+                    };
 
             int [] images = { R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
                     R.mipmap.spokesman2_foreground, R.mipmap.spokesman3_foreground};
-
-
-            boolean isEven = i % 2 == 0;
-            if(count >= 4) {
-                count = 0;
-            }
-            if (count == 0)
+            switch (count)
             {
-                imageSwitcher.setImageResource(images[count]);
-                textSwitcher.setText(text[count]);
-                imageSwitcher.setAnimation(imgAnimationIn);
-                imageSwitcher.setAnimation(imgAnimationOut);
-                imageSwitcher3.setAnimation(imgAnimationOut);
-                textSwitcherLayout.setAnimation(imgAnimationIn);
-                textSwitcher2Layout.setAnimation(imgAnimationOut);
-                textSwitcher3Layout.setAnimation(imgAnimationOut);
-                imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                i = randomGenerator.nextInt(100);
-                count ++;
+                case 1:
+                    imageSwitcher.setImageResource(images[count]);
+                    textSwitcher2.setText(text[count]);
+                    imageSwitcher.setVisibility(View.VISIBLE);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    imageSwitcher.setAnimation(imgAnimationIn);
+                    textSwitcher2Layout.setAnimation(imgAnimationIn);
+                    imageSwitcher2.setAnimation(imgAnimationOut);
+                    textSwitcherLayout.setAnimation(imgAnimationOut);
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+                case 2:
+                    imageSwitcher3.setImageResource(images[count]);
+                    textSwitcher3.setText(text[count]);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setAnimation(imgAnimationIn);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setAnimation(imgAnimationIn);
+                    imageSwitcher.setAnimation(imgAnimationOut);
+                    imageSwitcher.setVisibility(View.GONE);
+                    textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
 
-            } else if (isEven) {
-                imageSwitcher2.setImageResource(images[count]);
-                textSwitcher2.setText(text[count]);
-                imageSwitcher.setAnimation(imgAnimationOut);
-                imageSwitcher.setAnimation(imgAnimationIn);
-                imageSwitcher3.setAnimation(imgAnimationOut);
-                textSwitcherLayout.setAnimation(imgAnimationOut);
-                textSwitcher2Layout.setAnimation(imgAnimationIn);
-                textSwitcher3Layout.setAnimation(imgAnimationOut);
-                imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                i = randomGenerator.nextInt(100);
-                count ++;
-            } else {
-                imageSwitcher3.setImageResource(images[count]);
-                textSwitcher3.setText(text[count]);
-                imageSwitcher.setAnimation(imgAnimationOut);
-                imageSwitcher.setAnimation(imgAnimationOut);
-                imageSwitcher3.setAnimation(imgAnimationIn);
-                textSwitcherLayout.setAnimation(imgAnimationOut);
-                textSwitcher2Layout.setAnimation(imgAnimationOut);
-                textSwitcher3Layout.setAnimation(imgAnimationIn);
-                imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                i = randomGenerator.nextInt(100);
+                case 3:
+                    imageSwitcher2.setImageResource(images[count]);
+                    textSwitcher.setText(text[count]);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setAnimation(imgAnimationIn);
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    textSwitcherLayout.setAnimation(imgAnimationIn);
+                    imageSwitcher3.setAnimation(imgAnimationOut);
+                    textSwitcher3Layout.setAnimation(imgAnimationOut);
+                    btnDirectory.setVisibility(View.VISIBLE);
+                    btnDirectory.setAnimation(imgAnimationIn);
+                    btnLearnMore.setVisibility(View.VISIBLE);
+                    btnLearnMore.setAnimation(imgAnimationIn);
+                    imageSwitchHandler.removeCallbacks(runnableCode);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+                default:
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setImageResource(images[count]);
+                    textSwitcher.setText(text[count]);
+                    imageSwitcher2.setAnimation(imgAnimationIn);
+                    textSwitcherLayout.setAnimation(imgAnimationIn);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
 
-                count ++;
             }
         }
     };
