@@ -3,7 +3,6 @@ package com.sable.businesslistingapi;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Layout;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,17 +25,19 @@ import java.util.Random;
 
 public class AboutUs extends AppCompatActivity {
     private int mPosition = 0;
-    private TextSwitcher mTextSwitcher, mTextSwitcher2;
+    private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
     private static final int toValue = 20;
     private static final int fromValue = 0;
     private static final int FRAME_TIME_MS = 12000;
     List<String> words = new ArrayList<>();
     //int images = new ArrayList<>();
-    private ImageSwitcher imageSwitcher;
+    private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     private boolean firstImage;
     Button button2;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
 
     private Handler imageSwitchHandler;
+
 
 
     @Override
@@ -45,9 +45,17 @@ public class AboutUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_us);
 
+        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+
+        Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
+        Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
+        Animation imgAnimationflip =  AnimationUtils.loadAnimation(this,   R.anim.flip);
+
         button2 = findViewById(R.id.button2);
-        mTextSwitcher =  findViewById(R.id.textSwitcher);
-        mTextSwitcher.setFactory(() -> {
+        textSwitcher =  findViewById(R.id.textSwitcher);
+        textSwitcher.setFactory(() -> {
             TextView textView = new TextView(AboutUs.this);
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(20);
@@ -56,23 +64,34 @@ public class AboutUs extends AppCompatActivity {
             return textView;
         });
 
-        mTextSwitcher.setInAnimation(this, R.anim.fade_in);
-        mTextSwitcher.setOutAnimation(this, android.R.anim.fade_out);
+        textSwitcher.setInAnimation(imgAnimationIn);
+        textSwitcher.setOutAnimation(imgAnimationOut);
 
-
-
-        mTextSwitcher2 =  findViewById(R.id.textSwitcher2);
-        mTextSwitcher2.setFactory(() -> {
+        textSwitcher2 =  findViewById(R.id.textSwitcher2);
+        textSwitcher2.setFactory(() -> {
             TextView textView = new TextView(AboutUs.this);
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setTextSize(20);
+            textView.setTextSize(16);
             textView.setTextColor(Color.WHITE);
             textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
-        mTextSwitcher2.setInAnimation(this, R.anim.fade_in);
-        mTextSwitcher2.setOutAnimation(this, android.R.anim.fade_out);
+        textSwitcher2.setInAnimation(imgAnimationIn);
+        textSwitcher2.setOutAnimation(imgAnimationOut);
+
+        textSwitcher3 =  findViewById(R.id.textSwitcher3);
+        textSwitcher3.setFactory(() -> {
+            TextView textView = new TextView(AboutUs.this);
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(16);
+            textView.setTextColor(Color.WHITE);
+            textView.setGravity(Gravity.CENTER);
+            return textView;
+        });
+
+        textSwitcher3.setInAnimation(imgAnimationIn);
+        textSwitcher3.setOutAnimation(imgAnimationOut);
 
 
 
@@ -86,24 +105,74 @@ public class AboutUs extends AppCompatActivity {
 
                 imageView.setLayoutParams(params);
 
+        imageSwitcher2 =  findViewById(R.id.imageSwitcher2);
+
+        ImageView imageView2 = new ImageView(AboutUs.this);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        ViewGroup.LayoutParams imageView2params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        imageView2.setLayoutParams(imageView2params);
+
+        imageSwitcher3 =  findViewById(R.id.imageSwitcher3);
+
+        ImageView imageView3 = new ImageView(AboutUs.this);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        ViewGroup.LayoutParams imageView3params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        imageView3.setLayoutParams(imageView3params);
+
 
         firstImage = true;
-        //imageSwitcher = (ImageSwitcher) findViewById(R.id.image_switcher);
-
-        Animation imgAnimationIn =  AnimationUtils.
-                loadAnimation(this,   R.anim.fade_in);
-        imageSwitcher.setInAnimation(imgAnimationIn);
-
-        Animation imgAnimationOut =  AnimationUtils.
-                loadAnimation(this,   R.anim.fade_out);
-        imageSwitcher.setOutAnimation(imgAnimationOut);
-
-        Animation flip =  AnimationUtils.
-                loadAnimation(this,   R.anim.flip);
-        imageSwitcher.setOutAnimation(imgAnimationOut);
 
         imageSwitchHandler = new Handler();
         imageSwitchHandler.post(runnableCode);
+
+        /**
+         *  strt fuckin' around with getting linearLayouts to fade in and out
+         */
+        textSwitcherLayout =  findViewById(R.id.textSwitcherLayout);
+
+        LinearLayout textSwitcherLayout = new LinearLayout(AboutUs.this);
+
+        ViewGroup.LayoutParams textSwitcherLayoutParams = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        textSwitcherLayout.setLayoutParams(textSwitcherLayoutParams);
+
+
+        textSwitcherLayout.setAnimation(imgAnimationIn);
+        textSwitcherLayout.setAnimation(imgAnimationOut);
+        textSwitcherLayout.post(runnableCode);
+
+        textSwitcher2Layout =  findViewById(R.id.textSwitcher2Layout);
+
+        LinearLayout textSwitcher2Layout = new LinearLayout(AboutUs.this);
+
+
+        textSwitcher2Layout.setLayoutParams(textSwitcherLayoutParams);
+
+        textSwitcher2Layout.setAnimation(imgAnimationIn);
+        textSwitcher2Layout.setAnimation(imgAnimationOut);
+        textSwitcher2Layout.post(runnableCode);
+
+        textSwitcher3Layout =  findViewById(R.id.textSwitcher3Layout);
+
+        LinearLayout textSwitcher3Layout = new LinearLayout(AboutUs.this);
+
+
+        textSwitcher3Layout.setLayoutParams(textSwitcherLayoutParams);
+
+        textSwitcher3Layout.setAnimation(imgAnimationIn);
+        textSwitcher3Layout.setAnimation(imgAnimationOut);
+        textSwitcher3Layout.post(runnableCode);
+
+        /**
+         * end fuckin' around with getting lienarlayouts to fade in and out
+         */
 
         button2.setVisibility(View.GONE);
 
@@ -138,11 +207,9 @@ public class AboutUs extends AppCompatActivity {
                 imageSwitcher.setLayoutParams(params);
             }
         });
-        imageSwitcher.startAnimation(anim);
-        leftCenterLayout  = findViewById(R.id.leftCenterLayout);
+
 
     }
-    LinearLayout leftCenterLayout;
 
     int count = 0, i;
     private Runnable runnableCode = new Runnable() {
@@ -152,6 +219,72 @@ public class AboutUs extends AppCompatActivity {
        // String image;
         @Override
         public void run() {
+            imageSwitcher.setVisibility(View.GONE);
+            imageSwitcher2.setVisibility(View.GONE);
+            imageSwitcher3.setVisibility(View.GONE);
+
+            textSwitcherLayout.setVisibility(View.GONE);
+            textSwitcher2Layout.setVisibility(View.GONE);
+            textSwitcher3Layout.setVisibility(View.GONE);
+
+            Animation imgAnimationIn =  AnimationUtils.loadAnimation( getApplicationContext(),  R.anim.fade_in);
+            Animation imgAnimationOut =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.fade_out);
+            Animation imgAnimationflip =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.flip);
+
+
+            /*imgAnimationOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    imageSwitcher.setVisibility(View.GONE);
+                    imageSwitcher2.setVisibility(View.GONE);
+                    imageSwitcher3.setVisibility(View.GONE);
+
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) { }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    imageSwitcher.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                }
+            });
+
+            imgAnimationIn.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    imageSwitcher.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) { }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    imageSwitcher.setVisibility(View.GONE);
+                    imageSwitcher2.setVisibility(View.GONE);
+                    imageSwitcher3.setVisibility(View.GONE);
+
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+                }
+            });*/
 
             String [] text = {
                     "Hello, and welcome to The Sable Business Directory.  The Sable Business Directory is designed to help those wanting to support " +
@@ -178,25 +311,47 @@ public class AboutUs extends AppCompatActivity {
 
 
             boolean isEven = i % 2 == 0;
-            if(count >= 3) {
+            if(count >= 4) {
                 count = 0;
             }
-
-            if (isEven) {
+            if (count == 0)
+            {
                 imageSwitcher.setImageResource(images[count]);
-                mTextSwitcher2.setText(text[count]);
-                i = randomGenerator.nextInt(100);
-                mTextSwitcher.setVisibility(View.GONE);
-                leftCenterLayout.setVisibility(View.VISIBLE);
+                textSwitcher.setText(text[count]);
+                imageSwitcher.setAnimation(imgAnimationIn);
+                imageSwitcher.setAnimation(imgAnimationOut);
+                imageSwitcher3.setAnimation(imgAnimationOut);
+                textSwitcherLayout.setAnimation(imgAnimationIn);
+                textSwitcher2Layout.setAnimation(imgAnimationOut);
+                textSwitcher3Layout.setAnimation(imgAnimationOut);
                 imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                i = randomGenerator.nextInt(100);
                 count ++;
-            }else {
-                imageSwitcher.setImageResource(images[count]);
-                mTextSwitcher.setText(text[count]);
-                i = randomGenerator.nextInt(100);
-               leftCenterLayout.setVisibility(View.GONE);
-                mTextSwitcher.setVisibility(View.VISIBLE);
+
+            } else if (isEven) {
+                imageSwitcher2.setImageResource(images[count]);
+                textSwitcher2.setText(text[count]);
+                imageSwitcher.setAnimation(imgAnimationOut);
+                imageSwitcher.setAnimation(imgAnimationIn);
+                imageSwitcher3.setAnimation(imgAnimationOut);
+                textSwitcherLayout.setAnimation(imgAnimationOut);
+                textSwitcher2Layout.setAnimation(imgAnimationIn);
+                textSwitcher3Layout.setAnimation(imgAnimationOut);
                 imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                i = randomGenerator.nextInt(100);
+                count ++;
+            } else {
+                imageSwitcher3.setImageResource(images[count]);
+                textSwitcher3.setText(text[count]);
+                imageSwitcher.setAnimation(imgAnimationOut);
+                imageSwitcher.setAnimation(imgAnimationOut);
+                imageSwitcher3.setAnimation(imgAnimationIn);
+                textSwitcherLayout.setAnimation(imgAnimationOut);
+                textSwitcher2Layout.setAnimation(imgAnimationOut);
+                textSwitcher3Layout.setAnimation(imgAnimationIn);
+                imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                i = randomGenerator.nextInt(100);
+
                 count ++;
             }
         }
