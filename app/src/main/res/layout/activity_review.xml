@@ -597,7 +597,7 @@
                                 android:id="@+id/tvHello"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Hello"
+                                android:text="Hey"
                                 android:textColor="#e9774f" />
 
                             <TextView
@@ -605,10 +605,18 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
-                                android:layout_marginEnd="3dp"
                                 android:textColor="@color/colorAccent"
                                 android:textStyle="bold"
                                 tools:text="username" />
+
+                            <TextView
+                                android:id="@+id/tvWelcome2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text=","
+                                android:textColor="#e9774f"
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/tvWpUserId"
@@ -636,7 +644,8 @@
                                 android:id="@+id/tvSwitcher2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/colorAccent" />
+                                android:textColor="@color/colorAccent"
+                                android:textSize="12sp" />
                         </TextSwitcher>
                     </LinearLayout>
 

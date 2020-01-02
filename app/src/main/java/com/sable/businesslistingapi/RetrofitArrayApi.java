@@ -74,7 +74,7 @@ public interface RetrofitArrayApi {
             @Query("facebook") String facebook,
             @Query("type") String type,
             @Field("post_images") ArrayList<String> filesToUpload,
-            @Field("business_hours") List<BusinessHours> business_hours);
+            @Field("business_hours") String business_hours);
 
     //@Multipart
     //@FormUrlEncoded

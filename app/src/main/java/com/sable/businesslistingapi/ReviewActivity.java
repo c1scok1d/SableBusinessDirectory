@@ -166,7 +166,7 @@ public class ReviewActivity extends AppCompatActivity implements
 
 
         textSwitcher.setCurrentText("Thank you for using The Sable Business Directory! " +
-                "This page allows our users to rate and review listings in our directory.");
+                "This is where users rate and review listings in our directory.");
 
 
 
@@ -506,19 +506,17 @@ public class ReviewActivity extends AppCompatActivity implements
                             switch (randomInt) {
 
                                 case 1:
-                                    textSwitcher.setText("Online reviews are important because they have become a " +
-                                            "reference point for buyers across the globe and because so " +
-                                            "many people trust them when making purchasing decisions.");
+                                    textSwitcher.setText("Online reviews are an important reference point for customers. " +
+                                            "89% of consumers trust online reviews as much as personal recommendations.");
                                     break;
 
                                 case 2:
-                                    textSwitcher.setText("86% of people will hesitate to purchase from a business that has negative online reviews." +
-                                            "For nearly 9 in 10 consumers, an online review is as important as a personal recommendation.");
+                                    textSwitcher.setText("Nearly 9 out of 10 consumers check for reviews before making purchasing decisions.");
                                     break;
 
                                 default:
-                                    textSwitcher.setText("To leave a review for the current listing, simply fill in the information " +
-                                            "below.  Provide details and photos of your experience.");
+                                    textSwitcher.setText("To leave a review for "+tvName.getText().toString()+", fill in the information " +
+                                            "below to provide details and photos of your experience.");
                                     break;
                             }
                         });
@@ -529,15 +527,6 @@ public class ReviewActivity extends AppCompatActivity implements
         };
         //isRunning = true;
         updateMsg.start();
-    }
-
-    public void showNextText(View view){
-        count++;
-        if(count%2 == 0){
-            textSwitcher.setText("Learn android with examples");
-        }else{
-            textSwitcher.setText("Welcome to android tutorials");
-        }
     }
 
     @Override

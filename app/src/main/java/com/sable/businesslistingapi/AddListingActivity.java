@@ -230,8 +230,8 @@ public class AddListingActivity extends AppCompatActivity implements
                             catName,
                             catNum,
                             description,
-                            longitude,
-                            latitude,
+                            MainActivity.longitude,
+                            MainActivity.latitude,
                             address,
                             state,
                             country,
@@ -244,7 +244,7 @@ public class AddListingActivity extends AppCompatActivity implements
                             website,
                             twitter,
                             facebook,
-                            String.valueOf(bhsData)));
+                            String.valueOf(bhs)));
 
                     submitData();
 
@@ -793,11 +793,13 @@ public class AddListingActivity extends AppCompatActivity implements
 String type = "gd_business";
     //private static Retrofit retrofit = null;
     private void submitData(){
-        String fooLat = String.format(Locale.US, "%10.4f", latitude);
-        String fooLng = String.format(Locale.US, "%10.4f", longitude);
+        //String fooLat = String.format(Locale.US, "%10.4f", latitude);
+        //String fooLng = String.format(Locale.US, "%10.4f", longitude);
 
-        latitude = Double.valueOf(fooLat);
-        longitude = Double.valueOf(fooLng);
+        //latitude = Double.valueOf(fooLat);
+        //longitude = Double.valueOf(fooLng);
+
+        String streetFoo = bldgNo+" "+street;
         //Add the interceptor to the client builder.
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -825,13 +827,14 @@ String type = "gd_business";
                 description,
                 /*address,*/
                 bldgNo,
-                street,
+                /*street,*/
+                streetFoo,
                 city,
                 state,
                 country,
                 zipcode,
-                latitude,
-                longitude,
+                MainActivity.latitude,
+                MainActivity.longitude,
                 phone,
                 /* hours,*/
                 email,
@@ -840,7 +843,7 @@ String type = "gd_business";
                 facebook,
                 type,
                 filesToUploadfoo,
-                bhs);
+                String.valueOf(bhs));
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {

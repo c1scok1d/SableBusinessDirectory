@@ -261,8 +261,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher.setOutAnimation(fadeOut);
 
 
-        textSwitcher.setCurrentText("Welcome to The Sable Business Directory!  The Sable Business Directory " +
-                "is a perfect platform for supporting black owned businesses and services providers of any kind.");
+        textSwitcher.setCurrentText("The Sable Business Directory is a perfect platform for supporting black owned businesses and services providers of any kind.");
 
 
         /*
@@ -388,13 +387,17 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
-               /* if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                } else {*/
-                Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
-                startActivity(intent);
+                if (!isLoggedIn) {
+                    Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                    startActivity(loginIntent);
+
+                    //goto login activity get username and email via facebook create account, return here to check again and proceed
+
+                    Toast.makeText(getApplicationContext(),"User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
+                    startActivity(intent);
+                }
             }
 
             //}
@@ -625,8 +628,8 @@ public class MainActivity extends AppCompatActivity implements
 
                         lstKnownLat = location.getLatitude();
                         lstKnownLng = location.getLongitude();
-                        query.put("latitude", String.format(Locale.US, "%10.5f", lstKnownLat));
-                        query.put("longitude", String.format(Locale.US, "%10.5f", lstKnownLng));
+                        query.put("latitude",  String.valueOf(lstKnownLat));
+                        query.put("longitude", String.valueOf(lstKnownLng));
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby", "distance");
@@ -661,8 +664,8 @@ public class MainActivity extends AppCompatActivity implements
 
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            query.put("latitude", String.format(Locale.US, "%10.5f", latitude));
-            query.put("longitude", String.format(Locale.US, "%10.5f", longitude));
+            query.put("latitude", String.valueOf(latitude));
+            query.put("longitude", String.valueOf(longitude));
             //query.put("distance", "5");
             query.put("order", "asc");
             query.put("orderby", "distance");
@@ -881,8 +884,8 @@ public class MainActivity extends AppCompatActivity implements
                          *
                          */
 
-                        if (String.format(Locale.US, "%10.5f", response.body().get(i).getLatitude()).equals(String.format(Locale.US, "%10.5f", latitude)) &&
-                                String.format(Locale.US, "%10.5f", response.body().get(i).getLongitude()).equals(String.format(Locale.US, "%10.5f", longitude))) {
+                        if (String.valueOf(response.body().get(i).getLatitude()).equals(String.valueOf(latitude)) &&
+                                String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude))) {
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),

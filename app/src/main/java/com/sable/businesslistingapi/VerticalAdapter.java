@@ -265,7 +265,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
 
                         //goto login activity get username and email via facebook create account, return here to check again and proceed
 
-                        Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"User must be logged in to leave a listing review.", Toast.LENGTH_SHORT).show();
                     } else {
 
                         /**
