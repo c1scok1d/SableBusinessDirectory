@@ -155,12 +155,6 @@ public class AddListingActivity extends AppCompatActivity implements
 
                 bhs = bh_picker.getBusinessHoursList();
 
-                //JSONObject obj = new JSONObject();
-                Gson gson = new Gson();
-
-                //convert java object to JSON format
-                String json = gson.toJson(bhs);
-
                 //System.out.println(json);
                 System.out.println("Hours String: " +bhs.toString());
 

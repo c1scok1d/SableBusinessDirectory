@@ -191,34 +191,19 @@ public class AboutUs extends AppCompatActivity {
         btnLearnMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent MainActivity = new Intent(AboutUs.this, AboutUsVideo.class);
+                startActivity(MainActivity);
 
             }
         });
 
-        int amountToMoveRight = 100;
-        int  amountToMoveDown = 0;
-        TranslateAnimation anim = new TranslateAnimation(0, amountToMoveRight, 0, amountToMoveDown);
-        anim.setDuration(1000);
+        imageSwitcher.setVisibility(View.GONE);
+        imageSwitcher2.setVisibility(View.GONE);
+        imageSwitcher3.setVisibility(View.GONE);
 
-        anim.setAnimationListener(new TranslateAnimation.AnimationListener() {
-
-            @Override
-            public void onAnimationStart(Animation animation) { }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) { }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)imageSwitcher.getLayoutParams();
-                params.topMargin += amountToMoveDown;
-                params.leftMargin += amountToMoveRight;
-                imageSwitcher.setLayoutParams(params);
-            }
-        });
-
-
+        textSwitcherLayout.setVisibility(View.GONE);
+        textSwitcher2Layout.setVisibility(View.GONE);
+        textSwitcher3Layout.setVisibility(View.GONE);
     }
 
     int count = 0, i;
@@ -229,14 +214,6 @@ public class AboutUs extends AppCompatActivity {
        // String image;
         @Override
         public void run() {
-            imageSwitcher.setVisibility(View.GONE);
-            imageSwitcher2.setVisibility(View.GONE);
-            imageSwitcher3.setVisibility(View.GONE);
-
-            textSwitcherLayout.setVisibility(View.GONE);
-            textSwitcher2Layout.setVisibility(View.GONE);
-            textSwitcher3Layout.setVisibility(View.GONE);
-
             Animation imgAnimationIn =  AnimationUtils.loadAnimation( getApplicationContext(),  R.anim.fade_in);
             Animation imgAnimationOut =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.fade_out);
             Animation imgAnimationflip =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.flip);
@@ -298,19 +275,17 @@ public class AboutUs extends AppCompatActivity {
 
             String [] text = {
                     "Hello, and welcome to The Sable Business Directory.  The Sable Business Directory is designed to help those wanting to support " +
-                            "and frequent black owned businesses and service providers find black owned " +
-                            "businesses and service providers.",
+                            "and frequent black owned businesses and service providers find black owned businesses and service providers.",
 
-                    "We provide a one of a kind online platform that combines " +
-                            "a searchable geographical based geo-directory, social media and e-commerce platforms " +
-                            "catered specifically to black owned businesses and service providers. ",
+                    "We provide a one of a kind online platform that combines a searchable geographical based geo-directory, social media and e-commerce " +
+                            "platforms catered specifically to black owned businesses and service providers. ",
 
                     "From mobile phones to dentist services, it’s rare to blindly make a purchase decision without reading " +
                             "through several online reviews. In 2016, 90% of shoppers read at least one online review before deciding " +
                             "to visiting a business.",
 
-                    "Tap 'Continue' to learn more about our geo-directory, social media and e-commerce platforms or " +
-                            "tap exit to begin using the director to find black owned bussinesses and service providers near you.",
+                    "Tap below to learn more about our geo-directory, social media and e-commerce platforms or " +
+                            "tap exit to begin using the directory to find black owned businesses and service providers near you.",
 
                     };
 
@@ -372,6 +347,15 @@ public class AboutUs extends AppCompatActivity {
                     textSwitcher.setText(text[count]);
                     imageSwitcher2.setAnimation(imgAnimationIn);
                     textSwitcherLayout.setAnimation(imgAnimationIn);
+
+                    imageSwitcher.setVisibility(View.GONE);
+                    //imageSwitcher2.setVisibility(View.GONE);
+                    imageSwitcher3.setVisibility(View.GONE);
+
+                    //textSwitcherLayout.setVisibility(View.GONE);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+
                     imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
                     i = randomGenerator.nextInt(100);
                     count ++;

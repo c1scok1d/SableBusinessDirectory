@@ -15,7 +15,7 @@
         android:id="@+id/textSwitcher3Layout"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right|center_horizontal|end"
+        android:layout_gravity="center_vertical|end"
         android:background="@drawable/customborder"
         android:orientation="vertical">
 
@@ -32,14 +32,14 @@
     <ImageSwitcher
 
         android:id="@+id/imageSwitcher2"
-        android:layout_width="200dp"
-        android:layout_height="250dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal|center_vertical|end">
 
         <ImageView
             android:id="@+id/imageView2-1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_gravity="center_vertical|center_horizontal"
             app:srcCompat="@mipmap/spokesman1_foreground" />
 
@@ -89,7 +89,7 @@
         android:id="@+id/imageSwitcher"
         android:layout_width="200dp"
         android:layout_height="250dp"
-        android:layout_gravity="start|top|left">
+        android:layout_gravity="center_vertical|end">
 
         <ImageView
             android:id="@+id/imageView1"
@@ -104,6 +104,27 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|center_horizontal" />
 
+    </ImageSwitcher>
+
+    <ImageSwitcher
+
+        android:id="@+id/imageSwitcher3"
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:layout_gravity="start|center_vertical">
+
+        <ImageView
+            android:id="@+id/imageView3-1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|center_horizontal"
+            app:srcCompat="@mipmap/spokesman1_foreground" />
+
+        <ImageView
+            android:id="@+id/imageView3-2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|center_horizontal" />
     </ImageSwitcher>
 
     <LinearLayout
@@ -128,27 +149,6 @@
             android:text="Directory" />
 
     </LinearLayout>
-
-    <ImageSwitcher
-
-        android:id="@+id/imageSwitcher3"
-        android:layout_width="200dp"
-        android:layout_height="250dp"
-        android:layout_gravity="bottom|start|left">
-
-        <ImageView
-            android:id="@+id/imageView3-1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical|center_horizontal"
-            app:srcCompat="@mipmap/spokesman1_foreground" />
-
-        <ImageView
-            android:id="@+id/imageView3-2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical|center_horizontal" />
-    </ImageSwitcher>
 
 
 </FrameLayout>
