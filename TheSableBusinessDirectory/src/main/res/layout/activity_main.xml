@@ -240,10 +240,10 @@
                     android:id="@+id/tvWelcome"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=", welcome to the directory!"
+                    android:text="and welcome!"
                     android:textColor="#e9774f"
                     android:textSize="12sp"
-                    tools:text=", welcome to The Sable Business Directory" />
+                    tools:text="and welcome!" />
 
                 <TextView
                     android:id="@+id/tvWpUserId"
