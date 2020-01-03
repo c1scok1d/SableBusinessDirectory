@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude, lstKnownLat, lstKnownLng;
 
+    public
+
     TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvWpCookie, tvWpUserLogin;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
     private ProgressBar progressBar;
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements
     // private LoginButton loginButton;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
+    ArrayList<String> userActivityArray = new ArrayList<>();
     Spinner spnCategory, spnRadius;
     ImageView ivUserImage, spokesperson;
     private static final int toValue = 20;
@@ -176,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements
             .addInterceptor(logging)
             .build();
 
+    //String currentTime = String.valueOf(System.currentTimeMillis());
+
     /**
      * @param savedInstanceState
      */
@@ -187,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
-
 
 /**
  * login via facebook
@@ -388,12 +392,12 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View view) {
 
                 if (!isLoggedIn) {
-                    Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(loginIntent);
 
                     //goto login activity get username and email via facebook create account, return here to check again and proceed
 
-                    Toast.makeText(getApplicationContext(),"User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                     startActivity(intent);
@@ -480,7 +484,11 @@ public class MainActivity extends AppCompatActivity implements
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
+        //userActivityArray = null;
+        if (userActivityArray.size() > 0) {
 
+            userActivityArray = this.getIntent().getExtras().getStringArrayList("userActivityArray");
+        }
 
         /**
          *  location manager to get current location
@@ -494,7 +502,6 @@ public class MainActivity extends AppCompatActivity implements
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
-
     }
 
 
@@ -885,7 +892,9 @@ public class MainActivity extends AppCompatActivity implements
                          */
 
                         if (String.valueOf(response.body().get(i).getLatitude()).equals(String.valueOf(latitude)) &&
-                                String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude))) {
+                                String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude)) && userActivityArray.size() > 0 ) {
+
+                            // Boolean timeDiff = response.body().get(i).getDateGmt().compareTo(currentTime) > 4;
 
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),

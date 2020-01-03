@@ -36,8 +36,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -92,6 +94,7 @@ public class ReviewActivity extends AppCompatActivity implements
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
+    ArrayList<String> userActivityArray = new ArrayList<>();
 
 
     private EasyImage easyImage;
@@ -99,6 +102,7 @@ public class ReviewActivity extends AppCompatActivity implements
     private int count =0;
     Thread updateMsg;
     private static final int FRAME_TIME_MS = 12000;
+    public static String reviewDate;
 
 
     @Override
@@ -442,6 +446,7 @@ public class ReviewActivity extends AppCompatActivity implements
 
                     submitData();
                     Intent mainActivity = new Intent(view.getContext(), MainActivity.class);
+                    mainActivity.putExtra("userActivityArray", userActivityArray);
                     startActivity(mainActivity);
                 }
             }
@@ -656,6 +661,7 @@ public class ReviewActivity extends AppCompatActivity implements
 
     StringBuilder sb = new StringBuilder();
     String main;
+   
 
     ArrayList<String> filesToUploadfoo = new ArrayList<>();
     private void submitData() {
@@ -672,6 +678,8 @@ public class ReviewActivity extends AppCompatActivity implements
         }*/
 
         main = sb.toString();
+
+
 
         //Add the interceptor to the client builder.
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -693,7 +701,7 @@ public class ReviewActivity extends AppCompatActivity implements
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-        Call<List<ListReviewPOJO>> call = service.postReview(
+        Call<ListReviewPOJO> call = service.postReview(
                 Integer.valueOf(tvId.getText().toString()),
                rating,
                 etFeedBack.getText().toString(),
@@ -701,31 +709,23 @@ public class ReviewActivity extends AppCompatActivity implements
                 Integer.valueOf(MainActivity.userId),
                 MainActivity.userEmail);
 
-        call.enqueue(new Callback<List<ListReviewPOJO>>() {
+        call.enqueue(new Callback<ListReviewPOJO>() {
             @Override
-            public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
-
-//                progressBar.setVisibility(View.GONE); //hide progressBar
+            public void onResponse(Call<ListReviewPOJO> call, Response<ListReviewPOJO> response) {
+                Log.e("Review Response Successful", " response: " + response.body());
                 if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(),
-                            "Post Updated Title: " + response.body().get(0).getId() +
-                                    " Body: " + response.body().get(0).getContent() +
-                                    " PostId: " + response.body().get(0).getId(), Toast.LENGTH_LONG).show();
+                    userActivityArray.add(response.body().getDateGmt()); // date of review
+                    userActivityArray.add(String.valueOf(response.body().getPost())); // listing id for review
+                    userActivityArray.add(response.body().getType());  //post type 'comment'
+                        }
                 }
-
-            }
-
             @Override
-            public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
+            public void onFailure(Call<ListReviewPOJO> call, Throwable t) {
 //                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
-
         });
-
         Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
-
-
     }
 
     public class BasicAuthInterceptor implements Interceptor {

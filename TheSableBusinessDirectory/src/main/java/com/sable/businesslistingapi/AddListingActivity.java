@@ -113,7 +113,7 @@ public class AddListingActivity extends AppCompatActivity implements
     ArrayList<String> category = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
     List<BusinessHours> bhs = new ArrayList<>();
-    List bhsData = new ArrayList();
+    ArrayList<String> userActivityArray = new ArrayList<>();
     private ArrayList<MediaFile> photos = new ArrayList<>();
     Map<String, RequestBody> parts = new HashMap<>();
     JSONObject bhsJSON;
@@ -172,9 +172,6 @@ public class AddListingActivity extends AppCompatActivity implements
             businessHoursWeekView.setModel(bhs);
             viewBusinessHoursLayout.setVisibility(View.VISIBLE);
             businessHoursLayout.setVisibility(View.GONE);
-            //Intent intent = new Intent(this, ViewerActivity.class);
-            //intent.putExtra(BH_LIST, (Serializable) bhs);
-            //startActivity(intent);
         });
 
         tvAddress = findViewById(R.id.tvAddress);
@@ -258,7 +255,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     Intent home = new Intent(AddListingActivity.this, MainActivity.class);
                     //Bundle locationAddBundle = new Bundle();
                     //locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
-                    //LocationAdd.putExtra("locationAdd", locationAdd);
+                    home.putExtra("userActivityArray", userActivityArray);
                     startActivity(home);
                 }
             }
@@ -469,22 +466,13 @@ public class AddListingActivity extends AppCompatActivity implements
 
 
     public void updateProgress(int val, String title, String msg){
-        // pDialog.setTitle(title);
-        //pDialog.setMessage(msg);
-//        pDialog.setProgress(val);
+        
     }
 
 
     public void showProgress(String str){
         try{
-            // pDialog.setCancelable(false);
-            // pDialog.setTitle("Please wait");
-            //pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-          //  pDialog.setMax(100); // Progress Dialog Max Value
-            // pDialog.setMessage(str);
-            //if (pDialog.isShowing())
-            //    pDialog.dismiss();
-            // pDialog.show();
+            
         }catch (Exception e){
 
         }
@@ -492,8 +480,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
     public void hideProgress() {
         try {
-            // if (pDialog.isH())
-            //     pDialog.dismiss();
+            
         } catch (Exception e) {
 
         }
@@ -503,7 +490,6 @@ public class AddListingActivity extends AppCompatActivity implements
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         photos.addAll(Arrays.asList(returnedPhotos));
-        //imagesAdapter.notifyDataSetChanged();
         ivLogo.setImageBitmap(BitmapFactory.decodeFile(photos.get(0).getFile().toString()));
     }
 
@@ -775,22 +761,12 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override
             public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-               // Log.e("main_activity", " response " + response.body());
-                // mListPost = response.body();
-                //progressBar.setVisibility(View.GONE); //hide progressBar
               category.add("Category"); //add heading to category spinner
-                // loop through JSON response get parse and output to log
                 for (int i = 0; i < response.body().size(); i++) {
-                    //ifStatement to skip json object from array if value is empty/null
-                    //parse response based on ListingsModel class and add to list array ( get category name, description and image)
-                    // add category name from array to spinner
                     category.add(response.body().get(i).getName());
-                    //category.add(response.body().get(i).getId().toString());
-                    // display category array list in spinner
                     spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
-                   // Log.e("main ", " Category: " + response.body().get(i).getName());
                 }
-               // adapter.notifyDataSetChanged();
+               
             }
             @Override
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
@@ -800,11 +776,6 @@ public class AddListingActivity extends AppCompatActivity implements
 String type = "gd_business";
     //private static Retrofit retrofit = null;
     private void submitData(){
-        //String fooLat = String.format(Locale.US, "%10.4f", latitude);
-        //String fooLng = String.format(Locale.US, "%10.4f", longitude);
-
-        //latitude = Double.valueOf(fooLat);
-        //longitude = Double.valueOf(fooLng);
 
         String streetFoo = bldgNo+" "+street;
         //Add the interceptor to the client builder.
@@ -858,22 +829,20 @@ String type = "gd_business";
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 Log.e("AddListingActivity", " response " + response.body());
-
-//                progressBar.setVisibility(View.GONE); //hide progressBar
                 if(response.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),
-                            "Post Updated Title: "+response.body().get(0).getTitle()+
-                                    " Body: "+response.body().get(0).getContent()+
-                                    " PostId: "+response.body().get(0).getId(), Toast.LENGTH_LONG).show();
+                    userActivityArray.add(response.body().get(0).getDateGmt());
+                    userActivityArray.add(String.valueOf(response.body().get(0).getId()));
+                    userActivityArray.add(response.body().get(0).getType());
                 }
             }
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-//                progressBar.setVisibility(View.GONE); //hide progressBar
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+
+        Toast.makeText(AddListingActivity.this, "Thank you!", Toast.LENGTH_SHORT).show();
 
     }
 }

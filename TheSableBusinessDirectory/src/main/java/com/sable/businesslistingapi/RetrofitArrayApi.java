@@ -80,7 +80,7 @@ public interface RetrofitArrayApi {
     //@Multipart
     //@FormUrlEncoded
     @POST("wp-json/geodir/v2/reviews")
-    Call<List<ListReviewPOJO>> postReview(
+    Call<ListReviewPOJO> postReview(
             @Query("post") Integer id,
             @Query("rating") Integer rating,
             @Query("content") String content,
