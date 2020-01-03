@@ -849,6 +849,7 @@ String type = "gd_business";
                 twitter,
                 facebook,
                 type,
+                Integer.valueOf(MainActivity.userId),
                 filesToUploadfoo,
                 businessHours.toString());
 

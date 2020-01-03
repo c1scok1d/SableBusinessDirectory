@@ -73,6 +73,7 @@ public interface RetrofitArrayApi {
             @Query("twitter") String twitter,
             @Query("facebook") String facebook,
             @Query("type") String type,
+            @Query("author") Integer userId,
             @Field("post_images") ArrayList<String> filesToUpload,
             @Field("business_hours") String business_hours);
 
