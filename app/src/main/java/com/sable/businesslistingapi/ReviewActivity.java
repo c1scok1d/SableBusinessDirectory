@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -85,10 +84,6 @@ public class ReviewActivity extends AppCompatActivity implements
     Double latitude, longitude;
     Integer category, id, rating;
 
-    Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
-            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
-
-
 
     private ProgressBar pDialog;
 
@@ -103,7 +98,7 @@ public class ReviewActivity extends AppCompatActivity implements
     private TextSwitcher textSwitcher;
     private int count =0;
     Thread updateMsg;
-    private static final int FRAME_TIME_MS = 15000;
+    private static final int FRAME_TIME_MS = 12000;
 
 
     @Override
@@ -149,11 +144,8 @@ public class ReviewActivity extends AppCompatActivity implements
         pDialog = findViewById(R.id.progressBar);
         tvProgressStatus = findViewById(R.id.tvProgressStatus);
         tvUserName = findViewById(R.id.tvUserName);
-        //tvUserEmail = findViewById(R.id.tvUserEmail);
         ivUserImage = findViewById(R.id.ivUserImage);
-        //tvUserId = findViewById(R.id.tvUserId);
         textSwitcher =  findViewById(R.id.textSwitcher);
-        //textSwitcher.setFa
 
         Animation in = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);
@@ -227,19 +219,22 @@ public class ReviewActivity extends AppCompatActivity implements
             tvWebsite.setText(locationMatch.get(0).website);
             tvTwitter.setText(locationMatch.get(0).twitter);
             tvFacebook.setText(locationMatch.get(0).facebook);
-            //tvVideo.setText(locationMatch.get(0).video);
             tvHours.setText(locationMatch.get(0).hours);
             tvIsOpen.setText(locationMatch.get(0).isOpen);
-            tvContent.setText(locationMatch.get(0).content);
+            /**
+             *  THIS IS WRONG!!!! MUST FIX LIKE YESTERDAY!!!
+             */
+            tvContent.setText(locationMatch.get(0).logo);
+            /**
+             *  DID YOU FIX THAT WRONG SHIT YET???
+             */
             tvLink.setText(locationMatch.get(0).link);
             tvLatitude.setText(String.valueOf(locationMatch.get(0).latitude));
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
             tvUserName.setText(MainActivity.firstName);
-           // tvUserEmail.setText(MainActivity.userEmail);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
-           // tvUserId.setText(MainActivity.userId);
 
 
             Location locationA = new Location("point A");
@@ -288,14 +283,8 @@ public class ReviewActivity extends AppCompatActivity implements
             latitude = locationAdd.get(0).latitude;
             longitude = locationAdd.get(0).longitude;
             tvUserName.setText(MainActivity.firstName);
-           // tvUserEmail.setText(MainActivity.userEmail);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
-           // tvUserId.setText(MainActivity.userId);
         } else {
-
-            String FooCat = locationReview.get(0).content;
-            String fooImage = locationReview.get(0).logo;
-            String fooImageAgain = locationReview.get(0).featured_image;
 
             tvName.setText(locationReview.get(0).title);
             tvCategory.setText(locationReview.get(0).category);
@@ -493,6 +482,8 @@ public class ReviewActivity extends AppCompatActivity implements
                 }
             }
         });
+
+
 
         updateMsg = new Thread (){
             @Override
