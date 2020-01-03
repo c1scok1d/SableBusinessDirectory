@@ -1,2 +1,2 @@
-include ':app', ':library', ':bhlib'
+include ':TheSableBusinessDirectory', ':library', ':bhlib'
 rootProject.name='Business Listing API'
