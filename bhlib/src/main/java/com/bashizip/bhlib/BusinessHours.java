@@ -84,7 +84,7 @@ public class BusinessHours extends BasePojo implements Comparable<BusinessHours>
     }
 
 
-    ArrayList<String> businessHoursFoo = new ArrayList<>();
+    //ArrayList<String> businessHoursFoo = new ArrayList<>();
     @Override
     public String toString() {
 
@@ -93,13 +93,13 @@ public class BusinessHours extends BasePojo implements Comparable<BusinessHours>
 
 
 
-        businessHoursFoo.add(dayOfWeek + ", " + from + " - " + to);
+       /* businessHoursFoo.add(dayOfWeek + ", " + from + " - " + to);
         businessHoursFoo.add("\\"+"\""+shortDayOfWeek+ " "+from24+ "-"+to24+"\\"+"\"");
 
         System.out.println("Hours View String: " +businessHoursFoo.get(0));
         System.out.println("Hours View String: " +businessHoursFoo.get(1));
 
-        System.out.println("Hours View String: " +dayOfWeek + ", " + from + " - " + to);
+        System.out.println("Hours View String: " +dayOfWeek + ", " + from + " - " + to);*/
         return dayOfWeek + ", " + from + " - " + to;
     }
 

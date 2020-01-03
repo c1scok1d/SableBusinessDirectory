@@ -129,6 +129,7 @@ public class AddListingActivity extends AppCompatActivity implements
     protected ImageView ivLogo;
     private EasyImage easyImage;
     BusinessHoursWeekPicker bh_picker;
+    JSONArray businessHours = new JSONArray();
 
 
 
@@ -155,8 +156,14 @@ public class AddListingActivity extends AppCompatActivity implements
 
                 bhs = bh_picker.getBusinessHoursList();
 
+                for(int i=0; i< bhs.size();i++){
+
+                    businessHours.put(bhs.get(i).getShortDayOfWeek() + " " +bhs.get(i).getFrom24()+ "-" +bhs.get(i).getTo24());
+                }
+
                 //System.out.println(json);
                 System.out.println("Hours String: " +bhs.toString());
+                System.out.println("Hours String For data: " +businessHours.toString());
 
             } catch (ValdationException e) {
                 Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
@@ -244,7 +251,7 @@ public class AddListingActivity extends AppCompatActivity implements
                             website,
                             twitter,
                             facebook,
-                            String.valueOf(bhs)));
+                            businessHours.toString()));
 
                     submitData();
 
@@ -843,7 +850,7 @@ String type = "gd_business";
                 facebook,
                 type,
                 filesToUploadfoo,
-                String.valueOf(bhs));
+                businessHours.toString());
 
         //calling the api
         call.enqueue(new Callback<List<BusinessListings>>() {
