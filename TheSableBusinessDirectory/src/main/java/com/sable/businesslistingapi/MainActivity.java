@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -16,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -56,12 +58,17 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.squareup.picasso.Picasso;
 
@@ -98,6 +105,7 @@ import static com.facebook.appevents.ml.ModelManager.initialize;
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
+        GoogleMap.OnMarkerClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -140,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
+    Marker[] markers;
+    //Marker markers;
     Spinner spnCategory, spnRadius;
     ImageView ivUserImage, spokesperson;
     private static final int toValue = 20;
@@ -150,8 +160,10 @@ public class MainActivity extends AppCompatActivity implements
     ImageButton btnAdd, btnShop;
 
 
+
     SearchView searchView;
     Location location;
+    LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
@@ -626,7 +638,6 @@ public class MainActivity extends AppCompatActivity implements
     /**
      *  get last known location
      */
-
     private void fetchLastLocation() {
 
         fusedLocationClient.getLastLocation()
@@ -678,20 +689,23 @@ public class MainActivity extends AppCompatActivity implements
             //query.put("distance", "5");
             query.put("order", "asc");
             query.put("orderby", "distance");
+            getRetrofit(query); //api call; pass current lat/lng to check if current location in database
 
-            // zoom to current location on map
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            /*// zoom to current location on map
+            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(17)                   // Sets the zoom
+                    .zoom(100)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-            setAddress(latitude, longitude);  // method to reverse geocode to physical address
+
+
+            //setAddress(latitude, longitude);  // method to reverse geocode to physical address*/
         }
 
         /**
@@ -728,9 +742,13 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
         //checkPermissions();
-        map.setOnMyLocationButtonClickListener(this);
-        map.setOnMyLocationClickListener(this);
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+        // Set a listener for marker click.
+        mMap.setOnMarkerClickListener(this);
+
     }
+
 
     /**
      * @return
@@ -757,16 +775,6 @@ public class MainActivity extends AppCompatActivity implements
         query.put("longitude", Double.toString(longitude));
         query.put("distance", "5");
 
-        // zoom to current location on map
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                .zoom(17)                   // Sets the zoom
-                .bearing(90)                // Sets the orientation of the camera to east
-                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         setAddress(latitude, longitude);
         getRetrofit(query);
     }
@@ -831,31 +839,16 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-
     private static Retrofit retrofit = null;
     public void getRetrofit(final Map<String, String> query) {
 
-      /*  HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(new BasicAuthInterceptor(username, password))
-                .addInterceptor(logging)
-                .build();*/
-
-
-        //if(retrofit==null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();
-       // }
+
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
         // pass JSON data to BusinessListings class for filtering
@@ -968,11 +961,27 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc()));
 
+
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()))
+                                    .title(response.body().get(i).getTitle().getRaw())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
+                            latLngBoundsBuilder.include(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()));
                         }
-                        verticalAdapter.notifyDataSetChanged();
 
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
+                                .zoom(100)                   // Sets the zoom
+                                .bearing(90)                // Sets the orientation of the camera to east
+                                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                                .build();                   // Creates a CameraPosition from the builder
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                        LatLngBounds bounds = latLngBoundsBuilder.build();
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
                     }
                 }
                 else {
@@ -989,23 +998,32 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /** Called when the user clicks a marker. */
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        // Retrieve the data from the marker.
+        Integer clickCount = (Integer) marker.getTag();
+
+        // Check if a click count was set, then display the click count.
+        if (clickCount != null) {
+            clickCount = clickCount + 1;
+            marker.setTag(clickCount);
+            Toast.makeText(this,
+                    marker.getTitle() +
+                            " has been clicked " + clickCount + " times.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
     //Retrofit retrofit = null;
     public void loginUser(final Map<String, String> query) {
         Retrofit retrofit = null;
-    /*
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                //.addInterceptor(BasicAuthInterceptor(username, password))
-                .addInterceptor(logging)
-                .build(); */
-
 
         if(retrofit==null){
             retrofit = new Retrofit.Builder()
@@ -1026,15 +1044,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
                 Log.e("loginUser_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
-
-                   // String status = response.body().getStatus();
-
-                       // String WpStatus = response.body().getStatus();
-                        //String WpMsg = response.body().getMsg();
                         userId = String.valueOf(response.body().getWpUserId());
                         tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
-                       // String WpCookie = response.body().getCookie();
-                        //tvWpUserLogin.setText(response.body().getUserLogin());
                 } else {
                     Log.e("loginUser_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1043,8 +1054,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
                 Log.e("loginUser_METHOD_FAILURE ", " Re-running method...");
-              //  loginUser(query);
-
             }
         });
     }

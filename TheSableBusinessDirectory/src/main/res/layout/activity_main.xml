@@ -8,142 +8,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/currentLocationText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/your_current_location"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="#4FC1E9"
-        android:textStyle="bold" />
-
-    <FrameLayout
-        android:id="@+id/mapLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <fragment
-            android:id="@+id/mapFragment"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="150dp" />
-    </FrameLayout>
-
-
-    <LinearLayout
-        android:id="@+id/btnLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="5dp"
-        android:orientation="horizontal"
-        android:padding="3dp">
-
-        <Spinner
-            android:id="@+id/spnRadius"
-            style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:spinnerMode="dialog"
-            android:textSize="12sp" />
-
-        <ImageButton
-            android:id="@+id/btnAdd"
-            android:layout_width="30dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:background="@drawable/customborder"
-            android:scaleType="fitXY"
-            app:srcCompat="@mipmap/add_listing" />
-
-        <!--Button
-            android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/customborder"
-            android:text="@string/add_listing"
-            android:textSize="12sp" / -->
-
-        <ImageButton
-            android:id="@+id/btnShop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/ovalbackground"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="@string/shop"
-            android:textSize="12sp"
-            android:visibility="gone" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/texty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:text="NEARBY LOCATIONS"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textColor="#4FC1E9"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        tools:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/searchLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="5dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/spnCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0" />
-
-        <SearchView
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:iconifiedByDefault="false"
-            android:queryBackground="@drawable/customborder"
-            android:queryHint="Search businesses..."
-            android:theme="@style/AppSearchView"
-            android:visibility="visible">
-
-        </SearchView>
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/loggedInLayout"
         android:layout_width="match_parent"
@@ -286,21 +150,161 @@
 
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/progressBarLayout"
+    <TextView
+        android:id="@+id/currentLocationText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
+        android:gravity="center_horizontal"
+        android:text="@string/your_current_location"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
-        <ProgressBar
-            android:id="@+id/progressbar"
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="#4FC1E9"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/mapLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/progressBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <fragment
+            android:id="@+id/mapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/btnLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal"
+        android:padding="3dp">
+
+        <Spinner
+            android:id="@+id/spnRadius"
+            style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:spinnerMode="dialog"
+            android:textSize="12sp" />
 
+        <ImageButton
+            android:id="@+id/btnAdd"
+            android:layout_width="30dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:background="@drawable/customborder"
+            android:scaleType="fitXY"
+            app:srcCompat="@mipmap/add_listing" />
+
+        <!--Button
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/customborder"
+            android:text="@string/add_listing"
+            android:textSize="12sp" / -->
+
+        <ImageButton
+            android:id="@+id/btnShop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ovalbackground"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/shop"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/texty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="NEARBY LOCATIONS"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#4FC1E9"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <Spinner
+            android:id="@+id/spnCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0" />
+
+        <SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@drawable/customborder"
+            android:queryHint="Search businesses..."
+            android:theme="@style/AppSearchView"
+            android:visibility="visible">
+
+        </SearchView>
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/verticalRecyclerLayout"
@@ -313,7 +317,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingBottom="5dp">
+            android:paddingBottom="5dp"
+            android:visibility="gone">
 
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
