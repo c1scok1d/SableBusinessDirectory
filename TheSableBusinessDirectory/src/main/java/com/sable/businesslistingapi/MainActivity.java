@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -22,6 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -73,8 +78,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,11 +130,16 @@ public class MainActivity extends AppCompatActivity implements
 
     public
 
-    TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvWpCookie, tvWpUserLogin;
-    RecyclerView verticalRecyclerView, horizontalRecyclervView, verticalRecyclerView2;
+    TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
+    RecyclerView verticalRecyclerView, horizontalRecyclervView, horizontalRecyclervView2, verticalRecyclerView2;
     private ProgressBar progressBar;
-    LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
+    LinearLayoutManager mLayoutManager, hLayoutManager,  hLayoutManager2;
     VerticalAdapter verticalAdapter, verticalAdapter2;
+    //RecyclerView horizontalRecyclervView;
+    HorizontalAdapter horizontalAdapter;
+    ArrayList<WooModel> horizontalList;
+    //LinearLayoutManager hLayoutManager;
+
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
@@ -143,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements
     Thread updateMsg;
 
     ImageButton btnAdd, btnShop;
+    WebView wvAdvert1;
 
 
 
@@ -183,6 +197,37 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        horizontalRecyclervView = findViewById(R.id.horizontalRecyclerView);
+        horizontalRecyclervView.setHasFixedSize(true);
+
+        horizontalRecyclervView2 = findViewById(R.id.horizontalRecyclerView2);
+        horizontalRecyclervView2.setHasFixedSize(true);
+        hLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        hLayoutManager2 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        horizontalRecyclervView.setLayoutManager(hLayoutManager);
+        horizontalRecyclervView2.setLayoutManager(hLayoutManager2);
+
+        horizontalList = new ArrayList<>();
+        wvAdvert1 = findViewById(R.id.wvAdvert1);
+
+        wvAdvert1.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4");
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+        });
+
+
+        /* Set HorizontalAdapter to RecyclerView */
+        horizontalAdapter = new HorizontalAdapter(horizontalList, getApplicationContext());
+        horizontalRecyclervView.setAdapter(horizontalAdapter);
+        horizontalRecyclervView2.setAdapter(horizontalAdapter);
+
+
+        getRetrofitWoo(); //call to woocommerce products api
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
 
@@ -191,13 +236,13 @@ public class MainActivity extends AppCompatActivity implements
          * radio buttons on map
          */
 
-        RadioGroup radioGroup =  findViewById(R.id.radio_group_list_selector);
+        RadioGroup radioGroup = findViewById(R.id.radio_group_list_selector);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 Log.e("Radio Button No: ", " response " + checkedId);
-                Toast.makeText(getApplicationContext(), "This is Radio Button: " +checkedId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -287,9 +332,11 @@ public class MainActivity extends AppCompatActivity implements
         locationMatch = new ArrayList<>();
         verticalAdapter = new VerticalAdapter(verticalList, userName, userEmail, userImage, userId, MainActivity.this);
         verticalRecyclerView.setAdapter(verticalAdapter);
+        verticalRecyclerView.setNestedScrollingEnabled(false);
         btnAdd = findViewById(R.id.btnAdd);
         btnShop = findViewById(R.id.btnShop);
         spokesperson = findViewById(R.id.spokesperson);
+        tvCity = findViewById(R.id.tvCity);
 
         //final TextView texty = findViewById(R.id.texty);
         /**
@@ -348,11 +395,11 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("orderby", "distance");
                             // 20 mile distance query
                             getRetrofit(query);
-                           // texty.setText(radius);
+                            // texty.setText(radius);
                             break;
                         default:
                             radius = "Within' 5 miles of your current location";
-                           // texty.setText(radius);
+                            // texty.setText(radius);
                             break;
                     }
 
@@ -513,12 +560,12 @@ public class MainActivity extends AppCompatActivity implements
 
 
         /***
-         *  begin slide shit
+         *  BEGIN SLIDE UP
          */
 
         // setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
-        ListView lv = findViewById(R.id.list);
+       /* ListView lv = findViewById(R.id.list);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -561,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements
                 android.R.layout.simple_list_item_1,
                 your_array_list );
 
-        lv.setAdapter(arrayAdapter);
+        lv.setAdapter(arrayAdapter);*/
 
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -581,22 +628,67 @@ public class MainActivity extends AppCompatActivity implements
                 mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
+        new MyAsynTask().execute();
 
-        TextView t = (TextView) findViewById(R.id.name);
-        t.setText(Html.fromHtml(getString(R.string.hello)));
-        Button f = (Button) findViewById(R.id.follow);
-        f.setText(Html.fromHtml(getString(R.string.follow)));
-        f.setMovementMethod(LinkMovementMethod.getInstance());
-        f.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("http://www.twitter.com/umanoapp"));
-                startActivity(i);
+
+    } //END ON CREATE
+
+
+
+    private class MyAsynTask extends AsyncTask<Void, Void, Document> {
+        @Override
+        protected org.jsoup.nodes.Document doInBackground(Void... voids) {
+
+            org.jsoup.nodes.Document document = null;
+            try {
+                document= Jsoup.connect("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4").get();
+                document.getElementsByClass("navbar").remove();
+                document.getElementsByClass("woocommerce-products-header").remove();
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }); //END SLIDE SHIT
-    }
+            return document;
 
+        }
+
+        @Override
+        protected void onPostExecute(org.jsoup.nodes.Document document) {
+            super.onPostExecute(document);
+
+          //  wvAdvert1.loadDataWithBaseURL("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4",document.toString(),"text/html","utf-8","");
+            wvAdvert1.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK );
+            wvAdvert1.getSettings().setLoadWithOverviewMode(true);
+            wvAdvert1.getSettings().setUseWideViewPort(true);
+            wvAdvert1.getSettings().setBuiltInZoomControls(true);
+
+            wvAdvert1.setWebViewClient(new WebViewClient(){
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                    String url = "https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4";
+                    //view.loadUrl("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4");
+
+                    if (url.endsWith(".mp3")) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(url), "audio/*");
+                        view.getContext().startActivity(intent);
+                        return true;
+                    } else if (url.endsWith(".mp4") || url.endsWith(".3gp")) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(url), "video/*");
+                        view.getContext().startActivity(intent);
+                        return true;
+                    } else {
+                        return super.shouldOverrideUrlLoading(view, url);
+                    }
+                }
+            });
+            progressBar.setVisibility(View.GONE); //hide progressBar
+
+
+        }
+    }
     /**
      * Checks the dynamically-controlled permissions and requests missing permissions from end user.
      */
@@ -746,16 +838,16 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        Map<String, String> query = new HashMap<>();
 
-                        lstKnownLat = location.getLatitude();
-                        lstKnownLng = location.getLongitude();
-                        query.put("latitude",  String.valueOf(lstKnownLat));
-                        query.put("longitude", String.valueOf(lstKnownLng));
+                       /* Map<String, String> query = new HashMap<>();
+
+                        query.put("latitude", String.valueOf(latitude));
+                        query.put("longitude", String.valueOf(longitude));
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby", "distance");
-//                        getRetrofit(query);
+                        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+                        setAddress(latitude, longitude);*/
                     }
                 });
 
@@ -782,6 +874,7 @@ public class MainActivity extends AppCompatActivity implements
             query.put("order", "asc");
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+            setAddress(latitude, longitude);
         }
 
         /**
@@ -834,8 +927,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(this, "Getting current location...", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
+        Map<String, String> query = new HashMap<>();
+
+        query.put("latitude", String.valueOf(latitude));
+        query.put("longitude", String.valueOf(longitude));
+        //query.put("distance", "5");
+        query.put("order", "asc");
+        query.put("orderby", "distance");
+        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+        setAddress(latitude, longitude);
         return false;
     }
 
@@ -844,16 +944,16 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onMyLocationClick(Location location) {
-        //get location address
-      //  this.latitude = location.getLatitude();
-        //this.longitude = location.getLongitude();
+        Toast.makeText(this, "Getting current location...", Toast.LENGTH_SHORT).show();
         Map<String, String> query = new HashMap<>();
 
-        query.put("latitude", Double.toString(latitude));
-        query.put("longitude", Double.toString(longitude));
-        query.put("distance", "5");
-        //setAddress(latitude, longitude);
-        getRetrofit(query);
+        query.put("latitude", String.valueOf(latitude));
+        query.put("longitude", String.valueOf(longitude));
+        //query.put("distance", "5");
+        query.put("order", "asc");
+        query.put("orderby", "distance");
+        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+        setAddress(latitude, longitude);
     }
 
     /**
@@ -885,7 +985,8 @@ public class MainActivity extends AppCompatActivity implements
             state = addresses.get(0).getAdminArea(); //get state name
             zipcode = addresses.get(0).getPostalCode(); //get zip code
             country = addresses.get(0).getCountryName(); //get country
-            tvAddress.setText(address);
+          //  tvAddress.setText(address);
+         //   tvCity.setText(addresses.get(0).getLocality());
             addresses.get(0).getAdminArea();
         } else {
 
@@ -1069,6 +1170,7 @@ public class MainActivity extends AppCompatActivity implements
                             }
                         });
                     }
+                    verticalAdapter.notifyDataSetChanged();
                 }
                 else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
@@ -1177,6 +1279,56 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * Query API for WooStore data
+     */
+    public void getRetrofitWoo() {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);  // <-- this is the important line!
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+
+        // pass JSON data to BusinessListings class for filtering
+        Call<List<WooProducts>> call = service.getPostWooInfo();
+
+        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+        call.enqueue(new Callback<List<WooProducts>>() {
+            @Override
+            public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
+
+                // loop through JSON response get parse and output to log
+
+                for (int i = 0; i < response.body().size(); i++) {
+
+                    //parse response based on WooModel class and add to list array ( get category name, description and image)
+                    horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,
+                            response.body().get(i).getName(),
+                            response.body().get(i).getPermalink(),
+                            response.body().get(i).getAverageRating(),
+                            response.body().get(i).getRatingCount(),
+                            response.body().get(i).getName(),
+                            response.body().get(i).getPrice(),
+                            response.body().get(i).getImages().get(0).getSrc()));
+
+                }
+                horizontalAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<WooProducts>> call, Throwable t) {
+            }
+        });
+
+    }
+
 
     /**
      * more slider shit
@@ -1220,7 +1372,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_anchor: {
                 if (mLayout != null) {
                     if (mLayout.getAnchorPoint() == 1.0f) {
-                        mLayout.setAnchorPoint(0.7f);
+                        mLayout.setAnchorPoint(0.5f);
                         mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
                         item.setTitle(R.string.action_anchor_disable);
                     } else {

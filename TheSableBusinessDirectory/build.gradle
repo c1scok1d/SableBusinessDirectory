@@ -30,7 +30,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(project(':library'))
+    implementation(project(':easyPhotoPickerLibrary'))
     implementation(project(':bhlib'))
 
    // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

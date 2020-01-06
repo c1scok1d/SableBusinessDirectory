@@ -1,2 +1,2 @@
-include ':TheSableBusinessDirectory', ':library', ':bhlib', ':slideUpLibrary'
+include ':TheSableBusinessDirectory', ':easyPhotoPickerLibrary', ':bhlib', ':slideUpLibrary'
 rootProject.name='Business Listing API'
