@@ -174,7 +174,7 @@ public class AddListingActivity extends AppCompatActivity implements
             businessHoursLayout.setVisibility(View.GONE);
         });
 
-        tvAddress = findViewById(R.id.tvAddress);
+      //  tvAddress = findViewById(R.id.tvAddress);
         tvZip = findViewById(R.id.tvZip);
         tvState = findViewById(R.id.tvState);
         tvCity = findViewById(R.id.tvCity);

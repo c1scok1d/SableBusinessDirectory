@@ -12,17 +12,25 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextSwitcher;
@@ -62,6 +70,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -152,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
     private TextSwitcher textSwitcher;
+    private SlidingUpPanelLayout mLayout;
+
 
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
     //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -174,6 +185,21 @@ public class MainActivity extends AppCompatActivity implements
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
+
+
+        /**
+         * radio buttons on map
+         */
+
+        RadioGroup radioGroup =  findViewById(R.id.radio_group_list_selector);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Log.e("Radio Button No: ", " response " + checkedId);
+                Toast.makeText(getApplicationContext(), "This is Radio Button: " +checkedId, Toast.LENGTH_SHORT).show();
+            }
+        });
 
 /**
  * login via facebook
@@ -231,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
 
-        tvAddress = findViewById(R.id.tvAddress);
+        //tvAddress = findViewById(R.id.tvAddress);
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
@@ -265,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements
         btnShop = findViewById(R.id.btnShop);
         spokesperson = findViewById(R.id.spokesperson);
 
-        final TextView texty = findViewById(R.id.texty);
+        //final TextView texty = findViewById(R.id.texty);
         /**
          *  radius spinner
          */
@@ -298,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("orderby", "distance");
                             // 10 mile distance query
                             getRetrofit(query);
-                            texty.setText(radius);
+                            //texty.setText(radius);
                             break;
                         case 2:
                             radius = "Within' 15 miles of your current location";
@@ -310,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("orderby", "distance");
                             //15 mile distance query
                             getRetrofit(query);
-                            texty.setText(radius);
+                            //texty.setText(radius);
                             break;
                         case 3:
                             radius = "Within' 20 miles of your current location";
@@ -322,11 +348,11 @@ public class MainActivity extends AppCompatActivity implements
                             query.put("orderby", "distance");
                             // 20 mile distance query
                             getRetrofit(query);
-                            texty.setText(radius);
+                           // texty.setText(radius);
                             break;
                         default:
                             radius = "Within' 5 miles of your current location";
-                            texty.setText(radius);
+                           // texty.setText(radius);
                             break;
                     }
 
@@ -484,6 +510,91 @@ public class MainActivity extends AppCompatActivity implements
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
+
+
+        /***
+         *  begin slide shit
+         */
+
+        // setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+
+        ListView lv = findViewById(R.id.list);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "onItemClick", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        List<String> your_array_list = Arrays.asList(
+                "This",
+                "Is",
+                "An",
+                "Example",
+                "ListView",
+                "That",
+                "You",
+                "Can",
+                "Scroll",
+                ".",
+                "It",
+                "Shows",
+                "How",
+                "Any",
+                "Scrollable",
+                "View",
+                "Can",
+                "Be",
+                "Included",
+                "As",
+                "A",
+                "Child",
+                "Of",
+                "SlidingUpPanelLayout"
+        );
+
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                your_array_list );
+
+        lv.setAdapter(arrayAdapter);
+
+        mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                Log.i("onPanelSlide", "onPanelSlide, offset " + slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.i("onPanelStateChanged", "onPanelStateChanged " + newState);
+            }
+        });
+        mLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
+        TextView t = (TextView) findViewById(R.id.name);
+        t.setText(Html.fromHtml(getString(R.string.hello)));
+        Button f = (Button) findViewById(R.id.follow);
+        f.setText(Html.fromHtml(getString(R.string.follow)));
+        f.setMovementMethod(LinkMovementMethod.getInstance());
+        f.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse("http://www.twitter.com/umanoapp"));
+                startActivity(i);
+            }
+        }); //END SLIDE SHIT
     }
 
     /**
@@ -548,7 +659,6 @@ public class MainActivity extends AppCompatActivity implements
         //query.put("distance", "5");
         query.put("order", "asc");
         query.put("orderby", "distance");
-       // getRetrofit(query); //api call; pass current lat/lng to check if current location in database
     }
 
     public void onResume() {
@@ -564,7 +674,6 @@ public class MainActivity extends AppCompatActivity implements
         //query.put("distance", "5");
         query.put("order", "asc");
         query.put("orderby", "distance");
-        //getRetrofit(query); //api call; pass current lat/lng to check if current location in database
     }
 
 
@@ -715,6 +824,8 @@ public class MainActivity extends AppCompatActivity implements
         mMap.setOnMarkerClickListener(this);
 
     }
+
+
 
 
     /**
@@ -943,14 +1054,20 @@ public class MainActivity extends AppCompatActivity implements
 
                         CameraPosition cameraPosition = new CameraPosition.Builder()
                                 .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
-                                .zoom(100)                   // Sets the zoom
+                                //.zoom(100)                   // Sets the zoom
                                 .bearing(90)                // Sets the orientation of the camera to east
                                 .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                                 .build();                   // Creates a CameraPosition from the builder
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         LatLngBounds bounds = latLngBoundsBuilder.build();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+
+                        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                            @Override
+                            public void onMapLoaded() {
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+                            }
+                        });
                     }
                 }
                 else {
@@ -1059,6 +1176,80 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
+
+
+    /**
+     * more slider shit
+     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        //getMenuInflater().inflate(R.menu.demo, menu);
+        MenuItem item = menu.findItem(R.id.action_toggle);
+        if (mLayout != null) {
+            if (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.HIDDEN) {
+                item.setTitle(R.string.action_show);
+            } else {
+                item.setTitle(R.string.action_hide);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_toggle: {
+                if (mLayout != null) {
+                    if (mLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN) {
+                        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                        item.setTitle(R.string.action_show);
+                    } else {
+                        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                        item.setTitle(R.string.action_hide);
+                    }
+                }
+                return true;
+            }
+            case R.id.action_anchor: {
+                if (mLayout != null) {
+                    if (mLayout.getAnchorPoint() == 1.0f) {
+                        mLayout.setAnchorPoint(0.7f);
+                        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+                        item.setTitle(R.string.action_anchor_disable);
+                    } else {
+                        mLayout.setAnchorPoint(1.0f);
+                        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                        item.setTitle(R.string.action_anchor_enable);
+                    }
+                }
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mLayout != null &&
+                (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    } //END OF SLIDER SHIT
+
+    /**
+     *
+     * @param context
+     * CLEAR CACHE on close
+     */
 
     public static void deleteCache(Context context) {
         try {

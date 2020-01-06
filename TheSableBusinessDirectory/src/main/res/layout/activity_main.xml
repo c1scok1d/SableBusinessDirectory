@@ -1,326 +1,458 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parentLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:gravity="bottom"
+    sothree:umanoDragView="@id/dragView"
+    sothree:umanoOverlay="true"
+    sothree:umanoPanelHeight="68dp"
+    sothree:umanoParallaxOffset="100dp"
+    sothree:umanoScrollableView="@id/list"
+    sothree:umanoShadowHeight="4dp">
 
-    <LinearLayout
-        android:id="@+id/loggedInLayout"
+    <!-- MAIN CONTENT -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="5dp"
-        android:orientation="horizontal">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!--android.support.v7.widget.Toolbar
+            xmlns:sothree="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/main_toolbar"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            sothree:theme="@style/ActionBar"
+            android:layout_width="match_parent"/-->
         <LinearLayout
-            android:id="@+id/userImageLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/ivUserImage"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:scaleType="fitXY" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/userProfileLayout"
+                android:id="@+id/btnLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal"
+                android:padding="3dp">
+
+                <Spinner
+                    android:id="@+id/spnRadius"
+                    style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:spinnerMode="dialog"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/btnAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/customborder"
+                    android:scaleType="fitStart"
+                    app:srcCompat="@mipmap/add_listing" />
+
+                <!--Button
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
                 android:layout_marginStart="3dp"
                 android:layout_marginEnd="3dp"
-                android:orientation="vertical"
-                android:visibility="visible"
-                tools:visibility="visible">
+                android:layout_weight="1"
+                android:background="@drawable/customborder"
+                android:text="@string/add_listing"
+                android:textSize="12sp" / -->
 
                 <ImageButton
-                    android:id="@+id/btnSupport"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/btnShop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@mipmap/support_foreground" />
+                    android:background="@drawable/ovalbackground"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/shop"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
-                <ImageButton
-                    android:id="@+id/btnSettings"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@mipmap/settings_foreground" />
-
-                <ImageButton
-                    android:id="@+id/btnFavorites"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@mipmap/favorites" />
-
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/login_button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/userGreetingLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/userNameLayout"
+                android:id="@+id/loggedInLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="5dp"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvHello"
+                <LinearLayout
+                    android:id="@+id/userImageLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hello"
-                    android:textColor="#e9774f" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="1dp"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
-                    tools:text="username" />
+                    <ImageView
+                        android:id="@+id/ivUserImage"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:scaleType="fitXY" />
 
-                <TextView
-                    android:id="@+id/tvWelcome"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="and welcome!"
-                    android:textColor="#e9774f"
-                    android:textSize="12sp"
-                    tools:text="and welcome!" />
+                    <LinearLayout
+                        android:id="@+id/userProfileLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:orientation="vertical"
+                        android:visibility="visible"
+                        tools:visibility="visible">
 
-                <TextView
-                    android:id="@+id/tvWpUserId"
-                    android:layout_width="wrap_content"
+                        <ImageButton
+                            android:id="@+id/btnSupport"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/customborder"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@mipmap/support_foreground" />
+
+                        <ImageButton
+                            android:id="@+id/btnSettings"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/customborder"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@mipmap/settings_foreground" />
+
+                        <ImageButton
+                            android:id="@+id/btnFavorites"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/customborder"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@mipmap/favorites" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/userGreetingLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:text="userId"
-                    tools:visibility="visible" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/userNameLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvHello"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hello"
+                            android:textColor="#e9774f" />
+
+                        <TextView
+                            android:id="@+id/tvUserName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
+                            android:layout_marginEnd="1dp"
+                            android:textColor="@color/colorAccent"
+                            android:textStyle="bold"
+                            tools:text="username" />
+
+                        <TextView
+                            android:id="@+id/tvWelcome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="and welcome!"
+                            android:textColor="#e9774f"
+                            android:textSize="12sp"
+                            tools:text="and welcome!" />
+
+                        <TextView
+                            android:id="@+id/tvWpUserId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            tools:text="userId"
+                            tools:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <TextSwitcher
+                        android:id="@+id/textSwitcher"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvSwitcher"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="#e9774f"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvSwitcher2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="12sp" />
+                    </TextSwitcher>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/spokesperson"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@mipmap/spokesman_foreground" />
 
             </LinearLayout>
 
-            <TextSwitcher
-                android:id="@+id/textSwitcher"
+            <FrameLayout
+                android:id="@+id/mapLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                <TextView
-                    android:id="@+id/tvSwitcher"
+                <LinearLayout
+                    android:id="@+id/progressBarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#e9774f"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvSwitcher2"
+                    <ProgressBar
+                        android:id="@+id/progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
+
+                </LinearLayout>
+
+                <fragment
+                    android:id="@+id/mapFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <RadioGroup
+                    android:id="@+id/radio_group_list_selector"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="12sp" />
-            </TextSwitcher>
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                    <RadioButton
+                        android:id="@+id/radioPopular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/colorAccent"
+                        android:checked="true"
+                        android:gravity="start|center_vertical"
+                        android:text="Popular" />
+                    <!-- android:background="@drawable/shape_radiobutton3"
+           //android:textColor="@color/textcolor_radiobutton" / -->
+                    <View
+                        android:id="@+id/VerticalLine"
+                        android:layout_width="1dip"
+                        android:layout_height="match_parent"
+                        android:background="#aaa"
+                        android:visibility="gone" />
+
+                    <RadioButton
+                        android:id="@+id/radioAZ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/colorAccent"
+                        android:checked="true"
+                        android:gravity="start|center_vertical"
+                        android:text="AZ" />
+                    <!-- android:background="@drawable/shape_radiobutton3"
+           //android:textColor="@color/textcolor_radiobutton" / -->
+
+                    <View
+                        android:id="@+id/VerticalLine1"
+                        android:layout_width="1dip"
+                        android:layout_height="match_parent"
+                        android:background="#aaa"
+                        android:visibility="gone" />
+
+                    <RadioButton
+                        android:id="@+id/radioCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/colorAccent"
+                        android:checked="true"
+                        android:gravity="start|center_vertical"
+                        android:text="Category" />
+                    <!-- android:background="@drawable/shape_radiobutton3"
+           //android:textColor="@color/textcolor_radiobutton" / -->
+                    <View
+                        android:id="@+id/VerticalLine3"
+                        android:layout_width="1dip"
+                        android:layout_height="match_parent"
+                        android:background="#aaa"
+                        android:visibility="gone" />
+
+                    <RadioButton
+                        android:id="@+id/radioNearBy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/colorAccent"
+                        android:checked="true"
+                        android:gravity="start|center_vertical"
+                        android:text="Near by" />
+                    <!-- android:background="@drawable/shape_radiobutton3"
+            //android:textColor="@color/textcolor_radiobutton" / -->
+                </RadioGroup>
+            </FrameLayout>
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/spokesperson"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            app:srcCompat="@mipmap/spokesman_foreground" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/currentLocationText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/your_current_location"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tvAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="#4FC1E9"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <FrameLayout
-        android:id="@+id/mapLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
 
         <LinearLayout
-            android:id="@+id/progressBarLayout"
+            android:id="@+id/searchLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical">
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="gone">
 
-            <ProgressBar
-                android:id="@+id/progressbar"
+            <Spinner
+                android:id="@+id/spnCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:layout_weight="0" />
+
+            <SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:iconifiedByDefault="false"
+                android:queryBackground="@drawable/customborder"
+                android:queryHint="Search businesses..."
+                android:theme="@style/AppSearchView"
+                android:visibility="visible">
+
+            </SearchView>
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- SLIDING LAYOUT -->
+    <LinearLayout
+        android:id="@+id/dragView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:clickable="true"
+        android:focusable="false"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/verticalRecyclerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/verticalRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="5dp"
+                android:visibility="visible">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/follow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
-        <fragment
-            android:id="@+id/mapFragment"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <ListView
+            android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
+        </ListView>
 
-    <LinearLayout
-        android:id="@+id/btnLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="5dp"
-        android:orientation="horizontal"
-        android:padding="3dp">
-
-        <Spinner
-            android:id="@+id/spnRadius"
-            style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:spinnerMode="dialog"
-            android:textSize="12sp" />
-
-        <ImageButton
-            android:id="@+id/btnAdd"
-            android:layout_width="30dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:background="@drawable/customborder"
-            android:scaleType="fitXY"
-            app:srcCompat="@mipmap/add_listing" />
-
-        <!--Button
-            android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/customborder"
-            android:text="@string/add_listing"
-            android:textSize="12sp" / -->
-
-        <ImageButton
-            android:id="@+id/btnShop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/ovalbackground"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="@string/shop"
-            android:textSize="12sp"
-            android:visibility="gone" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/texty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:text="NEARBY LOCATIONS"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textColor="#4FC1E9"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/searchLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="5dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="gone">
-
-        <Spinner
-            android:id="@+id/spnCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0" />
-
-        <SearchView
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:iconifiedByDefault="false"
-            android:queryBackground="@drawable/customborder"
-            android:queryHint="Search businesses..."
-            android:theme="@style/AppSearchView"
-            android:visibility="visible">
-
-        </SearchView>
+        <!--<ScrollView-->
+        <!--android:id="@+id/sv"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!-->-->
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="The standard Lorem Ipsum passage, used since the 1500Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Section 1.10.32 of  written by Cicero in 45 t perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?1914 translation by H. RackhamBut I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete accouof the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."/>-->
+        <!--</ScrollView>-->
     </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/verticalRecyclerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/verticalRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingBottom="5dp"
-            android:visibility="gone">
-
-        </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
-
-</LinearLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
