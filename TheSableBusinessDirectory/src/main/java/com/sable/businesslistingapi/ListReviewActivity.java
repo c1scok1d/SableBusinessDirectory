@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -93,8 +94,6 @@ public class ListReviewActivity extends AppCompatActivity {
 
 
         verticalList = new ArrayList<>();
-
-        locationReview= this.getIntent().getExtras().getParcelableArrayList("locationReviewShow");
 
 
        Picasso.Builder builder = new Picasso.Builder(this);
@@ -174,6 +173,17 @@ public class ListReviewActivity extends AppCompatActivity {
         //locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
         //locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
         locationReview = this.getIntent().getExtras().getParcelableArrayList("locationReview");
+        //String locationId = this.getIntent().getStringExtra("locationId");
+
+
+        System.out.println("ListReviewActivity Matched:  " +locationReview.get(0).id);
+        System.out.println("Stuff:"  +locationReview.get(0).title +locationReview.get(0).latitude + locationReview.get(0).longitude);
+        System.out.println("Array is: " +locationReview.toString());
+
+        Map<String, String> query = new HashMap<>();
+
+        query.put("post", String.valueOf(locationReview.get(0).id));
+        getPostReview(query);
 
         tvName.setText(locationReview.get(0).title);
         tvCategory.setText(locationReview.get(0).category);
@@ -352,11 +362,6 @@ public class ListReviewActivity extends AppCompatActivity {
                 }
             });
         }
-
-        Map<String, String> query = new HashMap<>();
-
-        query.put("post", String.valueOf(locationReview.get(0).id));
-        getPostReview(query);
     }
 
 
@@ -457,8 +462,8 @@ public class ListReviewActivity extends AppCompatActivity {
 
                     // mListPost = response.body();
                     pDialog.setVisibility(View.GONE); //hide progressBar
-                    // loop through JSON response get parse and output to log
 
+                    //if no reviews take user to review activity to be the first to review
                     if (response.body().isEmpty()) {
                         Intent LocationReview = new Intent(ListReviewActivity.this, ReviewActivity.class);
 
@@ -466,7 +471,7 @@ public class ListReviewActivity extends AppCompatActivity {
                          * for each array space if id != skip or else...
                          */
 
-                        for (int i = 0; i < locationReview.size(); i++) {
+                        for (int i = 0; i < response.body().size(); i++) {
 
                             if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
 
@@ -508,7 +513,7 @@ public class ListReviewActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                    } else {
+                    } else { //if listing has reviews, list each review
 
                         for (int i = 0; i < response.body().size(); i++) {
                             /**
@@ -536,8 +541,7 @@ public class ListReviewActivity extends AppCompatActivity {
                         }
                         verticalReviewAdapter.notifyDataSetChanged();
 
-
-
+                        //if reviews have photos display images
                         for (int i = 0; i < response.body().size(); i++) {
                             if (!response.body().get(i).getImages().getRendered().isEmpty()) {
                              /*   break;

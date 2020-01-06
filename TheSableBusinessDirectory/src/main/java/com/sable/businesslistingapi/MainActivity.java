@@ -1,31 +1,24 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
+
 import android.location.Address;
-import android.location.Criteria;
+
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.renderscript.Sampler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,7 +51,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -97,11 +89,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.provider.Contacts.SettingsColumns.KEY;
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.facebook.appevents.ml.ModelManager.initialize;
-
-
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
@@ -131,29 +118,18 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, hLayoutManager, mLayoutManager2;
     VerticalAdapter verticalAdapter, verticalAdapter2;
-    // HorizontalAdapter horizontalAdapter;
-    public static List<BusinessListings> mListPost;
-    public static List<WooProducts> hListPost;
-    public static List<UserAuthPOJO> userinfo;
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
-    /* Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
-            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut; */
-
     ArrayList<ListingsModel> verticalList;
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-    // private LoginButton loginButton;
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
-    Marker[] markers;
-    //Marker markers;
+    ArrayList<ListingsModel> locationReview = new ArrayList<>();
     Spinner spnCategory, spnRadius;
     ImageView ivUserImage, spokesperson;
-    private static final int toValue = 20;
-    private static final int fromValue = 0;
     private static final int FRAME_TIME_MS = 15000;
     Thread updateMsg;
 
@@ -162,15 +138,12 @@ public class MainActivity extends AppCompatActivity implements
 
 
     SearchView searchView;
-    Location location;
     LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
 
-    Location bestLocation = null;
     LocationManager locationManager;
-    List<String> providers = new ArrayList<>();
 
     CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
@@ -179,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
     private TextSwitcher textSwitcher;
-    // private int count =0;
 
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
     //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -192,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements
             .addInterceptor(logging)
             .build();
 
-    //String currentTime = String.valueOf(System.currentTimeMillis());
-
     /**
      * @param savedInstanceState
      */
@@ -202,8 +172,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
 
 /**
@@ -517,10 +486,6 @@ public class MainActivity extends AppCompatActivity implements
                 400, LocationListener);
     }
 
-
-   // List<String> providers;
-
-
     /**
      * Checks the dynamically-controlled permissions and requests missing permissions from end user.
      */
@@ -572,9 +537,37 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onStart() {
         super.onStart();
+        Map<String, String> query = new HashMap<>();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
+        //latitude = location.getLatitude();
+        //longitude = location.getLongitude();
+
+        query.put("latitude", String.valueOf(latitude));
+        query.put("longitude", String.valueOf(longitude));
+        //query.put("distance", "5");
+        query.put("order", "asc");
+        query.put("orderby", "distance");
+        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
     }
+
+    public void onResume() {
+        super.onResume();
+        Map<String, String> query = new HashMap<>();
+//This starts the access token tracking
+        accessTokenTracker.startTracking();
+       // latitude = location.getLatitude();
+       // longitude = location.getLongitude();
+
+        query.put("latitude", String.valueOf(latitude));
+        query.put("longitude", String.valueOf(longitude));
+        //query.put("distance", "5");
+        query.put("order", "asc");
+        query.put("orderby", "distance");
+        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+    }
+
+
 
     public void onDestroy() {
         super.onDestroy();
@@ -653,17 +646,7 @@ public class MainActivity extends AppCompatActivity implements
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby", "distance");
-
-                        // zoom to current location on map
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                                .zoom(17)                   // Sets the zoom
-                                .bearing(90)                // Sets the orientation of the camera to east
-                                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                                .build();                   // Creates a CameraPosition from the builder
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        getRetrofit(query);
                     }
                 });
 
@@ -690,22 +673,6 @@ public class MainActivity extends AppCompatActivity implements
             query.put("order", "asc");
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-
-
-            /*// zoom to current location on map
-            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(100)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
-
-            //setAddress(latitude, longitude);  // method to reverse geocode to physical address*/
         }
 
         /**
@@ -774,8 +741,7 @@ public class MainActivity extends AppCompatActivity implements
         query.put("latitude", Double.toString(latitude));
         query.put("longitude", Double.toString(longitude));
         query.put("distance", "5");
-
-        setAddress(latitude, longitude);
+        //setAddress(latitude, longitude);
         getRetrofit(query);
     }
 
@@ -962,10 +928,13 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getFeaturedImage().getSrc()));
 
 
-                            mMap.addMarker(new MarkerOptions()
+                            Marker marker = mMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()))
                                     .title(response.body().get(i).getTitle().getRaw())
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                            marker.setTag(verticalList.get(i).id);
+
+                            //System.out.println("Marker Tag is: " +(marker.getTag()));
 
                             // add category name from array to spinner
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
@@ -1000,21 +969,54 @@ public class MainActivity extends AppCompatActivity implements
 
     /** Called when the user clicks a marker. */
     @Override
-    public boolean onMarkerClick(final Marker marker) {
+    public boolean onMarkerClick (final Marker marker) {
+        for (int i = 0; i < verticalList.size(); i++) {
+            if (verticalList.get(i).id == Integer.parseInt(marker.getTag().toString())) {
+                locationReview.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                        verticalList.get(i).id,
+                        verticalList.get(i).title,
+                        verticalList.get(i).link,
+                        verticalList.get(i).status,
+                        verticalList.get(i).category,
+                        verticalList.get(i).featured,
+                        verticalList.get(i).featured_image,
+                        verticalList.get(i).bldgno,
+                        verticalList.get(i).street,
+                        verticalList.get(i).city,
+                        verticalList.get(i).state,
+                        verticalList.get(i).country,
+                        verticalList.get(i).zipcode,
+                        verticalList.get(i).latitude,
+                        verticalList.get(i).longitude,
+                        verticalList.get(i).rating,
+                        verticalList.get(i).ratingCount,
+                        verticalList.get(i).phone,
+                        verticalList.get(i).email,
+                        verticalList.get(i).website,
+                        verticalList.get(i).twitter,
+                        verticalList.get(i).facebook,
+                        verticalList.get(i).video,
+                        verticalList.get(i).hours,
+                        verticalList.get(i).isOpen,
+                        verticalList.get(i).logo,
+                        verticalList.get(i).content,
+                        verticalList.get(i).featured_image)));
 
-        // Retrieve the data from the marker.
-        Integer clickCount = (Integer) marker.getTag();
+                System.out.println("ID To match:  " +Integer.parseInt(marker.getTag().toString()));
+                System.out.println("Matched:  " +verticalList.get(i).id);
+                System.out.println("Stuff:"  +verticalList.get(i).title +verticalList.get(i).latitude + verticalList.get(i).longitude);
+                System.out.println("Array is: " +locationReview);
 
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1;
-            marker.setTag(clickCount);
-            Toast.makeText(this,
-                    marker.getTitle() +
-                            " has been clicked " + clickCount + " times.",
-                    Toast.LENGTH_SHORT).show();
+                Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
+
+                Bundle locationReviewBundle = new Bundle();
+                locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
+
+                showReviews.putExtra("locationReview", locationReview);
+                startActivity(showReviews);
+                break;
+            } else { }
         }
-
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
