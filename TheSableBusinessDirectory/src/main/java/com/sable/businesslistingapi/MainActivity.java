@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements
             useLoginInformation(accessToken);
             Log.e("onCreate Login", " Access Token: " + accessToken.getToken());
         } else {
-            // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);
+            // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);*/
             LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
             LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
             userImageLayout.setVisibility(View.GONE);
@@ -548,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements
         //query.put("distance", "5");
         query.put("order", "asc");
         query.put("orderby", "distance");
-        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+       // getRetrofit(query); //api call; pass current lat/lng to check if current location in database
     }
 
     public void onResume() {
@@ -564,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements
         //query.put("distance", "5");
         query.put("order", "asc");
         query.put("orderby", "distance");
-        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+        //getRetrofit(query); //api call; pass current lat/lng to check if current location in database
     }
 
 
@@ -646,7 +646,7 @@ public class MainActivity extends AppCompatActivity implements
                         //query.put("distance", "5");
                         query.put("order", "asc");
                         query.put("orderby", "distance");
-                        getRetrofit(query);
+//                        getRetrofit(query);
                     }
                 });
 

@@ -170,15 +170,9 @@ public class ListReviewActivity extends AppCompatActivity {
         pDialog.setVisibility(View.GONE);
 
 
-        //locationMatch = this.getIntent().getExtras().getParcelableArrayList("locationMatch");
-        //locationAdd = this.getIntent().getExtras().getParcelableArrayList("locationAdd");
+
         locationReview = this.getIntent().getExtras().getParcelableArrayList("locationReview");
-        //String locationId = this.getIntent().getStringExtra("locationId");
 
-
-        System.out.println("ListReviewActivity Matched:  " +locationReview.get(0).id);
-        System.out.println("Stuff:"  +locationReview.get(0).title +locationReview.get(0).latitude + locationReview.get(0).longitude);
-        System.out.println("Array is: " +locationReview.toString());
 
         Map<String, String> query = new HashMap<>();
 
