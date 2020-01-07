@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.graphics.Color;
 import android.location.Address;
 
 import android.location.Geocoder;
@@ -15,12 +16,15 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebResourceRequest;
@@ -31,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -133,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements
     TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
     RecyclerView verticalRecyclerView, horizontalRecyclervView, horizontalRecyclervView2, verticalRecyclerView2;
     private ProgressBar progressBar;
-    LinearLayoutManager mLayoutManager, hLayoutManager,  hLayoutManager2;
+    LinearLayoutManager mLayoutManager, hLayoutManager, hLayoutManager2;
     VerticalAdapter verticalAdapter, verticalAdapter2;
     //RecyclerView horizontalRecyclervView;
     HorizontalAdapter horizontalAdapter;
@@ -159,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements
     WebView wvAdvert1;
 
 
-
     SearchView searchView;
     LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
@@ -174,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements
 
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
-    private TextSwitcher textSwitcher;
+    private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3, textSwitcher4;
     private SlidingUpPanelLayout mLayout;
 
 
@@ -190,6 +194,23 @@ public class MainActivity extends AppCompatActivity implements
             .build();
 
     /**
+     * about us
+     */
+
+    private static final int toValue = 20;
+    private static final int fromValue = 0;
+    // private static final int FRAME_TIME_MS = 12000;
+    List<String> words = new ArrayList<>();
+    //int images = new ArrayList<>();
+    private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
+    private boolean firstImage;
+    //Button btnLearnMore, btnDirectory;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
+
+    private Handler imageSwitchHandler;
+    //END ABOUT US
+
+    /**
      * @param savedInstanceState
      */
     @Override
@@ -197,7 +218,160 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         * ABOUT US
+         */
 
+        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        Animation imgAnimationflip = AnimationUtils.loadAnimation(this, R.anim.flip);
+
+        // btnLearnMore = findViewById(R.id.btnLearnMore);
+        // btnDirectory = findViewById(R.id.btnDirectory);
+
+        textSwitcher4 =  findViewById(R.id.textSwitcher4);
+        textSwitcher4.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(14);
+            textView.setTextColor(Color.WHITE);
+            textView.setGravity(Gravity.CENTER);
+            return textView;
+        });
+
+        textSwitcher4.setInAnimation(imgAnimationIn);
+        textSwitcher4.setOutAnimation(imgAnimationOut);
+
+        textSwitcher2 = findViewById(R.id.textSwitcher2);
+        textSwitcher2.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(14);
+            textView.setTextColor(Color.WHITE);
+            textView.setGravity(Gravity.CENTER);
+            return textView;
+        });
+
+        textSwitcher2.setInAnimation(imgAnimationIn);
+        textSwitcher2.setOutAnimation(imgAnimationOut);
+
+        textSwitcher3 = findViewById(R.id.textSwitcher3);
+        textSwitcher3.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(14);
+            textView.setTextColor(Color.WHITE);
+            textView.setGravity(Gravity.CENTER);
+            return textView;
+        });
+
+        textSwitcher3.setInAnimation(imgAnimationIn);
+        textSwitcher3.setOutAnimation(imgAnimationOut);
+
+
+        imageSwitcher = findViewById(R.id.imageSwitcher);
+
+        ImageView imageView = new ImageView(getApplicationContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+        ViewGroup.LayoutParams params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        imageView.setLayoutParams(params);
+
+        imageSwitcher2 = findViewById(R.id.imageSwitcher2);
+
+        ImageView imageView2 = new ImageView(getApplicationContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+        ViewGroup.LayoutParams imageView2params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        imageView2.setLayoutParams(imageView2params);
+
+        imageSwitcher3 = findViewById(R.id.imageSwitcher3);
+
+        ImageView imageView3 = new ImageView(getApplicationContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        ViewGroup.LayoutParams imageView3params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        imageView3.setLayoutParams(imageView3params);
+
+
+        firstImage = true;
+
+        imageSwitchHandler = new Handler();
+        imageSwitchHandler.post(runnableCode);
+
+        textSwitcher2Layout.setVisibility(View.GONE);
+        textSwitcher3Layout.setVisibility(View.GONE);
+        textSwitcherLayout.setVisibility(View.GONE);
+        imageSwitcher.setVisibility(View.GONE);
+        imageSwitcher2.setVisibility(View.GONE);
+        imageSwitcher3.setVisibility(View.GONE);
+
+        /**
+         *  strt fuckin' around with getting linearLayouts to fade in and out
+         */
+        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+
+        LinearLayout textSwitcherLayout = new LinearLayout(getApplicationContext());
+
+        ViewGroup.LayoutParams textSwitcherLayoutParams = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        textSwitcherLayout.setLayoutParams(textSwitcherLayoutParams);
+
+
+        textSwitcherLayout.setAnimation(imgAnimationIn);
+        textSwitcherLayout.setAnimation(imgAnimationOut);
+        textSwitcherLayout.post(runnableCode);
+
+        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+
+        LinearLayout textSwitcher2Layout = new LinearLayout(getApplicationContext());
+
+
+        textSwitcher2Layout.setLayoutParams(textSwitcherLayoutParams);
+
+        textSwitcher2Layout.setAnimation(imgAnimationIn);
+        textSwitcher2Layout.setAnimation(imgAnimationOut);
+        textSwitcher2Layout.post(runnableCode);
+
+        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+
+        LinearLayout textSwitcher3Layout = new LinearLayout(getApplicationContext());
+
+
+        textSwitcher3Layout.setLayoutParams(textSwitcherLayoutParams);
+
+        textSwitcher3Layout.setAnimation(imgAnimationIn);
+        textSwitcher3Layout.setAnimation(imgAnimationOut);
+        textSwitcher3Layout.post(runnableCode);
+
+        /**
+         * end fuckin' around with getting lienarlayouts to fade in and out
+         */
+
+
+        imageSwitcher.setVisibility(View.GONE);
+        imageSwitcher2.setVisibility(View.GONE);
+        imageSwitcher3.setVisibility(View.GONE);
+
+        textSwitcherLayout.setVisibility(View.GONE);
+        textSwitcher2Layout.setVisibility(View.GONE);
+        textSwitcher3Layout.setVisibility(View.GONE);
+        //END ABOUT US
+
+/**
+ * HORIZONTAL ADAPTER
+ */
         horizontalRecyclervView = findViewById(R.id.horizontalRecyclerView);
         horizontalRecyclervView.setHasFixedSize(true);
 
@@ -207,18 +381,7 @@ public class MainActivity extends AppCompatActivity implements
         hLayoutManager2 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         horizontalRecyclervView.setLayoutManager(hLayoutManager);
         horizontalRecyclervView2.setLayoutManager(hLayoutManager2);
-
         horizontalList = new ArrayList<>();
-        wvAdvert1 = findViewById(R.id.wvAdvert1);
-
-        wvAdvert1.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4");
-                return super.shouldOverrideUrlLoading(view, request);
-            }
-        });
-
 
         /* Set HorizontalAdapter to RecyclerView */
         horizontalAdapter = new HorizontalAdapter(horizontalList, getApplicationContext());
@@ -307,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
+        textSwitcher4 = findViewById(R.id.textSwitcher4);
 
         Animation fadeIn = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);
@@ -563,52 +727,6 @@ public class MainActivity extends AppCompatActivity implements
          *  BEGIN SLIDE UP
          */
 
-        // setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
-
-       /* ListView lv = findViewById(R.id.list);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "onItemClick", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        List<String> your_array_list = Arrays.asList(
-                "This",
-                "Is",
-                "An",
-                "Example",
-                "ListView",
-                "That",
-                "You",
-                "Can",
-                "Scroll",
-                ".",
-                "It",
-                "Shows",
-                "How",
-                "Any",
-                "Scrollable",
-                "View",
-                "Can",
-                "Be",
-                "Included",
-                "As",
-                "A",
-                "Child",
-                "Of",
-                "SlidingUpPanelLayout"
-        );
-
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                your_array_list );
-
-        lv.setAdapter(arrayAdapter);*/
 
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -628,67 +746,9 @@ public class MainActivity extends AppCompatActivity implements
                 mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
-        new MyAsynTask().execute();
-
 
     } //END ON CREATE
 
-
-
-    private class MyAsynTask extends AsyncTask<Void, Void, Document> {
-        @Override
-        protected org.jsoup.nodes.Document doInBackground(Void... voids) {
-
-            org.jsoup.nodes.Document document = null;
-            try {
-                document= Jsoup.connect("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4").get();
-                document.getElementsByClass("navbar").remove();
-                document.getElementsByClass("woocommerce-products-header").remove();
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return document;
-
-        }
-
-        @Override
-        protected void onPostExecute(org.jsoup.nodes.Document document) {
-            super.onPostExecute(document);
-
-          //  wvAdvert1.loadDataWithBaseURL("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4",document.toString(),"text/html","utf-8","");
-            wvAdvert1.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK );
-            wvAdvert1.getSettings().setLoadWithOverviewMode(true);
-            wvAdvert1.getSettings().setUseWideViewPort(true);
-            wvAdvert1.getSettings().setBuiltInZoomControls(true);
-
-            wvAdvert1.setWebViewClient(new WebViewClient(){
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                    String url = "https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4";
-                    //view.loadUrl("https://www.thesablebusinessdirectory.com/wp-content/uploads/2019/08/Ripl_Video-3a1f45a7-3fe3-4fcc-9420-aba9d079b397.mp4");
-
-                    if (url.endsWith(".mp3")) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.parse(url), "audio/*");
-                        view.getContext().startActivity(intent);
-                        return true;
-                    } else if (url.endsWith(".mp4") || url.endsWith(".3gp")) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.parse(url), "video/*");
-                        view.getContext().startActivity(intent);
-                        return true;
-                    } else {
-                        return super.shouldOverrideUrlLoading(view, url);
-                    }
-                }
-            });
-            progressBar.setVisibility(View.GONE); //hide progressBar
-
-
-        }
-    }
     /**
      * Checks the dynamically-controlled permissions and requests missing permissions from end user.
      */
@@ -712,7 +772,7 @@ public class MainActivity extends AppCompatActivity implements
             onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
                     grantResults);
 
-            int [] foo = grantResults;
+            int[] foo = grantResults;
             //startActivity(getIntent());
         }
     }
@@ -729,7 +789,7 @@ public class MainActivity extends AppCompatActivity implements
                                 + "' not granted, exiting", Toast.LENGTH_LONG).show();
                         finish();
                         return;
-                    }  else {
+                    } else {
                         startActivity(getIntent());
                     }
                 }
@@ -753,13 +813,19 @@ public class MainActivity extends AppCompatActivity implements
         query.put("orderby", "distance");
     }
 
+    @Override
+    protected void onStop() {
+        imageSwitchHandler.removeCallbacks(runnableCode);
+        super.onStop();
+    }
+
     public void onResume() {
         super.onResume();
         Map<String, String> query = new HashMap<>();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
-       // latitude = location.getLatitude();
-       // longitude = location.getLongitude();
+        // latitude = location.getLatitude();
+        // longitude = location.getLongitude();
 
         query.put("latitude", String.valueOf(latitude));
         query.put("longitude", String.valueOf(longitude));
@@ -767,7 +833,6 @@ public class MainActivity extends AppCompatActivity implements
         query.put("order", "asc");
         query.put("orderby", "distance");
     }
-
 
 
     public void onDestroy() {
@@ -830,7 +895,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     /**
-     *  get last known location
+     * get last known location
      */
     private void fetchLastLocation() {
 
@@ -902,7 +967,7 @@ public class MainActivity extends AppCompatActivity implements
 
     };
 
-   // LocationManager mLocationManager;
+    // LocationManager mLocationManager;
 
     /**
      * @param map
@@ -917,8 +982,6 @@ public class MainActivity extends AppCompatActivity implements
         mMap.setOnMarkerClickListener(this);
 
     }
-
-
 
 
     /**
@@ -958,12 +1021,13 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * geocode location address using lat/lng
+     *
      * @param latitude
      * @param longitude
      */
-    public void setAddress(Double latitude, Double longitude){
-       //this.latitude = latitude;
-       //this.longitude = longitude;
+    public void setAddress(Double latitude, Double longitude) {
+        //this.latitude = latitude;
+        //this.longitude = longitude;
 
         Geocoder geocoder;
         List<Address> addresses = null;
@@ -975,7 +1039,7 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        if(addresses != null) {
+        if (addresses != null) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
             address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
@@ -985,16 +1049,17 @@ public class MainActivity extends AppCompatActivity implements
             state = addresses.get(0).getAdminArea(); //get state name
             zipcode = addresses.get(0).getPostalCode(); //get zip code
             country = addresses.get(0).getCountryName(); //get country
-          //  tvAddress.setText(address);
-         //   tvCity.setText(addresses.get(0).getLocality());
+            //  tvAddress.setText(address);
+            //   tvCity.setText(addresses.get(0).getLocality());
             addresses.get(0).getAdminArea();
         } else {
 
             Toast.makeText(this, "No GPS location available!  " +
-                    "Please check your mobile device for possible service issues." , Toast.LENGTH_LONG).show();
+                    "Please check your mobile device for possible service issues.", Toast.LENGTH_LONG).show();
         }
 
     }
+
     /**
      * Query API for listings data
      * set URL and make call to API
@@ -1017,15 +1082,17 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
     private static Retrofit retrofit = null;
+
     public void getRetrofit(final Map<String, String> query) {
 
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(baseURL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
-                    .build();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
@@ -1049,13 +1116,13 @@ public class MainActivity extends AppCompatActivity implements
 
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
 
-                        if(businessHours == null){
-                            String today= "null";
+                        if (businessHours == null) {
+                            String today = "null";
                             //Log.e("Location ", " Today: " +today);
                             //Log.e("Location ", " IsOpen: " +today);
                         } else {
                             todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
-                            isOpen =  response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
+                            isOpen = response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
                         }
                         /**
                          * onLocationMatch
@@ -1065,7 +1132,7 @@ public class MainActivity extends AppCompatActivity implements
                          */
 
                         if (String.valueOf(response.body().get(i).getLatitude()).equals(String.valueOf(latitude)) &&
-                                String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude)) && userActivityArray.size() > 0 ) {
+                                String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude)) && userActivityArray.size() > 0) {
 
                             // Boolean timeDiff = response.body().get(i).getDateGmt().compareTo(currentTime) > 4;
 
@@ -1171,8 +1238,7 @@ public class MainActivity extends AppCompatActivity implements
                         });
                     }
                     verticalAdapter.notifyDataSetChanged();
-                }
-                else {
+                } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
@@ -1186,9 +1252,11 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    /** Called when the user clicks a marker. */
+    /**
+     * Called when the user clicks a marker.
+     */
     @Override
-    public boolean onMarkerClick (final Marker marker) {
+    public boolean onMarkerClick(final Marker marker) {
         for (int i = 0; i < verticalList.size(); i++) {
             if (verticalList.get(i).id == Integer.parseInt(marker.getTag().toString())) {
                 locationReview.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
@@ -1221,10 +1289,10 @@ public class MainActivity extends AppCompatActivity implements
                         verticalList.get(i).content,
                         verticalList.get(i).featured_image)));
 
-                System.out.println("ID To match:  " +Integer.parseInt(marker.getTag().toString()));
-                System.out.println("Matched:  " +verticalList.get(i).id);
-                System.out.println("Stuff:"  +verticalList.get(i).title +verticalList.get(i).latitude + verticalList.get(i).longitude);
-                System.out.println("Array is: " +locationReview);
+                System.out.println("ID To match:  " + Integer.parseInt(marker.getTag().toString()));
+                System.out.println("Matched:  " + verticalList.get(i).id);
+                System.out.println("Stuff:" + verticalList.get(i).title + verticalList.get(i).latitude + verticalList.get(i).longitude);
+                System.out.println("Array is: " + locationReview);
 
                 Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
 
@@ -1234,7 +1302,8 @@ public class MainActivity extends AppCompatActivity implements
                 showReviews.putExtra("locationReview", locationReview);
                 startActivity(showReviews);
                 break;
-            } else { }
+            } else {
+            }
         }
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
@@ -1246,7 +1315,7 @@ public class MainActivity extends AppCompatActivity implements
     public void loginUser(final Map<String, String> query) {
         Retrofit retrofit = null;
 
-        if(retrofit==null){
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -1265,8 +1334,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
                 Log.e("loginUser_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
-                        userId = String.valueOf(response.body().getWpUserId());
-                        tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
+                    userId = String.valueOf(response.body().getWpUserId());
+                    tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
                 } else {
                     Log.e("loginUser_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1356,7 +1425,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_toggle: {
                 if (mLayout != null) {
                     if (mLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN) {
@@ -1398,16 +1467,16 @@ public class MainActivity extends AppCompatActivity implements
     } //END OF SLIDER SHIT
 
     /**
-     *
-     * @param context
-     * CLEAR CACHE on close
+     * @param context CLEAR CACHE on close
      */
 
     public static void deleteCache(Context context) {
         try {
             File dir = context.getCacheDir();
             deleteDir(dir);
-        } catch (Exception e) { e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean deleteDir(File dir) {
@@ -1420,10 +1489,174 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
             return dir.delete();
-        } else if(dir!= null && dir.isFile()) {
+        } else if (dir != null && dir.isFile()) {
             return dir.delete();
         } else {
             return false;
         }
     }
+
+    /**
+     * ABOUT US ANIMATIONS
+     */
+
+
+
+    int count = 0, i;
+    private Runnable runnableCode = new Runnable() {
+        Random randomGenerator = new Random();
+
+
+        // String image;
+        @Override
+        public void run() {
+            Animation imgAnimationIn =  AnimationUtils.loadAnimation( getApplicationContext(),  R.anim.fade_in);
+            Animation imgAnimationOut =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.fade_out);
+            Animation imgAnimationflip =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.flip);
+
+
+            /*imgAnimationOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    imageSwitcher.setVisibility(View.GONE);
+                    imageSwitcher2.setVisibility(View.GONE);
+                    imageSwitcher3.setVisibility(View.GONE);
+
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) { }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    imageSwitcher.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                }
+            });
+
+            imgAnimationIn.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    imageSwitcher.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) { }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    imageSwitcher.setVisibility(View.GONE);
+                    imageSwitcher2.setVisibility(View.GONE);
+                    imageSwitcher3.setVisibility(View.GONE);
+
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+                }
+            });*/
+
+            String [] text = {
+                    "Hello, and welcome to The Sable Business Directory.  The Sable Business Directory is designed to help those wanting to support " +
+                            "and frequent black owned businesses and service providers find black owned businesses and service providers.",
+
+                    "We provide a one of a kind online platform that combines a searchable geographical based geo-directory, social media and e-commerce " +
+                            "platforms catered specifically to black owned businesses and service providers. ",
+
+                    "From mobile phones to dentist services, it’s rare to blindly make a purchase decision without reading " +
+                            "through several online reviews. In 2016, 90% of shoppers read at least one online review before deciding " +
+                            "to visiting a business.",
+
+                    "Tap below to learn more about our geo-directory, social media and e-commerce platforms or " +
+                            "tap exit to begin using the directory to find black owned businesses and service providers near you.",
+
+            };
+
+            int [] images = { R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
+                    R.mipmap.spokesman2_foreground, R.mipmap.spokesman3_foreground};
+            switch (count)
+            {
+                case 1:
+                    imageSwitcher.setImageResource(images[count]);
+                    textSwitcher2.setText(text[count]);
+                    imageSwitcher.setVisibility(View.VISIBLE);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    imageSwitcher.setAnimation(imgAnimationIn);
+                    textSwitcher2Layout.setAnimation(imgAnimationIn);
+                    imageSwitcher2.setAnimation(imgAnimationOut);
+                    textSwitcherLayout.setAnimation(imgAnimationOut);
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+                case 2:
+                    imageSwitcher3.setImageResource(images[count]);
+                    textSwitcher3.setText(text[count]);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setAnimation(imgAnimationIn);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setAnimation(imgAnimationIn);
+                    imageSwitcher.setAnimation(imgAnimationOut);
+                    imageSwitcher.setVisibility(View.GONE);
+                    textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+
+                case 3:
+                    imageSwitcher2.setImageResource(images[count]);
+                    textSwitcher4.setText(text[count]);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setAnimation(imgAnimationIn);
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    textSwitcherLayout.setAnimation(imgAnimationIn);
+                    imageSwitcher3.setAnimation(imgAnimationOut);
+                    textSwitcher3Layout.setAnimation(imgAnimationOut);
+                    /*btnDirectory.setVisibility(View.VISIBLE);
+                    btnDirectory.setAnimation(imgAnimationIn);
+                    btnLearnMore.setVisibility(View.VISIBLE);
+                    btnLearnMore.setAnimation(imgAnimationIn);*/
+                    imageSwitchHandler.removeCallbacks(runnableCode);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+                default:
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    imageSwitcher2.setImageResource(images[count]);
+                    textSwitcher4.setText(text[count]);
+                    imageSwitcher2.setAnimation(imgAnimationIn);
+                    textSwitcherLayout.setAnimation(imgAnimationIn);
+
+                    imageSwitcher.setVisibility(View.GONE);
+                    //imageSwitcher2.setVisibility(View.GONE);
+                    imageSwitcher3.setVisibility(View.GONE);
+
+                    //textSwitcherLayout.setVisibility(View.GONE);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    i = randomGenerator.nextInt(100);
+                    count ++;
+
+            }
+        }
+    };
 }
