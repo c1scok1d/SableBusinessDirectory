@@ -1149,7 +1149,6 @@ public class MainActivity extends AppCompatActivity implements
                 //Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
                     // mListPost = response.body();
-                    progressBar.setVisibility(View.GONE); //hide progressBar
                     // loop through JSON response get parse and output to log
 
                     for (int i = 0; i < response.body().size(); i++) {
@@ -1322,7 +1321,9 @@ public class MainActivity extends AppCompatActivity implements
                         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                             @Override
                             public void onMapLoaded() {
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 5));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 2));
+                                progressBar.setVisibility(View.GONE); //hide progressBar
+
                             }
                         });
                     }
