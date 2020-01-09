@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -48,8 +45,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class ListReviewActivity extends AppCompatActivity {
@@ -99,7 +94,7 @@ public class ListReviewActivity extends AppCompatActivity {
        Picasso.Builder builder = new Picasso.Builder(this);
         pDialog = new ProgressBar(this);
 
-        horizontalRecyclerView = findViewById(R.id.horizontalRecyclerView);
+        horizontalRecyclerView = findViewById(R.id.featuredListingsRecyclerView);
         horizontalRecyclerView.setHasFixedSize(true);
 
         LinearLayoutManager hLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);

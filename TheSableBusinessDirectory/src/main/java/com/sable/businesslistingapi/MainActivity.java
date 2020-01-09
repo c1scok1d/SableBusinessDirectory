@@ -13,12 +13,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -27,18 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
@@ -46,7 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,8 +45,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.facebook.login.widget.LoginButton;
 
 
 import com.facebook.AccessToken;
@@ -86,13 +75,14 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -136,12 +126,21 @@ public class MainActivity extends AppCompatActivity implements
     public
 
     TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
-    RecyclerView verticalRecyclerView, horizontalRecyclervView, horizontalRecyclervView2, verticalRecyclerView2;
+    RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, reviewsRecyclerView;
+    GridView gridView;
     private ProgressBar progressBar;
-    LinearLayoutManager mLayoutManager, hLayoutManager, hLayoutManager2;
-    VerticalAdapter verticalAdapter, verticalAdapter2;
-    //RecyclerView horizontalRecyclervView;
-    HorizontalAdapter horizontalAdapter;
+    LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
+            recentListingsRecyclerViewLayoutManager;
+
+
+    VerticalAdapter verticalAdapter;
+    FeaturedListAdapter featuredListAdapter;
+    RecentListingsAdapter recentListingsAdapter;
+    //RecentReviewListingsAdapter recentReviewListAdapter;
+    RecentReviewListingsAdapter recentReviewListingsAdapter;
+
+
+
     ArrayList<WooModel> horizontalList;
     //LinearLayoutManager hLayoutManager;
 
@@ -149,19 +148,25 @@ public class MainActivity extends AppCompatActivity implements
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
-    ArrayList<ListingsModel> verticalList;
+    ArrayList<ListingsModel> verticalList = new ArrayList<>();
+    ArrayList<ListReviewModel> reviewlList = new ArrayList<>();
+    ArrayList<FeaturedListingsModel> featuredList = new ArrayList<>();
+    ArrayList<RecentListingsModel> recentList = new ArrayList<>();
+    ArrayList<RecentReviewListingsModel> recentReviewList= new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
+    ArrayList<ListingsModel> locationReview = new ArrayList<>();
+
+
     List<String> spinnerArrayRad = new ArrayList<>();
     List<String> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
-    ArrayList<ListingsModel> locationReview = new ArrayList<>();
     Spinner spnCategory, spnRadius;
     ImageView ivUserImage, spokesperson;
     private static final int FRAME_TIME_MS = 15000;
     Thread updateMsg;
 
     ImageButton btnAdd, btnShop;
-    WebView wvAdvert1;
+    String date1, date2;
 
 
     SearchView searchView;
@@ -218,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+
         /**
          * ABOUT US
          */
@@ -228,10 +236,6 @@ public class MainActivity extends AppCompatActivity implements
 
         Animation imgAnimationIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         Animation imgAnimationOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        Animation imgAnimationflip = AnimationUtils.loadAnimation(this, R.anim.flip);
-
-        // btnLearnMore = findViewById(R.id.btnLearnMore);
-        // btnDirectory = findViewById(R.id.btnDirectory);
 
         textSwitcher4 =  findViewById(R.id.textSwitcher4);
         textSwitcher4.setFactory(() -> {
@@ -358,8 +362,6 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * end fuckin' around with getting lienarlayouts to fade in and out
          */
-
-
         imageSwitcher.setVisibility(View.GONE);
         imageSwitcher2.setVisibility(View.GONE);
         imageSwitcher3.setVisibility(View.GONE);
@@ -369,27 +371,48 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher3Layout.setVisibility(View.GONE);
         //END ABOUT US
 
-/**
- * HORIZONTAL ADAPTER
- */
-        horizontalRecyclervView = findViewById(R.id.horizontalRecyclerView);
-        horizontalRecyclervView.setHasFixedSize(true);
 
-        horizontalRecyclervView2 = findViewById(R.id.horizontalRecyclerView2);
-        horizontalRecyclervView2.setHasFixedSize(true);
-        hLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        hLayoutManager2 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        horizontalRecyclervView.setLayoutManager(hLayoutManager);
-        horizontalRecyclervView2.setLayoutManager(hLayoutManager2);
-        horizontalList = new ArrayList<>();
+        /**
+        * Featured Listings
+        */
+        featuredListAdapter = new FeaturedListAdapter(featuredList, getApplicationContext());
+        featuredRecyclervView = findViewById(R.id.featuredListingsRecyclerView);
+        featuredRecyclervView.setHasFixedSize(true);
+        featuredRecyclervView.setAdapter(featuredListAdapter);
+        featuredRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        featuredRecyclervView.setLayoutManager(featuredRecyclerViewLayoutManager);
 
-        /* Set HorizontalAdapter to RecyclerView */
-        horizontalAdapter = new HorizontalAdapter(horizontalList, getApplicationContext());
-        horizontalRecyclervView.setAdapter(horizontalAdapter);
-        horizontalRecyclervView2.setAdapter(horizontalAdapter);
+        /**
+         * Recent Listings
+         */
+        recentListingsAdapter = new RecentListingsAdapter(recentList, getApplicationContext());
+        recentListingsRecyclervView = findViewById(R.id.recentListingsRecyclerView);
+        recentListingsRecyclervView.setHasFixedSize(true);
+        recentListingsRecyclervView.setAdapter(recentListingsAdapter);
+        recentListingsRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        recentListingsRecyclervView.setLayoutManager(recentListingsRecyclerViewLayoutManager);
+
+        /**
+         * Reviews
+         */
+
+        gridView = findViewById(R.id.gridview);
+        //GridView gridView = findViewById(R.id.gridView1);
+        recentReviewListingsAdapter = new RecentReviewListingsAdapter(recentReviewList, MainActivity.this);
+        gridView.setAdapter(recentReviewListingsAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                RecentListingsModel book = recentList.get(position);
+                //book.toggleFavorite();
+                recentReviewListingsAdapter.notifyDataSetChanged();
+            }
+        });
 
 
-        getRetrofitWoo(); //call to woocommerce products api
+
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
@@ -430,19 +453,6 @@ public class MainActivity extends AppCompatActivity implements
                         Log.e("Facebook Login Error ", " response " + exception);
                     }
                 });
-
-        Boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-
-        if (isLoggedIn) {
-            useLoginInformation(accessToken);
-            Log.e("onCreate Login", " Access Token: " + accessToken.getToken());
-        } else {
-            // Intent goHome = new Intent(v.getContext(), ListReviewActivity.class);*/
-            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
-            LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
-            userImageLayout.setVisibility(View.GONE);
-            userNameLayout.setVisibility(View.GONE);
-        }
 
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -494,9 +504,19 @@ public class MainActivity extends AppCompatActivity implements
         verticalRecyclerView.setLayoutManager(mLayoutManager);
         verticalList = new ArrayList<>();
         locationMatch = new ArrayList<>();
+
         verticalAdapter = new VerticalAdapter(verticalList, userName, userEmail, userImage, userId, MainActivity.this);
+        featuredListAdapter = new FeaturedListAdapter(featuredList, MainActivity.this);
+        recentListingsAdapter = new RecentListingsAdapter(recentList, MainActivity.this);
         verticalRecyclerView.setAdapter(verticalAdapter);
         verticalRecyclerView.setNestedScrollingEnabled(false);
+
+        featuredRecyclervView.setAdapter(featuredListAdapter);
+        featuredRecyclervView.setNestedScrollingEnabled(false);
+
+        recentListingsRecyclervView.setAdapter(recentListingsAdapter);
+        recentListingsRecyclervView.setNestedScrollingEnabled(false);
+
         btnAdd = findViewById(R.id.btnAdd);
         btnShop = findViewById(R.id.btnShop);
         spokesperson = findViewById(R.id.spokesperson);
@@ -605,6 +625,8 @@ public class MainActivity extends AppCompatActivity implements
         /**
          *  location add button
          */
+
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -939,6 +961,7 @@ public class MainActivity extends AppCompatActivity implements
             query.put("order", "asc");
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+            getReviews();
             setAddress(latitude, longitude);
         }
 
@@ -1085,6 +1108,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private static Retrofit retrofit = null;
 
+
+    /**
+     * Retrofit API call to get listings
+     * @param query
+     */
     public void getRetrofit(final Map<String, String> query) {
 
 
@@ -1107,15 +1135,12 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("getRetrofit_METHOD_SUCCESS ", " response " + response.body());
                 //Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
-
                     // mListPost = response.body();
                     progressBar.setVisibility(View.GONE); //hide progressBar
                     // loop through JSON response get parse and output to log
 
                     for (int i = 0; i < response.body().size(); i++) {
-
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
-
                         if (businessHours == null) {
                             String today = "null";
                             //Log.e("Location ", " Today: " +today);
@@ -1124,6 +1149,7 @@ public class MainActivity extends AppCompatActivity implements
                             todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                             isOpen = response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
                         }
+
                         /**
                          * onLocationMatch
                          * if device lat/lng equals stored listing lat/lng locationMatch = true
@@ -1205,6 +1231,56 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc()));
+                            verticalAdapter.notifyDataSetChanged();
+
+
+                            try {
+                                SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
+                                Date created = sdf.parse(response.body().get(i).getDateGmt());
+                                Date currentTime = Calendar.getInstance().getTime();
+                                date1 = String.valueOf(created);
+                                date2 = String.valueOf(currentTime);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 7;
+                            if(isRecent){
+                                recentList.add(new RecentListingsModel(RecentListingsModel.IMAGE_TYPE,
+                                        response.body().get(i).getId(),
+                                        response.body().get(i).getTitle().getRaw(),
+                                        response.body().get(i).getLink(),
+                                        response.body().get(i).getPostCategory().get(0).getName(),
+                                        response.body().get(i).getFeatured(),
+                                        response.body().get(i).getFeaturedImage().getSrc(),
+                                        response.body().get(i).getRating(),
+                                        response.body().get(i).getRatingCount(),
+                                        todayRange,
+                                        isOpen,
+                                        response.body().get(i).getLogo(),
+                                        response.body().get(i).getContent().getRaw(),
+                                        response.body().get(i).getFeaturedImage().getSrc()));
+                                recentListingsAdapter.notifyDataSetChanged();
+                            }
+
+                            boolean isFeatured = response.body().get(i).getFeatured();
+                            if(isFeatured){
+                                featuredList.add(new FeaturedListingsModel(FeaturedListingsModel.IMAGE_TYPE,
+                                        response.body().get(i).getId(),
+                                        response.body().get(i).getTitle().getRaw(),
+                                        response.body().get(i).getLink(),
+                                        response.body().get(i).getPostCategory().get(0).getName(),
+                                        response.body().get(i).getFeatured(),
+                                        response.body().get(i).getFeaturedImage().getSrc(),
+                                        response.body().get(i).getRating(),
+                                        response.body().get(i).getRatingCount(),
+                                        todayRange,
+                                        isOpen,
+                                        response.body().get(i).getLogo(),
+                                        response.body().get(i).getContent().getRaw(),
+                                        response.body().get(i).getFeaturedImage().getSrc()));
+                                featuredListAdapter.notifyDataSetChanged();
+                            }
 
 
                             Marker marker = mMap.addMarker(new MarkerOptions()
@@ -1233,11 +1309,10 @@ public class MainActivity extends AppCompatActivity implements
                         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                             @Override
                             public void onMapLoaded() {
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 5));
                             }
                         });
                     }
-                    verticalAdapter.notifyDataSetChanged();
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1251,6 +1326,92 @@ public class MainActivity extends AppCompatActivity implements
         });
 
     }
+    //END Retrofit API call to get listings
+
+
+    /**
+     * Retrofit API call to get reviews
+     */
+
+    public void getReviews() {
+        retrofit = null;
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(new BasicAuthInterceptor(username, password))
+                .addInterceptor(logging)
+                .build();
+
+
+        //if(retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+       // }
+        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+
+        // pass JSON data to BusinessListings class for filtering
+        Call<List<ListReviewPOJO>> call = service.getReviews();
+
+
+
+        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+        call.enqueue(new Callback<List<ListReviewPOJO>>() {
+            @Override
+            public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
+                Log.e("getPostReview_METHOD_SUCCESS", " response " + response.body());
+                if (response.isSuccessful()) {
+
+                        for (int i = 0; i < response.body().size(); i++) {
+                            /**
+                             * populate vertical recycler in Main Activity
+                             */
+                            recentReviewList.add(new RecentReviewListingsModel(RecentReviewListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getId(),
+                                    response.body().get(i).getLink(),
+                                    response.body().get(i).getAuthorName(),
+                                    response.body().get(i).getRating().getRating(),
+                                    response.body().get(i).getDateGmt(),
+                                    response.body().get(i).getImages().getRendered().get(0).getSrc()));
+                        }
+
+                      recentReviewListingsAdapter.notifyDataSetChanged();
+
+                        //if reviews have photos display images
+                        for (int i = 0; i < response.body().size(); i++) {
+                            if (!response.body().get(i).getImages().getRendered().isEmpty()) {
+                                for (int n = 0; n < response.body().get(i).getImages().getRendered().size(); n++) {
+                      //              recentReviewImages.add(response.body().get(i).getImages().getRendered().get(n).getSrc());
+                                }
+                                recentReviewListingsAdapter.notifyDataSetChanged();
+                            }
+
+                        // imagesAdapter.notifyDataSetChanged();
+                        //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
+                    }
+                } else {
+                    Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
+                }
+            }
+            @Override
+            public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
+               /* if (retryCount++ < TOTAL_RETRIES) {
+                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
+
+                }*/
+            }
+        });
+
+    }
+
+
 
     /**
      * Called when the user clicks a marker.
@@ -1388,7 +1549,7 @@ public class MainActivity extends AppCompatActivity implements
                             response.body().get(i).getImages().get(0).getSrc()));
 
                 }
-                horizontalAdapter.notifyDataSetChanged();
+               // horizontalAdapter.notifyDataSetChanged();
             }
 
             @Override

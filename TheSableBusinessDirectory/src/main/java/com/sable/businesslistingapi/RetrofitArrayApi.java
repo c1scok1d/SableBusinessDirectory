@@ -33,6 +33,11 @@ public interface RetrofitArrayApi {
             @QueryMap Map<String, String> options
     );
 
+    @GET("wp-json/geodir/v2/reviews")
+    Call<List<ListReviewPOJO>> getReviews(
+            //@QueryMap Map<String, String> options
+    );
+
     @GET("api/user/fb_connect")
     Call<UserAuthPOJO> getUserInfo(
             @QueryMap Map<String, String> accessToken

@@ -574,15 +574,24 @@
                     <!-- END ANIMATION -->
                 </LinearLayout>
 
-
                 <LinearLayout
-                    android:id="@+id/horizontalRecyclerLayout"
+                    android:id="@+id/featuredListingsRecyclerViewLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/tvFeaturedListings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Featured"
+                        android:textAllCaps="true"
+                        android:textColor="#e9774f"
+                        android:textSize="18sp" />
+
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/horizontalRecyclerView"
+                        android:id="@+id/featuredListingsRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp">
@@ -591,10 +600,50 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/recentReviewsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvRecentReviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Recent Reviews"
+                        android:textAllCaps="true"
+                        android:textColor="#e9774f"
+                        android:textSize="18sp" />
+
+                    <GridView
+                        android:id="@+id/gridview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:columnWidth="100dp"
+                        android:gravity="center"
+                        android:horizontalSpacing="3dp"
+                        android:numColumns="auto_fit"
+                        android:stretchMode="spacingWidthUniform"
+                        android:verticalSpacing="24dp">
+
+                    </GridView>
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/verticalRecyclerLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvNearBy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Near by"
+                        android:textAllCaps="true"
+                        android:textColor="#e9774f"
+                        android:textSize="18sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/verticalRecyclerView"
@@ -608,13 +657,23 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/horizontalRecyclerLayout2"
+                    android:id="@+id/recentListingsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/tvRecentListings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="New"
+                        android:textAllCaps="true"
+                        android:textColor="#e9774f"
+                        android:textSize="18sp" />
+
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/horizontalRecyclerView2"
+                        android:id="@+id/recentListingsRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp">

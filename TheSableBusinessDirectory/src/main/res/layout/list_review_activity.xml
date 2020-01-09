@@ -543,7 +543,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/horizontalRecyclerLayout"
+                android:id="@+id/featuredListingsRecyclerViewLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -559,7 +559,7 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/horizontalRecyclerView"
+                    android:id="@+id/featuredListingsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
