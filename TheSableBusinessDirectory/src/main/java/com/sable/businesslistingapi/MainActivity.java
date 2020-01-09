@@ -391,29 +391,12 @@ public class MainActivity extends AppCompatActivity implements
          * Recent Reviews
          */
 
-        recentReviewListingsAdapter = new RecentReviewListingsAdapter(recentReviewList, MainActivity.this);
+        recentReviewListingsAdapter = new RecentReviewListingsAdapter(recentReviewList, getApplicationContext());
         recentReviewsRecyclervView = findViewById(R.id.recentReviewsRecyclerView);
         recentReviewsRecyclervView.setHasFixedSize(true);
         recentReviewsRecyclervView.setAdapter(recentReviewListingsAdapter);
         recentReviewsRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recentReviewsRecyclervView.setLayoutManager(recentReviewsRecyclerViewLayoutManager);
-
-       // gridView = findViewById(R.id.gridview);
-        //GridView gridView = findViewById(R.id.gridView1);
-
-       /* gridView.setAdapter(recentReviewListingsAdapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RecentListingsModel book = recentList.get(position);
-                //book.toggleFavorite();
-                recentReviewListingsAdapter.notifyDataSetChanged();
-            }
-        });*/
-
-
-
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
@@ -1395,11 +1378,6 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getDateGmt(),
                                     response.body().get(i).getImages().getRendered().get(0).getSrc()));
 
-                            /*if (!response.body().get(i).getImages().getRendered().isEmpty()) {
-                                for (int n = 0; n < response.body().get(i).getImages().getRendered().size(); n++) {
-                                    recentReviewImages.add(response.body().get(i).getImages().getRendered().get(n).getSrc(),
-                                            response.body());
-                                }*/
                                 recentReviewListingsAdapter.notifyDataSetChanged();
                            // }
 

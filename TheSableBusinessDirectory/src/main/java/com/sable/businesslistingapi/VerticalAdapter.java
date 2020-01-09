@@ -78,62 +78,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         accessToken = AccessToken.getCurrentAccessToken();
 
     }
-   /* public void loginUser(String query) {
-        Retrofit retrofit = null;
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                //.addInterceptor(BasicAuthInterceptor(username, password))
-                .addInterceptor(logging)
-                .build();
-
-
-        if(retrofit==null){
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(baseURL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
-                    .build();
-        }
-        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-
-        // pass JSON data to BusinessListings class for filtering
-        Call<UserAuthPOJO> call = service.getUserInfo(query);
-
-
-        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
-        call.enqueue(new Callback<UserAuthPOJO>() {
-            @Override
-            public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
-                Log.e("Login2WP", " response " + response.body());
-                if (response.isSuccessful()) {
-
-                    //String status = response.body().getStatus();
-
-                    String WpStatus = response.body().getStatus();
-                    String WpMsg = response.body().getMsg();
-                    userId = String.valueOf(response.body().getWpUserId());
-                    String wpCookie = response.body().getCookie();
-                    String WpUserLogin = response.body().getUserLogin();
-                } else {
-                    Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
-                Log.e("SNAFU ", " UserAuthPOJO Failure!!! :)");
-
-            }
-        });
-    } */
 
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvStreet, tvCity, tvState, tvHours, tvisOpen, tvContent, tvPhone,
@@ -180,9 +124,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             tvEmail = itemView.findViewById(R.id.tvEmail);
             tvTwitter = itemView.findViewById(R.id.tvTwitter);
             tvFacebook = itemView.findViewById(R.id.tvFacebook);
-            btnEmail = itemView.findViewById(R.id.btnEmail);
-            btnTwitter = itemView.findViewById(R.id.btnTwitter);
-            btnFacebook = itemView.findViewById(R.id.btnFacebook);
+           // btnEmail = itemView.findViewById(R.id.btnEmail);
+            //btnTwitter = itemView.findViewById(R.id.btnTwitter);
+            //btnFacebook = itemView.findViewById(R.id.btnFacebook);
             tvFeatured = itemView.findViewById(R.id.tvFeatured);
             tvDistance = itemView.findViewById(R.id.tvDistance);
             btnReview = itemView.findViewById(R.id.btnReview);
@@ -385,63 +329,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 });
             }
 
-           /* fbLogincallbackManager = CallbackManager.Factory.create();
-
-            LoginManager.getInstance().registerCallback(fbLogincallbackManager,
-                    new FacebookCallback<LoginResult>() {
-                        @Override
-                        public void onSuccess(LoginResult loginResult) {
-                            // App code
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            // App code
-                        }
-
-                        @Override
-                        public void onError(FacebookException exception) {
-                            // App code
-                        }
-                    });*/
         }
 
     }
-
-
-    public void useLoginInformation(AccessToken accessToken) {
-        /**
-         Creating the GraphRequest to fetch user details
-         1st Param - AccessToken
-         2nd Param - Callback (which will be invoked once the request is successful)
-         **/
-        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-            //OnCompleted is invoked once the GraphRequest is successful
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                try {
-                    userName = object.getString("name");
-                    userEmail = object.getString("email");
-                    userImage = object.getJSONObject("picture").getJSONObject("data").getString("url");
-                       /* displayName.setText(name);
-                        emailID.setText(email);*/
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        // We set parameters to the GraphRequest using a Bundle.
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,picture.width(200)");
-        request.setParameters(parameters);
-        // Initiate the GraphRequest
-        request.executeAsync();
-    }
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        fbLogincallbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }*/
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -534,7 +424,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.content,
                 object.featured_image));
 
-        if (object.facebook.equals("null") || object.facebook.isEmpty()) {
+        /*if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
             // } else {
             //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
@@ -549,7 +439,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             ((ImageTypeViewHolder) holder).btnEmail.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
             //} else {
             //    ((ImageTypeViewHolder) holder).tvEmail.setText(object.email);
-        }
+        } */
         if (object.featured.equals(true)) {
             String isFeatured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
@@ -559,7 +449,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         }
         if (object.phone.equals("null") || object.phone.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnCall.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
-            ((ImageTypeViewHolder) holder).tvCall.setTextColor(Color.rgb(211, 211, 211));
+           // ((ImageTypeViewHolder) holder).tvCall.setTextColor(Color.rgb(211, 211, 211));
             // } else {
             //     ((ImageTypeViewHolder) holder).tvFacebook.setText(object.facebook);
         }

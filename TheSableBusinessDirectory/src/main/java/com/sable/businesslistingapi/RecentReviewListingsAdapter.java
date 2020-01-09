@@ -3,6 +3,7 @@ package com.sable.businesslistingapi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,12 +92,12 @@ public class RecentReviewListingsAdapter extends RecyclerView.Adapter {
         Picasso.Builder builder = new Picasso.Builder(mContext);
 
 
-        ((MyViewHolder) holder).txtRestaurantName.setText(dataset.get(position).title);
-        ((MyViewHolder) holder).txtDesc.setText(dataset.get(position).content);
+        ((MyViewHolder) holder).txtRestaurantName.setText(dataset.get(position).authorName);
+        ((MyViewHolder) holder).txtDesc.setText(dataset.get(position).timestamp);
         ((MyViewHolder) holder).tvId.setText(String.valueOf(dataset.get(position).id));
         ((MyViewHolder) holder).simpleRatingBar.setRating(Float.valueOf(dataset.get(position).rating));
-        ((MyViewHolder) holder).tvRatingCount.setText(String.valueOf(dataset.get(position).ratingCount));
-        builder.build().load(dataset.get(position).featured_image).into(((MyViewHolder) holder).image);
+        //((MyViewHolder) holder).tvRatingCount.setText(String.valueOf(dataset.get(position).ratingCount));
+        builder.build().load(dataset.get(position).image).into(((MyViewHolder) holder).image);
     }
 
     @Override

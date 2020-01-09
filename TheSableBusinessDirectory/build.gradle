@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-final BUILD_DATE = new Date().format('yyyy-MM-dd HH:mm:ss')
+final BUILD_DATE = new Date().format('yyyyMMdd-HH:mm:ss')
 
 android {
     compileSdkVersion 29

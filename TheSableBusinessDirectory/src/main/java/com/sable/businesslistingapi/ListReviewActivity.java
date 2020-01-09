@@ -148,8 +148,8 @@ public class ListReviewActivity extends AppCompatActivity {
         tvTwitter = findViewById(R.id.tvTwitter);
         tvFacebook = findViewById(R.id.tvFacebook);
         btnEmail = findViewById(R.id.btnEmail);*/
-        btnTwitter = findViewById(R.id.btnTwitter);
-        btnFacebook = findViewById(R.id.btnFacebook);
+       // btnTwitter = findViewById(R.id.btnTwitter);
+        //btnFacebook = findViewById(R.id.btnFacebook);
         tvFeatured = findViewById(R.id.tvFeatured);
         tvDistance = findViewById(R.id.tvDistance);
         btnReview = findViewById(R.id.btnReview);
