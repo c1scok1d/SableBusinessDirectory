@@ -125,18 +125,17 @@ public class MainActivity extends AppCompatActivity implements
 
     public
 
-    TextView tvAddress, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
-    RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, reviewsRecyclerView;
+    TextView tvMore, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
+    RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     GridView gridView;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
-            recentListingsRecyclerViewLayoutManager;
+            recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
 
 
     VerticalAdapter verticalAdapter;
     FeaturedListAdapter featuredListAdapter;
     RecentListingsAdapter recentListingsAdapter;
-    //RecentReviewListingsAdapter recentReviewListAdapter;
     RecentReviewListingsAdapter recentReviewListingsAdapter;
 
 
@@ -222,10 +221,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
         /**
          * ABOUT US
          */
@@ -393,13 +388,20 @@ public class MainActivity extends AppCompatActivity implements
         recentListingsRecyclervView.setLayoutManager(recentListingsRecyclerViewLayoutManager);
 
         /**
-         * Reviews
+         * Recent Reviews
          */
 
-        gridView = findViewById(R.id.gridview);
-        //GridView gridView = findViewById(R.id.gridView1);
         recentReviewListingsAdapter = new RecentReviewListingsAdapter(recentReviewList, MainActivity.this);
-        gridView.setAdapter(recentReviewListingsAdapter);
+        recentReviewsRecyclervView = findViewById(R.id.recentReviewsRecyclerView);
+        recentReviewsRecyclervView.setHasFixedSize(true);
+        recentReviewsRecyclervView.setAdapter(recentReviewListingsAdapter);
+        recentReviewsRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        recentReviewsRecyclervView.setLayoutManager(recentReviewsRecyclerViewLayoutManager);
+
+       // gridView = findViewById(R.id.gridview);
+        //GridView gridView = findViewById(R.id.gridView1);
+
+       /* gridView.setAdapter(recentReviewListingsAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -408,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements
                 //book.toggleFavorite();
                 recentReviewListingsAdapter.notifyDataSetChanged();
             }
-        });
+        });*/
 
 
 
@@ -521,6 +523,7 @@ public class MainActivity extends AppCompatActivity implements
         btnShop = findViewById(R.id.btnShop);
         spokesperson = findViewById(R.id.spokesperson);
         tvCity = findViewById(R.id.tvCity);
+        tvMore = findViewById(R.id.tvMore);
 
         //final TextView texty = findViewById(R.id.texty);
         /**
@@ -754,11 +757,18 @@ public class MainActivity extends AppCompatActivity implements
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                Log.i("onPanelSlide", "onPanelSlide, offset " + slideOffset);
+               Log.i("onPanelSlide", "onPanelSlide, offset " + slideOffset);
             }
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                //isCollapsed = (newState ="COLLAPSED");
+                if(String.valueOf(newState).equals("COLLAPSED")){
+                    tvMore.setText("Tap For More");
+                }else{
+                    tvMore.setText("Tap For Less");
+                }
+
                 Log.i("onPanelStateChanged", "onPanelStateChanged " + newState);
             }
         });
@@ -822,17 +832,20 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onStart() {
         super.onStart();
-        Map<String, String> query = new HashMap<>();
 //This starts the access token tracking
-        accessTokenTracker.startTracking();
-        //latitude = location.getLatitude();
-        //longitude = location.getLongitude();
 
-        query.put("latitude", String.valueOf(latitude));
-        query.put("longitude", String.valueOf(longitude));
-        //query.put("distance", "5");
-        query.put("order", "asc");
-        query.put("orderby", "distance");
+          if (accessToken != null) {
+            useLoginInformation(accessToken);
+           // startActivity(getIntent());
+            Log.e("Access Token Login Successful ", " accessToken " + accessToken);
+        } else {
+           // startActivity(getIntent());
+            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
+            LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
+            userImageLayout.setVisibility(View.GONE);
+            userNameLayout.setVisibility(View.GONE);
+        }
+        accessTokenTracker.startTracking();
     }
 
     @Override
@@ -1380,18 +1393,14 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getRating().getRating(),
                                     response.body().get(i).getDateGmt(),
                                     response.body().get(i).getImages().getRendered().get(0).getSrc()));
-                        }
 
-                      recentReviewListingsAdapter.notifyDataSetChanged();
-
-                        //if reviews have photos display images
-                        for (int i = 0; i < response.body().size(); i++) {
-                            if (!response.body().get(i).getImages().getRendered().isEmpty()) {
+                            /*if (!response.body().get(i).getImages().getRendered().isEmpty()) {
                                 for (int n = 0; n < response.body().get(i).getImages().getRendered().size(); n++) {
-                      //              recentReviewImages.add(response.body().get(i).getImages().getRendered().get(n).getSrc());
-                                }
+                                    recentReviewImages.add(response.body().get(i).getImages().getRendered().get(n).getSrc(),
+                                            response.body());
+                                }*/
                                 recentReviewListingsAdapter.notifyDataSetChanged();
-                            }
+                           // }
 
                         // imagesAdapter.notifyDataSetChanged();
                         //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);

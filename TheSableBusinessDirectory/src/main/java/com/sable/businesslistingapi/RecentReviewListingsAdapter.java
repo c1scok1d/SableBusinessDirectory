@@ -1,21 +1,25 @@
 package com.sable.businesslistingapi;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 
-public class RecentReviewListingsAdapter extends BaseAdapter {
+public class RecentReviewListingsAdapter extends RecyclerView.Adapter {
 
     private ArrayList<RecentReviewListingsModel> dataset;
     private Context mContext;
@@ -25,65 +29,78 @@ public class RecentReviewListingsAdapter extends BaseAdapter {
         this.mContext = context;
     }
 
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        TextView txtRestaurantName, txtDesc, tvRatingCount, tvId;
+        ImageView image;
+        RatingBar simpleRatingBar;
+
+        public MyViewHolder(View view) {
+            super(view);
+            this.txtRestaurantName = view.findViewById(R.id.txtRestaurantName);
+            this.txtDesc = view.findViewById(R.id.txtDesc);
+            //this.tvPrice = view.findViewById(R.id.tvPrice);
+            this.simpleRatingBar = view.findViewById(R.id.simpleRatingBar);
+            this.tvRatingCount = view.findViewById(R.id.tvRatingCount);
+            this.image = view.findViewById(R.id.imgRestaurant);
+            this.tvId = view.findViewById(R.id.tvId);
+            ArrayList<RecentReviewListingsModel> locationReviewShow = new ArrayList<>();
+
+            image.setOnClickListener(v -> {
+                Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
+
+
+                for (int i = 0; i < dataset.size(); i++) {
+
+                    if ((dataset.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+
+                        locationReviewShow.add((new RecentReviewListingsModel(RecentReviewListingsModel.IMAGE_TYPE,
+                                dataset.get(i).id,
+                                dataset.get(i).link,
+                                dataset.get(i).authorName,
+                                dataset.get(i).rating,
+                                dataset.get(i).timestamp,
+                                dataset.get(i).featured_image)));
+
+                        Bundle locationReviewBundle = new Bundle();
+                        locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
+                        showReviews.putExtra("locationReview", locationReviewShow);
+                        itemView.getContext().startActivity(showReviews);
+                        break;
+                    }
+                }
+            });
+        }
+
+
+    }
+
+
+    @NotNull
     @Override
-    public int getCount() {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_review, parent, false);
+        return new MyViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int position) {
+
+        //final WooModel object = dataset.get(position);
+
+        Picasso.Builder builder = new Picasso.Builder(mContext);
+
+
+        ((MyViewHolder) holder).txtRestaurantName.setText(dataset.get(position).title);
+        ((MyViewHolder) holder).txtDesc.setText(dataset.get(position).content);
+        ((MyViewHolder) holder).tvId.setText(String.valueOf(dataset.get(position).id));
+        ((MyViewHolder) holder).simpleRatingBar.setRating(Float.valueOf(dataset.get(position).rating));
+        ((MyViewHolder) holder).tvRatingCount.setText(String.valueOf(dataset.get(position).ratingCount));
+        builder.build().load(dataset.get(position).featured_image).into(((MyViewHolder) holder).image);
+    }
+
+    @Override
+    public int getItemCount() {
         return dataset.size();
     }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final RecentReviewListingsModel data = dataset.get(position);
-
-
-        if (convertView == null) {
-            final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.linearlayout_book, null);
-
-            final ImageView imageViewCoverArt = (ImageView)convertView.findViewById(R.id.imageview_cover_art);
-            final TextView nameTextView = (TextView)convertView.findViewById(R.id.textview_book_name);
-            final TextView authorTextView = (TextView)convertView.findViewById(R.id.textview_book_author);
-            final ImageView imageViewFavorite = (ImageView)convertView.findViewById(R.id.imageview_favorite);
-            final RatingBar ratingBar = convertView.findViewById(R.id.ratingBar2);
-
-            final ViewHolder viewHolder = new ViewHolder(nameTextView, authorTextView, imageViewCoverArt, imageViewFavorite, ratingBar);
-            convertView.setTag(viewHolder);
-        }
-        final ViewHolder viewHolder = (ViewHolder)convertView.getTag();
-//    viewHolder.imageViewCoverArt.setImageResource(book.getImageResource());
-        viewHolder.nameTextView.setText(dataset.get(position).title);
-        viewHolder.authorTextView.setText(dataset.get(position).authorName);
-        viewHolder.ratingBar.setRating(dataset.get(position).rating);
-        //viewHolder.imageViewFavorite.setImageResource(book.getIsFavorite() ? R.drawable.star_enabled : R.drawable.star_disabled);
-        Picasso.Builder builder = new Picasso.Builder(mContext);
-        builder.build().load(dataset.get(position).image).into(viewHolder.imageViewCoverArt);
-
-        return convertView;
-    }
-
-    private class ViewHolder {
-        private final TextView nameTextView;
-        private final TextView authorTextView;
-        private final ImageView imageViewCoverArt;
-        private final ImageView imageViewFavorite;
-        private final RatingBar ratingBar;
-
-        public ViewHolder(TextView nameTextView, TextView authorTextView, ImageView imageViewCoverArt, ImageView imageViewFavorite, RatingBar ratingBar) {
-            this.nameTextView = nameTextView;
-            this.authorTextView = authorTextView;
-            this.imageViewCoverArt = imageViewCoverArt;
-            this.imageViewFavorite = imageViewFavorite;
-            this.ratingBar = ratingBar;
-        }
-    }
-
 }

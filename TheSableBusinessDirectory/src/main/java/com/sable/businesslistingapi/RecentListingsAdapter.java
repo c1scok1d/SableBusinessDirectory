@@ -118,7 +118,7 @@ public class RecentListingsAdapter extends RecyclerView.Adapter {
         ((MyViewHolder) holder).tvName.setText(dataset.get(position).title);
         ((MyViewHolder) holder).tvId.setText(String.valueOf(dataset.get(position).id));
         ((MyViewHolder) holder).tvContent.setText(dataset.get(position).content);
-        ((MyViewHolder) holder).simpleRatingBar.setRating(Float.valueOf(dataset.get(position).rating));
+        ((MyViewHolder) holder).simpleRatingBar.setRating(dataset.get(position).rating);
         ((MyViewHolder) holder).tvRatingCount.setText(String.valueOf(dataset.get(position).ratingCount));
         builder.build().load(dataset.get(position).featured_image).into(((MyViewHolder) holder).ivFeaturedImage);
     }

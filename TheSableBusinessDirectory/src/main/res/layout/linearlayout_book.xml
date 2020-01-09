@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -12,10 +13,11 @@
 
         <ImageView
             android:id="@+id/imageview_cover_art"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="140dp"
+            android:layout_height="100dp"
             android:background="@drawable/roundedcorner"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitXY"
+            tools:srcCompat="@drawable/ic_launcher_background" />
 
         <ImageView
             android:id="@+id/imageview_favorite"
@@ -23,17 +25,19 @@
             android:layout_height="24dp"
             android:layout_gravity="bottom|right" />
 
-        <!-- android:src="@drawable/star_disabled" -->
-
     </FrameLayout>
 
-    <RatingBar
-        android:id="@+id/ratingBar2"
-        style="@style/Widget.AppCompat.RatingBar.Small"
+    <TextView
+        android:id="@+id/textview_book_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:numStars="5" />
+        android:gravity="center_horizontal"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="Are You My Mother" />
 
     <TextView
         android:id="@+id/textview_book_author"
@@ -43,17 +47,10 @@
         android:textSize="12sp"
         tools:text="Dr. Seuss" />
 
-    <TextView
-        android:id="@+id/textview_book_name"
+    <RatingBar
+        android:id="@+id/ratingBar2"
+        style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center_horizontal"
-        android:paddingLeft="8dp"
-        android:paddingTop="4dp"
-        android:paddingRight="8dp"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        tools:text="Are You My Mother" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
