@@ -396,6 +396,7 @@
             android:id="@+id/tvMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/customborder"
             android:backgroundTint="@color/colorAccent"
@@ -411,64 +412,117 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:orientation="vertical">
 
-
-                <!-- BEGIN ABOUT US ANIMATION -->
                 <LinearLayout
-                    android:id="@+id/welcomeLayer"
+                    android:id="@+id/recentReviewsLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/white"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_top_corners"
+                    android:backgroundTint="@android:color/transparent"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tvRecentReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
+                        android:backgroundTint="@color/white"
                         android:gravity="start|center_vertical"
-                        android:text="Reviews"
+                        android:paddingStart="3dp"
+                        android:paddingEnd="3dp"
+                        android:text="Recent Reviews"
                         android:textAllCaps="true"
                         android:textColor="#e9774f"
-                        android:textSize="18sp" />
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/recentReviewsRecyclerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recentReviewsRecyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white" />
 
                 </LinearLayout>
 
+
+                <!-- BEGIN ABOUT US ANIMATION -->
                 <LinearLayout
-                    android:id="@+id/aboutUsLayout"
+                    android:id="@+id/aboutUsAnimationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:id="@+id/parent_layout"
+                        android:id="@+id/aboutUsAnimationFLayout"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_gravity="center_vertical"
+                        android:background="@drawable/roundedcorner"
+                        android:backgroundTint="@color/white"
                         android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:id="@+id/textSwitcherLayout"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextSwitcher
+                                android:id="@+id/textSwitcher4"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_gravity="center_vertical"
+                                android:padding="10dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/textSwitcher2Layout"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="start|center_vertical"
+                            android:orientation="vertical">
+
+                            <TextSwitcher
+                                android:id="@+id/textSwitcher2"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_alignParentBottom="false"
+                                android:layout_centerHorizontal="false"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:padding="10dp" />
+
+                        </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/textSwitcher3Layout"
                             android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start|top"
-                            android:background="@drawable/customborder"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center_vertical"
                             android:orientation="vertical">
 
                             <TextSwitcher
                                 android:id="@+id/textSwitcher3"
                                 android:layout_width="fill_parent"
                                 android:layout_height="0dp"
+                                android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
-                                android:background="@color/colorAccent"
                                 android:padding="10dp" />
 
                         </LinearLayout>
@@ -478,13 +532,13 @@
                             android:id="@+id/imageSwitcher2"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="top|end">
+                            android:layout_gravity="center_vertical|end">
 
                             <ImageView
                                 android:id="@+id/imageView2-1"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="top|end"
+                                android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@mipmap/spokesman1_foreground" />
 
@@ -492,57 +546,22 @@
                                 android:id="@+id/imageView2-2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="top|end"
+                                android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter" />
                         </ImageSwitcher>
-
-                        <LinearLayout
-                            android:id="@+id/textSwitcherLayout"
-                            android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start|top"
-                            android:background="@drawable/customborder"
-                            android:orientation="vertical">
-
-                            <TextSwitcher
-                                android:id="@+id/textSwitcher4"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:background="@color/colorAccent" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/textSwitcher2Layout"
-                            android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start|top"
-                            android:background="@drawable/customborder"
-                            android:orientation="vertical">
-
-                            <TextSwitcher
-                                android:id="@+id/textSwitcher2"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_alignParentBottom="false"
-                                android:layout_centerHorizontal="false"
-                                android:layout_weight="1"
-                                android:background="@color/colorAccent"
-                                android:padding="10dp" />
-
-                        </LinearLayout>
 
                         <ImageSwitcher
 
                             android:id="@+id/imageSwitcher"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="top|end">
+                            android:layout_gravity="center_vertical|end">
 
                             <ImageView
                                 android:id="@+id/imageView1"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="top|end"
+                                android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@mipmap/spokesman1_foreground" />
 
@@ -550,7 +569,7 @@
                                 android:id="@+id/imageView2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="top|end"
+                                android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter" />
 
                         </ImageSwitcher>
@@ -560,13 +579,13 @@
                             android:id="@+id/imageSwitcher3"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="top|end">
+                            android:layout_gravity="center_vertical|end">
 
                             <ImageView
                                 android:id="@+id/imageView3-1"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="top|end"
+                                android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@mipmap/spokesman1_foreground" />
 
@@ -574,16 +593,9 @@
                                 android:id="@+id/imageView3-2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="top|end"
+                                android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter" />
                         </ImageSwitcher>
-
-                        <LinearLayout
-                            android:id="@+id/buttonLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center_vertical"
-                            android:orientation="horizontal"></LinearLayout>
 
 
                     </FrameLayout>
@@ -591,51 +603,76 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/featuredListingsRecyclerViewLayout"
+                    android:id="@+id/featuredListings"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tvFeaturedListings"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:backgroundTint="@color/white"
                         android:gravity="start|center_vertical"
-                        android:text="Featured"
+                        android:paddingStart="3dp"
+                        android:paddingEnd="3dp"
+                        android:text="Featured Listings"
                         android:textAllCaps="true"
                         android:textColor="#e9774f"
-                        android:textSize="18sp" />
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/featuredListingsRecyclerViewLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/featuredListingsRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
+                        android:backgroundTint="@color/white">
 
                     </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/nearByListingsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvNearbyListings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="3dp"
+                        android:paddingEnd="3dp"
+                        android:text="Near by"
+                        android:textAllCaps="true"
+                        android:textColor="#e9774f"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/verticalRecyclerLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvNearBy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:gravity="start|center_vertical"
-                        android:text="Near by"
-                        android:textAllCaps="true"
-                        android:textColor="#e9774f"
-                        android:textSize="18sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/verticalRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
                         android:clipToPadding="false"
                         android:paddingBottom="5dp"
                         android:visibility="visible">
@@ -647,37 +684,34 @@
                     android:id="@+id/recentListingsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:background="@android:color/transparent"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tvRecentListings"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:backgroundTint="@color/white"
                         android:gravity="start|center_vertical"
-                        android:text="New"
+                        android:paddingStart="3dp"
+                        android:paddingEnd="3dp"
+                        android:text="New Listings"
                         android:textAllCaps="true"
                         android:textColor="#e9774f"
-                        android:textSize="18sp" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recentListingsRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                    </androidx.recyclerview.widget.RecyclerView>
+                        android:textSize="12sp" />
                 </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recentListingsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="@color/white">
+
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
-        <LinearLayout
-            android:id="@+id/recentReviewsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-    </LinearLayout>
+            </LinearLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
