@@ -40,7 +40,9 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginRight="5dp"
                 android:orientation="horizontal"
-                android:padding="3dp">
+                android:padding="3dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <Spinner
                     android:id="@+id/spnRadius"
@@ -56,7 +58,7 @@
                 <ImageButton
                     android:id="@+id/btnAdd"
                     android:layout_width="match_parent"
-                    android:layout_height="28dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
@@ -87,11 +89,6 @@
                     android:textSize="12sp"
                     android:visibility="gone" />
 
-                <com.facebook.login.widget.LoginButton
-                    android:id="@+id/login_button2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -101,7 +98,9 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:id="@+id/userImageLayout"
@@ -206,7 +205,7 @@
                     </LinearLayout>
 
                     <TextSwitcher
-                        android:id="@+id/textSwitcher"
+                        android:id="@+id/textSwitcherFoo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -262,86 +261,20 @@
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-
-                <RadioGroup
-                    android:id="@+id/radio_group_list_selector"
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:id="@+id/category_radioButton_scroller"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="4dp">
+                    android:fillViewport="true"
+                    android:scrollbars="none" >
 
-                    <RadioButton
-                        android:id="@+id/radioPopular"
+                    <RadioGroup
+                        android:id="@+id/radio_group_list_selector"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="start"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/colorAccent"
-                        android:checked="true"
-                        android:gravity="start|center_vertical"
-                        android:text="Popular" />
-                    <!-- android:background="@drawable/shape_radiobutton3"
-           //android:textColor="@color/textcolor_radiobutton" / -->
-                    <View
-                        android:id="@+id/VerticalLine"
-                        android:layout_width="1dip"
-                        android:layout_height="match_parent"
-                        android:background="#aaa"
-                        android:visibility="gone" />
-
-                    <RadioButton
-                        android:id="@+id/radioAZ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/colorAccent"
-                        android:checked="true"
-                        android:gravity="start|center_vertical"
-                        android:text="AZ" />
-                    <!-- android:background="@drawable/shape_radiobutton3"
-           //android:textColor="@color/textcolor_radiobutton" / -->
-
-                    <View
-                        android:id="@+id/VerticalLine1"
-                        android:layout_width="1dip"
-                        android:layout_height="match_parent"
-                        android:background="#aaa"
-                        android:visibility="gone" />
-
-                    <RadioButton
-                        android:id="@+id/radioCategory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/colorAccent"
-                        android:checked="true"
-                        android:gravity="start|center_vertical"
-                        android:text="Category" />
-                    <!-- android:background="@drawable/shape_radiobutton3"
-           //android:textColor="@color/textcolor_radiobutton" / -->
-                    <View
-                        android:id="@+id/VerticalLine3"
-                        android:layout_width="1dip"
-                        android:layout_height="match_parent"
-                        android:background="#aaa"
-                        android:visibility="gone" />
-
-                    <RadioButton
-                        android:id="@+id/radioNearBy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/colorAccent"
-                        android:checked="true"
-                        android:gravity="start|center_vertical"
-                        android:text="Near by" />
-                    <!-- android:background="@drawable/shape_radiobutton3"
-            //android:textColor="@color/textcolor_radiobutton" / -->
-                </RadioGroup>
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="4dp"></RadioGroup>
+                </HorizontalScrollView>
             </FrameLayout>
 
         </LinearLayout>
@@ -479,15 +412,20 @@
                             android:id="@+id/textSwitcherLayout"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="center_vertical"
+                            android:layout_gravity="start|center_vertical"
                             android:orientation="vertical">
 
                             <TextSwitcher
-                                android:id="@+id/textSwitcher4"
+                                android:id="@+id/textSwitcher"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center_vertical"
                                 android:padding="10dp" />
+                            <com.facebook.login.widget.LoginButton
+                                android:id="@+id/login_button2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -502,10 +440,7 @@
                                 android:id="@+id/textSwitcher2"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_alignParentBottom="false"
-                                android:layout_centerHorizontal="false"
                                 android:layout_gravity="center_vertical"
-                                android:layout_weight="1"
                                 android:padding="10dp" />
 
                         </LinearLayout>
@@ -514,15 +449,14 @@
                             android:id="@+id/textSwitcher3Layout"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="center_vertical"
+                            android:layout_gravity="start|center_vertical"
                             android:orientation="vertical">
 
                             <TextSwitcher
                                 android:id="@+id/textSwitcher3"
                                 android:layout_width="fill_parent"
-                                android:layout_height="0dp"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center_vertical"
-                                android:layout_weight="1"
                                 android:padding="10dp" />
 
                         </LinearLayout>

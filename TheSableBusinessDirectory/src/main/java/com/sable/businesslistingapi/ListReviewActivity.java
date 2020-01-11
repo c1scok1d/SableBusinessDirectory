@@ -456,14 +456,9 @@ public class ListReviewActivity extends AppCompatActivity {
                     if (response.body().isEmpty()) {
                         Intent LocationReview = new Intent(ListReviewActivity.this, ReviewActivity.class);
 
-                        /**
-                         * for each array space if id != skip or else...
-                         */
-
-                        for (int i = 0; i < response.body().size(); i++) {
+                        for (int i = 0; i < locationReview.size(); i++) {
 
                             if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
-
                                 locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
                                         locationReview.get(i).id,
                                         locationReview.get(i).title,

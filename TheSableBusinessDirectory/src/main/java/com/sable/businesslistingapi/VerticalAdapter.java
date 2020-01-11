@@ -365,7 +365,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvisOpen.setText(object.isOpen);
         ((ImageTypeViewHolder) holder).tvContent.setText(object.content);
         ((ImageTypeViewHolder) holder).simpleRatingBar.setRating(object.rating);
-        ((ImageTypeViewHolder) holder).tvDistance.setText(String.format(Locale.US, "%10.2f", distance));
+        ((ImageTypeViewHolder) holder).tvDistance.setText(String.format(Locale.US, "%.2f", distance));
         ((ImageTypeViewHolder) holder).tvWebsite.setText(object.website);
         ((ImageTypeViewHolder) holder).tvPhone.setText(object.phone);
         //((ImageTypeViewHolder) holder).simpleRatingBar.setNumStars(object.rating);

@@ -6,13 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -26,12 +30,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -63,7 +69,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -71,6 +76,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -78,6 +84,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements
     public
 
     TextView tvMore, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
+    Button login_button2;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     GridView gridView;
     private ProgressBar progressBar;
@@ -137,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements
     FeaturedListAdapter featuredListAdapter;
     RecentListingsAdapter recentListingsAdapter;
     RecentReviewListingsAdapter recentReviewListingsAdapter;
+    Bitmap bmp;
 
 
     ArrayList<WooModel> horizontalList;
@@ -159,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements
     List<String> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
     Spinner spnCategory, spnRadius;
+    RadioGroup radioGroup;
     ImageView ivUserImage, spokesperson;
     private static final int FRAME_TIME_MS = 8000;
     Thread updateMsg;
@@ -205,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements
     private boolean firstImage;
     //Button btnLearnMore, btnDirectory;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
-
     private Handler imageSwitchHandler;
     //END ABOUT US
 
@@ -224,42 +236,45 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
         textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
 
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        Animation imgAnimationOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
+        Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
 
-        textSwitcher4 = findViewById(R.id.textSwitcher4);
-        textSwitcher4.setFactory(() -> {
+        //btnLearnMore = findViewById(R.id.btnLearnMore);
+        login_button2 = findViewById(R.id.login_button2);
+
+        textSwitcher =  findViewById(R.id.textSwitcher);
+        textSwitcher.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setTextSize(14);
-            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-            textView.setGravity(Gravity.START);
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
+            textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
-        textSwitcher4.setInAnimation(imgAnimationIn);
-        textSwitcher4.setOutAnimation(imgAnimationOut);
+        textSwitcher.setInAnimation(imgAnimationIn);
+        textSwitcher.setOutAnimation(imgAnimationOut);
 
-        textSwitcher2 = findViewById(R.id.textSwitcher2);
+        textSwitcher2 =  findViewById(R.id.textSwitcher2);
         textSwitcher2.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setTextSize(14);
-            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
-            textView.setGravity(Gravity.START);
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+            textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
         textSwitcher2.setInAnimation(imgAnimationIn);
         textSwitcher2.setOutAnimation(imgAnimationOut);
 
-        textSwitcher3 = findViewById(R.id.textSwitcher3);
+        textSwitcher3 =  findViewById(R.id.textSwitcher3);
         textSwitcher3.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setTextSize(14);
-            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-            textView.setGravity(Gravity.START);
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
+            textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -267,27 +282,28 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher3.setOutAnimation(imgAnimationOut);
 
 
-        imageSwitcher = findViewById(R.id.imageSwitcher);
+
+        imageSwitcher =  findViewById(R.id.imageSwitcher);
 
         ImageView imageView = new ImageView(getApplicationContext());
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         ViewGroup.LayoutParams params = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         imageView.setLayoutParams(params);
 
-        imageSwitcher2 = findViewById(R.id.imageSwitcher2);
+        imageSwitcher2 =  findViewById(R.id.imageSwitcher2);
 
         ImageView imageView2 = new ImageView(getApplicationContext());
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         ViewGroup.LayoutParams imageView2params = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         imageView2.setLayoutParams(imageView2params);
 
-        imageSwitcher3 = findViewById(R.id.imageSwitcher3);
+        imageSwitcher3 =  findViewById(R.id.imageSwitcher3);
 
         ImageView imageView3 = new ImageView(getApplicationContext());
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -303,17 +319,10 @@ public class MainActivity extends AppCompatActivity implements
         imageSwitchHandler = new Handler();
         imageSwitchHandler.post(runnableCode);
 
-        textSwitcher2Layout.setVisibility(View.GONE);
-        textSwitcher3Layout.setVisibility(View.GONE);
-        textSwitcherLayout.setVisibility(View.GONE);
-        imageSwitcher.setVisibility(View.GONE);
-        imageSwitcher2.setVisibility(View.GONE);
-        imageSwitcher3.setVisibility(View.GONE);
-
         /**
          *  strt fuckin' around with getting linearLayouts to fade in and out
          */
-        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+        textSwitcherLayout =  findViewById(R.id.textSwitcherLayout);
 
         LinearLayout textSwitcherLayout = new LinearLayout(getApplicationContext());
 
@@ -327,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcherLayout.setAnimation(imgAnimationOut);
         textSwitcherLayout.post(runnableCode);
 
-        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+        textSwitcher2Layout =  findViewById(R.id.textSwitcher2Layout);
 
         LinearLayout textSwitcher2Layout = new LinearLayout(getApplicationContext());
 
@@ -338,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher2Layout.setAnimation(imgAnimationOut);
         textSwitcher2Layout.post(runnableCode);
 
-        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+        textSwitcher3Layout =  findViewById(R.id.textSwitcher3Layout);
 
         LinearLayout textSwitcher3Layout = new LinearLayout(getApplicationContext());
 
@@ -352,6 +361,28 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * end fuckin' around with getting lienarlayouts to fade in and out
          */
+
+       // login_button2.setVisibility(View.GONE);
+        //btnLearnMore.setVisibility(View.GONE);
+
+
+      /*  btnDirectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent MainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(MainActivity);
+            }
+        });
+
+        btnLearnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent MainActivity = new Intent(getApplicationContext(), AboutUsVideo.class);
+                startActivity(MainActivity);
+
+            }
+        });*/
+
         imageSwitcher.setVisibility(View.GONE);
         imageSwitcher2.setVisibility(View.GONE);
         imageSwitcher3.setVisibility(View.GONE);
@@ -359,8 +390,8 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcherLayout.setVisibility(View.GONE);
         textSwitcher2Layout.setVisibility(View.GONE);
         textSwitcher3Layout.setVisibility(View.GONE);
-        //END ABOUT US
 
+///END ABOUT US////
 
         /**
          * Featured Listings
@@ -398,19 +429,7 @@ public class MainActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
 
 
-        /**
-         * radio buttons on map
-         */
 
-        RadioGroup radioGroup = findViewById(R.id.radio_group_list_selector);
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Log.e("Radio Button No: ", " response " + checkedId);
-                Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
-            }
-        });
 
 /**
  * login via facebook
@@ -460,19 +479,13 @@ public class MainActivity extends AppCompatActivity implements
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
-        textSwitcher4 = findViewById(R.id.textSwitcher4);
+        //textSwitcher4 = findViewById(R.id.textSwitcher4);
 
         Animation fadeIn = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);
 
         Animation fadeOut = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_out);
-
-        textSwitcher.setInAnimation(fadeIn);
-        textSwitcher.setOutAnimation(fadeOut);
-
-
-        textSwitcher.setCurrentText("The Sable Business Directory is a perfect platform for supporting black owned businesses and services providers of any kind.");
 
 
         /*
@@ -602,6 +615,23 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        /**
+         * category radio buttons on map
+         */
+
+       radioGroup = findViewById(R.id.radio_group_list_selector);
+
+
+
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            Map<String, String> query = new HashMap<>();
+            //spinner category query
+            //query.put(checkedId);
+            //getRetrofit(query);
+            Log.e("Radio Button No: ", " response " + checkedId);
+            Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
+        });
+
 
         /**
          *  location add button
@@ -667,42 +697,6 @@ public class MainActivity extends AppCompatActivity implements
             query.put("search", search.getStringExtra(SearchManager.QUERY));
             getRetrofit(query);
         }
-
-        updateMsg = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!updateMsg.isInterrupted()) {
-                        updateMsg.sleep(FRAME_TIME_MS);
-                        runOnUiThread(() -> {
-                            Random randomGenerator = new Random();
-                            int randomInt = randomGenerator.nextInt(3);
-                            switch (randomInt) {
-
-                                case 1:
-                                    textSwitcher.setText("We provide a one of a kind online platform that combines " +
-                                            "a searchable geographical based geo-directory, social media and e-commerce platforms " +
-                                            "catered specifically to black owned businesses and service providers. ");
-                                    break;
-
-                                case 2:
-                                    textSwitcher.setText("The Sable Business Directory is designed to help those wanting to support " +
-                                            "and frequent black owned businesses and service providers find black owned " +
-                                            "businesses and service providers.");
-                                    break;
-
-                                default:
-                                    textSwitcher.setText("Tap our spokesman to the right for an introduction and tutorial on what " +
-                                            "The Sable Business Directory is and how it works!!!");
-                                    break;
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                }
-            }
-        };
-        updateMsg.start();
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
@@ -867,7 +861,7 @@ public class MainActivity extends AppCompatActivity implements
             //OnCompleted is invoked once the GraphRequest is successful
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
-                Picasso.Builder builder = new Picasso.Builder(getApplicationContext());
+                Picasso.Builder facebookImageBuilder = new Picasso.Builder(getApplicationContext());
                 try {
                     AccessToken mAccessToken = accessToken;
                     userName = object.getString("name");
@@ -879,7 +873,7 @@ public class MainActivity extends AppCompatActivity implements
                     lastName = parts[1];
                     tvUserName.setText(firstName);
                     //    tvUserEmail.setText(object.getString("email"));
-                    builder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
+                    facebookImageBuilder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
                     Map<String, String> query = new HashMap<>();
                     query.put("access_token", mAccessToken.getToken());
@@ -916,16 +910,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-
-                       /* Map<String, String> query = new HashMap<>();
-
-                        query.put("latitude", String.valueOf(latitude));
-                        query.put("longitude", String.valueOf(longitude));
-                        //query.put("distance", "5");
-                        query.put("order", "asc");
-                        query.put("orderby", "distance");
-                        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-                        setAddress(latitude, longitude);*/
                     }
                 });
 
@@ -1097,6 +1081,8 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
+
     private static Retrofit retrofit = null;
 
 
@@ -1221,7 +1207,7 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc()));
+                                    response.body().get(i).getFeaturedImage().getThumbnail()));
                             verticalAdapter.notifyDataSetChanged();
 
 
@@ -1235,7 +1221,7 @@ public class MainActivity extends AppCompatActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 7;
+                            boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 30;
                             if (isRecent) {
                                 recentList.add(new RecentListingsModel(RecentListingsModel.IMAGE_TYPE,
                                         response.body().get(i).getId(),
@@ -1250,7 +1236,7 @@ public class MainActivity extends AppCompatActivity implements
                                         isOpen,
                                         response.body().get(i).getLogo(),
                                         response.body().get(i).getContent().getRaw(),
-                                        response.body().get(i).getFeaturedImage().getSrc()));
+                                        response.body().get(i).getFeaturedImage().getThumbnail()));
                                 recentListingsAdapter.notifyDataSetChanged();
                             }
 
@@ -1269,41 +1255,33 @@ public class MainActivity extends AppCompatActivity implements
                                         isOpen,
                                         response.body().get(i).getLogo(),
                                         response.body().get(i).getContent().getRaw(),
-                                        response.body().get(i).getFeaturedImage().getSrc()));
+                                        response.body().get(i).getFeaturedImage().getThumbnail()));
                                 featuredListAdapter.notifyDataSetChanged();
                             }
-
-
+                            //LoadBitmap loadBitmap = new LoadBitmap(response.body().get(i).getFeaturedImage().getThumbnail());
+                            //loadBitmap.execute();
                             Marker marker = mMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()))
                                     .title(response.body().get(i).getTitle().getRaw())
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                            marker.setTag(verticalList.get(i).id);
-
-                            //System.out.println("Marker Tag is: " +(marker.getTag()));
-
-                            // add category name from array to spinner
+                            marker.setTag(response.body().get(i).getId());
                             category.add(response.body().get(i).getPostCategory().get(0).getName());
                             latLngBoundsBuilder.include(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()));
-                        }
 
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
-                                //.zoom(100)                   // Sets the zoom
-                                .bearing(90)                // Sets the orientation of the camera to east
-                                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                                .build();                   // Creates a CameraPosition from the builder
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                RadioButton radioButton = new RadioButton(getApplicationContext());
+                                radioButton.setText(response.body().get(i).getPostCategory().get(0).getName());
+                                radioButton.setId(response.body().get(i).getPostCategory().get(0).getId());
+                                radioButton.setBackgroundResource(R.drawable.null_selector);
+                                radioGroup.addView(radioButton);
+                        }
 
                         LatLngBounds bounds = latLngBoundsBuilder.build();
 
-                        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                            @Override
-                            public void onMapLoaded() {
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 2));
-                                progressBar.setVisibility(View.GONE); //hide progressBar
+                        mMap.setOnMapLoadedCallback(() -> {
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,50));
+                            progressBar.setVisibility(View.GONE); //hide progressBar
 
-                            }
                         });
                     }
                 } else {
@@ -1318,9 +1296,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-    }
-    //END Retrofit API call to get listings
-
+    }//END Retrofit API call to get listings
 
     /**
      * Retrofit API call to get reviews
@@ -1395,7 +1371,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     /**
      * Called when the user clicks a marker.
      */
@@ -1432,11 +1407,6 @@ public class MainActivity extends AppCompatActivity implements
                         verticalList.get(i).logo,
                         verticalList.get(i).content,
                         verticalList.get(i).featured_image)));
-
-                System.out.println("ID To match:  " + Integer.parseInt(marker.getTag().toString()));
-                System.out.println("Matched:  " + verticalList.get(i).id);
-                System.out.println("Stuff:" + verticalList.get(i).title + verticalList.get(i).latitude + verticalList.get(i).longitude);
-                System.out.println("Array is: " + locationReview);
 
                 Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
 
@@ -1645,8 +1615,9 @@ public class MainActivity extends AppCompatActivity implements
      */
 
 
-    int count = 0, i;
+
     private Runnable runnableCode = new Runnable() {
+        int count = 0;
 
 
         // String image;
@@ -1672,6 +1643,9 @@ public class MainActivity extends AppCompatActivity implements
 
                     "We then compile those listings and ratings to provide a listing of black owned business and service providers near your location.",
 
+                    "88% of people trust online reviews. Online reviews are an important way you can increase " +
+                            "sales for your business. This is especially important local businesses and service providers.",
+
                     "Adding a listing is easy!",
 
                     "Tap the button below the next time you shop with a black owned business to add them to the directory."
@@ -1680,49 +1654,113 @@ public class MainActivity extends AppCompatActivity implements
 
             int[] images = {R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
                     R.mipmap.spokesman2_foreground, R.mipmap.spokesman3_foreground,R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
-                    R.mipmap.spokesman2_foreground, R.mipmap.spokesman3_foreground};
-            boolean isEven = count % 2 == 0;
+                    R.mipmap.spokesman2_foreground, R.mipmap.spokesman1_foreground,R.mipmap.spokesman3_foreground};
 
-            if (count == text.length) {
-                imageSwitcher2.setImageResource(images[count]);
-                textSwitcher4.setText(text[count]);
-                imageSwitcher2.setVisibility(View.VISIBLE);
-                imageSwitcher2.setAnimation(imgAnimationIn);
-                textSwitcherLayout.setVisibility(View.VISIBLE);
-                textSwitcherLayout.setAnimation(imgAnimationIn);
-                imageSwitcher3.setAnimation(imgAnimationOut);
-                textSwitcher3Layout.setAnimation(imgAnimationOut);
-                    /*btnDirectory.setVisibility(View.VISIBLE);
-                    btnDirectory.setAnimation(imgAnimationIn);
-                    btnLearnMore.setVisibility(View.VISIBLE);
-                    btnLearnMore.setAnimation(imgAnimationIn);*/
-                imageSwitchHandler.removeCallbacks(runnableCode);
+            if(count > text.length){
                 count = 0;
-            } else if (isEven) {
-                imageSwitcher.setImageResource(images[count]);
-                textSwitcher2.setText(text[count]);
-                imageSwitcher.setVisibility(View.VISIBLE);
-                textSwitcher2Layout.setVisibility(View.VISIBLE);
-                imageSwitcher.setAnimation(imgAnimationIn);
-                textSwitcher2Layout.setAnimation(imgAnimationIn);
-                imageSwitcher2.setAnimation(imgAnimationOut);
-                textSwitcherLayout.setAnimation(imgAnimationOut);
-                textSwitcherLayout.setVisibility(View.GONE);
-                imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                count++;
-            } else {
-                imageSwitcher3.setImageResource(images[count]);
-                textSwitcher3.setText(text[count]);
-                imageSwitcher3.setVisibility(View.VISIBLE);
-                imageSwitcher3.setAnimation(imgAnimationIn);
-                textSwitcher3Layout.setVisibility(View.VISIBLE);
-                textSwitcher3Layout.setAnimation(imgAnimationIn);
-                imageSwitcher.setAnimation(imgAnimationOut);
-                imageSwitcher.setVisibility(View.GONE);
-                textSwitcher2Layout.setAnimation(imgAnimationOut);
-                textSwitcher2Layout.setVisibility(View.GONE);
-                imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                count++;
+            }
+            switch (count)
+            {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+
+                    imageSwitcher3.setAnimation(imgAnimationOut);
+                    //imageSwitcher3.setVisibility(View.GONE);
+
+                    imageSwitcher.setImageResource(images[count]);
+                    imageSwitcher.setAnimation(imgAnimationIn);
+                    imageSwitcher.setVisibility(View.VISIBLE);
+
+                    textSwitcher3Layout.setAnimation(imgAnimationOut);
+                   // textSwitcher3Layout.setVisibility(View.GONE);
+
+                    textSwitcher2.setText(text[count]);
+                    textSwitcher2Layout.setAnimation(imgAnimationIn);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                   // i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+                case 2:
+                case 4:
+                case 6:
+                //case 8:
+
+                    imageSwitcher.setAnimation(imgAnimationOut);
+                    imageSwitcher.setVisibility(View.GONE);
+
+                    textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+
+                    imageSwitcher3.setImageResource(images[count]);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setAnimation(imgAnimationIn);
+                    imageSwitcher.setAnimation(imgAnimationOut);
+
+
+                    textSwitcher3.setText(text[count]);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setAnimation(imgAnimationIn);
+                    //imageSwitcher.setVisibility(View.GONE);
+                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    //textSwitcher2Layout.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                   // i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+
+                case 8:
+                    imageSwitcher.setAnimation(imgAnimationOut);
+                   // imageSwitcher.setVisibility(View.GONE);
+
+                    imageSwitcher2.setImageResource(images[count]);
+                    imageSwitcher2.setAnimation(imgAnimationIn);
+                    imageSwitcher2.setVisibility(View.VISIBLE);
+
+
+                    textSwitcher2Layout.setAnimation(imgAnimationOut);
+                   // textSwitcher2Layout.setVisibility(View.GONE);
+
+                    textSwitcher.setText(text[count]);
+                    textSwitcherLayout.setAnimation(imgAnimationIn);
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+
+                    login_button2.setAnimation(imgAnimationIn);
+                    login_button2.setVisibility(View.VISIBLE);
+                    //btnDirectory.setAnimation(imgAnimationIn);
+                    //btnLearnMore.setVisibility(View.VISIBLE);
+                    //btnLearnMore.setAnimation(imgAnimationIn);
+                    imageSwitchHandler.removeCallbacks(runnableCode);
+                   // i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+                default:
+                    imageSwitcher.setAnimation(imgAnimationOut);
+                    //imageSwitcher.setVisibility(View.GONE);
+
+                    textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    //textSwitcher2Layout.setVisibility(View.GONE);
+
+                    imageSwitcher3.setImageResource(images[count]);
+                    imageSwitcher3.setVisibility(View.VISIBLE);
+                    imageSwitcher3.setAnimation(imgAnimationIn);
+                    //imageSwitcher.setAnimation(imgAnimationOut);
+
+
+                    textSwitcher3.setText(text[count]);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                    textSwitcher3Layout.setAnimation(imgAnimationIn);
+                    //imageSwitcher.setVisibility(View.GONE);
+                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    //textSwitcher2Layout.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    // i = randomGenerator.nextInt(100);
+                    count ++;
+                    break;
+
             }
         }
     };
