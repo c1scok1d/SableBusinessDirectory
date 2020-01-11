@@ -443,9 +443,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         if (object.featured.equals(true)) {
             String isFeatured = "Featured";
             ((ImageTypeViewHolder) holder).tvFeatured.setText(isFeatured);
-            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
+            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(249, 166, 2)); //gold
         } else {
-            ((ImageTypeViewHolder) holder).tvFeatured.setTextColor(Color.rgb(255, 255, 255)); //white
+            ((ImageTypeViewHolder) holder).tvFeatured.setVisibility(View.GONE);
         }
         if (object.phone.equals("null") || object.phone.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnCall.setColorFilter(Color.argb(211, 211, 211, 211)); //grey
@@ -459,7 +459,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             //} else {
             //    ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         }
-        if (object.hours == "null" || object.isOpen == "null" || object.hours == null || object.isOpen == null) {
+        if (object.hours == "null" || object.isOpen == null || object.hours == null || object.isOpen == null) {
             ((ImageTypeViewHolder) holder).tvisOpen.setVisibility(View.GONE);
             ((ImageTypeViewHolder) holder).tvHours.setVisibility(View.GONE);
         } else if (object.hours == "Closed" || object.isOpen == "Closed now") {
