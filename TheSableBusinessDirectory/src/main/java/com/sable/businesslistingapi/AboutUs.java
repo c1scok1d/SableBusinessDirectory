@@ -29,7 +29,7 @@ public class AboutUs extends AppCompatActivity {
     private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
     private static final int toValue = 20;
     private static final int fromValue = 0;
-    private static final int FRAME_TIME_MS = 12000;
+    private static final int FRAME_TIME_MS = 8000;
     List<String> words = new ArrayList<>();
     //int images = new ArrayList<>();
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
@@ -45,6 +45,11 @@ public class AboutUs extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_us);
+
+       /* if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new PlaceholderFragment()).commit();
+        }*/
 
         textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
         textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);

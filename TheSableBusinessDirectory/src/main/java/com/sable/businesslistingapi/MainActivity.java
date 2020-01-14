@@ -5,21 +5,14 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
-
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -28,10 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -44,15 +34,12 @@ import android.widget.Spinner;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -64,30 +51,21 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.clustering.ClusterManager;
+import com.sable.businesslistingapi.model.Person;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,9 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -114,9 +90,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
-        GoogleMap.OnMarkerClickListener,
+        //GoogleMap.OnMarkerClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
+
 
 
     /**
@@ -131,14 +108,11 @@ public class MainActivity extends AppCompatActivity implements
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
 
-    public static Double latitude, longitude, lstKnownLat, lstKnownLng;
+    public static Double latitude, longitude;
 
-    public
-
-    TextView tvMore, tvUserName, tvUserEmail, tvWpStatus, tvWpMsg, tvWpUserId, tvCity, tvWpUserLogin;
+    TextView tvMore, tvUserName, tvWpUserId, tvCity;
     Button login_button2;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
-    GridView gridView;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
@@ -148,11 +122,9 @@ public class MainActivity extends AppCompatActivity implements
     FeaturedListAdapter featuredListAdapter;
     RecentListingsAdapter recentListingsAdapter;
     RecentReviewListingsAdapter recentReviewListingsAdapter;
-    Bitmap bmp;
 
 
     ArrayList<WooModel> horizontalList;
-    //LinearLayoutManager hLayoutManager;
 
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
@@ -165,25 +137,33 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    public ClusterManager<Person> mClusterManager;
 
 
-    List<String> spinnerArrayRad = new ArrayList<>();
+
     List<String> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
     Spinner spnCategory, spnRadius;
     RadioGroup radioGroup;
     ImageView ivUserImage, spokesperson;
     private static final int FRAME_TIME_MS = 8000;
-    Thread updateMsg;
+
 
     ImageButton btnAdd, btnShop;
     String date1, date2;
 
 
     SearchView searchView;
-    LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
+    public static LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
     private GoogleMap mMap;
+    private boolean mIsRestore;
+
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+
     private FusedLocationProviderClient fusedLocationClient;
 
     LocationManager locationManager;
@@ -194,12 +174,11 @@ public class MainActivity extends AppCompatActivity implements
 
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
-    private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3, textSwitcher4;
+    private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
     private SlidingUpPanelLayout mLayout;
 
 
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-    //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
     OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -209,17 +188,11 @@ public class MainActivity extends AppCompatActivity implements
             .addInterceptor(logging)
             .build();
 
-    /**
-     * about us
-     */
 
 
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
-    private boolean firstImage;
-    //Button btnLearnMore, btnDirectory;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
     private Handler imageSwitchHandler;
-    //END ABOUT US
 
     /**
      * @param savedInstanceState
@@ -227,11 +200,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(getLayoutId());
+        mIsRestore = savedInstanceState != null;
+        setUpMap();
         /**
          * ABOUT US
          */
-
         textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
         textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
         textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
@@ -313,9 +287,6 @@ public class MainActivity extends AppCompatActivity implements
 
         imageView3.setLayoutParams(imageView3params);
 
-
-        firstImage = true;
-
         imageSwitchHandler = new Handler();
         imageSwitchHandler.post(runnableCode);
 
@@ -362,27 +333,6 @@ public class MainActivity extends AppCompatActivity implements
          * end fuckin' around with getting lienarlayouts to fade in and out
          */
 
-       // login_button2.setVisibility(View.GONE);
-        //btnLearnMore.setVisibility(View.GONE);
-
-
-      /*  btnDirectory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent MainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(MainActivity);
-            }
-        });
-
-        btnLearnMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent MainActivity = new Intent(getApplicationContext(), AboutUsVideo.class);
-                startActivity(MainActivity);
-
-            }
-        });*/
-
         imageSwitcher.setVisibility(View.GONE);
         imageSwitcher2.setVisibility(View.GONE);
         imageSwitcher3.setVisibility(View.GONE);
@@ -423,12 +373,6 @@ public class MainActivity extends AppCompatActivity implements
         recentReviewsRecyclervView.setAdapter(recentReviewListingsAdapter);
         recentReviewsRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recentReviewsRecyclervView.setLayoutManager(recentReviewsRecyclerViewLayoutManager);
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
-        mapFragment.getMapAsync(this);
-
-
 
 
 /**
@@ -473,19 +417,11 @@ public class MainActivity extends AppCompatActivity implements
 
         spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
-
-        //tvAddress = findViewById(R.id.tvAddress);
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
-        //textSwitcher4 = findViewById(R.id.textSwitcher4);
 
-        Animation fadeIn = AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_in);
-
-        Animation fadeOut = AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_out);
 
 
         /*
@@ -516,105 +452,6 @@ public class MainActivity extends AppCompatActivity implements
         tvCity = findViewById(R.id.tvCity);
         tvMore = findViewById(R.id.tvMore);
 
-        //final TextView texty = findViewById(R.id.texty);
-        /**
-         *  radius spinner
-         */
-
-        spinnerArrayRad.add("Search Radius");
-        //spinnerArrayRad.add("5");
-        spinnerArrayRad.add("10");
-        spinnerArrayRad.add("15");
-        spinnerArrayRad.add("20");
-
-        ArrayAdapter<String> adapterRad = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArrayRad);
-        adapterRad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnRadius.setAdapter(adapterRad);
-
-        spnRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                Map<String, String> query = new HashMap<>();
-                if (parent != null) {
-                    switch (position) {
-                        case 1:
-                            radius = "Within' 10 miles of your current location";
-
-                            query.put("latitude", Double.toString(longitude));
-                            query.put("longitude", Double.toString(latitude));
-                            query.put("distance", "10");
-                            query.put("order", "asc");
-                            query.put("orderby", "distance");
-                            // 10 mile distance query
-                            getRetrofit(query);
-                            //texty.setText(radius);
-                            break;
-                        case 2:
-                            radius = "Within' 15 miles of your current location";
-
-                            query.put("latitude", Double.toString(longitude));
-                            query.put("longitude", Double.toString(latitude));
-                            query.put("distance", "15");
-                            query.put("order", "asc");
-                            query.put("orderby", "distance");
-                            //15 mile distance query
-                            getRetrofit(query);
-                            //texty.setText(radius);
-                            break;
-                        case 3:
-                            radius = "Within' 20 miles of your current location";
-
-                            query.put("latitude", Double.toString(longitude));
-                            query.put("longitude", Double.toString(latitude));
-                            query.put("distance", "20");
-                            query.put("order", "asc");
-                            query.put("orderby", "distance");
-                            // 20 mile distance query
-                            getRetrofit(query);
-                            // texty.setText(radius);
-                            break;
-                        default:
-                            radius = "Within' 5 miles of your current location";
-                            // texty.setText(radius);
-                            break;
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // TODO Auto-generated method stub
-            }
-        });
-
-        category.add("Category"); //add heading to category spinner
-        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, category);
-        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnCategory.setAdapter(adapterCategory);
-
-        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (spnCategory.getSelectedItem() != "Category") {
-
-                    Map<String, String> query = new HashMap<>();
-                    //spinner category query
-                    query.put("category", spnCategory.getSelectedItem().toString());
-                    getRetrofit(query);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // TODO Auto-generated method stub
-            }
-        });
-
         /**
          * category radio buttons on map
          */
@@ -624,12 +461,12 @@ public class MainActivity extends AppCompatActivity implements
 
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            Map<String, String> query = new HashMap<>();
-            //spinner category query
-            //query.put(checkedId);
-            //getRetrofit(query);
             Log.e("Radio Button No: ", " response " + checkedId);
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
+
+            //Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
+            //mapIntent.putParcelableArrayListExtra("mClusterManager", mClusterManager);
+            startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         });
 
 
@@ -639,40 +476,30 @@ public class MainActivity extends AppCompatActivity implements
 
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //}
+        btnAdd.setOnClickListener(view -> {
 
-                if (!isLoggedIn) {
-                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(loginIntent);
+            if (!isLoggedIn) {
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginIntent);
 
-                    //goto login activity get username and email via facebook create account, return here to check again and proceed
+                //goto login activity get username and email via facebook create account, return here to check again and proceed
 
-                    Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
-                    startActivity(intent);
-                }
-            }
-
-            //}
-        });
-
-        btnShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
+                Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                 startActivity(intent);
             }
         });
 
-        spokesperson.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AboutUs.class);
-                startActivity(intent);
-            }
+        btnShop.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
+            startActivity(intent);
+        });
+
+        spokesperson.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, AboutUs.class);
+            startActivity(intent);
         });
 
         /**
@@ -725,7 +552,7 @@ public class MainActivity extends AppCompatActivity implements
          */
 
 
-        mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mLayout =  findViewById(R.id.sliding_layout);
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -734,7 +561,6 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                //isCollapsed = (newState ="COLLAPSED");
                 if (String.valueOf(newState).equals("COLLAPSED")) {
                     tvMore.setText("Tap For More");
                 } else {
@@ -744,14 +570,13 @@ public class MainActivity extends AppCompatActivity implements
                 Log.i("onPanelStateChanged", "onPanelStateChanged " + newState);
             }
         });
-        mLayout.setFadeOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        });
+        mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
 
     } //END ON CREATE
+
+    private void setUpMap() {
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
+    }
 
     /**
      * Checks the dynamically-controlled permissions and requests missing permissions from end user.
@@ -775,9 +600,6 @@ public class MainActivity extends AppCompatActivity implements
             Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
             onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
                     grantResults);
-
-            int[] foo = grantResults;
-            //startActivity(getIntent());
         }
     }
 
@@ -831,8 +653,7 @@ public class MainActivity extends AppCompatActivity implements
         Map<String, String> query = new HashMap<>();
 //This starts the access token tracking
         accessTokenTracker.startTracking();
-        // latitude = location.getLatitude();
-        // longitude = location.getLongitude();
+
 
         query.put("latitude", String.valueOf(latitude));
         query.put("longitude", String.valueOf(longitude));
@@ -972,12 +793,15 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onMapReady(GoogleMap map) {
+        if (mMap != null) {
+            return;
+        }
         mMap = map;
-        //checkPermissions();
+        startDemo(mIsRestore);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         // Set a listener for marker click.
-        mMap.setOnMarkerClickListener(this);
+        //mMap.setOnMarkerClickListener(this);
 
     }
 
@@ -1092,7 +916,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     public void getRetrofit(final Map<String, String> query) {
-
+        mClusterManager = new ClusterManager<>(this, getMap());
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
@@ -1176,6 +1000,7 @@ public class MainActivity extends AppCompatActivity implements
                             startActivity(LocationMatch);
                             break;
                         } else {
+
                             /**
                              * populate vertical recycler in Main Activity
                              */
@@ -1258,31 +1083,27 @@ public class MainActivity extends AppCompatActivity implements
                                         response.body().get(i).getFeaturedImage().getThumbnail()));
                                 featuredListAdapter.notifyDataSetChanged();
                             }
-                            //LoadBitmap loadBitmap = new LoadBitmap(response.body().get(i).getFeaturedImage().getThumbnail());
-                            //loadBitmap.execute();
-                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()))
-                                    .title(response.body().get(i).getTitle().getRaw())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                            marker.setTag(response.body().get(i).getId());
-                            category.add(response.body().get(i).getPostCategory().get(0).getName());
+
+                            /**
+                             * categories on top of the map
+                             */
+                            RadioButton radioButton = new RadioButton(getApplicationContext());
+                            radioButton.setText(response.body().get(i).getPostCategory().get(0).getName());
+                            radioButton.setId(response.body().get(i).getPostCategory().get(0).getId());
+                            radioButton.setBackgroundResource(R.drawable.null_selector);
+                            radioGroup.addView(radioButton);
+
                             latLngBoundsBuilder.include(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()));
 
-
-                                RadioButton radioButton = new RadioButton(getApplicationContext());
-                                radioButton.setText(response.body().get(i).getPostCategory().get(0).getName());
-                                radioButton.setId(response.body().get(i).getPostCategory().get(0).getId());
-                                radioButton.setBackgroundResource(R.drawable.null_selector);
-                                radioGroup.addView(radioButton);
+                            LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
+                            mClusterManager.addItem(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
                         }
 
-                        LatLngBounds bounds = latLngBoundsBuilder.build();
+                        //LatLngBounds bounds = latLngBoundsBuilder.build();
 
-                        mMap.setOnMapLoadedCallback(() -> {
+                      /*  mMap.setOnMapLoadedCallback(() -> {
                             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,50));
-                            progressBar.setVisibility(View.GONE); //hide progressBar
-
-                        });
+                    });*/
                     }
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
@@ -1374,7 +1195,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Called when the user clicks a marker.
      */
-    @Override
+   /* @Override
     public boolean onMarkerClick(final Marker marker) {
         for (int i = 0; i < verticalList.size(); i++) {
             if (verticalList.get(i).id == Integer.parseInt(marker.getTag().toString())) {
@@ -1423,7 +1244,7 @@ public class MainActivity extends AppCompatActivity implements
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
-    }
+    }*/
 
     //Retrofit retrofit = null;
     public void loginUser(final Map<String, String> query) {
@@ -1764,4 +1585,12 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     };
+
+    protected void startDemo(boolean isRestore) {
+
+    }
+
+    protected GoogleMap getMap() {
+        return mMap;
+    }
 }

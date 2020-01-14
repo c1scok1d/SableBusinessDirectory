@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/AndroidMapsUtils" />
             <option value="$PROJECT_DIR$/TheSableBusinessDirectory" />
             <option value="$PROJECT_DIR$/bhlib" />
             <option value="$PROJECT_DIR$/easyPhotoPickerLibrary" />

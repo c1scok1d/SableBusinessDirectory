@@ -1,0 +1,23 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.google.maps.android"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="15"
+8-->/home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->/home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+10    <!-- https://groups.google.com/group/adt-dev/browse_thread/thread/c059c0380998092b/6720093fb40fdaf9 -->
+11    <application>
+11-->/home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:5:5-10:19
+12        <meta-data
+12-->/home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:6:9-8:69
+13            android:name="com.google.android.gms.version"
+13-->/home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:7:13-58
+14            android:value="@integer/google_play_services_version" />
+14-->/home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:8:13-66
+15    </application>
+16
+17</manifest>

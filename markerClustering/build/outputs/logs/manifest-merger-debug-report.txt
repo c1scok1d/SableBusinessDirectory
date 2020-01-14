@@ -1,0 +1,45 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+	package
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:3:5-38
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:1-11:12
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:2:11-69
+application
+ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:5:5-10:19
+meta-data#com.google.android.gms.version
+ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:6:9-8:69
+	android:value
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:8:13-66
+	android:name
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml:7:13-58
+uses-sdk
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		ADDED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml
+		INJECTED from /home/c1scok1d/StudioProjects/SableBusinessDirectory/markerClustering/src/main/AndroidManifest.xml

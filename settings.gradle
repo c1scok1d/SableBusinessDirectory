@@ -1,2 +1,2 @@
-include ':TheSableBusinessDirectory', ':easyPhotoPickerLibrary', ':bhlib', ':slideUpLibrary', ':markerClustering'
+include ':TheSableBusinessDirectory', ':easyPhotoPickerLibrary', ':bhlib', ':slideUpLibrary', ':markerClustering', ':AndroidMapsUtils'
 rootProject.name='Business Listing API'
