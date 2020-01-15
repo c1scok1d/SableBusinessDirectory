@@ -183,6 +183,8 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     }
 
     private void addItems() {
+
+        mClusterManager.addItems(MainActivity.mapLocations);
         // http://www.flickr.com/photos/sdasmarchives/5036248203/
          mClusterManager.addItem(new Person(position(), "Walter", R.drawable.com_facebook_profile_picture_blank_square));
         latLngBoundsBuilder.include(position());

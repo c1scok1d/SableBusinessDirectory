@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
-    public ClusterManager<Person> mClusterManager;
+    public static ArrayList<Person> mapLocations = new ArrayList<>();
 
 
 
@@ -464,8 +466,8 @@ public class MainActivity extends AppCompatActivity implements
             Log.e("Radio Button No: ", " response " + checkedId);
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
 
-            //Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
-            //mapIntent.putParcelableArrayListExtra("mClusterManager", mClusterManager);
+            Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
+            mapIntent.putExtra("mClusterManager", mapLocations);
             startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         });
 
@@ -916,7 +918,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     public void getRetrofit(final Map<String, String> query) {
-        mClusterManager = new ClusterManager<>(this, getMap());
+        //mClusterManager = new ClusterManager<>(this, getMap());
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
@@ -1096,7 +1098,7 @@ public class MainActivity extends AppCompatActivity implements
                             latLngBoundsBuilder.include(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()));
 
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
-                            mClusterManager.addItem(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
+                            mapLocations.add(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
                         }
 
                         //LatLngBounds bounds = latLngBoundsBuilder.build();

@@ -35,7 +35,7 @@ public class AboutUs extends AppCompatActivity {
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     private boolean firstImage;
     Button btnLearnMore, btnDirectory;
-    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, about_us;
 
     private Handler imageSwitchHandler;
 
@@ -54,6 +54,7 @@ public class AboutUs extends AppCompatActivity {
         textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
         textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
         textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+        about_us = findViewById(R.id.aboutUsAnimationLayout);
 
         Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
@@ -188,6 +189,7 @@ public class AboutUs extends AppCompatActivity {
         btnDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                about_us.setVisibility(View.GONE);
                 Intent MainActivity = new Intent(AboutUs.this, MainActivity.class);
                 startActivity(MainActivity);
             }
