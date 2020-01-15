@@ -20,14 +20,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 public class Person implements ClusterItem {
-    public final String name;
-    public final int profilePhoto;
+    public final String name, profilePhoto, content;
+    //public final int profilePhoto;
     private final LatLng mPosition;
 
-    public Person(LatLng position, String name, int pictureResource) {
+    public Person(LatLng position, String name, String pictureResource, String content) {
         this.name = name;
         profilePhoto = pictureResource;
         mPosition = position;
+        this.content = content;
     }
 
     @Override
@@ -37,11 +38,11 @@ public class Person implements ClusterItem {
 
     @Override
     public String getTitle() {
-        return null;
+        return name;
     }
 
     @Override
     public String getSnippet() {
-        return null;
+        return content;
     }
 }

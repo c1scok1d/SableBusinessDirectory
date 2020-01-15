@@ -16,18 +16,26 @@
 
 package com.sable.businesslistingapi;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
@@ -48,6 +56,7 @@ import java.util.Random;
 public class CustomMarkerClusteringDemoActivity extends MainActivity implements ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
     private ClusterManager<Person> mClusterManager;
     private Random mRandom = new Random(1984);
+    private Person clickedVenueMarker;
 
     /**
      * Draws profile photos inside markers (using IconGenerator).
@@ -79,7 +88,23 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         protected void onBeforeClusterItemRendered(Person person, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
-            mImageView.setImageResource(person.profilePhoto);
+            Glide.with(getApplicationContext()).asBitmap()
+                    .load(person.profilePhoto)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .fitCenter()
+                    .placeholder(R.drawable.screen_splash).dontAnimate().into(mImageView);
+
+            //            URL url = null;
+//            try {
+//                url = new URL(person.profilePhoto);
+//                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//                mImageView.setImageBitmap(bmp);
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+            //mImageView.setImageResource(person.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
         }
@@ -91,14 +116,28 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
             List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
             int width = mDimension;
             int height = mDimension;
+            Bitmap dummyBitmap=null;
+            Drawable drawable=null;
 
             for (Person p : cluster.getItems()) {
                 // Draw 4 at most.
                 if (profilePhotos.size() == 4) break;
-                Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                try {
+
+                    dummyBitmap = Glide.with(getApplicationContext()).asBitmap().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).load(p.profilePhoto)
+                            .submit(70,70).get();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                drawable = new BitmapDrawable(getResources(), dummyBitmap);
                 drawable.setBounds(0, 0, width, height);
                 profilePhotos.add(drawable);
             }
+                /*Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                drawable.setBounds(0, 0, width, height);
+                profilePhotos.add(drawable);*/
+            //}
             MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
             multiDrawable.setBounds(0, 0, width, height);
 
@@ -133,13 +172,14 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
 
         // Animate camera to the bounds
         try {
-            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return true;
     }
+
 
     @Override
     public void onClusterInfoWindowClick(Cluster<Person> cluster) {
@@ -149,7 +189,34 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     @Override
     public boolean onClusterItemClick(Person item) {
         // Does nothing, but you could go into the user's profile page, for example.
-        return false;
+       clickedVenueMarker = item;
+
+       String fooName = clickedVenueMarker.getTitle();
+       String fooAddress = String.valueOf(clickedVenueMarker.getPosition());
+       String fooSnippet = clickedVenueMarker.getSnippet();
+       // mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+          //  @Override
+          //  public View getInfoWindow(Marker marker) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                final View view = inflater.inflate(R.layout.custom_info_window, null);
+
+                TextView venueNameTextView = view.findViewById(R.id.venue_name);
+
+                TextView venueAddressTextView = view.findViewById(R.id.venue_address);
+                TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
+                venueNameTextView.setText(clickedVenueMarker.getTitle());
+                venueAddressTextView.setText(String.valueOf(clickedVenueMarker.getPosition()));
+                venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
+           //     return view;
+          //  }
+
+         //   @Override
+          //  public View getInfoContents(Marker marker) {
+           //     return null;
+          //  }
+       // });
+       return false;
     }
 
     @Override

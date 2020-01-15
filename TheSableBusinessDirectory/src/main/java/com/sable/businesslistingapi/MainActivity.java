@@ -1097,14 +1097,12 @@ public class MainActivity extends AppCompatActivity implements
 
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
                             latLngBoundsBuilder.include(latlng);
-                            mapLocations.add(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
+                           // mapLocations.add(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
+                            mapLocations.add(new Person(latlng,
+                                    response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getContent().getRaw()));
                         }
-
-                        //LatLngBounds bounds = latLngBoundsBuilder.build();
-
-                      /*  mMap.setOnMapLoadedCallback(() -> {
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,50));
-                    });*/
                     }
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
@@ -1193,60 +1191,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    /**
-     * Called when the user clicks a marker.
-     */
-   /* @Override
-    public boolean onMarkerClick(final Marker marker) {
-        for (int i = 0; i < verticalList.size(); i++) {
-            if (verticalList.get(i).id == Integer.parseInt(marker.getTag().toString())) {
-                locationReview.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                        verticalList.get(i).id,
-                        verticalList.get(i).title,
-                        verticalList.get(i).link,
-                        verticalList.get(i).status,
-                        verticalList.get(i).category,
-                        verticalList.get(i).featured,
-                        verticalList.get(i).featured_image,
-                        verticalList.get(i).bldgno,
-                        verticalList.get(i).street,
-                        verticalList.get(i).city,
-                        verticalList.get(i).state,
-                        verticalList.get(i).country,
-                        verticalList.get(i).zipcode,
-                        verticalList.get(i).latitude,
-                        verticalList.get(i).longitude,
-                        verticalList.get(i).rating,
-                        verticalList.get(i).ratingCount,
-                        verticalList.get(i).phone,
-                        verticalList.get(i).email,
-                        verticalList.get(i).website,
-                        verticalList.get(i).twitter,
-                        verticalList.get(i).facebook,
-                        verticalList.get(i).video,
-                        verticalList.get(i).hours,
-                        verticalList.get(i).isOpen,
-                        verticalList.get(i).logo,
-                        verticalList.get(i).content,
-                        verticalList.get(i).featured_image)));
-
-                Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
-
-                Bundle locationReviewBundle = new Bundle();
-                locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
-
-                showReviews.putExtra("locationReview", locationReview);
-                startActivity(showReviews);
-                break;
-            } else {
-            }
-        }
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false;
-    }*/
-
     //Retrofit retrofit = null;
     public void loginUser(final Map<String, String> query) {
         Retrofit retrofit = null;
@@ -1284,9 +1228,9 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    /**
+    /*
      * Query API for WooStore data
-     */
+
     public void getRetrofitWoo() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -1332,7 +1276,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-    }
+    }*/
 
 
     /**
