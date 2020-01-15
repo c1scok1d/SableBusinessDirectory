@@ -466,8 +466,8 @@ public class MainActivity extends AppCompatActivity implements
             Log.e("Radio Button No: ", " response " + checkedId);
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
 
-            Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
-            mapIntent.putExtra("mClusterManager", mapLocations);
+            //Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
+            //mapIntent.putExtra("mClusterManager", mapLocations);
             startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         });
 
@@ -1095,9 +1095,8 @@ public class MainActivity extends AppCompatActivity implements
                             radioButton.setBackgroundResource(R.drawable.null_selector);
                             radioGroup.addView(radioButton);
 
-                            latLngBoundsBuilder.include(new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude()));
-
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
+                            latLngBoundsBuilder.include(latlng);
                             mapLocations.add(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
                         }
 

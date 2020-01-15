@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,21 +17,12 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class AboutUs extends AppCompatActivity {
-    private int mPosition = 0;
     private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
-    private static final int toValue = 20;
-    private static final int fromValue = 0;
     private static final int FRAME_TIME_MS = 8000;
-    List<String> words = new ArrayList<>();
-    //int images = new ArrayList<>();
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
-    private boolean firstImage;
     Button btnLearnMore, btnDirectory;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, about_us;
 
@@ -46,11 +35,6 @@ public class AboutUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_us);
 
-       /* if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment()).commit();
-        }*/
-
         textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
         textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
         textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
@@ -58,7 +42,6 @@ public class AboutUs extends AppCompatActivity {
 
         Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
-        Animation imgAnimationflip =  AnimationUtils.loadAnimation(this,   R.anim.flip);
 
         btnLearnMore = findViewById(R.id.btnLearnMore);
         btnDirectory = findViewById(R.id.btnDirectory);
@@ -133,8 +116,6 @@ public class AboutUs extends AppCompatActivity {
 
         imageView3.setLayoutParams(imageView3params);
 
-
-        firstImage = true;
 
         imageSwitchHandler = new Handler();
         imageSwitchHandler.post(runnableCode);
@@ -223,62 +204,6 @@ public class AboutUs extends AppCompatActivity {
         public void run() {
             Animation imgAnimationIn =  AnimationUtils.loadAnimation( getApplicationContext(),  R.anim.fade_in);
             Animation imgAnimationOut =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.fade_out);
-            Animation imgAnimationflip =  AnimationUtils.loadAnimation(getApplicationContext(),   R.anim.flip);
-
-
-            /*imgAnimationOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    imageSwitcher.setVisibility(View.GONE);
-                    imageSwitcher2.setVisibility(View.GONE);
-                    imageSwitcher3.setVisibility(View.GONE);
-
-                    textSwitcherLayout.setVisibility(View.GONE);
-                    textSwitcher2Layout.setVisibility(View.GONE);
-                    textSwitcher3Layout.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) { }
-
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    imageSwitcher.setVisibility(View.VISIBLE);
-                    imageSwitcher2.setVisibility(View.VISIBLE);
-                    imageSwitcher3.setVisibility(View.VISIBLE);
-
-                    textSwitcherLayout.setVisibility(View.VISIBLE);
-                    textSwitcher2Layout.setVisibility(View.VISIBLE);
-                    textSwitcher3Layout.setVisibility(View.VISIBLE);
-                }
-            });
-
-            imgAnimationIn.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    imageSwitcher.setVisibility(View.VISIBLE);
-                    imageSwitcher2.setVisibility(View.VISIBLE);
-                    imageSwitcher3.setVisibility(View.VISIBLE);
-
-                    textSwitcherLayout.setVisibility(View.VISIBLE);
-                    textSwitcher2Layout.setVisibility(View.VISIBLE);
-                    textSwitcher3Layout.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) { }
-
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    imageSwitcher.setVisibility(View.GONE);
-                    imageSwitcher2.setVisibility(View.GONE);
-                    imageSwitcher3.setVisibility(View.GONE);
-
-                    textSwitcherLayout.setVisibility(View.GONE);
-                    textSwitcher2Layout.setVisibility(View.GONE);
-                    textSwitcher3Layout.setVisibility(View.GONE);
-                }
-            });*/
 
             String [] text = {
                     "Hello, and welcome to The Sable Business Directory.  The Sable Business Directory is designed to help those wanting to support " +
@@ -356,7 +281,6 @@ public class AboutUs extends AppCompatActivity {
                     textSwitcherLayout.setAnimation(imgAnimationIn);
 
                     imageSwitcher.setVisibility(View.GONE);
-                    //imageSwitcher2.setVisibility(View.GONE);
                     imageSwitcher3.setVisibility(View.GONE);
 
                     //textSwitcherLayout.setVisibility(View.GONE);

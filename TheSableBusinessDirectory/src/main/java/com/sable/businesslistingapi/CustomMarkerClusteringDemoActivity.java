@@ -133,7 +133,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
 
         // Animate camera to the bounds
         try {
-            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -177,7 +177,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         addItems();
        // MainActivity.mClusterManager.cluster();
         mClusterManager.cluster();
-        LatLngBounds bounds = latLngBoundsBuilder.build();
+        LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
         getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
 
     }
@@ -185,7 +185,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     private void addItems() {
 
         mClusterManager.addItems(MainActivity.mapLocations);
-        // http://www.flickr.com/photos/sdasmarchives/5036248203/
+      /*  // http://www.flickr.com/photos/sdasmarchives/5036248203/
          mClusterManager.addItem(new Person(position(), "Walter", R.drawable.com_facebook_profile_picture_blank_square));
         latLngBoundsBuilder.include(position());
         // http://www.flickr.com/photos/usnationalarchives/4726917149/
@@ -211,7 +211,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         latLngBoundsBuilder.include(position());
         // http://www.flickr.com/photos/usnationalarchives/4726892651/
         mClusterManager.addItem(new Person(position(), "Teach", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
+        latLngBoundsBuilder.include(position());*/
     }
 
     private LatLng position() {
