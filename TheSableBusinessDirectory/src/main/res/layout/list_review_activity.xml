@@ -405,8 +405,8 @@
 
                 <LinearLayout
                     android:id="@+id/reviewBtnLayout"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
@@ -417,9 +417,9 @@
 
                     <ImageButton
                         android:id="@+id/btnReview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/click_to_call"
@@ -428,8 +428,9 @@
 
                     <TextView
                         android:id="@+id/tvReview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_horizontal|top|center_vertical"
                         android:text=" rate"
@@ -441,8 +442,8 @@
 
                 <LinearLayout
                     android:id="@+id/callBtnLayout"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
@@ -454,9 +455,9 @@
 
                     <ImageButton
                         android:id="@+id/btnCall"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:clickable="false"
@@ -466,8 +467,9 @@
 
                     <TextView
                         android:id="@+id/tvCall"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_horizontal|top|center_vertical"
                         android:text=" Call"
@@ -480,8 +482,8 @@
 
                 <LinearLayout
                     android:id="@+id/dirBtnLayout"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
@@ -492,9 +494,9 @@
 
                     <ImageButton
                         android:id="@+id/btnDirections"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/click_for_directions"
@@ -503,8 +505,9 @@
 
                     <TextView
                         android:id="@+id/tvDirections"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:autoText="false"
                         android:gravity="center_horizontal|top|center_vertical"
@@ -516,8 +519,8 @@
 
                 <LinearLayout
                     android:id="@+id/websiteBtnLayout"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
@@ -528,9 +531,9 @@
 
                     <ImageButton
                         android:id="@+id/btnWebsite"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:contentDescription="@string/click_to_call"
@@ -539,8 +542,9 @@
 
                     <TextView
                         android:id="@+id/tvWWW"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_horizontal|top|center_vertical"
                         android:text="www"

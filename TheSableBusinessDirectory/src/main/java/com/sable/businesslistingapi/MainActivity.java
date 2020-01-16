@@ -59,11 +59,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.maps.android.clustering.ClusterManager;
 import com.sable.businesslistingapi.model.Person;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
-import org.jetbrains.annotations.NotNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     ArrayList<ListingsModel> locationReview = new ArrayList<>();
-    public static ArrayList<Person> mapLocations = new ArrayList<>();
+    public static ArrayList<Person> mapLocations;
 
 
 
@@ -919,6 +918,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void getRetrofit(final Map<String, String> query) {
         //mClusterManager = new ClusterManager<>(this, getMap());
+        mapLocations = new ArrayList<>();
+
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)

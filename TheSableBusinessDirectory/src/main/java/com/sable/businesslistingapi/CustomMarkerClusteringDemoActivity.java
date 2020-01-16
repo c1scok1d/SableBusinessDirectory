@@ -45,17 +45,14 @@ import com.google.maps.android.ui.IconGenerator;
 import com.sable.businesslistingapi.model.Person;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+
 import java.util.List;
-import java.util.Random;
 
 /**
  * Demonstrates heavy customisation of the look of rendered clusters.
  */
 public class CustomMarkerClusteringDemoActivity extends MainActivity implements ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
     private ClusterManager<Person> mClusterManager;
-    private Random mRandom = new Random(1984);
     private Person clickedVenueMarker;
 
     /**
@@ -94,17 +91,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
                     .fitCenter()
                     .placeholder(R.drawable.screen_splash).dontAnimate().into(mImageView);
 
-            //            URL url = null;
-//            try {
-//                url = new URL(person.profilePhoto);
-//                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//                mImageView.setImageBitmap(bmp);
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-            //mImageView.setImageResource(person.profilePhoto);
+           // mImageView.setImageBitmap(person.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
         }
@@ -113,31 +100,40 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
             // Draw multiple people.
             // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
-            List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
+            List<Drawable> profilePhotos;
+            profilePhotos = new ArrayList<>(Math.min(4, cluster.getSize()));
             int width = mDimension;
             int height = mDimension;
-            Bitmap dummyBitmap=null;
-            Drawable drawable=null;
-
+            Bitmap dummyBitmap = null;
+           // profilePhotos = null;
             for (Person p : cluster.getItems()) {
                 // Draw 4 at most.
                 if (profilePhotos.size() == 4) break;
                 try {
 
-                    dummyBitmap = Glide.with(getApplicationContext()).asBitmap().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).load(p.profilePhoto)
-                            .submit(70,70).get();
+
+                    dummyBitmap =  Glide.with(getApplicationContext()).asBitmap()
+                            .load(p.profilePhoto)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .fitCenter()
+                            .placeholder(R.drawable.screen_splash)
+                            .submit(70, 70).get();
+
+                  /*  dummyBitmap = Glide.with(getApplicationContext())
+                            .asBitmap()
+                            .load(p.profilePhoto)
+                            .fitCenter()
+                            .placeholder(R.drawable.screen_splash)
+                            .submit(70,70)
+                            .get();*/
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                drawable = new BitmapDrawable(getResources(), dummyBitmap);
+                Drawable drawable = new BitmapDrawable(getResources(), dummyBitmap);
                 drawable.setBounds(0, 0, width, height);
                 profilePhotos.add(drawable);
             }
-                /*Drawable drawable = getResources().getDrawable(p.profilePhoto);
-                drawable.setBounds(0, 0, width, height);
-                profilePhotos.add(drawable);*/
-            //}
             MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
             multiDrawable.setBounds(0, 0, width, height);
 
@@ -188,34 +184,18 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
 
     @Override
     public boolean onClusterItemClick(Person item) {
-        // Does nothing, but you could go into the user's profile page, for example.
+        // shows brief listing summary onclick
        clickedVenueMarker = item;
+       LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+       final View view = inflater.inflate(R.layout.custom_info_window, null);
 
-       String fooName = clickedVenueMarker.getTitle();
-       String fooAddress = String.valueOf(clickedVenueMarker.getPosition());
-       String fooSnippet = clickedVenueMarker.getSnippet();
-       // mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-          //  @Override
-          //  public View getInfoWindow(Marker marker) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+       TextView venueNameTextView = view.findViewById(R.id.venue_name);
+       TextView venueAddressTextView = view.findViewById(R.id.venue_address);
+       TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
+       venueNameTextView.setText(clickedVenueMarker.getTitle());
+       venueAddressTextView.setText(String.valueOf(clickedVenueMarker.getPosition()));
+       venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
 
-                final View view = inflater.inflate(R.layout.custom_info_window, null);
-
-                TextView venueNameTextView = view.findViewById(R.id.venue_name);
-
-                TextView venueAddressTextView = view.findViewById(R.id.venue_address);
-                TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
-                venueNameTextView.setText(clickedVenueMarker.getTitle());
-                venueAddressTextView.setText(String.valueOf(clickedVenueMarker.getPosition()));
-                venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
-           //     return view;
-          //  }
-
-         //   @Override
-          //  public View getInfoContents(Marker marker) {
-           //     return null;
-          //  }
-       // });
        return false;
     }
 
@@ -227,8 +207,8 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     @Override
     protected void startDemo(boolean isRestore) {
         if (!isRestore) {
-            //LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
-//            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,50));
+           // LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
+            getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MainActivity.latitude, MainActivity.longitude),100)));
         }
 
         mClusterManager = new ClusterManager<>(this, getMap());
@@ -242,50 +222,13 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
 
         addItems();
-       // MainActivity.mClusterManager.cluster();
         mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
-        getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
+        getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,100)));
 
     }
 
     private void addItems() {
-
         mClusterManager.addItems(MainActivity.mapLocations);
-      /*  // http://www.flickr.com/photos/sdasmarchives/5036248203/
-         mClusterManager.addItem(new Person(position(), "Walter", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/usnationalarchives/4726917149/
-        mClusterManager.addItem(new Person(position(), "Gran", R.drawable.ic_launcher_background));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/nypl/3111525394/
-        mClusterManager.addItem(new Person(position(), "Ruth", R.drawable.ic_launcher_foreground));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/smithsonian/2887433330/
-        mClusterManager.addItem(new Person(position(), "Stefan", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/library_of_congress/2179915182/
-        mClusterManager.addItem(new Person(position(), "Mechanic", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/nationalmediamuseum/7893552556/
-        mClusterManager.addItem(new Person(position(), "Yeats", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/sdasmarchives/5036231225/
-        mClusterManager.addItem(new Person(position(), "John", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/anmm_thecommons/7694202096/
-        mClusterManager.addItem(new Person(position(), "Trevor the Turtle", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());
-        // http://www.flickr.com/photos/usnationalarchives/4726892651/
-        mClusterManager.addItem(new Person(position(), "Teach", R.drawable.com_facebook_profile_picture_blank_square));
-        latLngBoundsBuilder.include(position());*/
-    }
-
-    private LatLng position() {
-        return new LatLng(random(MainActivity.latitude, 39.7817), random(MainActivity.longitude, -89.6501));
-    }
-
-    private double random(double min, double max) {
-        return mRandom.nextDouble() * (max - min) + min;
     }
 }
