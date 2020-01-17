@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
     public static Double latitude, longitude;
 
     TextView tvMore, tvUserName, tvWpUserId, tvCity;
-    Button login_button2;
+    Button login_button2, btnAdd;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     private ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int FRAME_TIME_MS = 8000;
 
 
-    ImageButton btnAdd, btnShop;
+    ImageButton btnShop;
     String date1, date2;
 
 
@@ -460,12 +460,6 @@ public class MainActivity extends AppCompatActivity implements
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        FrameLayout.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(0, 0, 0, 30);
-                radioGroup.setLayoutParams(params);
                 Toast.makeText(getApplicationContext(), "Loading the 10 nearest black owned\nbusinesses and service providers", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
             }
@@ -480,11 +474,13 @@ public class MainActivity extends AppCompatActivity implements
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             Log.e("Radio Button No: ", " response " + checkedId);
-            Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
+            Map<String, String> query = new HashMap<>();
 
-            //Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
-            //mapIntent.putExtra("mClusterManager", mapLocations);
-            //startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
+            //search bar query
+            query.put("category", String.valueOf(checkedId));
+           // getRetrofit(query);
+            Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
+           // startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         });
 
 
@@ -878,7 +874,7 @@ public class MainActivity extends AppCompatActivity implements
         //this.latitude = latitude;
         //this.longitude = longitude;
         // zoom to current location on map
-        mMap.setOnMapLoadedCallback(() -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),13)));
+       // mMap.setOnMapLoadedCallback(() -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),13)));
         progressBar.setVisibility(View.GONE); //hide progressBar
         Geocoder geocoder;
         List<Address> addresses = null;

@@ -54,6 +54,11 @@ public interface RetrofitArrayApi {
     @GET("wp-json/geodir/v2/business/categories")
     Call<List<ListingsCategories>> getCategory();
 
+    @GET("wp-json/geodir/v2/business/categories")
+    Call<List<BusinessListings>> getCategoryListings(
+            @QueryMap Map<String, String> options
+    );
+
 
     //@Multipart
     @FormUrlEncoded
