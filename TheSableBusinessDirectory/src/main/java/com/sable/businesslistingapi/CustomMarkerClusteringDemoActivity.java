@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -195,6 +196,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
        venueNameTextView.setText(clickedVenueMarker.getTitle());
        venueAddressTextView.setText(String.valueOf(clickedVenueMarker.getPosition()));
        venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
+       radioGroup.setVisibility(View.GONE);
 
        return false;
     }

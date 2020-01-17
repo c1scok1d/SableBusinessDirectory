@@ -13,17 +13,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -53,9 +52,11 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -453,6 +454,22 @@ public class MainActivity extends AppCompatActivity implements
         tvCity = findViewById(R.id.tvCity);
         tvMore = findViewById(R.id.tvMore);
 
+
+        Button btnShowListings = findViewById(R.id.btnShowListings);
+
+        btnShowListings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(0, 0, 0, 30);
+                radioGroup.setLayoutParams(params);
+                Toast.makeText(getApplicationContext(), "Loading the 10 nearest black owned\nbusinesses and service providers", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
+            }
+        });
         /**
          * category radio buttons on map
          */
@@ -467,7 +484,7 @@ public class MainActivity extends AppCompatActivity implements
 
             //Intent mapIntent = new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class);
             //mapIntent.putExtra("mClusterManager", mapLocations);
-            startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
+            //startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         });
 
 
@@ -628,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
 //This starts the access token tracking
-
+        //startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         if (accessToken != null) {
             useLoginInformation(accessToken);
             // startActivity(getIntent());
@@ -749,17 +766,25 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onLocationChanged(Location location) {
             Map<String, String> query = new HashMap<>();
-
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            query.put("latitude", String.valueOf(latitude));
-            query.put("longitude", String.valueOf(longitude));
+
+         /*   CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                  //  .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
+
+            query.put("latitude", String.valueOf(location.getLatitude()));
+            query.put("longitude", String.valueOf(location.getLongitude()));
             //query.put("distance", "5");
             query.put("order", "asc");
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
             getReviews();
-            setAddress(latitude, longitude);
+            setAddress(location.getLatitude(), location.getLongitude());
         }
 
         /**
@@ -798,12 +823,13 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         mMap = map;
+        // zoom to current location on map
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 13));
         startDemo(mIsRestore);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         // Set a listener for marker click.
         //mMap.setOnMarkerClickListener(this);
-
     }
 
 
@@ -851,7 +877,9 @@ public class MainActivity extends AppCompatActivity implements
     public void setAddress(Double latitude, Double longitude) {
         //this.latitude = latitude;
         //this.longitude = longitude;
-
+        // zoom to current location on map
+        mMap.setOnMapLoadedCallback(() -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),13)));
+        progressBar.setVisibility(View.GONE); //hide progressBar
         Geocoder geocoder;
         List<Address> addresses = null;
         geocoder = new Geocoder(this, Locale.getDefault());
