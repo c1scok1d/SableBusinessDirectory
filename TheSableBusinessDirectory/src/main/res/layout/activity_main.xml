@@ -32,133 +32,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/searchLayout"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <Button
-                    android:id="@+id/btnShowListings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="0"
-                    android:background="@drawable/ovalbackground"
-                    android:backgroundTint="@color/colorAccent"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="Tap for listings\nnear you"
-                    android:textAllCaps="true"
-                    android:textSize="8sp" />
-
-
-                <Button
-                    android:id="@+id/btnAdd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="0"
-                    android:background="@drawable/ovalbackground"
-                    android:backgroundTint="@color/colorAccent"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="add a listing"
-                    android:textAllCaps="true"
-                    android:textSize="8sp" />
-
-                <Spinner
-                    android:id="@+id/spnCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="0"
-                    android:visibility="gone" />
-
-                <SearchView
-                    android:id="@+id/search"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:iconifiedByDefault="false"
-                    android:queryBackground="@drawable/customborder"
-                    android:queryHint="Search black owned businesses..."
-                    android:theme="@style/AppSearchView"
-                    android:visibility="visible">
-
-                </SearchView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/btnLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginRight="5dp"
-                android:orientation="horizontal"
-                android:padding="3dp"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <Spinner
-                    android:id="@+id/spnRadius"
-                    style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:spinnerMode="dialog"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-
-                <ImageButton
-                    android:id="@+id/btnAdd2"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/customborder"
-                    android:scaleType="fitStart"
-                    app:srcCompat="@mipmap/add_listing" />
-
-                <!--Button
-                android:id="@+id/btnAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginEnd="3dp"
-                android:layout_weight="1"
-                android:background="@drawable/customborder"
-                android:text="@string/add_listing"
-                android:textSize="12sp" / -->
-
-                <ImageButton
-                    android:id="@+id/btnShop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/ovalbackground"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="@string/shop"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/loggedInLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -314,6 +187,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btnAdd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/ovalbackground"
+                        android:backgroundTint="@color/colorAccent"
+                        android:padding="5dp"
+                        android:text="tap to add a listing"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                    <SearchView
+                        android:id="@+id/search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:gravity="end"
+                        android:iconifiedByDefault="false"
+                        android:queryBackground="@drawable/customborder"
+                        android:queryHint="Search black owned businesses..."
+                        android:theme="@style/AppSearchView"
+                        android:visibility="visible">
+
+                    </SearchView>
+                </LinearLayout>
+
                 <HorizontalScrollView
                     android:id="@+id/category_radioButton_scroller"
                     android:layout_width="match_parent"
@@ -335,14 +247,54 @@
                     android:id="@+id/progressBarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
-                    <ProgressBar
-                        android:id="@+id/progressbar"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal" />
+                        android:layout_gravity="center">
+
+                        <ProgressBar
+                            android:id="@+id/progressbar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true" />
+
+                        <Button
+                            android:id="@+id/btnShowListings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="3dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="3dp"
+                            android:layout_marginBottom="3dp"
+                            android:background="@drawable/ovalbackground"
+                            android:backgroundTint="@color/colorAccent"
+                            android:padding="5dp"
+                            android:text="Tap for listings near you"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvQuerying"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/progressbar"
+                            android:layout_alignParentEnd="false"
+                            android:layout_alignParentBottom="false"
+                            android:layout_centerInParent="false"
+                            android:layout_centerHorizontal="false"
+                            android:layout_centerVertical="false"
+                            android:text="Querying black owned businesses near you!"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
             </FrameLayout>

@@ -226,7 +226,8 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         addItems();
         mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
-        getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,100)));
+        getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,200)));
+
 
     }
 

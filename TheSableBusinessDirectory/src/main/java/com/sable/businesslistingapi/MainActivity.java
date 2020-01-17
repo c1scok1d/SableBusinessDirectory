@@ -112,10 +112,10 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude;
 
-    TextView tvMore, tvUserName, tvWpUserId, tvCity;
-    Button login_button2, btnAdd;
+    TextView tvMore, tvUserName, tvWpUserId, tvCity, tvQuerying;
+    Button login_button2, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
 
@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
+        Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
         //btnLearnMore = findViewById(R.id.btnLearnMore);
         login_button2 = findViewById(R.id.login_button2);
@@ -417,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
 
-        spnRadius = findViewById(R.id.spnRadius);
+       // spnRadius = findViewById(R.id.spnRadius);
         spnCategory = findViewById(R.id.spnCategory);
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);
@@ -431,6 +432,9 @@ public class MainActivity extends AppCompatActivity implements
          */
         verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
         progressBar = findViewById(R.id.progressbar);
+        tvQuerying = findViewById(R.id.tvQuerying);
+        //tvQuerying.setAnimation(imgAnimationBlink);
+        tvQuerying.setVisibility(View.GONE);
         mLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         verticalRecyclerView.setLayoutManager(mLayoutManager);
         verticalList = new ArrayList<>();
@@ -449,13 +453,14 @@ public class MainActivity extends AppCompatActivity implements
         recentListingsRecyclervView.setNestedScrollingEnabled(false);
 
         btnAdd = findViewById(R.id.btnAdd);
-        btnShop = findViewById(R.id.btnShop);
+       // btnShop = findViewById(R.id.btnShop);
         spokesperson = findViewById(R.id.spokesperson);
         tvCity = findViewById(R.id.tvCity);
         tvMore = findViewById(R.id.tvMore);
 
 
-        Button btnShowListings = findViewById(R.id.btnShowListings);
+        btnShowListings = findViewById(R.id.btnShowListings);
+        btnShowListings.setVisibility(View.GONE);
 
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -475,8 +480,6 @@ public class MainActivity extends AppCompatActivity implements
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             Log.e("Radio Button No: ", " response " + checkedId);
             Map<String, String> query = new HashMap<>();
-
-            //search bar query
             query.put("category", String.valueOf(checkedId));
            // getRetrofit(query);
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
@@ -506,10 +509,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        btnShop.setOnClickListener(view -> {
+/*        btnShop.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, WooProductDetail.class);
             startActivity(intent);
-        });
+        });*/
 
         spokesperson.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AboutUs.class);
@@ -522,8 +525,8 @@ public class MainActivity extends AppCompatActivity implements
 
         searchView = findViewById(R.id.search);
 
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint("Tap To Search");
+        searchView.setIconifiedByDefault(true);
+        //searchView.setQueryHint("Tap To Search");
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
@@ -765,14 +768,6 @@ public class MainActivity extends AppCompatActivity implements
             latitude = location.getLatitude();
             longitude = location.getLongitude();
 
-         /*   CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                  //  .zoom(17)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
-
             query.put("latitude", String.valueOf(location.getLatitude()));
             query.put("longitude", String.valueOf(location.getLongitude()));
             //query.put("distance", "5");
@@ -819,13 +814,10 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         mMap = map;
-        // zoom to current location on map
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 13));
         startDemo(mIsRestore);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        // Set a listener for marker click.
-        //mMap.setOnMarkerClickListener(this);
+
     }
 
 
@@ -871,11 +863,6 @@ public class MainActivity extends AppCompatActivity implements
      * @param longitude
      */
     public void setAddress(Double latitude, Double longitude) {
-        //this.latitude = latitude;
-        //this.longitude = longitude;
-        // zoom to current location on map
-       // mMap.setOnMapLoadedCallback(() -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),13)));
-        progressBar.setVisibility(View.GONE); //hide progressBar
         Geocoder geocoder;
         List<Address> addresses = null;
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -942,6 +929,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void getRetrofit(final Map<String, String> query) {
         //mClusterManager = new ClusterManager<>(this, getMap());
+        tvQuerying.setVisibility(View.VISIBLE);
+
         mapLocations = new ArrayList<>();
 
 
@@ -962,17 +951,13 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 Log.e("getRetrofit_METHOD_SUCCESS ", " response " + response.body());
-                //Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
-                    // mListPost = response.body();
-                    // loop through JSON response get parse and output to log
 
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                         if (businessHours == null) {
                             String today = "null";
-                            //Log.e("Location ", " Today: " +today);
-                            //Log.e("Location ", " IsOpen: " +today);
+
                         } else {
                             todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
                             isOpen = response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
@@ -1122,13 +1107,16 @@ public class MainActivity extends AppCompatActivity implements
 
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
                             latLngBoundsBuilder.include(latlng);
-                           // mapLocations.add(new Person(latlng, response.body().get(i).getTitle().getRaw(), R.drawable.com_facebook_profile_picture_blank_square));
                             mapLocations.add(new Person(latlng,
                                     response.body().get(i).getTitle().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getContent().getRaw()));
                         }
-                    }
+                    }           progressBar.setVisibility(View.GONE); //hide progressBar
+                                btnShowListings.setVisibility(View.VISIBLE);
+                                tvQuerying.setVisibility(View.GONE);
+
+
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1253,57 +1241,6 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    /*
-     * Query API for WooStore data
-
-    public void getRetrofitWoo() {
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-
-        // pass JSON data to BusinessListings class for filtering
-        Call<List<WooProducts>> call = service.getPostWooInfo();
-
-        // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
-        call.enqueue(new Callback<List<WooProducts>>() {
-            @Override
-            public void onResponse(@NotNull Call<List<WooProducts>> call, Response<List<WooProducts>> response) {
-
-                // loop through JSON response get parse and output to log
-
-                for (int i = 0; i < response.body().size(); i++) {
-
-                    //parse response based on WooModel class and add to list array ( get category name, description and image)
-                    horizontalList.add(new WooModel(WooModel.IMAGE_TYPE,
-                            response.body().get(i).getName(),
-                            response.body().get(i).getPermalink(),
-                            response.body().get(i).getAverageRating(),
-                            response.body().get(i).getRatingCount(),
-                            response.body().get(i).getName(),
-                            response.body().get(i).getPrice(),
-                            response.body().get(i).getImages().get(0).getSrc()));
-
-                }
-                // horizontalAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<WooProducts>> call, Throwable t) {
-            }
-        });
-
-    }*/
-
-
     /**
      * more slider shit
      */
@@ -1416,7 +1353,7 @@ public class MainActivity extends AppCompatActivity implements
         public void run() {
             Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
             Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-            Animation imgAnimationflip = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.flip);
+
 
             String[] text = {
                     "Looking to find black owned businesses and service providers near you?",
