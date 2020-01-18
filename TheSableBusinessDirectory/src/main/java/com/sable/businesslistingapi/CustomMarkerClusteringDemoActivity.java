@@ -175,6 +175,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     @Override
     public void onClusterInfoWindowClick(Cluster<Person> cluster) {
         // Does nothing, but you could go to a list of the users.
+        Toast.makeText(this, cluster + " (including " + cluster + ")", Toast.LENGTH_SHORT).show();
     }
 
     @Override
