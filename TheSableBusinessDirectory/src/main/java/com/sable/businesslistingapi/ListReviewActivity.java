@@ -160,9 +160,10 @@ public class ListReviewActivity extends AppCompatActivity {
         tvCategory = findViewById(R.id.tvCategory);
         tvVideo = findViewById(R.id.tvVideo);
         tvFirstRate = findViewById(R.id.tvFirstRate);
+        pDialog = findViewById(R.id.progressBar);
         //tvReviews = findViewById(R.id.tvReviews);
 
-        pDialog.setVisibility(View.GONE);
+       // pDialog.setVisibility(View.GONE);
 
 
 

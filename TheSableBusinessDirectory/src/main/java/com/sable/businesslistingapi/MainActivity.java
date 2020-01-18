@@ -1,7 +1,6 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -52,11 +50,9 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -125,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements
     RecentListingsAdapter recentListingsAdapter;
     RecentReviewListingsAdapter recentReviewListingsAdapter;
 
-
-    ArrayList<WooModel> horizontalList;
 
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
@@ -1117,6 +1111,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }               progressBar.setVisibility(View.GONE); //hide progressBar
                                     tvQuerying.setVisibility(View.GONE);
+                                    btnShowListings.setVisibility(View.VISIBLE);
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1128,8 +1123,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
                 Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
-                btnShowListings.setVisibility(View.VISIBLE);
-                //getRetrofit(query);
+                getRetrofit(query);
             }
         });
 

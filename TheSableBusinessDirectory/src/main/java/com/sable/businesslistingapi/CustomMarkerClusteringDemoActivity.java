@@ -17,9 +17,11 @@
 package com.sable.businesslistingapi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +57,7 @@ import java.util.List;
 public class CustomMarkerClusteringDemoActivity extends MainActivity implements ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
     ClusterManager<Person> mClusterManager;
     private Person clickedVenueMarker;
+    ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
 
     /**
      * Draws profile photos inside markers (using IconGenerator).
@@ -119,15 +122,6 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
                             .fitCenter()
                             .placeholder(R.drawable.screen_splash)
                             .submit(70, 70).get();
-
-                  /*  dummyBitmap = Glide.with(getApplicationContext())
-                            .asBitmap()
-                            .load(p.profilePhoto)
-                            .fitCenter()
-                            .placeholder(R.drawable.screen_splash)
-                            .submit(70,70)
-                            .get();*/
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -204,6 +198,49 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     @Override
     public void onClusterItemInfoWindowClick(Person item) {
         // Does nothing, but you could go into the user's profile page, for example.
+        //Toast.makeText(this, item + " (including " + item + ")", Toast.LENGTH_SHORT).show();
+       for(int i = 0; i< verticalList.size(); i++) {
+            if (item.name.equals(verticalList.get(i).title)){
+                locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                        verticalList.get(i).id,
+                        verticalList.get(i).title,
+                        verticalList.get(i).link,
+                        verticalList.get(i).status,
+                        verticalList.get(i).category,
+                        verticalList.get(i).featured,
+                        verticalList.get(i).featured_image,
+                        verticalList.get(i).bldgno,
+                        verticalList.get(i).street,
+                        verticalList.get(i).city,
+                        verticalList.get(i).state,
+                        verticalList.get(i).country,
+                        verticalList.get(i).zipcode,
+                        verticalList.get(i).latitude,
+                        verticalList.get(i).longitude,
+                        verticalList.get(i).rating,
+                        verticalList.get(i).ratingCount,
+                        verticalList.get(i).phone,
+                        verticalList.get(i).email,
+                        verticalList.get(i).website,
+                        verticalList.get(i).twitter,
+                        verticalList.get(i).facebook,
+                        verticalList.get(i).video,
+                        verticalList.get(i).hours,
+                        verticalList.get(i).isOpen,
+                        verticalList.get(i).logo,
+                        verticalList.get(i).content,
+                        verticalList.get(i).featured_image)));
+
+                Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
+
+                Bundle locationReviewBundle = new Bundle();
+                locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
+                showReviews.putExtra("locationReview", locationReviewShow);
+                startActivity(showReviews);
+                break;
+
+            }
+        }
     }
 
     @Override
