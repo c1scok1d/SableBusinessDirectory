@@ -931,7 +931,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void getRetrofit(final Map<String, String> query) {
         tvQuerying.setVisibility(View.VISIBLE);
-        tvQuerying.setText("SEARCHING BLACK OWNED BUSINESSES NEAR YOU!");
+        tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU!");
 
 
         mapLocations = new ArrayList<>();
@@ -1117,9 +1117,6 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }               progressBar.setVisibility(View.GONE); //hide progressBar
                                     tvQuerying.setVisibility(View.GONE);
-                                    if(mapLocations.size() > 0) {
-                                        btnShowListings.setVisibility(View.VISIBLE);
-                                    }
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1372,7 +1369,7 @@ public class MainActivity extends AppCompatActivity implements
                     "We provide a one of a kind online platform. To make finding and reviewing black owned businesses and service providers easier.",
 
                     "We have combined a searchable geo-directory, social media and e-commerce " +
-                            "platforms specifically for black owned businesses and service providers. ",
+                            "platforms specifically for black owned businesses and service providers.",
 
                     "Customers maintain the directory by adding and reviewing the black owned businesses and service providers they frequent.",
 
@@ -1381,15 +1378,15 @@ public class MainActivity extends AppCompatActivity implements
                     "88% of people trust online reviews. Online reviews are an important way you can increase " +
                             "sales for your business. This is especially important local businesses and service providers.",
 
-                    "Adding and reviewing listings is easy. To protect the privacy of our users and insure high quality feedback" +
+                    "Adding and reviewing listings is easy. To protect the privacy of our users and insure high quality feedback " +
                             "we allow users access to our site with facebook credentials.",
 
                     "Tap the button below the next time you shop with a black owned business to add them to the directory."
 
             };
 
-            int[] images = {R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
-                    R.mipmap.spokesman2_foreground, R.mipmap.spokesman3_foreground,R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
+            int[] images = {R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman2_foreground,
+                    R.mipmap.spokesman1_foreground, R.mipmap.spokesman3_foreground,R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
                     R.mipmap.spokesman2_foreground, R.mipmap.spokesman1_foreground,R.mipmap.spokesman3_foreground};
 
             if(count > text.length){
