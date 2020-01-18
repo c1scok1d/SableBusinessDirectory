@@ -163,7 +163,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
 
         // Animate camera to the bounds
         try {
-            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -248,7 +248,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     protected void startDemo(boolean isRestore) {
         if (!isRestore) {
            // LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
-            getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MainActivity.latitude, MainActivity.longitude),100)));
+            getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),200)));
         }
 
         mClusterManager = new ClusterManager<>(this, getMap());
