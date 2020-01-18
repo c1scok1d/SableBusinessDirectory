@@ -53,7 +53,7 @@ import java.util.List;
  * Demonstrates heavy customisation of the look of rendered clusters.
  */
 public class CustomMarkerClusteringDemoActivity extends MainActivity implements ClusterManager.OnClusterClickListener<Person>, ClusterManager.OnClusterInfoWindowClickListener<Person>, ClusterManager.OnClusterItemClickListener<Person>, ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
-    private ClusterManager<Person> mClusterManager;
+    ClusterManager<Person> mClusterManager;
     private Person clickedVenueMarker;
 
     /**

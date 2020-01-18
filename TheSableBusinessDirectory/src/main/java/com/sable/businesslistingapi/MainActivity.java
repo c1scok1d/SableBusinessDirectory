@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //btnLearnMore = findViewById(R.id.btnLearnMore);
         login_button2 = findViewById(R.id.login_button2);
+        login_button2.setVisibility(View.GONE);
 
         textSwitcher =  findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
@@ -465,7 +466,8 @@ public class MainActivity extends AppCompatActivity implements
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Loading the 10 nearest black owned\nbusinesses and service providers", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), "Loading the 10 nearest black owned\nbusinesses and service providers", Toast.LENGTH_SHORT).show();
+                tvQuerying.setText("LOADING 10 BLACK OWNED BUSINESSES NEAREST YOU!");
                 startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
             }
         });
@@ -525,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements
 
         searchView = findViewById(R.id.search);
 
-        searchView.setIconifiedByDefault(true);
+        searchView.setIconifiedByDefault(false);
         //searchView.setQueryHint("Tap To Search");
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -928,8 +930,9 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     public void getRetrofit(final Map<String, String> query) {
-        //mClusterManager = new ClusterManager<>(this, getMap());
         tvQuerying.setVisibility(View.VISIBLE);
+        tvQuerying.setText("SEARCHING BLACK OWNED BUSINESSES NEAR YOU!");
+
 
         mapLocations = new ArrayList<>();
 
@@ -1102,7 +1105,7 @@ public class MainActivity extends AppCompatActivity implements
                             RadioButton radioButton = new RadioButton(getApplicationContext());
                             radioButton.setText(response.body().get(i).getPostCategory().get(0).getName());
                             radioButton.setId(response.body().get(i).getPostCategory().get(0).getId());
-                            radioButton.setBackgroundResource(R.drawable.null_selector);
+                            //radioButton.setBackgroundResource(R.drawable.null_selector);
                             radioGroup.addView(radioButton);
 
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
@@ -1112,20 +1115,24 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getContent().getRaw()));
                         }
-                    }           progressBar.setVisibility(View.GONE); //hide progressBar
-                                btnShowListings.setVisibility(View.VISIBLE);
-                                tvQuerying.setVisibility(View.GONE);
-
-
+                    }               progressBar.setVisibility(View.GONE); //hide progressBar
+                                    tvQuerying.setVisibility(View.GONE);
+                                    if(mapLocations.size() > 0) {
+                                        btnShowListings.setVisibility(View.VISIBLE);
+                                    }
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
+
+
             }
 
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
                 Log.e("getRetrofit_METHOD_FAILURE ", " Re-running method...");
-                getRetrofit(query);
+                //OPTION TO RE-RUN QUERY OR ADD LISTING
+                btnShowListings.setVisibility(View.VISIBLE);
+                //getRetrofit(query);
             }
         });
 
@@ -1362,7 +1369,7 @@ public class MainActivity extends AppCompatActivity implements
                     "The Sable Business Directory is designed to help those wanting to support " +
                             "and frequent black owned businesses and service providers.",
 
-                    "We provide a one of a kind online platform.",
+                    "We provide a one of a kind online platform. To make finding and reviewing black owned businesses and service providers easier.",
 
                     "We have combined a searchable geo-directory, social media and e-commerce " +
                             "platforms specifically for black owned businesses and service providers. ",
@@ -1374,7 +1381,8 @@ public class MainActivity extends AppCompatActivity implements
                     "88% of people trust online reviews. Online reviews are an important way you can increase " +
                             "sales for your business. This is especially important local businesses and service providers.",
 
-                    "Adding a listing is easy!",
+                    "Adding and reviewing listings is easy. To protect the privacy of our users and insure high quality feedback" +
+                            "we allow users access to our site with facebook credentials.",
 
                     "Tap the button below the next time you shop with a black owned business to add them to the directory."
 
