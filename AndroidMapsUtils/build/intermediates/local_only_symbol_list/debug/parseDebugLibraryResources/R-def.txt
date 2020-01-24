@@ -1,5 +1,20 @@
 R_DEF: Internal format may change without notice
 local
+anim blink
+anim bounce
+anim fade_in
+anim fade_out
+anim flip
+anim move
+anim rotate
+anim sequential
+anim slide_down
+anim slide_in_right
+anim slide_up
+anim to_top_right
+anim together
+anim zoom_in
+anim zoom_out
 drawable amu_bubble_mask
 drawable amu_bubble_shadow
 id amu_text

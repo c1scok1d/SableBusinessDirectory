@@ -22,11 +22,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,11 +36,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
+
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
@@ -59,6 +61,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     private Person clickedVenueMarker;
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
 
+
     /**
      * Draws profile photos inside markers (using IconGenerator).
      * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
@@ -69,6 +72,8 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
         private final ImageView mImageView;
         private final ImageView mClusterImageView;
         private final int mDimension;
+
+
 
         public PersonRenderer() {
             super(getApplicationContext(), getMap(), mClusterManager);
@@ -193,6 +198,7 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
        venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
        radioGroup.setVisibility(View.GONE);
 
+
        return false;
     }
 
@@ -247,9 +253,9 @@ public class CustomMarkerClusteringDemoActivity extends MainActivity implements 
     @Override
     protected void startDemo(boolean isRestore) {
         if (!isRestore) {
-           // LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
             getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),200)));
         }
+
 
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.setRenderer(new PersonRenderer());

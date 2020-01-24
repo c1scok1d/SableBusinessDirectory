@@ -3,6 +3,7 @@ package com.sable.businesslistingapi;
 import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -10,6 +11,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -64,6 +67,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,6 +78,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cache;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -88,7 +94,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
-        //GoogleMap.OnMarkerClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -142,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements
     Spinner spnCategory, spnRadius;
     RadioGroup radioGroup;
     ImageView ivUserImage, spokesperson;
+    ImageSwitcher greeterSwitcher;
+
     private static final int FRAME_TIME_MS = 8000;
 
 
@@ -176,19 +183,82 @@ public class MainActivity extends AppCompatActivity implements
 
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
+    /**
+     * check network connectivity
+     * @param context
+     * @return
+     */
+    public static boolean isConnectedToNetwork(Context context) {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * cache JSON based on network connectivity
+     */
+    int cacheSize = 10 * 1024 * 1024; // 10 MB
+//    Context context = getApplicationContext();
+
+    //File httpCacheDirecotory = new File(this.getCacheDir(), FILE);
+   // Cache cache = new Cache(new File(getApplicationContext().getCacheDir(), "sable-cache"), cacheSize);
+
+    static Interceptor onlineInterceptor = chain -> {
+        okhttp3.Response response = chain.proceed(chain.request());
+        int maxAge = 60; // read from cache for 60 seconds even if there is internet connection
+        return response.newBuilder()
+                .header("Cache-Control", "public, max-age=" + maxAge)
+                .removeHeader("Pragma")
+                .build();
+    };
+
+    static Interceptor offlineInterceptor= chain -> {
+        Request request = chain.request();
+        if (!isInternetAvailable()) {
+            int maxStale = 60 * 60 * 24 * 30; // Offline cache available for 30 days
+            request = request.newBuilder()
+                    .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                    .removeHeader("Pragma")
+                    .build();
+        }
+        return chain.proceed(request);
+    };
+
+
+
+
+
+    /**
+     * http client set up for retrofit api call
+     */
     OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(new BasicAuthInterceptor(username, password))
             .addInterceptor(logging)
+            .addInterceptor(offlineInterceptor)
+            .addInterceptor(onlineInterceptor)
+          //  .cache(cache)
             .build();
-
 
 
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
     private Handler imageSwitchHandler;
+
 
     /**
      * @param savedInstanceState
@@ -197,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+
         mIsRestore = savedInstanceState != null;
         setUpMap();
         /**
@@ -205,14 +276,18 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
         textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
         textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+        greeterSwitcher = findViewById(R.id.greeterSwitcher);
+
 
         Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
         Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
+
         //btnLearnMore = findViewById(R.id.btnLearnMore);
         login_button2 = findViewById(R.id.login_button2);
         login_button2.setVisibility(View.GONE);
+        greeterSwitcher.setAnimation(imgAnimationIn);
 
         textSwitcher =  findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
@@ -419,14 +494,14 @@ public class MainActivity extends AppCompatActivity implements
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
-
+//ImageView ivLogo = findViewById(R.id.ivLogo);
+//ivLogo.setVisibility(View.GONE);
 
 
         /*
             BEGIN vertical Recycler View
          */
         verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
-        progressBar = findViewById(R.id.progressbar);
         tvQuerying = findViewById(R.id.tvQuerying);
         //tvQuerying.setAnimation(imgAnimationBlink);
         tvQuerying.setVisibility(View.GONE);
@@ -462,6 +537,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                // Toast.makeText(getApplicationContext(), "Loading the 10 nearest black owned\nbusinesses and service providers", Toast.LENGTH_SHORT).show();
                 tvQuerying.setText("LOADING 10 BLACK OWNED BUSINESSES NEAREST YOU!");
+                btnShowListings.setVisibility(View.GONE);
                 startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
             }
         });
@@ -477,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.e("Radio Button No: ", " response " + checkedId);
             Map<String, String> query = new HashMap<>();
             query.put("category", String.valueOf(checkedId));
-           // getRetrofit(query);
+            getRetrofit(query);
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
            // startActivity(new Intent(getApplicationContext(), CustomMarkerClusteringDemoActivity.class));
         });
@@ -947,8 +1023,14 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("getRetrofit_METHOD_SUCCESS ", " response " + response.body());
+                //Log.e("getRetrofit_METHOD_SUCCESS ", " response " + response.body());
+
                 if (response.isSuccessful()) {
+                    if (response.raw().cacheResponse() != null) {
+                        Log.e("Network", "Listings response came from cache");
+                    } else {
+                        Log.e("Network", "Listings response came from server");
+                    }
 
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
@@ -1109,9 +1191,13 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getContent().getRaw()));
                         }
-                    }               progressBar.setVisibility(View.GONE); //hide progressBar
+                    }            //   progressBar.setVisibility(View.GONE); //hide progressBar
                                     tvQuerying.setVisibility(View.GONE);
                                     btnShowListings.setVisibility(View.VISIBLE);
+                                   // btnShowListings.setAnimation(R.anim.fade_in);
+                                    greeterSwitcher.setVisibility(View.GONE);
+                   // Animation imgAnimationTopRight = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.to_top_right);
+                  //  ivLogo.setAnimation(imga);
                 } else {
                     Log.e("getRetrofit_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
@@ -1129,6 +1215,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }//END Retrofit API call to get listings
 
+
     /**
      * Retrofit API call to get reviews
      */
@@ -1139,22 +1226,12 @@ public class MainActivity extends AppCompatActivity implements
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(new BasicAuthInterceptor(username, password))
-                .addInterceptor(logging)
-                .build();
-
-
-        //if(retrofit==null){
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        // }
+
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
         // pass JSON data to BusinessListings class for filtering
@@ -1165,7 +1242,11 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override
             public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
-                Log.e("getPostReview_METHOD_SUCCESS", " response " + response.body());
+                if (response.raw().cacheResponse() != null) {
+                    Log.e("Network", "Reviews response came from cache");
+                } else {
+                    Log.e("Network", "Reviews response came from server");
+                }
                 if (response.isSuccessful()) {
 
                     for (int i = 0; i < response.body().size(); i++) {
@@ -1181,10 +1262,6 @@ public class MainActivity extends AppCompatActivity implements
                                 response.body().get(i).getImages().getRendered().get(0).getSrc()));
 
                         recentReviewListingsAdapter.notifyDataSetChanged();
-                        // }
-
-                        // imagesAdapter.notifyDataSetChanged();
-                        //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
                     }
                 } else {
                     Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
@@ -1193,10 +1270,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
-               /* if (retryCount++ < TOTAL_RETRIES) {
-                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
 
-                }*/
             }
         });
 
