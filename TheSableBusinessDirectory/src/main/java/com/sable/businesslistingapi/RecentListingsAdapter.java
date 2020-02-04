@@ -21,33 +21,36 @@ import java.util.ArrayList;
 
 public class RecentListingsAdapter extends RecyclerView.Adapter {
 
-    ArrayList<RecentListingsModel> dataset;
+    private ArrayList<ListingsModel> dataset;
+    private ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    private  ArrayList<ListingsModel> locationFoo = new ArrayList<>();
+    private ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
 
     private Context mContext;
 
 
-    public RecentListingsAdapter(ArrayList<RecentListingsModel> mlist, Context context) {
+    public RecentListingsAdapter(ArrayList<ListingsModel> mlist, Context context) {
         dataset = mlist;
         this.mContext = context;
 
     }
 
-    public  class MyViewHolder extends RecyclerView.ViewHolder {
+    public  class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvName, tvContent, tvRatingCount, tvId;
         ImageView ivFeaturedImage;
         RatingBar simpleRatingBar;
 
 
-        public MyViewHolder(View view, ArrayList<RecentListingsModel> mlist) {
-            super(view);
-            this.tvName = view.findViewById(R.id.tvName);
-            this.tvContent = view.findViewById(R.id.tvContent);
-            this.simpleRatingBar = view.findViewById(R.id.simpleRatingBar);
-            this.tvRatingCount = view.findViewById(R.id.tvRatingCount);
-            this.ivFeaturedImage = view.findViewById(R.id.ivFeaturedImage);
-            this.tvId = view.findViewById(R.id.tvId);
-            ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
+        public ImageTypeViewHolder(View itemView) {
+            super(itemView);
+            this.tvName = itemView.findViewById(R.id.tvName);
+            this.tvContent = itemView.findViewById(R.id.tvContent);
+            this.simpleRatingBar = itemView.findViewById(R.id.simpleRatingBar);
+            this.tvRatingCount = itemView.findViewById(R.id.tvRatingCount);
+            this.ivFeaturedImage = itemView.findViewById(R.id.ivFeaturedImage);
+            this.tvId = itemView.findViewById(R.id.tvId);
+           // ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
 
 
             ivFeaturedImage.setOnClickListener(v -> {
@@ -59,34 +62,34 @@ public class RecentListingsAdapter extends RecyclerView.Adapter {
                     if ((dataset.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
 
                         locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                dataset.get(i).id,
-                                dataset.get(i).title,
-                                dataset.get(i).link,
-                                dataset.get(i).status,
-                                dataset.get(i).category,
-                                dataset.get(i).featured,
-                                dataset.get(i).featured_image,
-                                dataset.get(i).bldgno,
-                                dataset.get(i).street,
-                                dataset.get(i).city,
-                                dataset.get(i).state,
-                                dataset.get(i).country,
-                                dataset.get(i).zipcode,
-                                dataset.get(i).latitude,
-                                dataset.get(i).longitude,
-                                dataset.get(i).rating,
-                                dataset.get(i).ratingCount,
-                                dataset.get(i).phone,
-                                dataset.get(i).email,
-                                dataset.get(i).website,
-                                dataset.get(i).twitter,
-                                dataset.get(i).facebook,
-                                dataset.get(i).video,
-                                dataset.get(i).hours,
-                                dataset.get(i).isOpen,
-                                dataset.get(i).logo,
-                                dataset.get(i).content,
-                                dataset.get(i).featured_image)));
+                                locationReview.get(i).id,
+                                locationReview.get(i).title,
+                                locationReview.get(i).link,
+                                locationReview.get(i).status,
+                                locationReview.get(i).category,
+                                locationReview.get(i).featured,
+                                locationReview.get(i).featured_image,
+                                locationReview.get(i).bldgno,
+                                locationReview.get(i).street,
+                                locationReview.get(i).city,
+                                locationReview.get(i).state,
+                                locationReview.get(i).country,
+                                locationReview.get(i).zipcode,
+                                locationReview.get(i).latitude,
+                                locationReview.get(i).longitude,
+                                locationReview.get(i).rating,
+                                locationReview.get(i).ratingCount,
+                                locationReview.get(i).phone,
+                                locationReview.get(i).email,
+                                locationReview.get(i).website,
+                                locationReview.get(i).twitter,
+                                locationReview.get(i).facebook,
+                                locationReview.get(i).video,
+                                locationReview.get(i).hours,
+                                locationReview.get(i).isOpen,
+                                locationReview.get(i).logo,
+                                locationReview.get(i).content,
+                                locationReview.get(i).featured_image)));
 
                         Bundle locationReviewBundle = new Bundle();
                         locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
@@ -99,12 +102,10 @@ public class RecentListingsAdapter extends RecyclerView.Adapter {
         }
     }
 
-
-    @NotNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_listings, parent, false);
-        return new MyViewHolder(view, dataset);
+        return new ImageTypeViewHolder(view);
     }
 
     @Override
@@ -113,14 +114,44 @@ public class RecentListingsAdapter extends RecyclerView.Adapter {
         //final WooModel object = dataset.get(position);
 
         Picasso.Builder builder = new Picasso.Builder(mContext);
+        final ListingsModel object = dataset.get(position);
 
 
-        ((MyViewHolder) holder).tvName.setText(dataset.get(position).title);
-        ((MyViewHolder) holder).tvId.setText(String.valueOf(dataset.get(position).id));
-        ((MyViewHolder) holder).tvContent.setText(dataset.get(position).content);
-        ((MyViewHolder) holder).simpleRatingBar.setRating(dataset.get(position).rating);
-        ((MyViewHolder) holder).tvRatingCount.setText(String.valueOf(dataset.get(position).ratingCount));
-        builder.build().load(dataset.get(position).featured_image).into(((MyViewHolder) holder).ivFeaturedImage);
+        ((ImageTypeViewHolder) holder).tvName.setText(dataset.get(position).title);
+        ((ImageTypeViewHolder) holder).tvId.setText(String.valueOf(dataset.get(position).id));
+        ((ImageTypeViewHolder) holder).tvContent.setText(dataset.get(position).content);
+        ((ImageTypeViewHolder) holder).simpleRatingBar.setRating(dataset.get(position).rating);
+        ((ImageTypeViewHolder) holder).tvRatingCount.setText(String.valueOf(dataset.get(position).ratingCount));
+        builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).ivFeaturedImage);
+        locationReview.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                object.id,
+                object.title,
+                object.link,
+                object.status,
+                object.category,
+                object.featured,
+                object.image,
+                object.bldgno,
+                object.street,
+                object.city,
+                object.state,
+                object.country,
+                object.zipcode,
+                object.latitude,
+                object.longitude,
+                object.rating,
+                object.ratingCount,
+                object.phone,
+                object.email,
+                object.website,
+                object.twitter,
+                object.facebook,
+                object.video,
+                object.hours,
+                object.isOpen,
+                object.logo,
+                object.content,
+                object.featured_image));
     }
 
     @Override

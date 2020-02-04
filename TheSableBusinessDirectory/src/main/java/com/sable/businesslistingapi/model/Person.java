@@ -17,23 +17,27 @@
 package com.sable.businesslistingapi.model;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.clustering.ClusterItem;
+import com.sable.businesslistingapi.ClusterItem;
 
-public class Person implements ClusterItem {
+public class Person implements ClusterItem, com.sable.businesslistingapi.clustering.ClusterItem {
     public final String name, profilePhoto, content;
-    //public final int profilePhoto;
-    private final LatLng mPosition;
+    public final Float rating;
+    public final LatLng position;
+    public final Integer ratingCount;
 
-    public Person(LatLng position, String name, String pictureResource, String content) {
+    public Person(LatLng position, String name, String pictureResource, String content, Float rating, Integer ratingCount) {
         this.name = name;
         profilePhoto = pictureResource;
-        mPosition = position;
+        this.position = position;
         this.content = content;
+        this.rating = rating;
+        this.ratingCount = ratingCount;
+
     }
 
     @Override
     public LatLng getPosition() {
-        return mPosition;
+        return position;
     }
 
     @Override
@@ -45,4 +49,10 @@ public class Person implements ClusterItem {
     public String getSnippet() {
         return content;
     }
+
+    @Override
+    public Float getRating() { return rating; }
+
+    @Override
+    public Integer getRatingCount() { return ratingCount; }
 }

@@ -38,7 +38,13 @@ public interface ClusterItem {
      */
     String getSnippet();
 
+    /**
+     * The rating of this marker.
+     */
     Float getRating();
 
+    /**
+     * Number of ratings for this marker.
+     */
     Integer getRatingCount();
 }

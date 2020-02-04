@@ -337,7 +337,7 @@ public class ReviewActivity extends AppCompatActivity implements
 
             double distance = (locationA.distanceTo(locationB) * 0.000621371192); //convert meters to miles
             tvDistance.setText(String.format(Locale.US, "%10.2f", distance));
-            if(locationReview.get(0).isOpen =="Closed now"){
+            if(locationReview.get(0).isOpen.equals("Closed now")){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
             if(locationReview.get(0).featured.equals(true)){
@@ -351,10 +351,10 @@ public class ReviewActivity extends AppCompatActivity implements
                 tvFirstRate.setText(FirstRate);
                 //tvFirstRate.setTextColor(Color.rgb(22, 53, 64)); //green
             }
-            if (locationReview.get(0).hours == "null" || locationReview.get(0).isOpen == "null" || locationReview.get(0).hours == null || locationReview.get(0).isOpen == null) {
+            if (locationReview.get(0).hours.equals("null") || locationReview.get(0).isOpen.equals("null") || locationReview.get(0).hours == null || locationReview.get(0).isOpen == null) {
                 tvIsOpen.setVisibility(View.GONE);
                 tvHours.setVisibility(View.GONE);
-            } else if (locationReview.get(0).hours == "Closed" ||  locationReview.get(0).isOpen =="Closed now" ) {
+            } else if (locationReview.get(0).hours.equals("Closed") || locationReview.get(0).isOpen.equals("Closed now")) {
                 String closed = "Closed";
                 tvHours.setText(closed);
                 tvHours.setTextColor(Color.rgb(255, 0, 0)); //red
@@ -672,12 +672,6 @@ public class ReviewActivity extends AppCompatActivity implements
         for (int i = 0; i < filesToUploadfoo.size(); i++) {
             sb.append(filesToUploadfoo.get(i)).append("::");
         }
-        /* Append last element due to special casing
-        sb.append(filesToUploadfoo.get(0));
-        for (int i = 0; i < nestingDepth; i++) {
-            sb.append(')');
-        }*/
-
         main = sb.toString();
 
 

@@ -559,7 +559,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/featuredListingsRecyclerViewLayout"
+                android:id="@+id/reviewImagesRecyclerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -575,7 +575,7 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/featuredListingsRecyclerView"
+                    android:id="@+id/reviewImagesRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -585,7 +585,7 @@
 
 
             <LinearLayout
-                android:id="@+id/verticalRecyclerLayout"
+                android:id="@+id/reviewRecyclerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -602,7 +602,7 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/verticalRecyclerView"
+                    android:id="@+id/reviewRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -612,6 +612,31 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/notLoggedInLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/tvNoReviews"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_below="@id/ivSpokesman"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent2" />
+
+            <ImageView
+                android:id="@+id/ivSpokesman"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@mipmap/spokesman_hello_foreground" />
+        </RelativeLayout>
 
         <ProgressBar
             android:id="@+id/progressBar"

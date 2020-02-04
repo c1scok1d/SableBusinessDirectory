@@ -9,9 +9,7 @@ import java.util.ArrayList;
 public class UserAuthModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String status, msg, wpUserId, cookie, user_login, image, username, useremail;
-    public int ratingNumber, id, ratingCount;
-    //public Double latitude, longitude;
-
+    public int id, ratingCount;
 
 
     public UserAuthModel(int IMAGE_TYPE,

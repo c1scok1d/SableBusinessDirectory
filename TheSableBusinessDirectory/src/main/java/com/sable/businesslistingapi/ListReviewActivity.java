@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ListReviewActivity extends AppCompatActivity {
 
     ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
-    TextView tvFeatured, tvStatus, tvState,
+    TextView tvFeatured, tvStatus, tvState, tvNoReviews,
             tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvWebsite, /* tvEmail, tvTwitter, tvFacebook, */tvBldNo,
             tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
     ImageView ivFeaturedImage;
@@ -79,6 +81,8 @@ public class ListReviewActivity extends AppCompatActivity {
     private static final int TOTAL_RETRIES = 3;
     //private static final String TAG = CallbackWithRetry.class.getSimpleName();
     private int retryCount = 0;
+    LinearLayout reviewImagesRecyclerLayout, reviewRecyclerLayout;
+    RelativeLayout notLoggedInLayout;
 
     //LinearLayoutManager hLayoutManager, vLayoutManager;
 
@@ -87,6 +91,12 @@ public class ListReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_review_activity);
 
+        reviewImagesRecyclerLayout = findViewById(R.id.reviewImagesRecyclerLayout);
+        reviewRecyclerLayout = findViewById(R.id.reviewRecyclerLayout);
+        notLoggedInLayout = findViewById(R.id.notLoggedInLayout);
+        notLoggedInLayout.setVisibility(View.GONE);
+
+
 
         verticalList = new ArrayList<>();
 
@@ -94,7 +104,7 @@ public class ListReviewActivity extends AppCompatActivity {
        Picasso.Builder builder = new Picasso.Builder(this);
         pDialog = new ProgressBar(this);
 
-        horizontalRecyclerView = findViewById(R.id.featuredListingsRecyclerView);
+        horizontalRecyclerView = findViewById(R.id.reviewImagesRecycler);
         horizontalRecyclerView.setHasFixedSize(true);
 
         LinearLayoutManager hLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -107,7 +117,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
 
         /* Veritcal Review Listing Recycler View */
-        verticalRecyclerView =  findViewById(R.id.verticalRecyclerView);
+        verticalRecyclerView =  findViewById(R.id.reviewRecycler);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         verticalRecyclerView.setHasFixedSize(true);
@@ -161,7 +171,7 @@ public class ListReviewActivity extends AppCompatActivity {
         tvVideo = findViewById(R.id.tvVideo);
         tvFirstRate = findViewById(R.id.tvFirstRate);
         pDialog = findViewById(R.id.progressBar);
-        //tvReviews = findViewById(R.id.tvReviews);
+        tvNoReviews = findViewById(R.id.tvNoReviews);
 
        // pDialog.setVisibility(View.GONE);
 
@@ -455,11 +465,15 @@ public class ListReviewActivity extends AppCompatActivity {
 
                     //if no reviews take user to review activity to be the first to review
                     if (response.body().isEmpty()) {
-                        Intent LocationReview = new Intent(ListReviewActivity.this, ReviewActivity.class);
+                        reviewImagesRecyclerLayout.setVisibility(View.GONE);
+                        reviewRecyclerLayout.setVisibility(View.GONE);
+                        notLoggedInLayout.setVisibility(View.VISIBLE);
+                        tvNoReviews.setText("Currently there are no reviews for "+tvName.getText().toString()+".  Tap the rate button above to be the first to rate "+tvName.getText().toString()+".");
+                       // Intent LocationReview = new Intent(ListReviewActivity.this, ReviewActivity.class);
 
-                        for (int i = 0; i < locationReview.size(); i++) {
+                       // for (int i = 0; i < locationReview.size(); i++) {
 
-                            if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+                           /* if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
                                 locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
                                         locationReview.get(i).id,
                                         locationReview.get(i).title,
@@ -495,9 +509,9 @@ public class ListReviewActivity extends AppCompatActivity {
                                 locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
                                 LocationReview.putExtra("locationReview", locationFoo);
                                 startActivity(LocationReview);
-                                break;
-                            }
-                        }
+                                break; */
+                          //  }
+                      //  }
                     } else { //if listing has reviews, list each review
 
                         for (int i = 0; i < response.body().size(); i++) {

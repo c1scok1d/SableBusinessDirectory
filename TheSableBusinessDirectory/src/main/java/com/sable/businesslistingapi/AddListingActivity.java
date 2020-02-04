@@ -106,8 +106,8 @@ public class AddListingActivity extends AppCompatActivity implements
     /*
     objects of text view and button widgets.
      */
-    TextView tvAddress, tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry;
-    EditText etName, etDescription, etPhone, etEmail, etWebsite, etHours, etTwitter, etFacebook;
+    TextView tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry;
+    EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
     Button btnNext;
     Spinner spnCategory;
     ArrayList<String> category = new ArrayList<>();
@@ -115,10 +115,9 @@ public class AddListingActivity extends AppCompatActivity implements
     List<BusinessHours> bhs = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
     private ArrayList<MediaFile> photos = new ArrayList<>();
-    Map<String, RequestBody> parts = new HashMap<>();
-    JSONObject bhsJSON;
 
-    String name, description, catName, phone, email, website, twitter, facebook, link, status = "publish", Document_img1 = "";
+
+    String name, description, catName, phone, email, website, twitter, facebook, link, status = "publish";
     Integer catNum;
     private static final String PHOTOS_KEY = "easy_image_photos_list";
     private static final int CHOOSER_PERMISSIONS_REQUEST_CODE = 7459;
@@ -329,11 +328,6 @@ public class AddListingActivity extends AppCompatActivity implements
             photos = savedInstanceState.getParcelableArrayList(PHOTOS_KEY);
         }
 
-        /*imagesAdapter = new ImagesAdapter(this, photos);
-        ivLogo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        ivLogo.setHasFixedSize(true);
-        ivLogo.setAdapter(imagesAdapter);*/
-
         easyImage = new EasyImage.Builder(this)
                 .setChooserTitle("Pick media")
                 .setCopyImagesToPublicGalleryFolder(false)
@@ -342,8 +336,6 @@ public class AddListingActivity extends AppCompatActivity implements
                 .setFolderName("EasyImage sample")
                 .allowMultiple(true)
                 .build();
-
-        //checkGalleryAppAvailability();
 
 
         findViewById(R.id.ivLogo).setOnClickListener(new View.OnClickListener() {
@@ -410,7 +402,6 @@ public class AddListingActivity extends AppCompatActivity implements
         });
     }
 
-    //ArrayList<String> filesToUploadfoo = new ArrayList<>();
     File[] filesToUpload;
     ArrayList<String> filesToUploadfoo = new ArrayList<>();
 
@@ -423,10 +414,6 @@ public class AddListingActivity extends AppCompatActivity implements
 
         for(int i=0; i< photos.size(); i++){
             filesToUpload[i] = new File(photos.get(i).getFile().toString());
-           /* String path = photos.get(i).getFile().toString();
-            // it contains your image path...I'm using a temp string...
-            String filename = path.substring(path.lastIndexOf("/")+1);
-            filesToUploadfoo.add(photos.get(i).getFile().toString());*/
         }
         showProgress("Uploading media ...");
         FileUploader fileUploader = new FileUploader();
@@ -676,7 +663,8 @@ public class AddListingActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        if(addresses.size() > 0) {
+
+        if(addresses != null) {
            // Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
             address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
@@ -830,9 +818,9 @@ String type = "gd_business";
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 Log.e("AddListingActivity", " response " + response.body());
                 if(response.isSuccessful()){
-                    userActivityArray.add(response.body().get(0).getDateGmt());
-                    userActivityArray.add(String.valueOf(response.body().get(0).getId()));
-                    userActivityArray.add(response.body().get(0).getType());
+                    userActivityArray.add(response.body().get(0).getDateGmt()); // date of listing add
+                    userActivityArray.add(String.valueOf(response.body().get(0).getId())); //listing id
+                    userActivityArray.add(response.body().get(0).getType()); // post type add
                 }
             }
 

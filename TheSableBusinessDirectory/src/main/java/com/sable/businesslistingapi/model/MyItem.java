@@ -17,23 +17,30 @@
 package com.sable.businesslistingapi.model;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.clustering.ClusterItem;
+import com.sable.businesslistingapi.ClusterItem;
 
 public class MyItem implements ClusterItem {
     private final LatLng mPosition;
     private String mTitle;
     private String mSnippet;
+    private Float mRating;
+    private Integer mRatingCount;
+
 
     public MyItem(double lat, double lng) {
         mPosition = new LatLng(lat, lng);
         mTitle = null;
         mSnippet = null;
+        mRatingCount = null;
+        mRating = null;
     }
 
-    public MyItem(double lat, double lng, String title, String snippet) {
+    public MyItem(double lat, double lng, String title, String snippet, Float rating, Integer ratingCount) {
         mPosition = new LatLng(lat, lng);
         mTitle = title;
         mSnippet = snippet;
+        mRating = rating;
+        mRatingCount = ratingCount;
     }
 
     @Override
@@ -46,6 +53,13 @@ public class MyItem implements ClusterItem {
 
     @Override
     public String getSnippet() { return mSnippet; }
+
+    @Override
+    public Float getRating() { return mRating; }
+
+    @Override
+    public Integer getRatingCount() { return mRatingCount; }
+
 
     /**
      * Set the title of the marker
@@ -61,5 +75,21 @@ public class MyItem implements ClusterItem {
      */
     public void setSnippet(String snippet) {
         mSnippet = snippet;
+    }
+
+    /**
+     * Set the description of the marker
+     * @param rating string to be set as snippet
+     */
+    public void setRating(Float rating) {
+        mRating = rating;
+    }
+
+    /**
+     * Set the description of the marker
+     * @param ratingCount string to be set as snippet
+     */
+    public void setRatingCount(Integer ratingCount) {
+        mRatingCount = ratingCount;
     }
 }

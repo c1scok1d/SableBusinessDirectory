@@ -24,6 +24,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         tools:ignore="googleappindexingwarning"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -42,10 +43,6 @@
             android:label="Sable Business Directory">
         </activity>
 
-        <activity android:name=".WooProductDetail"
-            android:label="@string/app_name">
-        </activity>
-
         <activity android:name=".AddListingActivity"
             android:label="@string/app_name">
         </activity>
@@ -62,15 +59,7 @@
             android:label="@string/app_name">
         </activity>
 
-        <activity android:name=".AboutUs"
-            android:label="@string/app_name">
-        </activity>
-
-        <activity android:name=".AboutUsVideo"
-            android:label="@string/app_name">
-        </activity>
-
-        <activity android:name=".CustomMarkerClusteringDemoActivity"
+        <activity android:name=".MarkerClusteringActivity"
             android:label="@string/app_name">
         </activity>
 

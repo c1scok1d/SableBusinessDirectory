@@ -55,14 +55,10 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class VerticalAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ListingsModel> dataset;
-    ArrayList<ListingsModel> locationReview = new ArrayList<>();
-    ArrayList<ListingsModel> locationFoo = new ArrayList<>();
-    ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
-    // CallbackManager fbLoginCallbackManager, callbackManager;
-    //private LoginButton loginButton;
+    private ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    private  ArrayList<ListingsModel> locationFoo = new ArrayList<>();
+    private ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
     String userName, userEmail, userImage, userId, baseURL = "https://www.thesablebusinessdirectory.com";
-    //CallbackManager fbLogincallbackManager;
-    private AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
 
 
@@ -139,53 +135,50 @@ public class VerticalAdapter extends RecyclerView.Adapter {
             tvReviews = itemView.findViewById(R.id.tvReviews);
 
 
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            image.setOnClickListener(v -> {
 
-                    Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
+                Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
 
 
-                    for (int i = 0; i < locationReview.size(); i++) {
+                for (int i = 0; i < locationReview.size(); i++) {
 
-                        if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
+                    if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
 
-                            locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                    locationReview.get(i).id,
-                                    locationReview.get(i).title,
-                                    locationReview.get(i).link,
-                                    locationReview.get(i).status,
-                                    locationReview.get(i).category,
-                                    locationReview.get(i).featured,
-                                    locationReview.get(i).featured_image,
-                                    locationReview.get(i).bldgno,
-                                    locationReview.get(i).street,
-                                    locationReview.get(i).city,
-                                    locationReview.get(i).state,
-                                    locationReview.get(i).country,
-                                    locationReview.get(i).zipcode,
-                                    locationReview.get(i).latitude,
-                                    locationReview.get(i).longitude,
-                                    locationReview.get(i).rating,
-                                    locationReview.get(i).ratingCount,
-                                    locationReview.get(i).phone,
-                                    locationReview.get(i).email,
-                                    locationReview.get(i).website,
-                                    locationReview.get(i).twitter,
-                                    locationReview.get(i).facebook,
-                                    locationReview.get(i).video,
-                                    locationReview.get(i).hours,
-                                    locationReview.get(i).isOpen,
-                                    locationReview.get(i).logo,
-                                    locationReview.get(i).content,
-                                    locationReview.get(i).featured_image)));
+                        locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                locationReview.get(i).id,
+                                locationReview.get(i).title,
+                                locationReview.get(i).link,
+                                locationReview.get(i).status,
+                                locationReview.get(i).category,
+                                locationReview.get(i).featured,
+                                locationReview.get(i).featured_image,
+                                locationReview.get(i).bldgno,
+                                locationReview.get(i).street,
+                                locationReview.get(i).city,
+                                locationReview.get(i).state,
+                                locationReview.get(i).country,
+                                locationReview.get(i).zipcode,
+                                locationReview.get(i).latitude,
+                                locationReview.get(i).longitude,
+                                locationReview.get(i).rating,
+                                locationReview.get(i).ratingCount,
+                                locationReview.get(i).phone,
+                                locationReview.get(i).email,
+                                locationReview.get(i).website,
+                                locationReview.get(i).twitter,
+                                locationReview.get(i).facebook,
+                                locationReview.get(i).video,
+                                locationReview.get(i).hours,
+                                locationReview.get(i).isOpen,
+                                locationReview.get(i).logo,
+                                locationReview.get(i).content,
+                                locationReview.get(i).featured_image)));
 
-                            Bundle locationReviewBundle = new Bundle();
-                            locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
-                            showReviews.putExtra("locationReview", locationReviewShow);
-                            itemView.getContext().startActivity(showReviews);
-                            break;
-                        }
+                        Bundle locationReviewBundle = new Bundle();
+                        locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
+                        showReviews.putExtra("locationReview", locationReviewShow);
+                        itemView.getContext().startActivity(showReviews);
+                        break;
                     }
                 }
             });
@@ -386,13 +379,6 @@ public class VerticalAdapter extends RecyclerView.Adapter {
         ((ImageTypeViewHolder) holder).tvCountry.setText(object.country);
         ((ImageTypeViewHolder) holder).tvTwitter.setText(object.twitter);
         builder.build().load(dataset.get(position).featured_image).into(((ImageTypeViewHolder) holder).image);
-//        builder.build().load(dataset.get(position).image).into(((ImageTypeViewHolder) holder).image);
-
-
-        // String fooId = String.valueOf(object.id);
-
-
-        //ArrayList<List> fooId = new ArrayList<List>();
 
         locationReview.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                 object.id,
