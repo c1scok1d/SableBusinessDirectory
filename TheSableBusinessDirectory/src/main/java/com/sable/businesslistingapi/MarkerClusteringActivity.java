@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -265,7 +267,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),200)));
         }
 
-       // setUpMap();
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.clearItems();
         mClusterManager.setRenderer(new PersonRenderer());
@@ -282,15 +283,20 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
         getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,200)));
+        showStuff();
+
 
 
     }
-
-    private void setUpMap() {
-        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
-    }
-
-   /* private void addItems() {
-        mClusterManager.addItems(MainActivity.mapLocations);
-    }*/
+    private void showStuff() {
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        progressBar.setVisibility(View.GONE); //hide progressBar
+        tvQuerying.setAnimation(imgAnimationOut);
+        tvQuerying.setVisibility(View.GONE);
+        btnShowListings.setVisibility(View.VISIBLE);
+        btnAdd.setVisibility(View.VISIBLE);
+        tvMore.setVisibility(View.VISIBLE);
+        // dragView.setVisibility(View.VISIBLE);
+        category_radioButton_scroller.setVisibility(View.VISIBLE);
+        tvCategories.setVisibility(View.VISIBLE);    }
 }

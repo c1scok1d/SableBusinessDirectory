@@ -327,12 +327,13 @@
 
         <TextView
             android:id="@+id/tvMore"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/customborder"
-            android:backgroundTint="@color/colorAccent"
+            android:backgroundTint="@color/colorAccent2"
+            android:gravity="center_horizontal"
             android:text="More"
             android:textAllCaps="true"
             android:textColor="@color/white" />

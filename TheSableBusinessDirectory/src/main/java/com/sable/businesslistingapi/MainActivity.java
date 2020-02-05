@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -214,26 +215,11 @@ public class MainActivity extends AppCompatActivity implements
             request = request.newBuilder()
                     .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
                     .removeHeader("Pragma")
+                    .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
         }
         return chain.proceed(request);
     };
-
-    /**
-     * http client set up for retrofit api call
-     */
-
-    OkHttpClient client = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .addInterceptor(new BasicAuthInterceptor(username, password))
-            .addInterceptor(logging)
-            .addInterceptor(offlineInterceptor)
-            .addInterceptor(onlineInterceptor)
-            .cache(cache)
-            .build();
-
 
     private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView;
@@ -704,15 +690,6 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onStart() {
         super.onStart();
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                    }
-                });
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 13));
         //This starts the access token tracking
         if (accessToken != null) {
             useLoginInformation(accessToken);
@@ -859,12 +836,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onMapReady(GoogleMap map) {
-        if (mMap != null) {
-            return;
-        }
         mMap = map;
         mMap.setOnMyLocationClickListener(this);
-        Log.e("onMapReady", "onMapReady Executed");
     }
 
     /**
@@ -944,6 +917,32 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public void setCache(Context context) {
+        int cacheSize = 10 * 1024 * 1024; // 10 MB
+        File cacheFoo = context.getCacheDir();
+        //  cache = new Cache(new File(context.getCacheDir(), "sable-cache"), cacheSize);
+        cache = new Cache(cacheFoo,  cacheSize);
+        Log.e("This is Cache:", "cacheFile: " +cache);
+
+    }
+
+    /**
+     * http client set up for retrofit api call
+     */
+
+    int cacheSize = 10 * 1024 * 1024; // 10 MB
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(new BasicAuthInterceptor(username, password))
+            .addInterceptor(logging)
+            .addInterceptor(offlineInterceptor)
+            .addInterceptor(onlineInterceptor)
+            .cache(cache)
+            .build();
+
+
     /**
      * Query API for listings data
      * set URL and make call to API
@@ -997,7 +996,6 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                //Log.e("getRetrofit_METHOD_SUCCESS ", " response " + response.body());
 
                 if (response.isSuccessful()) {
                     if (response.raw().cacheResponse() != null) {
@@ -1005,15 +1003,6 @@ public class MainActivity extends AppCompatActivity implements
                     } else {
                         Log.e("Network", "Listings response came from server");
                     }
-                    progressBar.setVisibility(View.GONE); //hide progressBar
-                    tvQuerying.setAnimation(imgAnimationOut);
-                    tvQuerying.setVisibility(View.GONE);
-                    btnShowListings.setVisibility(View.VISIBLE);
-                    btnAdd.setVisibility(View.VISIBLE);
-                    tvMore.setVisibility(View.VISIBLE);
-                   // dragView.setVisibility(View.VISIBLE);
-                    category_radioButton_scroller.setVisibility(View.VISIBLE);
-                    tvCategories.setVisibility(View.VISIBLE);
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                         if (businessHours == null) {
@@ -1398,15 +1387,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     } //END OF SLIDER SHIT
 
-    public void setCache(Context context) {
-        int cacheSize = 10 * 1024 * 1024; // 10 MB
-        File cacheFoo = context.getCacheDir();
-         //  cache = new Cache(new File(context.getCacheDir(), "sable-cache"), cacheSize);
-        cache = new Cache(cacheFoo,  cacheSize);
-        Log.e("This is Cache:", "cacheFile: " +cache);
-
-    }
-
     /**
      * @param context CLEAR CACHE on close
      */
@@ -1595,7 +1575,6 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void setMarkers(boolean isRestore) {
         startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
-       // return false;
     }
 
     protected GoogleMap getMap() {
