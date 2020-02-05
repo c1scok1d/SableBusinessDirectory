@@ -39,6 +39,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude;
 
-    TextView tvMore, tvUserName, tvWpUserId, tvCity, tvQuerying;
+    TextView tvMore, tvUserName, tvWpUserId, tvCity, tvQuerying, tvCategories;
     Button login_button2, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     ProgressBar progressBar;
@@ -257,7 +259,10 @@ public class MainActivity extends AppCompatActivity implements
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
         dragView = findViewById(R.id.dragView);
+        //dragView.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progressBar);
+        tvCategories = findViewById(R.id.tvCategories);
+        tvCategories.setVisibility(View.GONE);
         category_radioButton_scroller = findViewById(R.id.category_radioButton_scroller);
         category_radioButton_scroller.setVisibility(View.GONE);
         Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
@@ -563,8 +568,6 @@ public class MainActivity extends AppCompatActivity implements
          */
 
         searchView = findViewById(R.id.search);
-       // CharSequence query = searchView.getQuery(); // get the query string currently in the text field
-        //CharSequence queryHint = searchView.getQueryHint(); // get the hint text that will be displayed in the query text field
         searchView.setIconifiedByDefault(false);
 
         // Locate the EditText in listview_main.xml
@@ -1006,17 +1009,11 @@ public class MainActivity extends AppCompatActivity implements
                     tvQuerying.setAnimation(imgAnimationOut);
                     tvQuerying.setVisibility(View.GONE);
                     btnShowListings.setVisibility(View.VISIBLE);
-                    //btnShowListings.setAnimation(imgAnimationIn);
                     btnAdd.setVisibility(View.VISIBLE);
-                    //btnAdd.setAnimation(imgAnimationIn);
-
                     tvMore.setVisibility(View.VISIBLE);
-                    //tvMore.setAnimation(imgAnimationIn);
-                    dragView.setVisibility(View.VISIBLE);
-                    //dragView.setAnimation(imgAnimationIn);
+                   // dragView.setVisibility(View.VISIBLE);
                     category_radioButton_scroller.setVisibility(View.VISIBLE);
-                    //category_radioButton_scroller.setAnimation(imgAnimationIn);
-
+                    tvCategories.setVisibility(View.VISIBLE);
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                         if (businessHours == null) {
@@ -1191,6 +1188,15 @@ public class MainActivity extends AppCompatActivity implements
                             RadioButton radioButton = new RadioButton(getApplicationContext());
                             radioButton.setText(response.body().get(i).getPostCategory().get(0).getName());
                             radioButton.setId(response.body().get(i).getPostCategory().get(0).getId());
+                            radioButton.setTextColor(getResources().getColor(R.color.white));
+                            radioButton.setButtonDrawable(null);
+                            radioButton.setTextSize(12);
+                            radioButton.setAllCaps(true);
+                            radioButton.setGravity(Gravity.CENTER);
+                            radioButton.setBackgroundResource(R.drawable.buttonshape);
+                            RadioGroup.LayoutParams radioGroupParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            radioGroupParams.setMargins(0, 0, 15, 0);
+                            radioButton.setLayoutParams(radioGroupParams);
                             radioGroup.addView(radioButton);
 
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
