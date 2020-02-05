@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements
 
     static Interceptor onlineInterceptor = chain -> {
         okhttp3.Response response = chain.proceed(chain.request());
-        int maxAge = 60; // read from cache for 60 seconds even if there is internet connection
+        int maxAge = 300; // read from cache for 60 seconds even if there is internet connection
         return response.newBuilder()
                 .header("Cache-Control", "public, max-age=" + maxAge)
                 .removeHeader("Pragma")
@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * http client set up for retrofit api call
      */
+
     OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
@@ -239,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements
     ListView searchList;
     SearchListViewAdapter searchAdapter;
 
-   // private static Context context;
+   public static Context context;
 
 
     /**
@@ -250,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         setCache(getApplicationContext());
-
 
         isRestore = savedInstanceState != null;
         setUpMap();
@@ -591,7 +591,13 @@ public class MainActivity extends AppCompatActivity implements
                 String text = newText;
                 if (TextUtils.isEmpty(text)) {
                     searchList.setVisibility(View.GONE);
+                    radioGroup.setVisibility(View.VISIBLE);
+                    btnAdd.setVisibility(View.VISIBLE);
+                    btnShowListings.setVisibility(View.VISIBLE);
                 } else {
+                    radioGroup.setVisibility(View.GONE);
+                    btnAdd.setVisibility(View.GONE);
+                    btnShowListings.setVisibility(View.GONE);
                     searchList.setVisibility(View.VISIBLE);
                     searchAdapter.filter(text);
                 }
@@ -964,7 +970,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void getRetrofit(final Map<String, String> query) {
         Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
-        Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
+       // Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
 
         tvQuerying.setVisibility(View.VISIBLE);
@@ -1000,16 +1006,16 @@ public class MainActivity extends AppCompatActivity implements
                     tvQuerying.setAnimation(imgAnimationOut);
                     tvQuerying.setVisibility(View.GONE);
                     btnShowListings.setVisibility(View.VISIBLE);
-                    btnShowListings.setAnimation(imgAnimationIn);
+                    //btnShowListings.setAnimation(imgAnimationIn);
                     btnAdd.setVisibility(View.VISIBLE);
-                    btnAdd.setAnimation(imgAnimationIn);
+                    //btnAdd.setAnimation(imgAnimationIn);
 
                     tvMore.setVisibility(View.VISIBLE);
-                    tvMore.setAnimation(imgAnimationIn);
+                    //tvMore.setAnimation(imgAnimationIn);
                     dragView.setVisibility(View.VISIBLE);
-                    dragView.setAnimation(imgAnimationIn);
+                    //dragView.setAnimation(imgAnimationIn);
                     category_radioButton_scroller.setVisibility(View.VISIBLE);
-                    category_radioButton_scroller.setAnimation(imgAnimationIn);
+                    //category_radioButton_scroller.setAnimation(imgAnimationIn);
 
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
@@ -1203,7 +1209,6 @@ public class MainActivity extends AppCompatActivity implements
                     // Binds the Adapter to the ListView
                     searchList.setAdapter(searchAdapter);
                     setMarkers(isRestore);
-
                 } else {
                     // do some stuff
                 }
@@ -1389,7 +1394,11 @@ public class MainActivity extends AppCompatActivity implements
 
     public void setCache(Context context) {
         int cacheSize = 10 * 1024 * 1024; // 10 MB
-           cache = new Cache(new File(context.getCacheDir(), "sable-cache"), cacheSize);
+        File cacheFoo = context.getCacheDir();
+         //  cache = new Cache(new File(context.getCacheDir(), "sable-cache"), cacheSize);
+        cache = new Cache(cacheFoo,  cacheSize);
+        Log.e("This is Cache:", "cacheFile: " +cache);
+
     }
 
     /**

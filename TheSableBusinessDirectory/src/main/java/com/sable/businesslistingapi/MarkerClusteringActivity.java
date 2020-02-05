@@ -267,6 +267,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
        // setUpMap();
         mClusterManager = new ClusterManager<>(this, getMap());
+        mClusterManager.clearItems();
         mClusterManager.setRenderer(new PersonRenderer());
         getMap().setOnCameraIdleListener(mClusterManager);
         getMap().setOnMarkerClickListener(mClusterManager);
