@@ -260,12 +260,12 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     }
 
     @Override
-    protected void startDemo(boolean isRestore) {
+    protected void setMarkers(boolean isRestore) {
         if (!isRestore) {
             getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),200)));
         }
 
-        setUpMap();
+       // setUpMap();
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.setRenderer(new PersonRenderer());
         getMap().setOnCameraIdleListener(mClusterManager);

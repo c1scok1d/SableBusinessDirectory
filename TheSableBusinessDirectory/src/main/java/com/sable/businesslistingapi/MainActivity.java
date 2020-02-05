@@ -1,7 +1,6 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,6 +50,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements
     public static LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
     private GoogleMap mMap;
-    private boolean mIsRestore;
+    private boolean isRestore;
 
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements
         setCache(getApplicationContext());
 
 
-        mIsRestore = savedInstanceState != null;
+        isRestore = savedInstanceState != null;
         setUpMap();
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
@@ -504,7 +504,6 @@ public class MainActivity extends AppCompatActivity implements
         spokesperson = findViewById(R.id.spokesperson);
         tvCity = findViewById(R.id.tvCity);
         tvMore = findViewById(R.id.tvMore);
-
 
         btnShowListings = findViewById(R.id.btnShowListings);
         btnShowListings.setVisibility(View.GONE);
@@ -855,8 +854,6 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         mMap = map;
-        startDemo(mIsRestore);
-        mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         Log.e("onMapReady", "onMapReady Executed");
     }
@@ -1205,6 +1202,8 @@ public class MainActivity extends AppCompatActivity implements
                     searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
                     searchList.setAdapter(searchAdapter);
+                    setMarkers(isRestore);
+
                 } else {
                     // do some stuff
                 }
@@ -1579,8 +1578,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
 
-    protected void startDemo(boolean isRestore) {
-
+    protected void setMarkers(boolean isRestore) {
+        startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
+       // return false;
     }
 
     protected GoogleMap getMap() {
