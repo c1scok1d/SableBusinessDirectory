@@ -58,30 +58,25 @@
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
+                    <EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:gravity="start"
+                        android:hint="Enter Business Name"
+                        android:textColor="#4FC1E9" />
+
+                    <Spinner
+                        android:id="@+id/spnCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/etName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:gravity="start"
-                            android:hint="Enter Business Name"
-                            android:textColor="#4FC1E9" />
-
-                        <Spinner
-                            android:id="@+id/spnCategory"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|end"
-                            android:layout_weight="0"
-                            android:gravity="center_vertical|end" />
 
                         <TextView
                             android:id="@+id/tvCategory"
@@ -108,7 +103,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/textView4"
+                            android:id="@+id/tvAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -212,16 +207,15 @@
                                 <ImageView
                                     android:id="@+id/ivPhoneNo"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     app:srcCompat="@drawable/phone" />
 
                                 <EditText
                                     android:id="@+id/etPhone"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:background="@drawable/customborder"
                                     android:gravity="start|center_horizontal|center_vertical"
                                     android:hint="(123)456-7890"
                                     android:lines="1"
@@ -240,7 +234,7 @@
                                 <ImageView
                                     android:id="@+id/ivWebsite"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     app:srcCompat="@drawable/website"
                                     tools:srcCompat="@drawable/website" />
 
@@ -250,7 +244,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:background="@drawable/customborder"
                                     android:hint="website.com" />
 
                             </LinearLayout>
@@ -265,7 +258,7 @@
                                 <ImageView
                                     android:id="@+id/ivEmail"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     app:srcCompat="@drawable/email" />
 
                                 <EditText
@@ -274,7 +267,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:background="@drawable/customborder"
                                     android:hint="listing@thesablebusinessdirectory.com" />
                             </LinearLayout>
 
@@ -288,7 +280,7 @@
                                 <ImageView
                                     android:id="@+id/ivTwitterLogo"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     app:srcCompat="@drawable/twitter" />
 
                                 <EditText
@@ -297,7 +289,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:background="@drawable/customborder"
                                     android:hint="TwitterHandle" />
 
                             </LinearLayout>
@@ -312,7 +303,7 @@
                                 <ImageView
                                     android:id="@+id/ivFBLogo"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     app:srcCompat="@drawable/facebook" />
 
                                 <EditText
@@ -321,7 +312,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:background="@drawable/customborder"
                                     android:hint="FaceBookName" />
                             </LinearLayout>
 
@@ -334,20 +324,43 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/businessHoursLayout"
+                android:id="@+id/businessHoursLayoutTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivHours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    bh:srcCompat="@drawable/hours" />
 
                 <TextView
                     android:id="@+id/tvBusinessHours"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
                     android:layout_marginTop="3dp"
                     android:text="business hours"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAddHours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:text="Add Hours"
+                android:textAllCaps="false"
+                android:textColor="@color/com_facebook_blue" />
+
+            <LinearLayout
+                android:id="@+id/businessHoursLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <com.bashizip.bhlib.BusinessHoursWeekPicker
                     android:id="@+id/bh_picker"
@@ -393,7 +406,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="tap to add logo"
+                android:text="add a photo"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent"
                 android:textStyle="bold" />
@@ -401,13 +414,13 @@
             <ImageView
                 android:id="@+id/ivLogo"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/customborder"
                 android:scaleType="center"
-                app:srcCompat="@android:drawable/ic_menu_add" />
+                app:srcCompat="@android:drawable/ic_menu_camera" />
 
             <EditText
                 android:id="@+id/etDescription"

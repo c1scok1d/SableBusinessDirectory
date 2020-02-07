@@ -536,17 +536,17 @@ public class MainActivity extends AppCompatActivity implements
 
         btnAdd.setOnClickListener(view -> {
 
-            if (!isLoggedIn) {
+          /*  if (!isLoggedIn) {
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
 
                 //goto login activity get username and email via facebook create account, return here to check again and proceed
 
                 Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
-            } else {
+            } else {*/
                 Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                 startActivity(intent);
-            }
+           // }
         });
 
         /**

@@ -129,6 +129,7 @@ public class AddListingActivity extends AppCompatActivity implements
     private EasyImage easyImage;
     BusinessHoursWeekPicker bh_picker;
     JSONArray businessHours = new JSONArray();
+    LinearLayout viewBusinessHoursLayout;
 
 
 
@@ -146,8 +147,10 @@ public class AddListingActivity extends AppCompatActivity implements
         BusinessHoursWeekView businessHoursWeekView = findViewById(R.id.bh_view);
         Button btn_apply = findViewById(R.id.btn_apply);
         LinearLayout businessHoursLayout = findViewById(R.id.businessHoursLayout);
+        businessHoursLayout.setVisibility(View.GONE);
         LinearLayout viewBusinessHoursLayout = findViewById(R.id.viewBusinessHoursLayout);
         viewBusinessHoursLayout.setVisibility(View.GONE);
+        TextView tvAddHours;
 
         btn_apply.setOnClickListener(view -> {
 
@@ -189,6 +192,7 @@ public class AddListingActivity extends AppCompatActivity implements
         etWebsite = findViewById(R.id.etWebsite);
         etTwitter  = findViewById(R.id.etTwitter);
         etFacebook = findViewById(R.id.etFacebook);
+        tvAddHours = findViewById(R.id.tvAddHours);
         // category = new ArrayList<>();
         // locationAdd = new ArrayList<>();
 
@@ -198,65 +202,70 @@ public class AddListingActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
         getRetrofitCategories();
 
+        tvAddHours.setOnClickListener(v -> {
+            if(businessHoursLayout.getVisibility() == View.GONE) {
+                businessHoursLayout.setVisibility(View.VISIBLE);
+            } else {
+                businessHoursLayout.setVisibility(View.GONE);
+            }
+        });
+
         /**
          * OnClick take user to add location page
          */
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnNext.setOnClickListener(view -> {
 
-                if (etName.getText().toString().isEmpty()) {
-                    Toast.makeText(AddListingActivity.this, "Please Enter The Business Name...", Toast.LENGTH_LONG).show();
-                } else if (spnCategory.getSelectedItem().equals("Category")) {
-                    Toast.makeText(AddListingActivity.this, "Please select a Category...", Toast.LENGTH_LONG).show();
-                } else if (etDescription.getText().toString().isEmpty()) {
-                    Toast.makeText(AddListingActivity.this, "Please enter a description...", Toast.LENGTH_LONG).show();
-                } else {
+            if (etName.getText().toString().isEmpty()) {
+                Toast.makeText(AddListingActivity.this, "Please Enter The Business Name...", Toast.LENGTH_LONG).show();
+            } else if (spnCategory.getSelectedItem().equals("Category")) {
+                Toast.makeText(AddListingActivity.this, "Please select a Category...", Toast.LENGTH_LONG).show();
+            } else if (etDescription.getText().toString().isEmpty()) {
+                Toast.makeText(AddListingActivity.this, "Please enter a description...", Toast.LENGTH_LONG).show();
+            } else {
 
-                    getRetrofitCategories();
+                getRetrofitCategories();
 
-                    name = etName.getText().toString();
-                    description = etDescription.getText().toString();
-                    catName = spnCategory.getSelectedItem().toString();
-                    email = etEmail.getText().toString();
-                    website = "http://www."+etWebsite.getText().toString();
-                    twitter = "http://www.twitter.com/"+etTwitter.getText().toString();
-                    facebook = "http://www.facebook.com/"+etFacebook.getText().toString();
-                    phone = etPhone.getText().toString();
-                    //String formattedPhone = phone;
+                name = etName.getText().toString();
+                description = etDescription.getText().toString();
+                catName = spnCategory.getSelectedItem().toString();
+                email = etEmail.getText().toString();
+                website = "http://www."+etWebsite.getText().toString();
+                twitter = "http://www.twitter.com/"+etTwitter.getText().toString();
+                facebook = "http://www.facebook.com/"+etFacebook.getText().toString();
+                phone = etPhone.getText().toString();
+                //String formattedPhone = phone;
 
 
-                    locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
-                            name,
-                            link,
-                            catName,
-                            catNum,
-                            description,
-                            MainActivity.longitude,
-                            MainActivity.latitude,
-                            address,
-                            state,
-                            country,
-                            zipcode,
-                            city,
-                            bldgNo,
-                            street,
-                            phone,
-                            email,
-                            website,
-                            twitter,
-                            facebook,
-                            businessHours.toString()));
+                locationAdd.add(new ListingsAddModel(ListingsAddModel.IMAGE_TYPE,
+                        name,
+                        link,
+                        catName,
+                        catNum,
+                        description,
+                        MainActivity.longitude,
+                        MainActivity.latitude,
+                        address,
+                        state,
+                        country,
+                        zipcode,
+                        city,
+                        bldgNo,
+                        street,
+                        phone,
+                        email,
+                        website,
+                        twitter,
+                        facebook,
+                        businessHours.toString()));
 
-                    submitData();
+                submitData();
 
-                    Intent home = new Intent(AddListingActivity.this, MainActivity.class);
-                    //Bundle locationAddBundle = new Bundle();
-                    //locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
-                    home.putExtra("userActivityArray", userActivityArray);
-                    startActivity(home);
-                }
+                Intent home = new Intent(AddListingActivity.this, MainActivity.class);
+                //Bundle locationAddBundle = new Bundle();
+                //locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
+                home.putExtra("userActivityArray", userActivityArray);
+                startActivity(home);
             }
         });
 
