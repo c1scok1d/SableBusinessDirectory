@@ -14,6 +14,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -127,9 +129,9 @@ public class AddListingActivity extends AppCompatActivity implements
     private static final int DOCUMENTS_REQUEST_CODE = 7503;
     protected ImageView ivLogo;
     private EasyImage easyImage;
-    BusinessHoursWeekPicker bh_picker;
+    //BusinessHoursWeekPicker bh_picker;
     JSONArray businessHours = new JSONArray();
-    LinearLayout viewBusinessHoursLayout;
+    //LinearLayout viewBusinessHoursLayout;
 
 
 
@@ -188,6 +190,7 @@ public class AddListingActivity extends AppCompatActivity implements
         etName = findViewById(R.id.etName);
         etDescription = findViewById(R.id.etDescription);
         etPhone = findViewById(R.id.etPhone);
+        etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         etEmail = findViewById(R.id.etEmail);
         etWebsite = findViewById(R.id.etWebsite);
         etTwitter  = findViewById(R.id.etTwitter);
@@ -205,8 +208,10 @@ public class AddListingActivity extends AppCompatActivity implements
         tvAddHours.setOnClickListener(v -> {
             if(businessHoursLayout.getVisibility() == View.GONE) {
                 businessHoursLayout.setVisibility(View.VISIBLE);
+                tvAddHours.setText("Hide Hours");
             } else {
                 businessHoursLayout.setVisibility(View.GONE);
+                tvAddHours.setText("Add Hours");
             }
         });
 
@@ -233,7 +238,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 website = "http://www."+etWebsite.getText().toString();
                 twitter = "http://www.twitter.com/"+etTwitter.getText().toString();
                 facebook = "http://www.facebook.com/"+etFacebook.getText().toString();
-                phone = etPhone.getText().toString();
+                phone =  etPhone.getText().toString();
                 //String formattedPhone = phone;
 
 
