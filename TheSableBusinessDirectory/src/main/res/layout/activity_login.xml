@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@mipmap/spokesman_foreground" />
+                    app:srcCompat="@mipmap/hello_foreground" />
 
                 <TextView
                     android:id="@+id/textView8"

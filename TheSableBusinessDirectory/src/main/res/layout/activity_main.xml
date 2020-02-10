@@ -19,9 +19,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -31,9 +33,9 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="5dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:layout_marginBottom="3dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/userImageLayout"
@@ -54,7 +56,7 @@
                         android:layout_marginStart="3dp"
                         android:layout_marginEnd="3dp"
                         android:orientation="vertical"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         tools:visibility="visible">
 
                         <ImageButton
@@ -92,6 +94,7 @@
                     android:id="@+id/userGreetingLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -122,10 +125,10 @@
                             android:id="@+id/tvWelcome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="and welcome!"
+                            android:text=","
                             android:textColor="#e9774f"
                             android:textSize="12sp"
-                            tools:text="and welcome!" />
+                            tools:text="," />
 
                         <TextView
                             android:id="@+id/tvWpUserId"
@@ -145,7 +148,8 @@
                         <TextView
                             android:id="@+id/tvSwitcher"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Our location based directory showcases black owned businesses near you. Customer feedack insures high quality products and services. "
                             android:textColor="#e9774f"
                             android:textSize="12sp" />
 
@@ -163,8 +167,9 @@
                     android:id="@+id/spokesperson"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="end"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@mipmap/spokesman_foreground" />
+                    app:srcCompat="@mipmap/hello_foreground" />
 
             </LinearLayout>
 
@@ -480,7 +485,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
-                                app:srcCompat="@mipmap/spokesman1_foreground" />
+                                app:srcCompat="@mipmap/smiling_peace_foreground" />
 
                             <ImageView
                                 android:id="@+id/imageView2-2"
@@ -503,7 +508,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
-                                app:srcCompat="@mipmap/spokesman1_foreground" />
+                                app:srcCompat="@mipmap/showing_right_foreground" />
 
                             <ImageView
                                 android:id="@+id/imageView2"
@@ -527,7 +532,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
-                                app:srcCompat="@mipmap/spokesman1_foreground" />
+                                app:srcCompat="@mipmap/smiling_peace_foreground" />
 
                             <ImageView
                                 android:id="@+id/imageView3-2"

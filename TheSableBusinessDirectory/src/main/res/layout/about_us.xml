@@ -42,7 +42,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical|center_horizontal"
-            app:srcCompat="@mipmap/spokesman1_foreground" />
+            app:srcCompat="@mipmap/hello_foreground" />
 
         <ImageView
             android:id="@+id/imageView2-2"
@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|center_horizontal"
-            app:srcCompat="@mipmap/spokesman1_foreground" />
+            app:srcCompat="@mipmap/smiling_peace_foreground" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -119,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|center_horizontal"
-            app:srcCompat="@mipmap/spokesman1_foreground" />
+            app:srcCompat="@mipmap/smiling_peace_foreground" />
 
         <ImageView
             android:id="@+id/imageView3-2"

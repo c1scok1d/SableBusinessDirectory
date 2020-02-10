@@ -655,7 +655,7 @@
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@mipmap/spokesman_foreground" />
+                        app:srcCompat="@mipmap/hello_foreground" />
 
 
                 </LinearLayout>

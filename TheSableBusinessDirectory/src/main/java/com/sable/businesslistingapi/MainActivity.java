@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements
     ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
+    LinearLayout loggedInLayout;
 
 
     VerticalAdapter verticalAdapter;
@@ -255,6 +256,9 @@ public class MainActivity extends AppCompatActivity implements
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
         searchList = findViewById(R.id.listview);
         searchList.setVisibility(View.GONE);
+        loggedInLayout = findViewById(R.id.loggedInLayout);
+        loggedInLayout.setVisibility(View.GONE);
+
         /**
          * ABOUT US
          */
@@ -451,12 +455,13 @@ public class MainActivity extends AppCompatActivity implements
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
                     startActivity(getIntent());
+                    loggedInLayout.setVisibility(View.VISIBLE);
                 } else {
                     startActivity(getIntent());
-                    LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
-                    LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
-                    userImageLayout.setVisibility(View.GONE);
-                    userNameLayout.setVisibility(View.GONE);
+                    //LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
+                   // LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
+                    //loggedInLayout.setVisibility(View.GONE);
+                    //userNameLayout.setVisibility(View.GONE);
                 }
             }
         };
@@ -536,17 +541,17 @@ public class MainActivity extends AppCompatActivity implements
 
         btnAdd.setOnClickListener(view -> {
 
-          /*  if (!isLoggedIn) {
+            if (!isLoggedIn) {
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
 
                 //goto login activity get username and email via facebook create account, return here to check again and proceed
 
                 Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
-            } else {*/
+            } else {
                 Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
                 startActivity(intent);
-           // }
+            }
         });
 
         /**
@@ -693,6 +698,7 @@ public class MainActivity extends AppCompatActivity implements
         //This starts the access token tracking
         if (accessToken != null) {
             useLoginInformation(accessToken);
+            loggedInLayout.setVisibility(View.VISIBLE);
             // startActivity(getIntent());
             Log.e("Access Token Login Successful ", " accessToken " + accessToken);
         } else {
@@ -1435,34 +1441,39 @@ public class MainActivity extends AppCompatActivity implements
 
 
             String[] text = {
-                    "Looking to find black owned businesses and service providers near you?",
+                    "Welcome to The Sable Business Directory!\n",
 
 
                     "The Sable Business Directory is designed to help those wanting to support " +
-                            "and frequent black owned businesses and service providers.",
+                            "and frequent black owned businesses and service providers find black owned" +
+                            "businesses and service providers.",
 
-                    "We provide a one of a kind online platform. To make finding and reviewing black owned businesses and service providers easier.",
+                    "We provide a one of a kind online platform that makes it easier to find, rate " +
+                            "and review black owned businesses and service providers.",
 
-                    "We have combined a searchable geo-directory, social media and e-commerce " +
-                            "platforms specifically for black owned businesses and service providers.",
+                    "We have combined geo-search, social media and e-commerce technologies to create an online " +
+                            "platform dedicated to the continued growth and support of black owned businesses.",
 
-                    "Customers maintain the directory by adding and reviewing the black owned businesses and service providers they frequent.",
+                    "To insure high quality services, customers maintain the directory by adding and " +
+                            "reviewing the black owned businesses and service providers they frequent.",
 
-                    "We then compile those listings and ratings to provide a listing of black owned business and service providers near your location.",
+                    "Our combined technologies then compile those listings, ratings and reviews to " +
+                            "provide a directory listing of black owned business and service providers " +
+                            "near your current location.",
 
                     "88% of people trust online reviews. Online reviews are an important way you can increase " +
-                            "sales for your business. This is especially important local businesses and service providers.",
+                            "sales for your business. This is especially important for local businesses and service providers.",
 
                     "Adding and reviewing listings is easy. To protect the privacy of our users and insure high quality feedback " +
-                            "we allow users access to our site with facebook credentials.",
+                            "we require users to login before adding or reviewing a listing.",
 
-                    "Tap the button below the next time you shop with a black owned business to add them to the directory."
+                    "Tap below to begin adding and reviewing black owned businesses using your Facebook account."
 
             };
 
-            int[] images = {R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman2_foreground,
-                    R.mipmap.spokesman1_foreground, R.mipmap.spokesman3_foreground,R.mipmap.spokesman_hello_foreground, R.mipmap.spokesman1_foreground,
-                    R.mipmap.spokesman2_foreground, R.mipmap.spokesman1_foreground,R.mipmap.spokesman3_foreground};
+            int[] images = {R.mipmap.hello_foreground, R.mipmap.showing_right_foreground,
+                    R.mipmap.one_of_akind_foreground, R.mipmap.showing_tablet_foreground,R.mipmap.holding_phone_foreground, R.mipmap.making_thumbs_up_foreground,
+                    R.mipmap.online_reviews_foreground, R.mipmap.showing_with_left_hand_foreground,R.mipmap.smiling_peace_foreground};
 
             if(count > text.length){
                 count = 0;
