@@ -845,6 +845,9 @@ public class DefaultClusterRenderer<T extends ClusterItem> implements ClusterRen
                         if (!(item.getTitle() == null) && !(item.getSnippet() == null)) {
                             markerOptions.title(item.getTitle());
                             markerOptions.snippet(item.getSnippet());
+                            markerOptions.position(item.getPosition());
+                           // markerOptions.rating(item.getRating());
+                            //markerOptions.ratingCount(item.getRatingCount());
                         } else if (!(item.getSnippet() == null)) {
                             markerOptions.title(item.getSnippet());
                         } else if (!(item.getTitle() == null)) {

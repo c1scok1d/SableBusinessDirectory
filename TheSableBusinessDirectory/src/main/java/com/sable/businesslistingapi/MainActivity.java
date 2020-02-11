@@ -1201,7 +1201,9 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount()));
+                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getCity(),
+                                    response.body().get(i).getRegion()));
 
                         }
                     }

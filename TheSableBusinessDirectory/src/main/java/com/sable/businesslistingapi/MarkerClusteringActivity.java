@@ -38,12 +38,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.CameraUpdateFactory;
-
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.sable.businesslistingapi.clustering.Cluster;
@@ -52,6 +52,8 @@ import com.sable.businesslistingapi.clustering.view.DefaultClusterRenderer;
 import com.sable.businesslistingapi.model.Person;
 import com.sable.businesslistingapi.clustering.ClusterItem;
 
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -191,21 +193,42 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
     @Override
     public boolean onClusterItemClick(Person item) {
-        // shows brief listing summary onclick
+
+        getMap().setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // shows brief listing summary onclick
        clickedVenueMarker = item;
        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
        final View view = inflater.inflate(R.layout.custom_info_window, null);
 
        TextView venueNameTextView = view.findViewById(R.id.venue_name);
-       TextView venueAddressTextView = view.findViewById(R.id.venue_address);
-       TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
+       TextView venueCity = view.findViewById(R.id.venue_city);
+       TextView venueState = view.findViewById(R.id.venue_state);
+              TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
        TextView ratingCount = view.findViewById(R.id.tvRatingCount);
+       TextView firstReview = view.findViewById(R.id.tvReviewFirst);
+       firstReview.setVisibility(View.GONE);
        RatingBar ratingBar = view.findViewById(R.id.ratingBar3);
        venueNameTextView.setText(clickedVenueMarker.getTitle());
-       venueAddressTextView.setText(String.valueOf(clickedVenueMarker.getPosition()));
+       venueCity.setText(String.valueOf(clickedVenueMarker.getCity()));
+       venueState.setText(String.valueOf(clickedVenueMarker.getState()));
        venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
        ratingBar.setRating(clickedVenueMarker.getRating());
+       if(clickedVenueMarker.getRating() == 0){
+           firstReview.setText("BE THE FIRST TO REVIEW "+clickedVenueMarker.getTitle());
+           firstReview.setVisibility(View.VISIBLE);
+       }
        ratingCount.setText(String.valueOf(clickedVenueMarker.getRatingCount()));
+                return view;
+            }
+        });
+
        radioGroup.setVisibility(View.GONE);
        category_radioButton_scroller.setVisibility(View.GONE);
 

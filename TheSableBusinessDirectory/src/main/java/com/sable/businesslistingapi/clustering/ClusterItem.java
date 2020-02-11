@@ -47,4 +47,8 @@ public interface ClusterItem {
      * Number of ratings for this marker.
      */
     Integer getRatingCount();
+
+    String getCity();
+
+    String getState();
 }
