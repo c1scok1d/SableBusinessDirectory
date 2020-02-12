@@ -2,95 +2,100 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/infoLayout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
-    android:background="@drawable/roundedcorner"
+    android:background="@drawable/customborder"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/venue_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="TextView"
-        android:textAllCaps="true"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
-
     <LinearLayout
-        android:id="@+id/locationLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/venue_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="City"
-            android:textColor="@color/colorAccent" />
-
-        <TextView
-            android:id="@+id/tvComma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="," />
-
-        <TextView
-            android:id="@+id/venue_state"
+            android:id="@+id/venue_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:text="State"
-            android:textColor="@color/colorAccent" />
-    </LinearLayout>
+            android:text="TextView"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/venue_snippet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="3"
-        android:text="TextView"
-        android:textColor="@color/colorAccent2" />
+        <LinearLayout
+            android:id="@+id/locationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/venue_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City"
+                android:textColor="@color/colorAccent" />
 
-        <RatingBar
-            android:id="@+id/ratingBar3"
-            style="@style/Widget.AppCompat.RatingBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tvComma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="," />
+
+            <TextView
+                android:id="@+id/venue_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:text="State"
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvRatingCount"
-            android:layout_width="wrap_content"
+            android:id="@+id/venue_snippet"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:text="0"
-            android:textColor="@color/colorAccent" />
+            android:maxLines="3"
+            android:text="TextView"
+            android:textColor="@color/colorAccent2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <RatingBar
+                android:id="@+id/ratingBar3"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvRatingCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:text="0"
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvReviewFirst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="be the first to review"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvMore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tap for More..."
+            android:textColor="@color/com_facebook_blue" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvReviewFirst"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="be the first to review"
-        android:textAllCaps="true"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvMore"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tap for More..."
-        android:textColor="@color/com_facebook_blue" />
 
 </LinearLayout>

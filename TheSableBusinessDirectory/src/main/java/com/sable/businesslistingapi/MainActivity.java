@@ -979,13 +979,15 @@ public class MainActivity extends AppCompatActivity implements
     public void getRetrofit(final Map<String, String> query) {
         Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
        // Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
-        Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
+        //Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
 
         tvQuerying.setVisibility(View.VISIBLE);
         tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU");
         tvQuerying.setAnimation(imgAnimationBlink);
 
         mapLocations = new ArrayList<>();
+        mapLocations.removeAll(mapLocations);
+        Log.i("mapLocations", mapLocations.toString());
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
