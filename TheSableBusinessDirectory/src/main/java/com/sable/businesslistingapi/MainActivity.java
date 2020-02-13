@@ -739,7 +739,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         accessTokenTracker.startTracking();
         Log.e("onStart", "onStart Executed");
-        throw new RuntimeException();
+        //throw new RuntimeException();
     }
 
     @Override
