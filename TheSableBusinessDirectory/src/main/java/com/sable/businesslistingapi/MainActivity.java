@@ -39,8 +39,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -62,6 +60,10 @@ import com.sable.businesslistingapi.model.Person;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
+import org.acra.config.CoreConfigurationBuilder;
+import org.acra.config.DialogConfigurationBuilder;
+import org.acra.config.MailSenderConfigurationBuilder;
+import org.acra.data.StringFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
@@ -90,14 +92,40 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import org.acra.*;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
+    CoreConfigurationBuilder builder;
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        builder = new CoreConfigurationBuilder(this)
+                .setBuildConfigClass(BuildConfig.class)
+                .setReportFormat(StringFormat.JSON);
 
+        builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class)
+                .setReportAsFile(true)
+                .setReportFileName("errorReport.txt")
+                .setMailTo("admin@thesablebusinessdirectory.com")
+                .setSubject("Sable Mobile App Error Report")
+                .setEnabled(true);
+        builder.getPluginConfigurationBuilder(DialogConfigurationBuilder.class)
+                .setResText(R.string.acraErrorMesage)
+                .setResCommentPrompt(R.string.acraAddComment)
+                .setEnabled(true);
+        builder.setReportContent(ReportField.APP_VERSION_CODE,
+                ReportField.APP_VERSION_NAME,
+                ReportField.ANDROID_VERSION,
+                ReportField.PACKAGE_NAME,
+                ReportField.REPORT_ID,
+                ReportField.BUILD,
+                ReportField.STACK_TRACE);
+    }
 
     /**
      * permissions request code
@@ -240,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         setCache(getApplicationContext());
+        ACRA.init(getApplication(), builder);
 
         isRestore = savedInstanceState != null;
         setUpMap();
@@ -710,6 +739,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         accessTokenTracker.startTracking();
         Log.e("onStart", "onStart Executed");
+        throw new RuntimeException();
     }
 
     @Override
