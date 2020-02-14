@@ -186,6 +186,45 @@
                     android:layout_height="match_parent" />
 
                 <RelativeLayout
+                    android:id="@+id/noListingsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="#ffffff">
+
+                    <TextSwitcher
+                        android:id="@+id/noListingsTextSwitcher"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="5dp" />
+
+                    <ImageSwitcher
+
+                        android:id="@+id/noListingsImageSwitcher"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerHorizontal="false"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_toEndOf="@id/noListingsTextSwitcher">
+
+                        <ImageView
+                            android:id="@+id/noListingsImageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@mipmap/smiling_peace_foreground" />
+                    </ImageSwitcher>
+
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center">

@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -532,6 +533,12 @@ public class MainActivity extends AppCompatActivity implements
 
         btnShowListings = findViewById(R.id.btnShowListings);
         btnShowListings.setVisibility(View.GONE);
+
+        RelativeLayout noListingsLayout = findViewById(R.id.noListingsLayout);
+        noListingsLayout.setVisibility(View.GONE);
+
+        TextSwitcher noListingsTextSwitcher = findViewById(R.id.noListingsTextSwitcher);
+        noListingsTextSwitcher.setVisibility(View.GONE);
 
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override

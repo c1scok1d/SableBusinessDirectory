@@ -23,6 +23,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -301,15 +307,18 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
         mClusterManager.clearItems();
 
-        mClusterManager.addItems(MainActivity.mapLocations);
+        if(mapLocations.size() == 0){
+            // if no locations near user zoom to current location and display no listing message and spokesman
+            showOtherStuff();
 
-       // addItems();
+            getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 100)));
+        } else {
+        mClusterManager.addItems(mapLocations);
         mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
-        getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,200)));
+        getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200)));
         showStuff();
-
-
+        }
 
     }
     private void showStuff() {
@@ -322,5 +331,49 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         tvMore.setVisibility(View.VISIBLE);
         // dragView.setVisibility(View.VISIBLE);
         category_radioButton_scroller.setVisibility(View.VISIBLE);
-        tvCategories.setVisibility(View.VISIBLE);    }
+        tvCategories.setVisibility(View.VISIBLE);
+    }
+
+    private void showOtherStuff() {
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        progressBar.setVisibility(View.GONE); //hide progressBar
+        tvQuerying.setAnimation(imgAnimationOut);
+        tvQuerying.setVisibility(View.GONE);
+        LinearLayout recentReviewsLayout = findViewById(R.id.recentReviewsLayout);
+        recentReviewsLayout.setVisibility(View.GONE);
+        LinearLayout recentReviewsRecyclerLayout = findViewById(R.id.recentReviewsRecyclerLayout);
+        recentReviewsRecyclerLayout.setVisibility(View.GONE);
+        LinearLayout featuredListings = findViewById(R.id.featuredListings);
+        featuredListings.setVisibility(View.GONE);
+        LinearLayout featuredListingsRecyclerViewLayout = findViewById(R.id.featuredListingsRecyclerViewLayout);
+        featuredListingsRecyclerViewLayout.setVisibility(View.GONE);
+        LinearLayout nearByListingsLayout = findViewById(R.id.nearByListingsLayout);
+        nearByListingsLayout.setVisibility(View.GONE);
+        LinearLayout recentListingsLayout = findViewById(R.id.recentListingsLayout);
+        recentListingsLayout.setVisibility(View.GONE);
+        RelativeLayout noListingsLayout = findViewById(R.id.noListingsLayout);
+        noListingsLayout.setVisibility(View.VISIBLE);
+        TextSwitcher noListingsTextSwitcher = findViewById(R.id.noListingsTextSwitcher);
+        noListingsTextSwitcher.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
+            textView.setGravity(Gravity.START);
+            return textView;
+        });
+        noListingsTextSwitcher.setVisibility(View.VISIBLE);
+        noListingsTextSwitcher.setText("Adding and reviewing listings is easy. To protect the privacy " +
+                "of our users and insure high quality feedback we require users to login before adding " +
+                "or reviewing a listing. Tap below to begin adding and reviewing black owned businesses " +
+                "using your Facebook account.");
+
+       // btnShowListings.setVisibility(View.VISIBLE);
+        btnAdd.setVisibility(View.VISIBLE);
+        tvMore.setVisibility(View.VISIBLE);
+
+        // dragView.setVisibility(View.VISIBLE);
+        //category_radioButton_scroller.setVisibility(View.VISIBLE);
+        //tvCategories.setVisibility(View.VISIBLE);
+        }
 }
