@@ -23,29 +23,23 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import android.view.Gravity;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.core.content.ContextCompat;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -57,12 +51,7 @@ import com.sable.businesslistingapi.clustering.ClusterManager;
 import com.sable.businesslistingapi.clustering.view.DefaultClusterRenderer;
 import com.sable.businesslistingapi.model.Person;
 import com.sable.businesslistingapi.clustering.ClusterItem;
-
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 /**
@@ -80,7 +69,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
     /**
      * Draws profile photos inside markers (using IconGenerator).
-     * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
+     * When there are multiple locations in the cluster, draw multiple photos (using MultiDrawable).
      */
     private class PersonRenderer extends DefaultClusterRenderer<Person> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
@@ -88,6 +77,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         private final ImageView mImageView;
         private final ImageView mClusterImageView;
         private final int mDimension;
+
 
 
 
@@ -123,7 +113,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
         @Override
         protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
-            // Draw multiple people.
+            // Draw multiple locations.
             // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
             List<Drawable> profilePhotos;
             profilePhotos = new ArrayList<>(Math.min(4, cluster.getSize()));
@@ -310,8 +300,15 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         if(mapLocations.size() == 0){
             // if no locations near user zoom to current location and display no listing message and spokesman
             showOtherStuff();
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 13));
 
-            getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 100)));
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
+                    .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            getMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } else {
         mClusterManager.addItems(mapLocations);
         mClusterManager.cluster();
@@ -329,9 +326,10 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         btnShowListings.setVisibility(View.VISIBLE);
         btnAdd.setVisibility(View.VISIBLE);
         tvMore.setVisibility(View.VISIBLE);
-        // dragView.setVisibility(View.VISIBLE);
         category_radioButton_scroller.setVisibility(View.VISIBLE);
         tvCategories.setVisibility(View.VISIBLE);
+        dragView.setVisibility(View.VISIBLE);
+
     }
 
     private void showOtherStuff() {
@@ -339,41 +337,14 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         progressBar.setVisibility(View.GONE); //hide progressBar
         tvQuerying.setAnimation(imgAnimationOut);
         tvQuerying.setVisibility(View.GONE);
-        LinearLayout recentReviewsLayout = findViewById(R.id.recentReviewsLayout);
-        recentReviewsLayout.setVisibility(View.GONE);
-        LinearLayout recentReviewsRecyclerLayout = findViewById(R.id.recentReviewsRecyclerLayout);
-        recentReviewsRecyclerLayout.setVisibility(View.GONE);
-        LinearLayout featuredListings = findViewById(R.id.featuredListings);
-        featuredListings.setVisibility(View.GONE);
-        LinearLayout featuredListingsRecyclerViewLayout = findViewById(R.id.featuredListingsRecyclerViewLayout);
-        featuredListingsRecyclerViewLayout.setVisibility(View.GONE);
-        LinearLayout nearByListingsLayout = findViewById(R.id.nearByListingsLayout);
-        nearByListingsLayout.setVisibility(View.GONE);
-        LinearLayout recentListingsLayout = findViewById(R.id.recentListingsLayout);
-        recentListingsLayout.setVisibility(View.GONE);
-        RelativeLayout noListingsLayout = findViewById(R.id.noListingsLayout);
+        noListingsAnimationLayout.setVisibility(View.VISIBLE);
+        noListingsAnimationFLayout.setVisibility(View.VISIBLE);
+        login_button2.setVisibility(View.VISIBLE);
+        LinearLayout noListingsLayout = findViewById(R.id.noListingsLayout);
         noListingsLayout.setVisibility(View.VISIBLE);
-        TextSwitcher noListingsTextSwitcher = findViewById(R.id.noListingsTextSwitcher);
-        noListingsTextSwitcher.setFactory(() -> {
-            TextView textView = new TextView(getApplicationContext());
-            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setTextSize(16);
-            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
-            textView.setGravity(Gravity.START);
-            return textView;
-        });
-        noListingsTextSwitcher.setVisibility(View.VISIBLE);
-        noListingsTextSwitcher.setText("Adding and reviewing listings is easy. To protect the privacy " +
-                "of our users and insure high quality feedback we require users to login before adding " +
-                "or reviewing a listing. Tap below to begin adding and reviewing black owned businesses " +
-                "using your Facebook account.");
-
-       // btnShowListings.setVisibility(View.VISIBLE);
-        btnAdd.setVisibility(View.VISIBLE);
-        tvMore.setVisibility(View.VISIBLE);
-
-        // dragView.setVisibility(View.VISIBLE);
-        //category_radioButton_scroller.setVisibility(View.VISIBLE);
-        //tvCategories.setVisibility(View.VISIBLE);
-        }
+        TextView noListingsTextView = findViewById(R.id.noListingsTextView);
+        noListingsTextView.setVisibility(View.VISIBLE);
+        ImageView noListingsImageView = findViewById(R.id.noListingsImageView);
+        noListingsImageView.setVisibility(View.VISIBLE);
+    }
 }

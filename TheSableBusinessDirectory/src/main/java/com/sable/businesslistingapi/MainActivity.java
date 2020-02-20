@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
 
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
-    private TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
+    TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
     private SlidingUpPanelLayout mLayout;
 
 
@@ -251,8 +252,14 @@ public class MainActivity extends AppCompatActivity implements
         return chain.proceed(request);
     };
 
-    private ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
-    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView;
+    ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView, recentReviewsLayout,
+            recentReviewsRecyclerLayout, featuredListings, featuredListingsRecyclerViewLayout, nearByListingsLayout,
+            recentListingsLayout, noListingsAnimationLayout, noListingsTextSwitcher3Layout, noListingsTextSwitcherLayout, noListingsTextSwitcher2Layout;
+    TextSwitcher noListingsTextSwitcher, noListingsTextSwitcher2, noListingsTextSwitcher3;
+    ImageSwitcher noListingsImageSwitcher, noListingsImageSwitcher2, noListingsImageSwitcher3;
+    ImageView noListingsImageView1, noListingsImageView2, noListingsImageView3;
+    FrameLayout noListingsAnimationFLayout;
     private Handler imageSwitchHandler;
 
     ListView searchList;
@@ -276,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
         dragView = findViewById(R.id.dragView);
-        //dragView.setVisibility(View.GONE);
+        dragView.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progressBar);
         tvCategories = findViewById(R.id.tvCategories);
         tvCategories.setVisibility(View.GONE);
@@ -288,6 +295,34 @@ public class MainActivity extends AppCompatActivity implements
         searchList.setVisibility(View.GONE);
         loggedInLayout = findViewById(R.id.loggedInLayout);
         loggedInLayout.setVisibility(View.GONE);
+        noListingsAnimationLayout = findViewById(R.id.noListingsAnimationLayout);
+        noListingsAnimationLayout.setVisibility(View.GONE);
+        noListingsAnimationFLayout = findViewById(R.id.noListingsAnimationFLayout);
+        noListingsAnimationFLayout.setVisibility(View.GONE);
+        /*noListingsTextSwitcherLayout = findViewById(R.id.noListingsTextSwitcherLayout);
+        noListingsTextSwitcherLayout.setVisibility(View.GONE);
+        noListingsTextSwitcher = findViewById(R.id.noListingsTextSwitcher);
+        noListingsTextSwitcher.setVisibility(View.GONE);
+        noListingsTextSwitcher2Layout = findViewById(R.id.noListingsTextSwitcher2Layout);
+        noListingsTextSwitcher2Layout.setVisibility(View.GONE);
+        noListingsTextSwitcher2 = findViewById(R.id.noListingsTextSwitcher2);
+        noListingsTextSwitcher2.setVisibility(View.GONE);
+        noListingsTextSwitcher3Layout = findViewById(R.id.noListingsTextSwitcher3Layout);
+        noListingsTextSwitcher3Layout.setVisibility(View.GONE);
+        noListingsTextSwitcher3 = findViewById(R.id.noListingsTextSwitcher3);
+        noListingsTextSwitcher3.setVisibility(View.GONE);
+        noListingsImageSwitcher = findViewById(R.id.noListingsImageSwitcher);
+        noListingsImageView1 = findViewById(R.id.noListingsImageView1);
+        noListingsImageView1.setVisibility(View.GONE);
+        noListingsImageSwitcher.setVisibility(View.GONE);
+        noListingsImageSwitcher2 = findViewById(R.id.noListingsImageSwitcher2);
+        noListingsImageSwitcher2.setVisibility(View.GONE);
+        noListingsImageView2 = findViewById(R.id.noListingsImageView2);
+        noListingsImageSwitcher3 = findViewById(R.id.noListingsImageSwitcher3);
+        noListingsImageSwitcher3.setVisibility(View.GONE);
+        noListingsImageView3 = findViewById(R.id.noListingsImageView3);
+        noListingsImageView3.setVisibility(View.GONE); */
+
 
         /**
          * ABOUT US
@@ -534,11 +569,8 @@ public class MainActivity extends AppCompatActivity implements
         btnShowListings = findViewById(R.id.btnShowListings);
         btnShowListings.setVisibility(View.GONE);
 
-        RelativeLayout noListingsLayout = findViewById(R.id.noListingsLayout);
-        noListingsLayout.setVisibility(View.GONE);
 
-        TextSwitcher noListingsTextSwitcher = findViewById(R.id.noListingsTextSwitcher);
-        noListingsTextSwitcher.setVisibility(View.GONE);
+
 
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override

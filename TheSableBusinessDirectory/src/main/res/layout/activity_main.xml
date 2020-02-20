@@ -185,44 +185,96 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <RelativeLayout
-                    android:id="@+id/noListingsLayout"
+                <LinearLayout
+                    android:id="@+id/noListingsAnimationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="#ffffff">
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
-                    <TextSwitcher
-                        android:id="@+id/noListingsTextSwitcher"
-                        android:layout_width="250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="5dp" />
+                    <FrameLayout
+                        android:id="@+id/noListingsAnimationFLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/roundedcorner"
+                        android:backgroundTint="#BFFFFFFF"
+                        android:gravity="center_vertical">
 
-                    <ImageSwitcher
-
-                        android:id="@+id/noListingsImageSwitcher"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerHorizontal="false"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical|end"
-                        android:layout_toEndOf="@id/noListingsTextSwitcher">
-
-                        <ImageView
-                            android:id="@+id/noListingsImageView"
-                            android:layout_width="match_parent"
+                        <com.facebook.login.widget.LoginButton
+                            android:id="@+id/login_button3"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@mipmap/smiling_peace_foreground" />
-                    </ImageSwitcher>
+                            android:layout_gravity="bottom|left"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="1" />
 
-                </RelativeLayout>
+                        <LinearLayout
+                            android:id="@+id/noListingsLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="225dp"
+                            android:layout_gravity="start|center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="200dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/noListingsTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="start|center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:padding="3dp"
+                                    android:text="Looks like there aren't any listings near you."
+                                    android:textColor="@color/colorAccent2"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:id="@+id/noListingsTextView3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="start|center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:paddingStart="3dp"
+                                    android:paddingEnd="3dp"
+                                    android:text="Adding a listing is easy."
+                                    android:textColor="@color/colorAccent2"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:id="@+id/noListingsTextView2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="start|center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:paddingStart="3dp"
+                                    android:paddingEnd="3dp"
+                                    android:text="Tap the button below to use your Facebook account when at a black owned business to add that business to our directory."
+                                    android:textColor="@color/colorAccent" />
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/noListingsImageView"
+                                android:layout_width="200dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical|end"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@mipmap/sorry_foreground" />
+                        </LinearLayout>
+
+
+                    </FrameLayout>
+                    <!-- END NO LISTINGS ANIMATION -->
+                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -435,7 +487,10 @@
                 </LinearLayout>
 
 
-                <!-- BEGIN ABOUT US ANIMATION -->
+                <!-- BEGIN NO LISTINGS ANIMATION -->
+
+
+                <!-- BEGIN ABOUT US LISTINGS ANIMATION -->
                 <LinearLayout
                     android:id="@+id/aboutUsAnimationLayout"
                     android:layout_width="match_parent"
@@ -548,7 +603,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
                                 android:scaleType="fitCenter"
-                                app:srcCompat="@mipmap/showing_right_foreground" />
+                                app:srcCompat="@mipmap/sorry_foreground" />
 
                             <ImageView
                                 android:id="@+id/imageView2"
@@ -584,7 +639,7 @@
 
 
                     </FrameLayout>
-                    <!-- END ANIMATION -->
+                    <!-- END NO LISTINGS ANIMATION -->
                 </LinearLayout>
 
                 <LinearLayout
