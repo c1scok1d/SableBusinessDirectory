@@ -255,10 +255,6 @@ public class MainActivity extends AppCompatActivity implements
     ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView,
             noListingsAnimationLayout, sliderLayout;
-    TextSwitcher noListingsTextSwitcher, noListingsTextSwitcher2, noListingsTextSwitcher3;
-    ImageSwitcher noListingsImageSwitcher, noListingsImageSwitcher2, noListingsImageSwitcher3;
-    ImageView noListingsImageView1, noListingsImageView2, noListingsImageView3;
-    FrameLayout noListingsAnimationFLayout;
     private Handler imageSwitchHandler;
 
     ListView searchList;
@@ -296,32 +292,7 @@ public class MainActivity extends AppCompatActivity implements
         loggedInLayout.setVisibility(View.GONE);
         noListingsAnimationLayout = findViewById(R.id.noListingsAnimationLayout);
         noListingsAnimationLayout.setVisibility(View.GONE);
-        noListingsAnimationFLayout = findViewById(R.id.noListingsAnimationFLayout);
-        noListingsAnimationFLayout.setVisibility(View.GONE);
-        /*noListingsTextSwitcherLayout = findViewById(R.id.noListingsTextSwitcherLayout);
-        noListingsTextSwitcherLayout.setVisibility(View.GONE);
-        noListingsTextSwitcher = findViewById(R.id.noListingsTextSwitcher);
-        noListingsTextSwitcher.setVisibility(View.GONE);
-        noListingsTextSwitcher2Layout = findViewById(R.id.noListingsTextSwitcher2Layout);
-        noListingsTextSwitcher2Layout.setVisibility(View.GONE);
-        noListingsTextSwitcher2 = findViewById(R.id.noListingsTextSwitcher2);
-        noListingsTextSwitcher2.setVisibility(View.GONE);
-        noListingsTextSwitcher3Layout = findViewById(R.id.noListingsTextSwitcher3Layout);
-        noListingsTextSwitcher3Layout.setVisibility(View.GONE);
-        noListingsTextSwitcher3 = findViewById(R.id.noListingsTextSwitcher3);
-        noListingsTextSwitcher3.setVisibility(View.GONE);
-        noListingsImageSwitcher = findViewById(R.id.noListingsImageSwitcher);
-        noListingsImageView1 = findViewById(R.id.noListingsImageView1);
-        noListingsImageView1.setVisibility(View.GONE);
-        noListingsImageSwitcher.setVisibility(View.GONE);
-        noListingsImageSwitcher2 = findViewById(R.id.noListingsImageSwitcher2);
-        noListingsImageSwitcher2.setVisibility(View.GONE);
-        noListingsImageView2 = findViewById(R.id.noListingsImageView2);
-        noListingsImageSwitcher3 = findViewById(R.id.noListingsImageSwitcher3);
-        noListingsImageSwitcher3.setVisibility(View.GONE);
-        noListingsImageView3 = findViewById(R.id.noListingsImageView3);
-        noListingsImageView3.setVisibility(View.GONE); */
-
+       
 
         /**
          * ABOUT US

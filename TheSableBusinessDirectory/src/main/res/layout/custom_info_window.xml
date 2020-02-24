@@ -92,7 +92,7 @@
             android:id="@+id/tvMore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tap for More..."
+            android:text="More..."
             android:textColor="@color/com_facebook_blue" />
 
     </LinearLayout>

@@ -338,7 +338,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         tvQuerying.setAnimation(imgAnimationOut);
         tvQuerying.setVisibility(View.GONE);
         noListingsAnimationLayout.setVisibility(View.VISIBLE);
-        noListingsAnimationFLayout.setVisibility(View.VISIBLE);
+        //noListingsAnimationFLayout.setVisibility(View.VISIBLE);
         login_button2.setVisibility(View.VISIBLE);
         LinearLayout noListingsLayout = findViewById(R.id.noListingsLayout);
         noListingsLayout.setVisibility(View.VISIBLE);
