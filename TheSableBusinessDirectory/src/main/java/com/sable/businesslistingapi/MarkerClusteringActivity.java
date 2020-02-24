@@ -328,7 +328,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         tvMore.setVisibility(View.VISIBLE);
         category_radioButton_scroller.setVisibility(View.VISIBLE);
         tvCategories.setVisibility(View.VISIBLE);
-        dragView.setVisibility(View.VISIBLE);
+        sliderLayout.setVisibility(View.VISIBLE);
 
     }
 

@@ -253,9 +253,8 @@ public class MainActivity extends AppCompatActivity implements
     };
 
     ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
-    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView, recentReviewsLayout,
-            recentReviewsRecyclerLayout, featuredListings, featuredListingsRecyclerViewLayout, nearByListingsLayout,
-            recentListingsLayout, noListingsAnimationLayout, noListingsTextSwitcher3Layout, noListingsTextSwitcherLayout, noListingsTextSwitcher2Layout;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView,
+            noListingsAnimationLayout, sliderLayout;
     TextSwitcher noListingsTextSwitcher, noListingsTextSwitcher2, noListingsTextSwitcher3;
     ImageSwitcher noListingsImageSwitcher, noListingsImageSwitcher2, noListingsImageSwitcher3;
     ImageView noListingsImageView1, noListingsImageView2, noListingsImageView3;
@@ -282,8 +281,8 @@ public class MainActivity extends AppCompatActivity implements
         setUpMap();
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
-        dragView = findViewById(R.id.dragView);
-        dragView.setVisibility(View.GONE);
+        sliderLayout = findViewById(R.id.sliderLayout);
+        sliderLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progressBar);
         tvCategories = findViewById(R.id.tvCategories);
         tvCategories.setVisibility(View.GONE);
@@ -1283,6 +1282,8 @@ public class MainActivity extends AppCompatActivity implements
                     // Binds the Adapter to the ListView
                     searchList.setAdapter(searchAdapter);
                     setMarkers(isRestore);
+                   // dragView.setVisibility(View.VISIBLE);
+
                 } else {
                     // do some stuff
                 }
