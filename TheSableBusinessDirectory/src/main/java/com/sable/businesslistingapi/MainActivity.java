@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude;
 
-    TextView tvMore, tvUserName, tvWpUserId, tvCity, tvQuerying, tvCategories;
+    TextView tvMore, tvUserName, tvUserName2, tvWpUserId, tvCity, tvQuerying, tvCategories;
     Button login_button2, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     ProgressBar progressBar;
@@ -489,10 +489,10 @@ public class MainActivity extends AppCompatActivity implements
                 if (currentAccessToken != null) {
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
-                    startActivity(getIntent());
+                   // startActivity(getIntent());
                     loggedInLayout.setVisibility(View.VISIBLE);
                 } else {
-                    startActivity(getIntent());
+                   // startActivity(getIntent());
                     //LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
                    // LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
                     //loggedInLayout.setVisibility(View.GONE);
@@ -502,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements
         };
 
         tvUserName = findViewById(R.id.tvUserName);
+        tvUserName2 = findViewById(R.id.tvUserName2);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
@@ -567,6 +568,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.e("Category Selection", "Review query executed by category selection");
             setAddress(latitude, longitude);
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
+            //startActivity(getIntent());
             //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
         });
 
@@ -587,8 +589,8 @@ public class MainActivity extends AppCompatActivity implements
 
                 Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
             } else {
-                Intent intent = new Intent(MainActivity.this, AddListingActivity.class);
-                startActivity(intent);
+                Intent addListingIntent = new Intent(MainActivity.this, AddListingActivity.class);
+                startActivity(addListingIntent);
             }
         });
 
@@ -723,7 +725,7 @@ public class MainActivity extends AppCompatActivity implements
                         finish();
                         return;
                     } else {
-                        startActivity(getIntent());
+                       // startActivity(getIntent());
                     }
                 }
                 // all permissions were granted
@@ -738,7 +740,7 @@ public class MainActivity extends AppCompatActivity implements
             useLoginInformation(accessToken);
             loggedInLayout.setVisibility(View.VISIBLE);
             // startActivity(getIntent());
-            Log.e("Access Token Login Successful ", " accessToken " + accessToken);
+            Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
         } else {
             // startActivity(getIntent());
             LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
@@ -758,12 +760,12 @@ public class MainActivity extends AppCompatActivity implements
         Log.e("onStop", "onStop Executed");
     }
 
-    public void onResume() {
+   /* public void onResume() {
         super.onResume();
         //This starts the access token tracking
         accessTokenTracker.startTracking();
         Log.e("onResume", "onResume Executed");
-    }
+    } */
 
     public void onDestroy() {
         super.onDestroy();
@@ -795,6 +797,7 @@ public class MainActivity extends AppCompatActivity implements
                     firstName = parts[0];
                     lastName = parts[1];
                     tvUserName.setText(firstName);
+                    tvUserName2.setText(firstName);
                     //    tvUserEmail.setText(object.getString("email"));
                     facebookImageBuilder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 

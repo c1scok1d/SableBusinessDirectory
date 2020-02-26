@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -333,18 +334,28 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     }
 
     private void showOtherStuff() {
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        Button login_button3 = findViewById(R.id.login_button3);
+
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         progressBar.setVisibility(View.GONE); //hide progressBar
         tvQuerying.setAnimation(imgAnimationOut);
         tvQuerying.setVisibility(View.GONE);
         noListingsAnimationLayout.setVisibility(View.VISIBLE);
         //noListingsAnimationFLayout.setVisibility(View.VISIBLE);
-        login_button2.setVisibility(View.VISIBLE);
         LinearLayout noListingsLayout = findViewById(R.id.noListingsLayout);
         noListingsLayout.setVisibility(View.VISIBLE);
         TextView noListingsTextView = findViewById(R.id.noListingsTextView);
         noListingsTextView.setVisibility(View.VISIBLE);
+        TextView noListingsTextView2 = findViewById(R.id.noListingsTextView2);
         ImageView noListingsImageView = findViewById(R.id.noListingsImageView);
         noListingsImageView.setVisibility(View.VISIBLE);
+        btnAdd.setVisibility(View.VISIBLE);
+        if (isLoggedIn) {
+            login_button3.setVisibility(View.GONE);
+            noListingsTextView2.setText("If you are currently at a black owned business tap the 'ADD' button to add that business to our directory.\n");
+        } else {
+            login_button3.setVisibility(View.VISIBLE);
+        }
     }
 }
