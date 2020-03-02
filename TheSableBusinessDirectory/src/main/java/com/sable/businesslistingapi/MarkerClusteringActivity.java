@@ -301,7 +301,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         if(mapLocations.size() == 0){
             // if no locations near user zoom to current location and display no listing message and spokesman
             showOtherStuff();
-            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 13));
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 200));
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
@@ -348,6 +348,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         TextView noListingsTextView = findViewById(R.id.noListingsTextView);
         noListingsTextView.setVisibility(View.VISIBLE);
         TextView noListingsTextView2 = findViewById(R.id.noListingsTextView2);
+        TextView tvHello2 = findViewById(R.id.tvHello2);
         ImageView noListingsImageView = findViewById(R.id.noListingsImageView);
         noListingsImageView.setVisibility(View.VISIBLE);
         btnAdd.setVisibility(View.VISIBLE);
@@ -356,6 +357,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             noListingsTextView2.setText("If you are currently at a black owned business tap the 'ADD' button to add that business to our directory.\n");
         } else {
             login_button3.setVisibility(View.VISIBLE);
+            tvHello2.setText("Oops!");
         }
     }
 }

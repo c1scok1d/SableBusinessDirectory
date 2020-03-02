@@ -58,21 +58,25 @@
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/etName"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:gravity="start"
-                        android:hint="Enter Business Name"
-                        android:textColor="#4FC1E9" />
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/etName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:hint="Enter Business Name"
+                            android:textColor="#4FC1E9" />
+                    </LinearLayout>
 
                     <Spinner
                         android:id="@+id/spnCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:gravity="start" />
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -108,12 +112,12 @@
                             android:id="@+id/tvAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
                             android:layout_weight="1"
                             android:gravity="center_horizontal|center_vertical"
-                            android:text="current location address"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold" />
+                            android:text="Tap to edit if the address is incorrect"
+                            android:textAllCaps="false"
+                            android:textColor="@color/colorAccent" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -123,57 +127,62 @@
                         android:gravity="center_horizontal|center_vertical"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tvBldgNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="3dp"
+                            android:background="@android:color/transparent"
                             android:text="bldgno"
                             android:textColor="#4FC1E9"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tvStreet"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="5dp"
+                            android:background="@android:color/transparent"
                             android:text="street"
                             android:textColor="#4FC1E9"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tvCity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="3dp"
+                            android:background="@android:color/transparent"
                             android:text="city"
                             android:textColor="#4FC1E9"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tvState"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="3dp"
+                            android:background="@android:color/transparent"
                             android:text="state"
                             android:textColor="#4FC1E9"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tvZip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="3dp"
+                            android:background="@android:color/transparent"
                             android:text="zipcode"
                             android:textColor="#4FC1E9"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/tvCountry"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

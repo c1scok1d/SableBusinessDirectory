@@ -16,6 +16,7 @@ import android.os.Bundle;
 
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.telephony.PhoneNumberUtils;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -112,7 +113,7 @@ public class AddListingActivity extends AppCompatActivity implements
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
     Button btnNext;
     Spinner spnCategory;
-    ArrayList<String> category = new ArrayList<>();
+    private ArrayList<String> addListingCategory = new ArrayList<>();
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
     List<BusinessHours> bhs = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
@@ -180,10 +181,22 @@ public class AddListingActivity extends AppCompatActivity implements
 
       //  tvAddress = findViewById(R.id.tvAddress);
         tvZip = findViewById(R.id.tvZip);
+        tvZip.setFocusable(true);
+        tvZip.setEnabled(true);
+        tvZip.setClickable(true);
+        tvZip.setFocusableInTouchMode(true);
         tvState = findViewById(R.id.tvState);
+        tvState.setFocusable(true);
+        tvState.setEnabled(true);
+        tvState.setClickable(true);
+        tvState.setFocusableInTouchMode(true);
         tvCity = findViewById(R.id.tvCity);
         tvStreet = findViewById(R.id.tvStreet);
         tvBldgNo = findViewById(R.id.tvBldgNo);
+        tvBldgNo.setFocusable(true);
+        tvBldgNo.setEnabled(true);
+        tvBldgNo.setClickable(true);
+        tvBldgNo.setFocusableInTouchMode(true);
         tvCountry = findViewById(R.id.tvCountry);
         btnNext = findViewById(R.id.btnNext);
         spnCategory = findViewById(R.id.spnCategory);
@@ -196,14 +209,13 @@ public class AddListingActivity extends AppCompatActivity implements
         etTwitter  = findViewById(R.id.etTwitter);
         etFacebook = findViewById(R.id.etFacebook);
         tvAddHours = findViewById(R.id.tvAddHours);
-        // category = new ArrayList<>();
+        //category = new ArrayList<>();
         // locationAdd = new ArrayList<>();
-
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
-        getRetrofitCategories();
+       getRetrofitCategories();
 
         tvAddHours.setOnClickListener(v -> {
             if(businessHoursLayout.getVisibility() == View.GONE) {
@@ -364,6 +376,11 @@ public class AddListingActivity extends AppCompatActivity implements
                 }
             }
         });
+    }
+
+    public void onStart() {
+        super.onStart();
+       // getRetrofitCategories();
     }
 
     @Override
@@ -763,15 +780,27 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override
             public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-              category.add("Category"); //add heading to category spinner
-                for (int i = 0; i < response.body().size(); i++) {
-                    category.add(response.body().get(i).getName());
-                    spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, category));
+                if (response.raw().cacheResponse() != null) {
+                    Log.e("Network", "Reviews response came from cache");
+                } else {
+                    Log.e("Network", "Reviews response came from server");
                 }
-               
+                if (response.isSuccessful() && response.body().size() > 0) {
+                    Log.e("spnCategory", " response " + response.body());
+                    addListingCategory.add("Category"); //add heading to category spinner
+                    // Log.e("Get Category", " response " + response.body());
+                    for (int i = 0; i < response.body().size(); i++) {
+                        addListingCategory.add(response.body().get(i).getName());
+                        spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, addListingCategory));
+                    }
+
+                } else {
+                    Log.e("spnCategory", " response " + response.body());
+                }
             }
             @Override
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+
             }
         });
     }

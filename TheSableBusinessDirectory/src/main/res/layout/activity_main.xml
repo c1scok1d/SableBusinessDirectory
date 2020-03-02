@@ -218,14 +218,13 @@
                             android:id="@+id/noListingsLayout"
                             android:layout_width="match_parent"
                             android:layout_height="225dp"
-                            android:layout_gravity="start|center_vertical"
                             android:orientation="horizontal"
                             android:padding="3dp">
 
                             <LinearLayout
                                 android:layout_width="200dp"
                                 android:layout_height="match_parent"
-                                android:gravity="center_vertical"
+                                android:layout_margin="3dp"
                                 android:keepScreenOn="false"
                                 android:orientation="vertical">
 
@@ -285,9 +284,8 @@
 
                             <ImageView
                                 android:id="@+id/noListingsImageView"
-                                android:layout_width="200dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical|end"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@mipmap/sorry_foreground" />
                         </LinearLayout>
