@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -495,11 +496,7 @@ public class MainActivity extends AppCompatActivity implements
                    // startActivity(getIntent());
                     loggedInLayout.setVisibility(View.VISIBLE);
                 } else {
-                   // startActivity(getIntent());
-                    //LinearLayout loggedInLayout = findViewById(R.id.loggedInLayout);
-                   // LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
-                    //loggedInLayout.setVisibility(View.GONE);
-                    //userNameLayout.setVisibility(View.GONE);
+
                 }
             }
         };
@@ -556,26 +553,6 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
             }
         });
-        /**
-         * category radio buttons on map
-         */
-
-     /*  radioGroup = findViewById(R.id.radio_group_list_selector);
-
-       radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            Log.e("Radio Button No: ", " response " + checkedId);
-            Map<String, String> query = new HashMap<>();
-            query.put("gd_businesscategory", String.valueOf(checkedId));
-            getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-            Log.e("Category Selection", "Listings query executed by category selection");
-            getReviews();
-            Log.e("Category Selection", "Review query executed by category selection");
-            setAddress(latitude, longitude);
-            Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
-            //startActivity(getIntent());
-            //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
-        }); */
-
 
         /**
          *  location add button
@@ -605,48 +582,86 @@ public class MainActivity extends AppCompatActivity implements
         searchView = findViewById(R.id.search);
         ArrayAdapter<String> searchViewAdapter = new ArrayAdapter<String>(getApplicationContext(),
                 android.R.layout.select_dialog_item, listingName);
+        searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int pos,
+                                    long id) {
+                //String item = parent.getItemAtPosition(pos).toString();
+
+                // create Toast with user selected value
+                Toast.makeText(MainActivity.this, "Selected Item is: \t" + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+
+                    if(retrofit==null){
+                        retrofit = new Retrofit.Builder()
+                                .baseUrl(baseURL)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .client(client)
+                                .build();
+                    }
+                    RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                    // pass JSON data to BusinessListings class for filtering
+                    Call<List<BusinessListings>> call = service.search();
+
+                    // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                    call.enqueue(new Callback<List<BusinessListings>>() {
+                        @Override
+                        public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
+
+                            // loop through JSON response get parse and output to log
+                            for (int i = 0; i < response.body().size(); i++) {
+
+                                if (parent.getItemAtPosition(pos).toString().equals(response.body().get(i).getTitle().getRaw())) {
+                                    ArrayList<ListingsModel> locationReview = new ArrayList<>();
+                                    Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
+                                    locationReview.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                            response.body().get(i).getId(),
+                                            response.body().get(i).getTitle().getRaw(),
+                                            response.body().get(i).getLink(),
+                                            response.body().get(i).getStatus(),
+                                            response.body().get(i).getPostCategory().get(0).getName(),
+                                            response.body().get(i).getFeatured(),
+                                            response.body().get(i).getFeaturedImage().getSrc(),
+                                            response.body().get(i).getBldgNo(),
+                                            response.body().get(i).getStreet(),
+                                            response.body().get(i).getCity(),
+                                            response.body().get(i).getRegion(),
+                                            response.body().get(i).getCountry(),
+                                            response.body().get(i).getZip(),
+                                            response.body().get(i).getLatitude(),
+                                            response.body().get(i).getLongitude(),
+                                            response.body().get(i).getRating(),
+                                            response.body().get(i).getRatingCount(),
+                                            response.body().get(i).getPhone(),
+                                            response.body().get(i).getEmail(),
+                                            response.body().get(i).getWebsite(),
+                                            response.body().get(i).getTwitter(),
+                                            response.body().get(i).getFacebook(),
+                                            response.body().get(i).getVideo(),
+                                            todayRange,
+                                            isOpen,
+                                            response.body().get(i).getLogo(),
+                                            response.body().get(i).getContent().getRaw(),
+                                            response.body().get(i).getFeaturedImage().getThumbnail())));
+
+                                    Bundle locationReviewBundle = new Bundle();
+                                    locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
+                                    showReviews.putExtra("locationReview", locationReview);
+                                    startActivity(showReviews);
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
+                            Log.e("CategoryNumber", " response: " + t);
+                        }
+                    });
+            }
+        });
         searchView.setThreshold(1);
         searchView.setAdapter(searchViewAdapter);
-        //searchView.setIconifiedByDefault(false);
-
-        // Locate the EditText in listview_main.xml
-        // editsearch = (SearchView) findViewById(R.id.search);
-        // perform set on query text listener event
-      /*  searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Map<String, String> search = new HashMap<>();
-
-                search.put("order", "asc");
-                search.put("orderby", "distance");
-                search.put("search", query);
-                getRetrofit(search); //api call; pass current lat/lng to check if current location in database
-                Log.e("Search Query", "Listings query executed by query search");
-                getReviews();
-                Log.e("Search Query", "Review query executed by query search");
-                setAddress(latitude, longitude);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                String text = newText;
-                if (TextUtils.isEmpty(text)) {
-                    searchList.setVisibility(View.GONE);
-                    radioGroup.setVisibility(View.VISIBLE);
-                    btnAdd.setVisibility(View.VISIBLE);
-                    btnShowListings.setVisibility(View.VISIBLE);
-                } else {
-                    radioGroup.setVisibility(View.GONE);
-                    btnAdd.setVisibility(View.GONE);
-                    btnShowListings.setVisibility(View.GONE);
-                    searchList.setVisibility(View.VISIBLE);
-                    searchAdapter.filter(text);
-                }
-                    return true;
-            }
-        }); */
-
 
         if (!userActivityArray.isEmpty()) {
             userActivityArray = this.getIntent().getExtras().getStringArrayList("userActivityArray");
@@ -690,7 +705,6 @@ public class MainActivity extends AppCompatActivity implements
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
     } //END ON CREATE
-
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
     }
@@ -1032,7 +1046,7 @@ public class MainActivity extends AppCompatActivity implements
         //Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
 
         tvQuerying.setVisibility(View.VISIBLE);
-        tvQuerying.setText("SEARCHING...");
+        tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU");
         tvQuerying.setAnimation(imgAnimationBlink);
 
         mapLocations = new ArrayList<>();

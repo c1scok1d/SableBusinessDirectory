@@ -39,7 +39,8 @@ public interface RetrofitArrayApi {
 
     @GET
     Call<List<BusinessListings>> getDynamic(
-            @Url String url);
+           // @Url String url
+           );
 
     @GET("wp-json/wc/v3/products?consumer_key=ck_c3addab1f230fa55025a2f78969d18f518ebbc5e&consumer_secret=cs_aaf9c39669e92ebd745a0e91a9a5810e9222cc92")
     Call<List<WooProducts>> getPostWooInfo();
@@ -50,6 +51,11 @@ public interface RetrofitArrayApi {
     @GET("wp-json/geodir/v2/business/categories")
     Call<List<BusinessListings>> getCategoryListings(
             @QueryMap Map<String, String> options
+    );
+
+    @GET("wp-json/geodir/v2/business")
+    Call<List<BusinessListings>> search(
+            //@QueryMap Map<String, String> options
     );
 
 
