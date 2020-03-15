@@ -568,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 //goto login activity get username and email via facebook create account, return here to check again and proceed
 
-                Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_LONG).show();
             } else {
                 Intent addListingIntent = new Intent(MainActivity.this, AddListingActivity.class);
                 startActivity(addListingIntent);
@@ -590,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements
                 //String item = parent.getItemAtPosition(pos).toString();
 
                 // create Toast with user selected value
-                Toast.makeText(MainActivity.this, "Selected Item is: \t" + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Loading reviews for: \t" + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
 
                     if(retrofit==null){
                         retrofit = new Retrofit.Builder()
