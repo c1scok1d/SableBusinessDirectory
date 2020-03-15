@@ -21,10 +21,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -79,9 +81,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-
-
 /**
  *
  */
@@ -91,15 +90,11 @@ public class AddListingActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
-
     /**
      * Flag indicating whether a requested permission has been denied after returning in
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
      */
-    private boolean mPermissionDenied = false;
-
     private GoogleMap mMap;
-
 
     String address, state, country, zipcode, city, street, bldgNo, username = "android_app",
             password = "mroK zH6o wOW7 X094 MTKy fwmY";
@@ -112,8 +107,11 @@ public class AddListingActivity extends AppCompatActivity implements
     TextView tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry;
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
     Button btnNext;
-    Spinner spnCategory;
+    //Spinner spnCategory;
+    ListView spnCategory;
+    AutoCompleteTextView tvCategory;
     private ArrayList<String> addListingCategory = new ArrayList<>();
+
     ArrayList<ListingsAddModel> locationAdd = new ArrayList<>();
     List<BusinessHours> bhs = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
@@ -154,6 +152,8 @@ public class AddListingActivity extends AppCompatActivity implements
         LinearLayout viewBusinessHoursLayout = findViewById(R.id.viewBusinessHoursLayout);
         viewBusinessHoursLayout.setVisibility(View.GONE);
         TextView tvAddHours;
+        addListingCategory.add("Select Business Category"); //add heading to category spinner
+
 
         btn_apply.setOnClickListener(view -> {
 
@@ -199,7 +199,9 @@ public class AddListingActivity extends AppCompatActivity implements
         tvBldgNo.setFocusableInTouchMode(true);
         tvCountry = findViewById(R.id.tvCountry);
         btnNext = findViewById(R.id.btnNext);
-        spnCategory = findViewById(R.id.spnCategory);
+        //spnCategory = findViewById(R.id.spnCategory);
+        //spnCategory.setFastScrollEnabled(true);
+        tvCategory = findViewById(R.id.tvCategory);
         etName = findViewById(R.id.etName);
         etDescription = findViewById(R.id.etDescription);
         etPhone = findViewById(R.id.etPhone);
@@ -209,8 +211,6 @@ public class AddListingActivity extends AppCompatActivity implements
         etTwitter  = findViewById(R.id.etTwitter);
         etFacebook = findViewById(R.id.etFacebook);
         tvAddHours = findViewById(R.id.tvAddHours);
-        //category = new ArrayList<>();
-        // locationAdd = new ArrayList<>();
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
@@ -235,13 +235,13 @@ public class AddListingActivity extends AppCompatActivity implements
 
             if (etName.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please Enter The Business Name...", Toast.LENGTH_LONG).show();
-            } else if (spnCategory.getSelectedItem().equals("Category")) {
+            } else if (spnCategory.getSelectedItem().equals("Select Business Category")) {
                 Toast.makeText(AddListingActivity.this, "Please select a Category...", Toast.LENGTH_LONG).show();
             } else if (etDescription.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please enter a description...", Toast.LENGTH_LONG).show();
             } else {
 
-                getRetrofitCategories();
+               // getRetrofitCategories();
 
                 name = etName.getText().toString();
                 description = etDescription.getText().toString();
@@ -277,7 +277,6 @@ public class AddListingActivity extends AppCompatActivity implements
                         businessHours.toString()));
 
                 submitData();
-
                 Intent home = new Intent(AddListingActivity.this, MainActivity.class);
                 //Bundle locationAddBundle = new Bundle();
                 //locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
@@ -291,7 +290,7 @@ public class AddListingActivity extends AppCompatActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
-        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        tvCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (!spnCategory.getSelectedItem().toString().equals("Category")) {
@@ -327,7 +326,7 @@ public class AddListingActivity extends AppCompatActivity implements
                             // loop through JSON response get parse and output to log
                             for (int i = 0; i < response.body().size(); i++) {
 
-                                if (spnCategory.getSelectedItem().toString().equals(response.body().get(i).getName())) {
+                                if (tvCategory.equals(response.body().get(i).getName())) {
                                     catNum = (response.body().get(i).getId());
                                     break;
                                 }
@@ -336,6 +335,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
                         @Override
                         public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+                            Log.e("CategoryNumber", " response: " + t);
                         }
                     });
                 }
@@ -380,7 +380,6 @@ public class AddListingActivity extends AppCompatActivity implements
 
     public void onStart() {
         super.onStart();
-       // getRetrofitCategories();
     }
 
     @Override
@@ -416,7 +415,6 @@ public class AddListingActivity extends AppCompatActivity implements
                     Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
                 uploadFiles(imageFiles);
-
                 onPhotosReturned(imageFiles);
             }
 
@@ -484,7 +482,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
 
     public void updateProgress(int val, String title, String msg){
-        
+
     }
 
 
@@ -647,29 +645,15 @@ public class AddListingActivity extends AppCompatActivity implements
         setAddress(latitude, longitude);
     }
 
-    /**
-     * Returns users GPS lat/lng
-     * @param location
-     */
-
-    /**
-     *
-     */
-    protected void onResumeFragments() {
+  /*  protected void onResumeFragments() {
         super.onResumeFragments();
         if (mPermissionDenied) {
             // Permission was not granted, display error dialog.
             showMissingPermissionError();
             mPermissionDenied = false;
         }
-    }
+    } */
 
-    /**
-     *
-     */
-    /*
-     * Displays a dialog with error message explaining that the location permission is missing.
-     */
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
@@ -780,27 +764,27 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override
             public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-                if (response.raw().cacheResponse() != null) {
-                    Log.e("Network", "Reviews response came from cache");
-                } else {
-                    Log.e("Network", "Reviews response came from server");
+               // Log.e("main_activity", " response " + response.body());
+                // mListPost = response.body();
+                //progressBar.setVisibility(View.GONE); //hide progressBar
+                // loop through JSON response get parse and output to log
+                for (int i = 0; i < response.body().size(); i++) {
+                    //ifStatement to skip json object from array if value is empty/null
+                    //parse response based on ListingsModel class and add to list array ( get category name, description and image)
+                    // add category name from array to spinner
+                    addListingCategory.add(response.body().get(i).getName());
+                    //category.add(response.body().get(i).getId().toString());
+                    // display category array list in spinner
+                   // spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, addListingCategory));
+                   // Log.e("main ", " Category: " + response.body().get(i).getName());
                 }
-                if (response.isSuccessful() && response.body().size() > 0) {
-                    Log.e("spnCategory", " response " + response.body());
-                    addListingCategory.add("Category"); //add heading to category spinner
-                    // Log.e("Get Category", " response " + response.body());
-                    for (int i = 0; i < response.body().size(); i++) {
-                        addListingCategory.add(response.body().get(i).getName());
-                        spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, addListingCategory));
-                    }
-
-                } else {
-                    Log.e("spnCategory", " response " + response.body());
-                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.select_dialog_item, addListingCategory);
+                tvCategory.setThreshold(2);
+                tvCategory.setAdapter(adapter);
             }
             @Override
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
-
+                Log.e("spnCategory", " response: " + t);
             }
         });
     }
@@ -870,6 +854,8 @@ String type = "gd_business";
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("SubmitData", " response: " + t);
+
             }
         });
 

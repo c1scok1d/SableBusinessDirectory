@@ -227,7 +227,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         });
 
        radioGroup.setVisibility(View.GONE);
-       category_radioButton_scroller.setVisibility(View.GONE);
+       //category_radioButton_scroller.setVisibility(View.GONE);
 
 
        return false;
@@ -327,7 +327,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         btnShowListings.setVisibility(View.VISIBLE);
         btnAdd.setVisibility(View.VISIBLE);
         tvMore.setVisibility(View.VISIBLE);
-        category_radioButton_scroller.setVisibility(View.VISIBLE);
+        //category_radioButton_scroller.setVisibility(View.VISIBLE);
         tvCategories.setVisibility(View.VISIBLE);
         sliderLayout.setVisibility(View.VISIBLE);
 

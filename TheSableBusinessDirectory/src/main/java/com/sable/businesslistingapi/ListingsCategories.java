@@ -39,9 +39,9 @@ public class ListingsCategories {
     @SerializedName("image")
     @Expose
     private List<Object> image = null;
-    @SerializedName("icon")
+   /* @SerializedName("icon")
     @Expose
-    private Icon icon;
+    private Icon icon; */
     @SerializedName("fa_icon")
     @Expose
     private String faIcon;
@@ -140,13 +140,13 @@ public class ListingsCategories {
         this.image = image;
     }
 
-    public Icon getIcon() {
+  /*  public Icon getIcon() {
         return icon;
-    }
+    } */
 
-    public void setIcon(Icon icon) {
+   /* public void setIcon(Icon icon) {
         this.icon = icon;
-    }
+    }*/
 
     public String getFaIcon() {
         return faIcon;

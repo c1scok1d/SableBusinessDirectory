@@ -1,7 +1,5 @@
 package com.sable.businesslistingapi;
 
-import com.bashizip.bhlib.BusinessHours;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +12,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
-
-/**
- * Created by Jaink on 14-09-2017.
- */
-
 
 
 public interface RetrofitArrayApi {

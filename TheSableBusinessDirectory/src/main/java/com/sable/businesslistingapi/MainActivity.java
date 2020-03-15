@@ -173,11 +173,11 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-    ArrayList<SearchListItems> category = new ArrayList<>();
+    //ArrayList<SearchListItems> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
     RadioGroup radioGroup;
     ImageView ivUserImage, spokesperson;
-    HorizontalScrollView category_radioButton_scroller;
+    //HorizontalScrollView category_radioButton_scroller;
 
     private static final int FRAME_TIME_MS = 8000;
 
@@ -282,8 +282,8 @@ public class MainActivity extends AppCompatActivity implements
         progressBar = findViewById(R.id.progressBar);
         tvCategories = findViewById(R.id.tvCategories);
         tvCategories.setVisibility(View.GONE);
-        category_radioButton_scroller = findViewById(R.id.category_radioButton_scroller);
-        category_radioButton_scroller.setVisibility(View.GONE);
+        //category_radioButton_scroller = findViewById(R.id.category_radioButton_scroller);
+        //category_radioButton_scroller.setVisibility(View.GONE);
         Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
         searchList = findViewById(R.id.listview);
@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements
          * category radio buttons on map
          */
 
-       radioGroup = findViewById(R.id.radio_group_list_selector);
+     /*  radioGroup = findViewById(R.id.radio_group_list_selector);
 
        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             Log.e("Radio Button No: ", " response " + checkedId);
@@ -570,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(getApplicationContext(), "This is Radio Button: " + checkedId, Toast.LENGTH_SHORT).show();
             //startActivity(getIntent());
             //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
-        });
+        }); */
 
 
         /**
@@ -960,8 +960,8 @@ public class MainActivity extends AppCompatActivity implements
             //tvCity.setText(addresses.get(0).getLocality());
             addresses.get(0).getAdminArea();
         } else {
-            Toast.makeText(this, "No GPS location available!  " +
-                    "Please check your mobile device for possible service issues.", Toast.LENGTH_LONG).show();
+           /*  Toast.makeText(this, "No GPS location available!  " +
+                    "Please check your mobile device for possible service issues.", Toast.LENGTH_LONG).show(); */
         }
     }
 
@@ -1029,7 +1029,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mapLocations = new ArrayList<>();
         mapLocations.removeAll(mapLocations);
-        Log.i("mapLocations", mapLocations.toString());
+        //Log.i("mapLocations", mapLocations.toString());
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
@@ -1046,7 +1046,6 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-
                 if (response.isSuccessful()) {
                     if (response.raw().cacheResponse() != null) {
                         Log.e("Network", "Listings response came from cache");
@@ -1100,7 +1099,6 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getSrc()));
-
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             Bundle locationMatchBundle = new Bundle();
                             locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
@@ -1223,21 +1221,6 @@ public class MainActivity extends AppCompatActivity implements
                              * categories on top of the map
                              */
 
-                            category.add(new SearchListItems(response.body().get(i).getPostCategory().get(0).getName()));
-                            RadioButton radioButton = new RadioButton(getApplicationContext());
-                            radioButton.setText(response.body().get(i).getPostCategory().get(0).getName());
-                            radioButton.setId(response.body().get(i).getPostCategory().get(0).getId());
-                            radioButton.setTextColor(getResources().getColor(R.color.white));
-                            radioButton.setButtonDrawable(null);
-                            radioButton.setTextSize(12);
-                            radioButton.setAllCaps(true);
-                            radioButton.setGravity(Gravity.CENTER);
-                            radioButton.setBackgroundResource(R.drawable.buttonshape);
-                            RadioGroup.LayoutParams radioGroupParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            radioGroupParams.setMargins(0, 0, 15, 0);
-                            radioButton.setLayoutParams(radioGroupParams);
-                            radioGroup.addView(radioButton);
-
                             LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
                             latLngBoundsBuilder.include(latlng);
                             mapLocations.add(new Person(latlng,
@@ -1252,7 +1235,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                     // Pass results to ListViewAdapter Class
-                    searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
+                   // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
                     searchList.setAdapter(searchAdapter);
                     setMarkers(isRestore);
@@ -1264,7 +1247,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-                Log.e("getRetrofitListings_METHOD_FAILURE ", " Re-running method...");
+                Log.e("getListingsFailure", " response: " + t);
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
                 getRetrofit(query); //api call; pass current lat/lng to check if current location in database
                 Log.e("getRetroFitListingsFailure", "Listings query executed by getRetroFitListingsFailure");
@@ -1328,7 +1311,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
-                Log.e("getRetrofitReview_METHOD_FAILURE ", " Re-running method...");
+                Log.e("getReviewFailure", " response: " + t);
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
                 getReviews();
                 Log.e("getRetorFitReviewFailure", "Review query executed by getRetroFitReviewFailure");
@@ -1369,6 +1352,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
+                Log.e("UserLoginFailure", " response: " + t);
                 Log.e("loginUser_METHOD_FAILURE ", " Re-running method...");
             }
         });
