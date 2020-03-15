@@ -300,7 +300,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center">
 
-                    <SearchView
+                    <AutoCompleteTextView
                         android:id="@+id/search"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
@@ -308,19 +308,19 @@
                         android:layout_centerInParent="true"
                         android:layout_centerVertical="false"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="3dp"
-                        android:layout_marginEnd="5dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_marginBottom="3dp"
                         android:background="@color/white"
                         android:iconifiedByDefault="false"
                         android:padding="5dp"
+                        android:hint="Search black owned businesses..."
                         android:queryBackground="@drawable/customborder"
-                        android:queryHint="Search black owned businesses..."
                         android:theme="@style/AppSearchView"
                         android:visibility="visible">
 
-                    </SearchView>
+                    </AutoCompleteTextView>
 
                     <ListView
                         android:id="@+id/listview"
@@ -341,6 +341,26 @@
                         android:textColor="@color/colorAccent2"
                         android:textSize="10sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvQuerying"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/progressBar"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="5dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorAccent2"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:visibility="visible" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true" />
 
                     <HorizontalScrollView
                         android:id="@+id/category_radioButton_scroller"
@@ -402,26 +422,6 @@
                         android:textColor="@color/white"
                         android:textSize="14sp" />
 
-                    <ProgressBar
-                        android:id="@+id/progressBar"
-                        style="?android:attr/progressBarStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/tvQuerying" />
-
-                    <TextView
-                        android:id="@+id/tvQuerying"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorAccent2"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:visibility="visible" />
-
                 </RelativeLayout>
 
             </FrameLayout>
@@ -443,9 +443,10 @@
 
         <TextView
             android:id="@+id/tvMore"
-            android:layout_width="50dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/customborder"
             android:backgroundTint="@color/colorAccent2"

@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
     ArrayList<ListingsModel> verticalList = new ArrayList<>();
+    ArrayList<String> listingName = new ArrayList<>();
     //ArrayList<ListReviewModel> reviewlList = new ArrayList<>();
     ArrayList<ListingsModel> featuredList = new ArrayList<>();
     ArrayList<ListingsModel> recentList = new ArrayList<>();
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements
     String date1, date2;
 
 
-    SearchView searchView;
+    AutoCompleteTextView searchView;
     public static LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
     private GoogleMap mMap;
@@ -519,6 +522,7 @@ public class MainActivity extends AppCompatActivity implements
         verticalList = new ArrayList<>();
         locationMatch = new ArrayList<>();
 
+
         verticalAdapter = new VerticalAdapter(verticalList, userName, userEmail, userImage, userId, MainActivity.this);
         featuredListAdapter = new FeaturedListAdapter(featuredList, MainActivity.this);
         recentListingsAdapter = new RecentListingsAdapter(recentList, MainActivity.this);
@@ -599,12 +603,16 @@ public class MainActivity extends AppCompatActivity implements
          */
 
         searchView = findViewById(R.id.search);
-        searchView.setIconifiedByDefault(false);
+        ArrayAdapter<String> searchViewAdapter = new ArrayAdapter<String>(getApplicationContext(),
+                android.R.layout.select_dialog_item, listingName);
+        searchView.setThreshold(1);
+        searchView.setAdapter(searchViewAdapter);
+        //searchView.setIconifiedByDefault(false);
 
         // Locate the EditText in listview_main.xml
         // editsearch = (SearchView) findViewById(R.id.search);
         // perform set on query text listener event
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+      /*  searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Map<String, String> search = new HashMap<>();
@@ -637,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                     return true;
             }
-        });
+        }); */
 
 
         if (!userActivityArray.isEmpty()) {
@@ -1024,7 +1032,7 @@ public class MainActivity extends AppCompatActivity implements
         //Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
 
         tvQuerying.setVisibility(View.VISIBLE);
-        tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU");
+        tvQuerying.setText("SEARCHING...");
         tvQuerying.setAnimation(imgAnimationBlink);
 
         mapLocations = new ArrayList<>();
@@ -1140,6 +1148,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail()));
                             verticalAdapter.notifyDataSetChanged();
+                            listingName.add(response.body().get(i).getTitle().getRaw());
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
                                 Date created = sdf.parse(response.body().get(i).getDateGmt());
