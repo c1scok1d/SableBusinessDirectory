@@ -616,26 +616,23 @@
         <RelativeLayout
             android:id="@+id/notLoggedInLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center">
 
             <TextView
                 android:id="@+id/tvNoReviews"
                 android:layout_width="wrap_content"
-                android:layout_height="250dp"
-                android:layout_below="@id/ivSpokesman"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
                 android:textAllCaps="true"
-                android:textColor="@color/colorAccent2" />
+                android:textColor="@color/colorAccent2"
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/ivSpokesman"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                app:srcCompat="@mipmap/hello_foreground" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tvNoReviews"
+                app:srcCompat="@mipmap/noreviews_foreground" />
         </RelativeLayout>
 
         <ProgressBar

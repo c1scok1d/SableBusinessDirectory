@@ -11,7 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,17 +23,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +49,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -146,13 +139,13 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude;
 
-    TextView tvMore, tvUserName, tvUserName2, tvWpUserId, tvCity, tvQuerying, tvCategories;
-    Button login_button2, btnAdd, btnShowListings;
+    TextView tvMore, tvUserName, tvUserName2, tvWpUserId, tvCity, tvQuerying, tvCategories, tvLoading;
+    Button login_button2, login_button3, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
-    LinearLayout loggedInLayout;
+    LinearLayout loggedInLayout, loadingLayout;
 
 
     VerticalAdapter verticalAdapter;
@@ -275,10 +268,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         setCache(getApplicationContext());
-        ACRA.init(getApplication(), builder);
+        //ACRA.init(getApplication(), builder);
 
         isRestore = savedInstanceState != null;
         setUpMap();
+        loadingLayout = findViewById(R.id.loadingLayout);
+        tvLoading = findViewById(R.id.tvLoading);
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
         sliderLayout = findViewById(R.id.sliderLayout);
@@ -294,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements
         searchList.setVisibility(View.GONE);
         loggedInLayout = findViewById(R.id.loggedInLayout);
         loggedInLayout.setVisibility(View.GONE);
-        noListingsAnimationLayout = findViewById(R.id.noListingsAnimationLayout);
+        noListingsAnimationLayout = findViewById(R.id.noListingsLayout);
         noListingsAnimationLayout.setVisibility(View.GONE);
        
 
@@ -307,6 +302,9 @@ public class MainActivity extends AppCompatActivity implements
 
         login_button2 = findViewById(R.id.login_button2);
         login_button2.setVisibility(View.GONE);
+
+        login_button3 = findViewById(R.id.login_button3);
+        login_button3.setVisibility(View.GONE);
 
         textSwitcher =  findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
@@ -502,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements
         };
 
         tvUserName = findViewById(R.id.tvUserName);
-        tvUserName2 = findViewById(R.id.tvUserName2);
+        //tvUserName2 = findViewById(R.id.tvUserName2);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
@@ -511,9 +509,9 @@ public class MainActivity extends AppCompatActivity implements
             BEGIN vertical Recycler View
          */
         verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
-        tvQuerying = findViewById(R.id.tvQuerying);
+//        tvQuerying = findViewById(R.id.tvQuerying);
         //tvQuerying.setAnimation(imgAnimationBlink);
-        tvQuerying.setVisibility(View.GONE);
+  //      tvQuerying.setVisibility(View.GONE);
         mLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         verticalRecyclerView.setLayoutManager(mLayoutManager);
         verticalList = new ArrayList<>();
@@ -590,8 +588,8 @@ public class MainActivity extends AppCompatActivity implements
                 //String item = parent.getItemAtPosition(pos).toString();
 
                 // create Toast with user selected value
-                Toast.makeText(MainActivity.this, "Loading reviews for: \t" + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
-
+                Toast.makeText(MainActivity.this, "Loading reviews for: " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.VISIBLE);
                     if(retrofit==null){
                         retrofit = new Retrofit.Builder()
                                 .baseUrl(baseURL)
@@ -643,6 +641,8 @@ public class MainActivity extends AppCompatActivity implements
                                             response.body().get(i).getLogo(),
                                             response.body().get(i).getContent().getRaw(),
                                             response.body().get(i).getFeaturedImage().getThumbnail())));
+
+                                    progressBar.setVisibility(View.GONE);
 
                                     Bundle locationReviewBundle = new Bundle();
                                     locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
@@ -819,7 +819,7 @@ public class MainActivity extends AppCompatActivity implements
                     firstName = parts[0];
                     lastName = parts[1];
                     tvUserName.setText(firstName);
-                    tvUserName2.setText(firstName);
+//                    tvUserName2.setText(firstName);
                     //    tvUserEmail.setText(object.getString("email"));
                     facebookImageBuilder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
@@ -859,6 +859,8 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLocationChanged(Location location) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
             Map<String, String> query = new HashMap<>();
             latitude = location.getLatitude();
             longitude = location.getLongitude();
@@ -1045,9 +1047,9 @@ public class MainActivity extends AppCompatActivity implements
        // Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
         //Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
 
-        tvQuerying.setVisibility(View.VISIBLE);
-        tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU");
-        tvQuerying.setAnimation(imgAnimationBlink);
+//        tvQuerying.setVisibility(View.VISIBLE);
+  //      tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU");
+    //    tvQuerying.setAnimation(imgAnimationBlink);
 
         mapLocations = new ArrayList<>();
         mapLocations.removeAll(mapLocations);
@@ -1069,6 +1071,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 if (response.isSuccessful()) {
+                    int count=0;
                     if (response.raw().cacheResponse() != null) {
                         Log.e("Network", "Listings response came from cache");
                     } else {
@@ -1260,8 +1263,9 @@ public class MainActivity extends AppCompatActivity implements
                     // Pass results to ListViewAdapter Class
                    // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
+                    count++;
                     searchList.setAdapter(searchAdapter);
-                    setMarkers(isRestore);
+                    setMarkers();
                    // dragView.setVisibility(View.VISIBLE);
 
                 } else {
@@ -1639,7 +1643,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
 
-    protected void setMarkers(boolean isRestore) {
+    protected void setMarkers() {
         startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
     }
 

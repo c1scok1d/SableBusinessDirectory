@@ -52,6 +52,8 @@ import com.sable.businesslistingapi.clustering.ClusterManager;
 import com.sable.businesslistingapi.clustering.view.DefaultClusterRenderer;
 import com.sable.businesslistingapi.model.Person;
 import com.sable.businesslistingapi.clustering.ClusterItem;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -282,10 +284,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     }
 
     @Override
-    protected void setMarkers(boolean isRestore) {
-        if (!isRestore) {
-            getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude),200)));
-        }
+    public void setMarkers() {
 
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.setRenderer(new PersonRenderer());
@@ -322,8 +321,9 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     private void showStuff() {
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         progressBar.setVisibility(View.GONE); //hide progressBar
-        tvQuerying.setAnimation(imgAnimationOut);
-        tvQuerying.setVisibility(View.GONE);
+        loadingLayout.setVisibility(View.GONE);
+   //     tvQuerying.setAnimation(imgAnimationOut);
+     //   tvQuerying.setVisibility(View.GONE);
         btnShowListings.setVisibility(View.VISIBLE);
         btnAdd.setVisibility(View.VISIBLE);
         tvMore.setVisibility(View.VISIBLE);
@@ -335,29 +335,37 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
     private void showOtherStuff() {
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        Button login_button3 = findViewById(R.id.login_button3);
+       // Button login_button3 = findViewById(R.id.login_button3);
 
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         progressBar.setVisibility(View.GONE); //hide progressBar
-        tvQuerying.setAnimation(imgAnimationOut);
-        tvQuerying.setVisibility(View.GONE);
+        loadingLayout.setAnimation(imgAnimationOut);
+        loadingLayout.setVisibility(View.GONE);
+//        tvQuerying.setAnimation(imgAnimationOut);
+//        tvQuerying.setVisibility(View.GONE);
         noListingsAnimationLayout.setVisibility(View.VISIBLE);
         //noListingsAnimationFLayout.setVisibility(View.VISIBLE);
         LinearLayout noListingsLayout = findViewById(R.id.noListingsLayout);
+        noListingsLayout.setAnimation(imgAnimationIn);
         noListingsLayout.setVisibility(View.VISIBLE);
         TextView noListingsTextView = findViewById(R.id.noListingsTextView);
         noListingsTextView.setVisibility(View.VISIBLE);
-        TextView noListingsTextView2 = findViewById(R.id.noListingsTextView2);
-        TextView tvHello2 = findViewById(R.id.tvHello2);
+        noListingsTextView.setTextSize(16);
+        noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any listings near you in our directory at this time.\n" +
+                "Tap the button below to use your Facebook account to add any black owned business you visit to our directory.");
+        //TextView noListingsTextView2 = findViewById(R.id.noListingsTextView2);
+        //TextView tvHello2 = findViewById(R.id.tvHello2);
         ImageView noListingsImageView = findViewById(R.id.noListingsImageView);
         noListingsImageView.setVisibility(View.VISIBLE);
         btnAdd.setVisibility(View.VISIBLE);
         if (isLoggedIn) {
-            login_button3.setVisibility(View.GONE);
-            noListingsTextView2.setText("If you are currently at a black owned business tap the 'ADD' button to add that business to our directory.\n");
+            noListingsTextView.setText("This is terrible!!!\nLooks like there aren't any listings near you at this time.  If you are currently at a black owned business tap the 'ADD' button to add that business to our directory.\n");
         } else {
+            btnAdd.setVisibility(View.GONE);
+            login_button3.setAnimation(imgAnimationIn);
             login_button3.setVisibility(View.VISIBLE);
-            tvHello2.setText("Oops!");
+            //tvHello2.setText("Oops!");
         }
     }
 }

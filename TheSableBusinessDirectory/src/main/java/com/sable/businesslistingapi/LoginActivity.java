@@ -68,9 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
        tvSecureMsg = findViewById(R.id.tvSecureMsg);
-       tvGreeting = findViewById(R.id.tvGreeting);
-       textView6 = findViewById(R.id.textView6);
-       textView7 = findViewById(R.id.textView7);
+       //tvGreeting = findViewById(R.id.tvGreeting);
+       //textView6 = findViewById(R.id.textView6);
+       //textView7 = findViewById(R.id.textView7);
        ivGreeter = findViewById(R.id.ivGreeter);
        ivLogo = findViewById(R.id.ivLogo);
        loginButton = findViewById(R.id.login_button);
@@ -118,10 +118,10 @@ public class LoginActivity extends AppCompatActivity {
                 R.anim.fade_in);
         tvSecureMsg.setVisibility(View.VISIBLE);
         tvSecureMsg.startAnimation(animFadeIn);
-        tvGreeting.setVisibility(View.VISIBLE);
-        tvGreeting.startAnimation(animFadeIn);
-        ivGreeter.setVisibility(View.VISIBLE);
-        ivGreeter.startAnimation(animFadeIn);
+//        tvGreeting.setVisibility(View.VISIBLE);
+        //tvGreeting.startAnimation(animFadeIn);
+        //ivGreeter.setVisibility(View.VISIBLE);
+        //ivGreeter.startAnimation(animFadeIn);
     }
 
     @Override
