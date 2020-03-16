@@ -369,8 +369,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         noListingsTextView.setAnimation(imgAnimationIn);
         noListingsTextView.setVisibility(View.VISIBLE);
         noListingsTextView.setTextSize(16);
-        noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any listings near you in our directory at this time.\n" +
-                "Tap the button below to use your Facebook account to add any black owned business you visit to our directory.");
+        noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any black owned businesses near you in our directory at this time.\n" +
+                "Tap the ADD button to add any black owned business you visit to our directory.");
         //TextView noListingsTextView2 = findViewById(R.id.noListingsTextView2);
         //TextView tvHello2 = findViewById(R.id.tvHello2);
         ImageView noListingsImageView = findViewById(R.id.noListingsImageView);
@@ -378,13 +378,5 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         noListingsImageView.setVisibility(View.VISIBLE);
         btnAdd.setAnimation(imgAnimationIn);
         btnAdd.setVisibility(View.VISIBLE);
-        if (isLoggedIn) {
-            noListingsTextView.setText("This is terrible!!!\nLooks like there aren't any listings near you at this time.  If you are currently at a black owned business tap the 'ADD' button to add that business to our directory.\n");
-        } else {
-            btnAdd.setVisibility(View.GONE);
-            login_button3.setAnimation(imgAnimationIn);
-            login_button3.setVisibility(View.VISIBLE);
-            //tvHello2.setText("Oops!");
-        }
     }
 }

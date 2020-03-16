@@ -174,31 +174,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <LinearLayout
-                    android:id="@+id/noListingsAnimationLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-                    <FrameLayout
-                        android:id="@+id/noListingsAnimationFLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/roundedcorner"
-                        android:backgroundTint="#BFFFFFFF"
-                        android:gravity="center_vertical">
-
-
-                    </FrameLayout>
-                    <!-- END NO LISTINGS ANIMATION -->
-                </LinearLayout>
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -260,9 +235,9 @@
                             android:id="@+id/noListingsTextView"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:gravity="start|top|center_vertical"
+                            android:gravity="start|center_vertical"
                             android:text="Oh no!\nLooks like there aren't any listings near you."
-                            android:textColor="@color/colorAccent"
+                            android:textColor="@color/colorAccent2"
                             android:textSize="18sp" />
 
                         <ImageView
