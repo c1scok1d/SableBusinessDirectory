@@ -1,6 +1,7 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements
     public static Double latitude, longitude;
 
     TextView tvMore, tvUserName, tvUserName2, tvWpUserId, tvCity, tvQuerying, tvCategories, tvLoading;
-    Button login_button2, login_button3, btnAdd, btnShowListings;
+    Button login_button2, login_button3, login_button4, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
@@ -305,6 +307,8 @@ public class MainActivity extends AppCompatActivity implements
 
         login_button3 = findViewById(R.id.login_button3);
         login_button3.setVisibility(View.GONE);
+        login_button4 = findViewById(R.id.login_button4);
+       // login_button4.setVisibility(View.GONE);
 
         textSwitcher =  findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
@@ -476,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onCancel() {
-                        // App code
+
                     }
 
                     @Override
@@ -491,10 +495,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (currentAccessToken != null) {
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
-                   // startActivity(getIntent());
-                    loggedInLayout.setVisibility(View.VISIBLE);
                 } else {
-
+                    restartActivity();
                 }
             }
         };
@@ -545,8 +547,8 @@ public class MainActivity extends AppCompatActivity implements
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvQuerying.setVisibility(View.VISIBLE);
-                tvQuerying.setText("LOADING 10 BLACK OWNED BUSINESSES NEAREST YOU");
+//                tvQuerying.setVisibility(View.VISIBLE);
+//                tvQuerying.setText("LOADING 10 BLACK OWNED BUSINESSES NEAREST YOU");
                 //btnShowListings.setVisibility(View.GONE);
                 startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
             }
@@ -578,6 +580,7 @@ public class MainActivity extends AppCompatActivity implements
          */
 
         searchView = findViewById(R.id.search);
+        searchView.setVisibility(View.GONE);
         ArrayAdapter<String> searchViewAdapter = new ArrayAdapter<String>(getApplicationContext(),
                 android.R.layout.select_dialog_item, listingName);
         searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -760,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements
         //This starts the access token tracking
         if (accessToken != null) {
             useLoginInformation(accessToken);
-            loggedInLayout.setVisibility(View.VISIBLE);
+        //    loggedInLayout.setVisibility(View.VISIBLE);
             // startActivity(getIntent());
             Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
         } else {
@@ -795,6 +798,12 @@ public class MainActivity extends AppCompatActivity implements
         accessTokenTracker.stopTracking();
         deleteCache(getApplicationContext());
         Log.e("onDestroy", "onDestroy Executed");
+    }
+
+    public void restartActivity(){
+        Intent mIntent = getIntent();
+        finish();
+        startActivity(mIntent);
     }
 
     public void useLoginInformation(final AccessToken accessToken) {

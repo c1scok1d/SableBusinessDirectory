@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -56,6 +58,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Demonstrates heavy customisation of the look of rendered clusters.
@@ -66,6 +69,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
 
     ClusterManager<Person> mClusterManager;
+    private Random random = new Random(1984);
     private Person clickedVenueMarker;
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
 
@@ -106,8 +110,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             Glide.with(getApplicationContext()).asBitmap()
                     .load(person.profilePhoto)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .fitCenter()
-                    .placeholder(R.drawable.screen_splash).dontAnimate().into(mImageView);
+                    .fitCenter().into(mImageView);
+                    //.placeholder(R.drawable.logo).dontAnimate().into(mImageView);
 
            // mImageView.setImageBitmap(person.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
@@ -116,31 +120,30 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
         @Override
         protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
-            // Draw multiple locations.
+            // Draw multiple people.
             // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
-            List<Drawable> profilePhotos;
-            profilePhotos = new ArrayList<>(Math.min(4, cluster.getSize()));
+            List<Drawable> profilePhotos = new ArrayList<>(Math.min(4, cluster.getSize()));
             int width = mDimension;
             int height = mDimension;
             Bitmap dummyBitmap = null;
-           // profilePhotos = null;
+            Drawable drawable;
+
             for (Person p : cluster.getItems()) {
                 // Draw 4 at most.
                 if (profilePhotos.size() == 4) break;
                 try {
-                    dummyBitmap =  Glide.with(getApplicationContext()).asBitmap()
+                    dummyBitmap = Glide.with(getApplicationContext())
+                            .asBitmap()
                             .load(p.profilePhoto)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .fitCenter()
-                            .placeholder(R.drawable.logo)
-                            .submit(70, 70).get();
+                            .into(70, 70).get();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Drawable drawable = new BitmapDrawable(getResources(), dummyBitmap);
+                drawable = new BitmapDrawable(getResources(), dummyBitmap);
                 drawable.setBounds(0, 0, width, height);
                 profilePhotos.add(drawable);
             }
+
             MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
             multiDrawable.setBounds(0, 0, width, height);
 
@@ -320,36 +323,50 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     }
     private void showStuff() {
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        // Button login_button3 = findViewById(R.id.login_button3);
+        if(isLoggedIn) {
+            loggedInLayout.setVisibility(View.VISIBLE);
+        }
         progressBar.setVisibility(View.GONE); //hide progressBar
+        loadingLayout.setAnimation(imgAnimationOut);
         loadingLayout.setVisibility(View.GONE);
-   //     tvQuerying.setAnimation(imgAnimationOut);
-     //   tvQuerying.setVisibility(View.GONE);
+        searchView.setAnimation(imgAnimationIn);
+        searchView.setVisibility(View.VISIBLE);
+        btnShowListings.setAnimation(imgAnimationIn);
         btnShowListings.setVisibility(View.VISIBLE);
+        btnAdd.setAnimation(imgAnimationIn);
         btnAdd.setVisibility(View.VISIBLE);
+        tvMore.setAnimation(imgAnimationIn);
         tvMore.setVisibility(View.VISIBLE);
-        //category_radioButton_scroller.setVisibility(View.VISIBLE);
-       // tvCategories.setVisibility(View.VISIBLE);
+        sliderLayout.setAnimation(imgAnimationIn);
         sliderLayout.setVisibility(View.VISIBLE);
+
 
     }
 
     private void showOtherStuff() {
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
        // Button login_button3 = findViewById(R.id.login_button3);
-
+        if(isLoggedIn) {
+            loggedInLayout.setVisibility(View.VISIBLE);
+        }
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         progressBar.setVisibility(View.GONE); //hide progressBar
         loadingLayout.setAnimation(imgAnimationOut);
         loadingLayout.setVisibility(View.GONE);
-//        tvQuerying.setAnimation(imgAnimationOut);
-//        tvQuerying.setVisibility(View.GONE);
+        searchView.setAnimation(imgAnimationIn);
+        searchView.setVisibility(View.VISIBLE);
+        noListingsAnimationLayout.setAnimation(imgAnimationIn);
         noListingsAnimationLayout.setVisibility(View.VISIBLE);
-        //noListingsAnimationFLayout.setVisibility(View.VISIBLE);
         LinearLayout noListingsLayout = findViewById(R.id.noListingsLayout);
         noListingsLayout.setAnimation(imgAnimationIn);
         noListingsLayout.setVisibility(View.VISIBLE);
         TextView noListingsTextView = findViewById(R.id.noListingsTextView);
+        noListingsTextView.setAnimation(imgAnimationIn);
         noListingsTextView.setVisibility(View.VISIBLE);
         noListingsTextView.setTextSize(16);
         noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any listings near you in our directory at this time.\n" +
@@ -357,7 +374,9 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         //TextView noListingsTextView2 = findViewById(R.id.noListingsTextView2);
         //TextView tvHello2 = findViewById(R.id.tvHello2);
         ImageView noListingsImageView = findViewById(R.id.noListingsImageView);
+        noListingsImageView.setAnimation(imgAnimationIn);
         noListingsImageView.setVisibility(View.VISIBLE);
+        btnAdd.setAnimation(imgAnimationIn);
         btnAdd.setVisibility(View.VISIBLE);
         if (isLoggedIn) {
             noListingsTextView.setText("This is terrible!!!\nLooks like there aren't any listings near you at this time.  If you are currently at a black owned business tap the 'ADD' button to add that business to our directory.\n");

@@ -547,7 +547,7 @@
                             android:layout_marginStart="3dp"
                             android:layout_marginEnd="3dp"
                             android:orientation="vertical"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             tools:visibility="visible">
 
                             <ImageButton
@@ -585,6 +585,7 @@
                         android:id="@+id/userGreetingLayout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -598,7 +599,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Hey"
-                                android:textColor="#e9774f" />
+                                android:textColor="@color/colorAccent" />
 
                             <TextView
                                 android:id="@+id/tvUserName"
@@ -606,7 +607,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
                                 android:textColor="@color/colorAccent"
-                                android:textStyle="bold"
                                 tools:text="username" />
 
                             <TextView
