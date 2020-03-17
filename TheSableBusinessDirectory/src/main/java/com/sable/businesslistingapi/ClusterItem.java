@@ -44,6 +44,11 @@ public interface ClusterItem {
     Float getRating();
 
     /**
+     * Featured for this marker.
+     */
+    String getFeaturedImage();
+
+    /**
      * Number of ratings for this marker.
      */
     Integer getRatingCount();

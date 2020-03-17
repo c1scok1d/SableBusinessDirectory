@@ -20,12 +20,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.sable.businesslistingapi.ClusterItem;
 
 public class Person implements ClusterItem, com.sable.businesslistingapi.clustering.ClusterItem {
-    public final String name, profilePhoto, content, city, state;
+    public final String name, profilePhoto, content, city, state, featuredImage;
     public final Float rating;
     public final LatLng position;
     public final Integer ratingCount;
 
-    public Person(LatLng position, String name, String pictureResource, String content, Float rating, Integer ratingCount, String city, String state) {
+    public Person(LatLng position, String name, String pictureResource, String content, Float rating, Integer ratingCount, String city, String state, String featuredImage) {
         this.name = name;
         profilePhoto = pictureResource;
         this.position = position;
@@ -34,6 +34,7 @@ public class Person implements ClusterItem, com.sable.businesslistingapi.cluster
         this.ratingCount = ratingCount;
         this.city = city;
         this.state = state;
+        this.featuredImage = featuredImage;
 
     }
 
@@ -54,6 +55,11 @@ public class Person implements ClusterItem, com.sable.businesslistingapi.cluster
 
     @Override
     public Float getRating() { return rating; }
+
+    @Override
+    public String getFeaturedImage() {
+        return featuredImage;
+    }
 
     @Override
     public Integer getRatingCount() { return ratingCount; }

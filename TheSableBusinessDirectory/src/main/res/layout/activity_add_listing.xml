@@ -134,10 +134,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="3dp"
+                            android:layout_marginEnd="2dp"
                             android:background="@android:color/transparent"
                             android:text="bldgno"
                             android:textColor="#4FC1E9"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <EditText
@@ -145,10 +146,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="5dp"
+                            android:layout_marginEnd="2dp"
                             android:background="@android:color/transparent"
                             android:text="street"
                             android:textColor="#4FC1E9"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <EditText
@@ -156,10 +158,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="3dp"
+                            android:layout_marginEnd="2dp"
                             android:background="@android:color/transparent"
                             android:text="city"
                             android:textColor="#4FC1E9"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <EditText
@@ -167,10 +170,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="3dp"
+                            android:layout_marginEnd="2dp"
                             android:background="@android:color/transparent"
                             android:text="state"
                             android:textColor="#4FC1E9"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <EditText
@@ -178,10 +182,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="3dp"
+                            android:layout_marginEnd="2dp"
                             android:background="@android:color/transparent"
                             android:text="zipcode"
                             android:textColor="#4FC1E9"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <EditText
@@ -189,9 +194,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="3dp"
+                            android:layout_marginEnd="2dp"
                             android:text="country"
                             android:textColor="@color/colorAccent"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:visibility="gone" />
 

@@ -25,6 +25,7 @@ public class MyItem implements ClusterItem {
     private String mSnippet;
     private Float mRating;
     private Integer mRatingCount;
+    private String mFeaturedImage;
 
 
     public MyItem(double lat, double lng) {
@@ -33,14 +34,16 @@ public class MyItem implements ClusterItem {
         mSnippet = null;
         mRatingCount = null;
         mRating = null;
+        mFeaturedImage = null;
     }
 
-    public MyItem(double lat, double lng, String title, String snippet, Float rating, Integer ratingCount) {
+    public MyItem(double lat, double lng, String title, String snippet, Float rating, Integer ratingCount, String featuredImage) {
         mPosition = new LatLng(lat, lng);
         mTitle = title;
         mSnippet = snippet;
         mRating = rating;
         mRatingCount = ratingCount;
+        mFeaturedImage = featuredImage;
     }
 
     @Override
@@ -56,6 +59,11 @@ public class MyItem implements ClusterItem {
 
     @Override
     public Float getRating() { return mRating; }
+
+    @Override
+    public String getFeaturedImage() {
+        return mFeaturedImage;
+    }
 
     @Override
     public Integer getRatingCount() { return mRatingCount; }
@@ -75,6 +83,14 @@ public class MyItem implements ClusterItem {
      */
     public void setSnippet(String snippet) {
         mSnippet = snippet;
+    }
+
+    /**
+     * Set the description of the marker
+     * @param featureadImage string to be set as snippet
+     */
+    public void setFeatureadImage(String featureadImage) {
+        mFeaturedImage = featureadImage;
     }
 
     /**

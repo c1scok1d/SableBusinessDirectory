@@ -38,6 +38,10 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -86,9 +90,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         private final ImageView mImageView;
         private final ImageView mClusterImageView;
         private final int mDimension;
-
-
-
 
         public PersonRenderer() {
             super(getApplicationContext(), getMap(), mClusterManager);
@@ -207,16 +208,19 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             @Override
             public View getInfoContents(Marker marker) {
                 // shows brief listing summary onclick
-       clickedVenueMarker = item;
-       LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-       final View view = inflater.inflate(R.layout.custom_info_window, null);
+                Picasso.Builder builder = new Picasso.Builder(getApplicationContext());
+                clickedVenueMarker = item;
+
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View view = inflater.inflate(R.layout.custom_info_window, null);
 
        TextView venueNameTextView = view.findViewById(R.id.venue_name);
        TextView venueCity = view.findViewById(R.id.venue_city);
        TextView venueState = view.findViewById(R.id.venue_state);
-              TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
+       TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
        TextView ratingCount = view.findViewById(R.id.tvRatingCount);
        TextView firstReview = view.findViewById(R.id.tvReviewFirst);
+       ImageView featuredImage = view.findViewById(R.id.featuredImage);
        firstReview.setVisibility(View.GONE);
        RatingBar ratingBar = view.findViewById(R.id.ratingBar3);
        venueNameTextView.setText(clickedVenueMarker.getTitle());
@@ -224,6 +228,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
        venueState.setText(String.valueOf(clickedVenueMarker.getState()));
        venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
        ratingBar.setRating(clickedVenueMarker.getRating());
+       String foo = clickedVenueMarker.getFeaturedImage();
+       builder.build().load(foo).into(featuredImage);
        if(clickedVenueMarker.getRating() == 0){
            firstReview.setText("BE THE FIRST TO REVIEW "+clickedVenueMarker.getTitle());
            firstReview.setVisibility(View.VISIBLE);

@@ -269,8 +269,8 @@ public class ListReviewActivity extends AppCompatActivity {
                 if (!isLoggedIn) {
                     Intent loginIntent = new Intent(v.getContext(),LoginActivity.class);
                     startActivity(loginIntent);
-
-                    Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    //Toast.makeText(getApplicationContext(),"User Not Logged In", Toast.LENGTH_SHORT).show();
                 } else {
 
                     AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -469,49 +469,6 @@ public class ListReviewActivity extends AppCompatActivity {
                         reviewRecyclerLayout.setVisibility(View.GONE);
                         notLoggedInLayout.setVisibility(View.VISIBLE);
                         tvNoReviews.setText("Currently there are no reviews for "+tvName.getText().toString()+".  Tap the rate button above to be the first to rate "+tvName.getText().toString()+".");
-                       // Intent LocationReview = new Intent(ListReviewActivity.this, ReviewActivity.class);
-
-                       // for (int i = 0; i < locationReview.size(); i++) {
-
-                           /* if ((locationReview.get(i).id == Integer.parseInt(tvId.getText().toString()))) {
-                                locationFoo.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                        locationReview.get(i).id,
-                                        locationReview.get(i).title,
-                                        locationReview.get(i).link,
-                                        locationReview.get(i).status,
-                                        locationReview.get(i).category,
-                                        locationReview.get(i).featured,
-                                        locationReview.get(i).featured_image,
-                                        locationReview.get(i).bldgno,
-                                        locationReview.get(i).street,
-                                        locationReview.get(i).city,
-                                        locationReview.get(i).state,
-                                        locationReview.get(i).country,
-                                        locationReview.get(i).zipcode,
-                                        locationReview.get(i).latitude,
-                                        locationReview.get(i).longitude,
-                                        locationReview.get(i).rating,
-                                        locationReview.get(i).ratingCount,
-                                        locationReview.get(i).phone,
-                                        locationReview.get(i).email,
-                                        locationReview.get(i).website,
-                                        locationReview.get(i).twitter,
-                                        locationReview.get(i).facebook,
-                                        locationReview.get(i).video,
-                                        locationReview.get(i).hours,
-                                        locationReview.get(i).isOpen,
-                                        locationReview.get(i).logo,
-                                        locationReview.get(i).content,
-                                        locationReview.get(i).featured_image)));
-
-
-                                Bundle locationReviewBundle = new Bundle();
-                                locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationFoo);
-                                LocationReview.putExtra("locationReview", locationFoo);
-                                startActivity(LocationReview);
-                                break; */
-                          //  }
-                      //  }
                     } else { //if listing has reviews, list each review
 
                         for (int i = 0; i < response.body().size(); i++) {

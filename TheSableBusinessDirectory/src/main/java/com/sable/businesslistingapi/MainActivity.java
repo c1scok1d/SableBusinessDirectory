@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements
         //noListingsAnimationLayout = findViewById(R.id.noListingsLayout);
         //noListingsAnimationLayout.setVisibility(View.GONE);
         ivLoading = findViewById(R.id.ivLoading);
-        ivLoading.setAnimation(imgAnimationIn);
+        ivLoading.setVisibility(View.GONE);
         noListingsImageView = findViewById(R.id.noListingsImageView);
         noListingsImageView.setVisibility(View.GONE);
         noListingsTextView = findViewById(R.id.noListingsTextView);
@@ -575,6 +575,7 @@ public class MainActivity extends AppCompatActivity implements
             if (!isLoggedIn) {
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                 //goto login activity get username and email via facebook create account, return here to check again and proceed
 
@@ -598,15 +599,14 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View arg1, int pos,
                                     long id) {
-                //String item = parent.getItemAtPosition(pos).toString();
+                Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
-                // create Toast with user selected value
-                //Toast.makeText(MainActivity.this, "Loading reviews for: " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.VISIBLE);
-                loadingLayout.setAnimation(imgAnimationIn);
                 loadingLayout.setVisibility(View.VISIBLE);
+                loadingLayout.setAnimation(imgAnimationIn);
                 ivLoading.setImageResource(R.mipmap.online_reviews_foreground);
                 tvLoading.setText("Loading reviews for " + parent.getItemAtPosition(pos).toString());
+
                     if(retrofit==null){
                         retrofit = new Retrofit.Builder()
                                 .baseUrl(baseURL)
@@ -659,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements
                                             response.body().get(i).getContent().getRaw(),
                                             response.body().get(i).getFeaturedImage().getThumbnail())));
 
-                                    progressBar.setVisibility(View.GONE);
+                                    //progressBar.setVisibility(View.GONE);
 
                                     Bundle locationReviewBundle = new Bundle();
                                     locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
@@ -898,8 +898,11 @@ public class MainActivity extends AppCompatActivity implements
         public void onLocationChanged(Location location) {
             Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
             Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-            tvLoading.setAnimation(imgAnimationIn);
+
+            ivLoading.setVisibility(View.VISIBLE);
+            ivLoading.setAnimation(imgAnimationIn);
             tvLoading.setVisibility(View.VISIBLE);
+            tvLoading.setAnimation(imgAnimationIn);
             tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
             Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();
@@ -1301,7 +1304,8 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getRating(),
                                     response.body().get(i).getRatingCount(),
                                     response.body().get(i).getCity(),
-                                    response.body().get(i).getRegion()));
+                                    response.body().get(i).getRegion(),
+                                    response.body().get(i).getImages().get(0).getSrc()));
 
                         }
                     }
