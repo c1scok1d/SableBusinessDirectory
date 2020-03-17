@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements
         setUpMap();
         loadingLayout = findViewById(R.id.loadingLayout);
         tvLoading = findViewById(R.id.tvLoading);
-        tvLoading.setText("DEFAULT TEXT ");
+        tvLoading.setVisibility(View.GONE);
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
         sliderLayout = findViewById(R.id.sliderLayout);
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(16);
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
-            textView.setGravity(Gravity.CENTER);
+            //textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(16);
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-            textView.setGravity(Gravity.CENTER);
+            //textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(16);
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
-            textView.setGravity(Gravity.CENTER);
+            //textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -601,8 +601,12 @@ public class MainActivity extends AppCompatActivity implements
                 //String item = parent.getItemAtPosition(pos).toString();
 
                 // create Toast with user selected value
-                Toast.makeText(MainActivity.this, "Loading reviews for: " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "Loading reviews for: " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.VISIBLE);
+                loadingLayout.setAnimation(imgAnimationIn);
+                loadingLayout.setVisibility(View.VISIBLE);
+                ivLoading.setImageResource(R.mipmap.online_reviews_foreground);
+                tvLoading.setText("Loading reviews for " + parent.getItemAtPosition(pos).toString());
                     if(retrofit==null){
                         retrofit = new Retrofit.Builder()
                                 .baseUrl(baseURL)
@@ -764,9 +768,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-        tvLoading.setAnimation(imgAnimationIn);
-        tvLoading.setText("Welcome to The Sable Business Directory");
         Log.e("onStart", "onStart Executed");
 
         /**
@@ -803,8 +804,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-        tvLoading.setAnimation(imgAnimationIn);
-        tvLoading.setText("onSTOP");
+       // tvLoading.setAnimation(imgAnimationIn);
+        //tvLoading.setText("onSTOP");
         Log.e("onStop", "onStop Executed");
         imageSwitchHandler.removeCallbacks(runnableCode);
         super.onStop();
@@ -898,6 +899,7 @@ public class MainActivity extends AppCompatActivity implements
             Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
             Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
             tvLoading.setAnimation(imgAnimationIn);
+            tvLoading.setVisibility(View.VISIBLE);
             tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
             Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();
@@ -1113,8 +1115,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (response.isSuccessful()) {
                     Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
                     Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-                    tvLoading.setAnimation(imgAnimationIn);
-                    tvLoading.setText("Loading nearby listings");
+                   // tvLoading.setAnimation(imgAnimationIn);
+                    //tvLoading.setText("Loading nearby listings");
                     if (response.raw().cacheResponse() != null) {
                         Log.e("Network", "Listings response came from cache");
                     } else {
@@ -1307,8 +1309,8 @@ public class MainActivity extends AppCompatActivity implements
                    // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
                     searchList.setAdapter(searchAdapter);
-                    tvLoading.setAnimation(imgAnimationIn);
-                    tvLoading.setText("...loading the map now.");
+                   // tvLoading.setAnimation(imgAnimationIn);
+                   // tvLoading.setText("...loading the map now.");
                     setMarkers();
                 } else {
                     // do some stuff
@@ -1358,8 +1360,8 @@ public class MainActivity extends AppCompatActivity implements
                     Log.e("Network", "Reviews response came from server");
                 }
                 if (response.isSuccessful() && response.body().size() > 0) {
-                    tvLoading.setAnimation(imgAnimationIn);
-                    tvLoading.setText("Loading recent reviews...");
+                   // tvLoading.setAnimation(imgAnimationIn);
+                   // tvLoading.setText("Loading recent reviews...");
 
                     for (int i = 0; i < response.body().size(); i++) {
                         /**
@@ -1696,8 +1698,8 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, MarkerClusteringActivity.class);
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-        tvLoading.setAnimation(imgAnimationIn);
-        tvLoading.setText("Setting up map makers...");
+        //tvLoading.setAnimation(imgAnimationIn);
+        //tvLoading.setText("Loading the map...");
         Log.e("setMarkersCall", "setMarkersCall Ended");
 
 

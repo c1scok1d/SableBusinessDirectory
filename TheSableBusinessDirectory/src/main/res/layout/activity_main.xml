@@ -224,31 +224,33 @@
                     <RelativeLayout
                         android:id="@+id/noListingsLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="400dp"
+                        android:layout_height="425dp"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="#80ffffff">
+                        android:layout_marginBottom="10dp">
 
                         <ImageView
                             android:id="@+id/noListingsImageView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_width="300dp"
+                            android:layout_height="375dp"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="false"
                             app:srcCompat="@mipmap/sorry_foreground" />
 
                         <TextView
                             android:id="@+id/noListingsTextView"
-                            android:layout_width="250dp"
+                            android:layout_width="240dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="false"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="false"
                             android:layout_centerVertical="true"
+                            android:background="@drawable/whitebackgroud_with_rounded_corners"
                             android:gravity="start"
+                            android:padding="3dp"
                             android:text="Oh no!\nLooks like there aren't any listings near you."
                             android:textColor="@color/colorAccent2"
                             android:textSize="18sp"
@@ -268,30 +270,35 @@
                     <RelativeLayout
                         android:id="@+id/loadingLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="425dp"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="#80ffffff">
+                        android:layout_marginBottom="10dp">
 
                         <ImageView
                             android:id="@+id/ivLoading"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentBottom="false"
+                            android:layout_width="300dp"
+                            android:layout_height="375dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="false"
+                            android:layout_alignParentBottom="true"
                             sothree:srcCompat="@mipmap/hello_foreground" />
 
                         <TextView
                             android:id="@+id/tvLoading"
-                            android:layout_width="match_parent"
-                            android:layout_height="125dp"
-                            android:layout_alignParentBottom="true"
+                            android:layout_width="240dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="false"
+                            android:layout_centerVertical="false"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
                             android:layout_marginBottom="10dp"
                             android:background="@drawable/whitebackgroud_with_rounded_corners"
+                            android:padding="3dp"
                             android:text="loadingText"
                             android:textColor="@color/colorAccent2"
                             android:textSize="18sp" />
@@ -461,17 +468,14 @@
                     android:id="@+id/aboutUsAnimationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginBottom="10dp"
                     android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
                     android:orientation="vertical">
 
                     <FrameLayout
                         android:id="@+id/aboutUsAnimationFLayout"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:layout_gravity="center_vertical"
                         android:background="@drawable/roundedcorner"
                         android:backgroundTint="@color/white"
                         android:gravity="center_vertical">
@@ -489,14 +493,13 @@
                             android:id="@+id/textSwitcherLayout"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="start|center_vertical"
+                            android:layout_gravity="start"
                             android:orientation="vertical">
 
                             <TextSwitcher
                                 android:id="@+id/textSwitcher"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_gravity="center_vertical"
                                 android:padding="10dp" />
                         </LinearLayout>
 
@@ -504,15 +507,13 @@
                             android:id="@+id/textSwitcher2Layout"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="start|center_vertical"
+                            android:gravity="start"
                             android:orientation="vertical">
 
                             <TextSwitcher
                                 android:id="@+id/textSwitcher2"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_gravity="center_vertical"
                                 android:padding="10dp" />
 
                         </LinearLayout>
@@ -521,14 +522,13 @@
                             android:id="@+id/textSwitcher3Layout"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:layout_gravity="start|center_vertical"
+                            android:layout_gravity="start"
                             android:orientation="vertical">
 
                             <TextSwitcher
                                 android:id="@+id/textSwitcher3"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_gravity="center_vertical"
                                 android:padding="10dp" />
 
                         </LinearLayout>

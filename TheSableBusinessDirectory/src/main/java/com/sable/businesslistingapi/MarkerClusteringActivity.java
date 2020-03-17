@@ -360,25 +360,18 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         Animation imgZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_out);
         Animation imgZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
+
         progressBar.setVisibility(View.GONE); //hide progressBar
         loadingLayout.setAnimation(imgAnimationOut);
         loadingLayout.setVisibility(View.GONE);
         searchView.setAnimation(imgAnimationIn);
         searchView.setVisibility(View.VISIBLE);
-       // noListingsAnimationLayout.setAnimation(imgAnimationIn);
-        //noListingsAnimationLayout.setVisibility(View.VISIBLE);
-        //noListingsImageView = findViewById(R.id.noListingsImageView);
         noListingsImageView.setAnimation(imgAnimationIn);
         noListingsImageView.setVisibility(View.VISIBLE);
-       // noListingsImageView.startAnimation(imgZoomOut);
-        //RelativeLayout noListingsLayout = findViewById(R.id.noListingsLayout);
-        //noListingsLayout.setAnimation(imgAnimationIn);
-        //noListingsLayout.setVisibility(View.VISIBLE);
-        //TextView noListingsTextView = findViewById(R.id.noListingsTextView);
-        noListingsTextView.setVisibility(View.VISIBLE);
         noListingsTextView.setAnimation(imgAnimationIn);
-        noListingsTextView.setTextSize(16);
-        noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any black owned businesses near you in our directory at this time.\n" +
+        noListingsTextView.setVisibility(View.VISIBLE);
+        //noListingsTextView.setTextSize(16);
+        noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
                 "Tap the ADD button to add any black owned business you visit to our directory.");
         btnAdd.setAnimation(imgAnimationIn);
         btnAdd.setVisibility(View.VISIBLE);
