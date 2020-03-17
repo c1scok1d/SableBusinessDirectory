@@ -286,6 +286,14 @@
                             android:layout_alignParentBottom="true"
                             sothree:srcCompat="@mipmap/hello_foreground" />
 
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            sothree:srcCompat="@mipmap/sable_logo_black_foreground" />
+
                         <TextView
                             android:id="@+id/tvLoading"
                             android:layout_width="240dp"

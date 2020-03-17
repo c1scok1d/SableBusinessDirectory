@@ -62,6 +62,7 @@ import com.sable.businesslistingapi.model.Person;
 import com.sable.businesslistingapi.clustering.ClusterItem;
 import com.squareup.picasso.Picasso;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -110,13 +111,14 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         protected void onBeforeClusterItemRendered(Person person, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
-            Glide.with(getApplicationContext()).asBitmap()
+            Picasso.get().load(person.profilePhoto).into(mImageView);
+           /*  Glide.with(getApplicationContext()).asBitmap()
                     .load(person.profilePhoto)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter().into(mImageView);
                     //.placeholder(R.drawable.logo).dontAnimate().into(mImageView);
 
-           // mImageView.setImageBitmap(person.profilePhoto);
+           // mImageView.setImageBitmap(person.profilePhoto); */
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
         }
@@ -134,6 +136,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             for (Person p : cluster.getItems()) {
                 // Draw 4 at most.
                 if (profilePhotos.size() == 4) break;
+                //dummyBitmap = Picasso.get().load(p.profilePhoto);
+
                 try {
                     dummyBitmap = Glide.with(getApplicationContext())
                             .asBitmap()
@@ -146,6 +150,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                 drawable.setBounds(0, 0, width, height);
                 profilePhotos.add(drawable);
             }
+
+
 
             MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
             multiDrawable.setBounds(0, 0, width, height);
@@ -167,9 +173,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         // Show a toast with some info when the cluster is clicked.
         String firstName = cluster.getItems().iterator().next().name;
         Toast.makeText(this, cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
-
-        // Zoom in the cluster. Need to create LatLngBounds and including all the cluster items
-        // inside of bounds, then animate to center of the bounds.
 
         // Create the builder to collect all essential cluster items for the bounds.
         LatLngBounds.Builder builder = LatLngBounds.builder();
@@ -208,48 +211,48 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             @Override
             public View getInfoContents(Marker marker) {
                 // shows brief listing summary onclick
-                Picasso.Builder builder = new Picasso.Builder(getApplicationContext());
                 clickedVenueMarker = item;
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View view = inflater.inflate(R.layout.custom_info_window, null);
 
-       TextView venueNameTextView = view.findViewById(R.id.venue_name);
-       TextView venueCity = view.findViewById(R.id.venue_city);
-       TextView venueState = view.findViewById(R.id.venue_state);
-       TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
-       TextView ratingCount = view.findViewById(R.id.tvRatingCount);
-       TextView firstReview = view.findViewById(R.id.tvReviewFirst);
-       ImageView featuredImage = view.findViewById(R.id.featuredImage);
-       firstReview.setVisibility(View.GONE);
-       RatingBar ratingBar = view.findViewById(R.id.ratingBar3);
-       venueNameTextView.setText(clickedVenueMarker.getTitle());
-       venueCity.setText(String.valueOf(clickedVenueMarker.getCity()));
-       venueState.setText(String.valueOf(clickedVenueMarker.getState()));
-       venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
-       ratingBar.setRating(clickedVenueMarker.getRating());
-       String foo = clickedVenueMarker.getFeaturedImage();
-       builder.build().load(foo).into(featuredImage);
-       if(clickedVenueMarker.getRating() == 0){
-           firstReview.setText("BE THE FIRST TO REVIEW "+clickedVenueMarker.getTitle());
-           firstReview.setVisibility(View.VISIBLE);
-       }
-       ratingCount.setText(String.valueOf(clickedVenueMarker.getRatingCount()));
+                TextView venueNameTextView = view.findViewById(R.id.venue_name);
+                venueNameTextView.setText(clickedVenueMarker.getTitle());
+
+                TextView venueCity = view.findViewById(R.id.venue_city);
+                venueCity.setText(String.valueOf(clickedVenueMarker.getCity()));
+
+                TextView venueState = view.findViewById(R.id.venue_state);
+                venueState.setText(String.valueOf(clickedVenueMarker.getState()));
+
+                TextView venueSnippetTextView = view.findViewById(R.id.venue_snippet);
+                venueSnippetTextView.setText(clickedVenueMarker.getSnippet());
+
+                TextView ratingCount = view.findViewById(R.id.tvRatingCount);
+                ratingCount.setText(String.valueOf(clickedVenueMarker.getRatingCount()));
+
+                TextView firstReview = view.findViewById(R.id.tvReviewFirst);
+                firstReview.setVisibility(View.GONE);
+
+                RatingBar ratingBar = view.findViewById(R.id.ratingBar3);
+                ratingBar.setRating(clickedVenueMarker.getRating());
+
+                ImageView featuredImage = view.findViewById(R.id.featuredImage);
+                String foo = clickedVenueMarker.getFeaturedImage();
+                Picasso.get().load(clickedVenueMarker.getFeaturedImage()).into(featuredImage);
+
+                if(clickedVenueMarker.getRating() == 0){
+                    firstReview.setText("BE THE FIRST TO REVIEW "+clickedVenueMarker.getTitle());
+                    firstReview.setVisibility(View.VISIBLE);
+                }
                 return view;
             }
         });
-
-//       radioGroup.setVisibility(View.GONE);
-       //category_radioButton_scroller.setVisibility(View.GONE);
-
-
-       return false;
+        return false;
     }
 
     @Override
     public void onClusterItemInfoWindowClick(Person item) {
-        // Does nothing, but you could go into the user's profile page, for example.
-        //Toast.makeText(this, item + " (including " + item + ")", Toast.LENGTH_SHORT).show();
        for(int i = 0; i< verticalList.size(); i++) {
             if (item.name.equals(verticalList.get(i).title)){
                 locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,

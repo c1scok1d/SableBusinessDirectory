@@ -187,7 +187,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
         tvName.setText(locationReview.get(0).title);
         tvCategory.setText(locationReview.get(0).category);
-        builder.build().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
+        Picasso.get().load(locationReview.get(0).featured_image).into(ivFeaturedImage);
 //        tvBldgno.setText(locationReview.get(0).bldgno);
         tvStreet.setText(locationReview.get(0).street);
         tvCity.setText(locationReview.get(0).city);
