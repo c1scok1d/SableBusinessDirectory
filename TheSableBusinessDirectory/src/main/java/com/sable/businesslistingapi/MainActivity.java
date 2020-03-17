@@ -568,10 +568,10 @@ public class MainActivity extends AppCompatActivity implements
          *  location add button
          */
 
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+
 
         btnAdd.setOnClickListener(view -> {
-
+            boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
             if (!isLoggedIn) {
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
@@ -903,7 +903,12 @@ public class MainActivity extends AppCompatActivity implements
             ivLoading.setAnimation(imgAnimationIn);
             tvLoading.setVisibility(View.VISIBLE);
             tvLoading.setAnimation(imgAnimationIn);
-            tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
+            boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+            if(isLoggedIn) {
+                tvLoading.setText("Thanks for your patience " + firstName + "!\nWe are searching our directory for black owned businesses near you.");
+            } else {
+                tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
+            }
             Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();
             longitude = location.getLongitude();

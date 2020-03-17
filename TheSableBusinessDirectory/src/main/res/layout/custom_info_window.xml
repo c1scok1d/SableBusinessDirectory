@@ -73,14 +73,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <RatingBar
                 android:id="@+id/ratingBar3"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
             <TextView
                 android:id="@+id/tvRatingCount"

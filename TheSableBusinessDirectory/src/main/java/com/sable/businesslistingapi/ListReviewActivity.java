@@ -53,7 +53,7 @@ public class ListReviewActivity extends AppCompatActivity {
 
     ImageButton btnCall, btnDirections, btnEmail, btnTwitter, btnFacebook, btnReview;
     TextView tvFeatured, tvStatus, tvState, tvNoReviews,
-            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvWebsite, /* tvEmail, tvTwitter, tvFacebook, */tvBldNo,
+            tvStreet, tvCity, tvZip, tvCountry, tvRating, tvId, tvWebsite, tvImages, tvOurReviews, tvBldNo,
             tvVideo, tvHours, tvIsOpen, tvLink, tvContent, tvPhone, tvBldgno, tvLatitude, tvLongitude, tvRatingCount, tvCategory, tvName, tvFirstRate, tvDistance;
     ImageView ivFeaturedImage;
     RatingBar simpleRatingBar;
@@ -95,8 +95,10 @@ public class ListReviewActivity extends AppCompatActivity {
         reviewRecyclerLayout = findViewById(R.id.reviewRecyclerLayout);
         notLoggedInLayout = findViewById(R.id.notLoggedInLayout);
         notLoggedInLayout.setVisibility(View.GONE);
-
-
+        tvImages = findViewById(R.id.tvImages);
+        tvImages.setVisibility(View.GONE);
+        tvOurReviews = findViewById(R.id.tvOurReviews);
+        tvOurReviews.setVisibility(View.GONE);
 
         verticalList = new ArrayList<>();
 
@@ -494,6 +496,8 @@ public class ListReviewActivity extends AppCompatActivity {
                                     response.body().get(i).getRating().getLabel(),
                                     response.body().get(i).getRating().getRating(),
                                     response.body().get(i).getDateGmt()));
+                            tvOurReviews.setVisibility(View.VISIBLE);
+
                         }
                         verticalReviewAdapter.notifyDataSetChanged();
 
@@ -507,10 +511,9 @@ public class ListReviewActivity extends AppCompatActivity {
                                     horizontalList.add(response.body().get(i).getImages().getRendered().get(n).getSrc());
                                 }
                                 horizontalImageAdapter.notifyDataSetChanged();
+                                tvImages.setVisibility(View.VISIBLE);
                             }
                         }
-                        // imagesAdapter.notifyDataSetChanged();
-                      //  horizontalRecyclerView.scrollToPosition(horizontalList.size() - 1);
                     }
                 } else {
                     Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");

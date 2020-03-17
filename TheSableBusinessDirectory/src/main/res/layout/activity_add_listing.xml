@@ -288,7 +288,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="3dp"
-                                    android:hint="listing@thesablebusinessdirectory.com"
+                                    android:hint="email@email.com"
                                     android:inputType="textEmailAddress" />
                             </LinearLayout>
 
@@ -428,7 +428,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="add a photo"
+                android:text="add a feature photo to your listing"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent"
                 android:textStyle="bold" />

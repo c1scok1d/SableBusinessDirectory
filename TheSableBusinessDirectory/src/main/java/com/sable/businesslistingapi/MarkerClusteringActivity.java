@@ -81,6 +81,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
 
 
+
     /**
      * Draws profile photos inside markers (using IconGenerator).
      * When there are multiple locations in the cluster, draw multiple photos (using MultiDrawable).
@@ -361,7 +362,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     private void showOtherStuff() {
         Log.e("showOtherStuff", " Executing showOtherStuff " );
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-       // Button login_button3 = findViewById(R.id.login_button3);
         if(isLoggedIn) {
             loggedInLayout.setVisibility(View.VISIBLE);
         }
@@ -380,8 +380,15 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         noListingsTextView.setAnimation(imgAnimationIn);
         noListingsTextView.setVisibility(View.VISIBLE);
         //noListingsTextView.setTextSize(16);
-        noListingsTextView.setText("This is Terrible!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
-                "Tap the ADD button to add any black owned business you visit to our directory.");
+
+        if(isLoggedIn) {
+            noListingsTextView.setText("This is terrible " + firstName +"!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
+                    "Tap the ADD button to add any black owned business you visit to our directory.");
+        } else {
+            noListingsTextView.setText("This is terrible!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
+                    "Tap the ADD button to add any black owned business you visit to our directory.");
+        }
+
         btnAdd.setAnimation(imgAnimationIn);
         btnAdd.setVisibility(View.VISIBLE);
         Log.e("showOtherStuff", " Ending showOtherStuff " );

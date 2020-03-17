@@ -412,41 +412,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/reviewBtnLayout"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@drawable/customborder"
-                        android:orientation="vertical">
-
-                        <ImageButton
-                            android:id="@+id/btnReview"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="@string/click_to_call"
-                            app:srcCompat="@drawable/rate"
-                            tools:srcCompat="@drawable/rate" />
-
-                        <TextView
-                            android:id="@+id/tvReview"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal|top|center_vertical"
-                            android:text=" rate"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
                         android:id="@+id/callBtnLayout"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
@@ -614,8 +579,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text=","
-                                android:textColor="#e9774f"
+                                android:text="!"
+                                android:textColor="@color/colorAccent"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -772,14 +737,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
-                    android:text="Tap here to add images to your review."
+                    android:text="Add some photos to your review"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/gallery_button"
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginStart="3dp"
@@ -787,7 +753,6 @@
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/customborder"
-                    android:backgroundTint="@color/colorAccent"
                     app:srcCompat="@android:drawable/ic_menu_gallery" />
 
                 <LinearLayout
