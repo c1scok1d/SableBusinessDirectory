@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -141,13 +142,14 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude;
 
-    TextView tvMore, tvUserName, tvUserName2, tvWpUserId, tvCity, tvQuerying, tvCategories, tvLoading;
+    TextView tvMore, tvUserName, tvWpUserId, tvCity, tvCategories, tvLoading, noListingsTextView;
     Button login_button2, login_button3, login_button4, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
-    LinearLayout loggedInLayout, loadingLayout;
+    LinearLayout loggedInLayout;
+    RelativeLayout loadingLayout,  noListingsAnimationLayout;
 
 
     VerticalAdapter verticalAdapter;
@@ -175,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
     //ArrayList<SearchListItems> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
     RadioGroup radioGroup;
-    ImageView ivUserImage, spokesperson;
+    ImageView ivUserImage, spokesperson, ivLoading, noListingsImageView;
     //HorizontalScrollView category_radioButton_scroller;
 
     private static final int FRAME_TIME_MS = 8000;
@@ -252,14 +254,15 @@ public class MainActivity extends AppCompatActivity implements
     };
 
     ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
-    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, dragView,
-            noListingsAnimationLayout, sliderLayout;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout,  sliderLayout;
     private Handler imageSwitchHandler;
 
     ListView searchList;
     SearchListViewAdapter searchAdapter;
 
    public static Context context;
+
+
 
 
     /**
@@ -271,11 +274,14 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(getLayoutId());
         setCache(getApplicationContext());
         //ACRA.init(getApplication(), builder);
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
         isRestore = savedInstanceState != null;
         setUpMap();
         loadingLayout = findViewById(R.id.loadingLayout);
         tvLoading = findViewById(R.id.tvLoading);
+        tvLoading.setText("DEFAULT TEXT ");
         tvMore = findViewById(R.id.tvMore);
         tvMore.setVisibility(View.GONE);
         sliderLayout = findViewById(R.id.sliderLayout);
@@ -285,15 +291,19 @@ public class MainActivity extends AppCompatActivity implements
         tvCategories.setVisibility(View.GONE);
         //category_radioButton_scroller = findViewById(R.id.category_radioButton_scroller);
         //category_radioButton_scroller.setVisibility(View.GONE);
-        Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
-        Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
         searchList = findViewById(R.id.listview);
         searchList.setVisibility(View.GONE);
         loggedInLayout = findViewById(R.id.loggedInLayout);
         loggedInLayout.setVisibility(View.GONE);
-        noListingsAnimationLayout = findViewById(R.id.noListingsLayout);
-        noListingsAnimationLayout.setVisibility(View.GONE);
-       
+        //noListingsAnimationLayout = findViewById(R.id.noListingsLayout);
+        //noListingsAnimationLayout.setVisibility(View.GONE);
+        ivLoading = findViewById(R.id.ivLoading);
+        ivLoading.setAnimation(imgAnimationIn);
+        noListingsImageView = findViewById(R.id.noListingsImageView);
+        noListingsImageView.setVisibility(View.GONE);
+        noListingsTextView = findViewById(R.id.noListingsTextView);
+        noListingsTextView.setVisibility(View.GONE);
+
 
         /**
          * ABOUT US
@@ -670,17 +680,6 @@ public class MainActivity extends AppCompatActivity implements
             userActivityArray = this.getIntent().getExtras().getStringArrayList("userActivityArray");
         }
 
-        /**
-         *  location manager to get current location
-         */
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            checkPermissions();
-            return;
-        }
-
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
-                400, LocationListener);
 
         /***
          *  BEGIN SLIDE UP
@@ -707,7 +706,11 @@ public class MainActivity extends AppCompatActivity implements
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-    } //END ON CREATE
+
+        Log.e("onCreate ", " END onCreate " );
+    }
+
+        //END ON CREATE
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
     }
@@ -760,6 +763,24 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onStart() {
         super.onStart();
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        tvLoading.setAnimation(imgAnimationIn);
+        tvLoading.setText("Welcome to The Sable Business Directory");
+        Log.e("onStart", "onStart Executed");
+
+        /**
+         *  location manager to get current location
+         */
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            checkPermissions();
+            return;
+        }
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
+                400, LocationListener);
+
         //This starts the access token tracking
         if (accessToken != null) {
             useLoginInformation(accessToken);
@@ -774,30 +795,37 @@ public class MainActivity extends AppCompatActivity implements
             userNameLayout.setVisibility(View.GONE);
         }
         accessTokenTracker.startTracking();
-        Log.e("onStart", "onStart Executed");
+        Log.e("onStart", "onStart Ended");
         //throw new RuntimeException();
     }
 
     @Override
     protected void onStop() {
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        tvLoading.setAnimation(imgAnimationIn);
+        tvLoading.setText("onSTOP");
+        Log.e("onStop", "onStop Executed");
         imageSwitchHandler.removeCallbacks(runnableCode);
         super.onStop();
-        Log.e("onStop", "onStop Executed");
+        Log.e("onStop", "onStop Ended");
     }
 
-   /* public void onResume() {
+    public void onResume() {
         super.onResume();
+        Log.e("onResume", "onResume Executed");
         //This starts the access token tracking
         accessTokenTracker.startTracking();
-        Log.e("onResume", "onResume Executed");
-    } */
+        Log.e("onResume", "onResume Ended");
+    }
 
     public void onDestroy() {
         super.onDestroy();
+        Log.e("onDestroy", "onDestroy Executed");
         // We stop the tracking before destroying the activity
         accessTokenTracker.stopTracking();
         deleteCache(getApplicationContext());
-        Log.e("onDestroy", "onDestroy Executed");
+        Log.e("onDestroy", "onDestroy Ended");
     }
 
     public void restartActivity(){
@@ -860,7 +888,6 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Location listener to get device current lat/lng
      */
-
     LocationListener LocationListener = new LocationListener() {
 
         /**
@@ -868,6 +895,11 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLocationChanged(Location location) {
+            Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+            Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+            tvLoading.setAnimation(imgAnimationIn);
+            tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
+            Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             Map<String, String> query = new HashMap<>();
@@ -884,8 +916,7 @@ public class MainActivity extends AppCompatActivity implements
             getReviews();
             Log.e("Location Change", "Review query executed by location change");
             setAddress(location.getLatitude(), location.getLongitude());
-            Log.e("onLocationChange", "onLocationChange Executed");
-           // startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
+            Log.e("onLocationChange", "onLocationChange Ended");
         }
 
         /**
@@ -1080,7 +1111,10 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 if (response.isSuccessful()) {
-                    int count=0;
+                    Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                    Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+                    tvLoading.setAnimation(imgAnimationIn);
+                    tvLoading.setText("Loading nearby listings");
                     if (response.raw().cacheResponse() != null) {
                         Log.e("Network", "Listings response came from cache");
                     } else {
@@ -1272,11 +1306,10 @@ public class MainActivity extends AppCompatActivity implements
                     // Pass results to ListViewAdapter Class
                    // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
-                    count++;
                     searchList.setAdapter(searchAdapter);
+                    tvLoading.setAnimation(imgAnimationIn);
+                    tvLoading.setText("...loading the map now.");
                     setMarkers();
-                   // dragView.setVisibility(View.VISIBLE);
-
                 } else {
                     // do some stuff
                 }
@@ -1297,6 +1330,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void getReviews() {
         retrofit = null;
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -1323,6 +1358,8 @@ public class MainActivity extends AppCompatActivity implements
                     Log.e("Network", "Reviews response came from server");
                 }
                 if (response.isSuccessful() && response.body().size() > 0) {
+                    tvLoading.setAnimation(imgAnimationIn);
+                    tvLoading.setText("Loading recent reviews...");
 
                     for (int i = 0; i < response.body().size(); i++) {
                         /**
@@ -1653,7 +1690,18 @@ public class MainActivity extends AppCompatActivity implements
     };
 
     protected void setMarkers() {
-        startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
+        Log.e("setMarkersCall", "setMarkersCall Executed");
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        Intent intent = new Intent(this, MarkerClusteringActivity.class);
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+        tvLoading.setAnimation(imgAnimationIn);
+        tvLoading.setText("Setting up map makers...");
+        Log.e("setMarkersCall", "setMarkersCall Ended");
+
+
+        //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
     }
 
     protected GoogleMap getMap() {
