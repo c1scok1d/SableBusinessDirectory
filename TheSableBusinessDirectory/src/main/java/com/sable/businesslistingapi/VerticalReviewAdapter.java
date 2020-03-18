@@ -50,11 +50,11 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
             this.tvDays = view.findViewById(R.id.tvDays);
             this.tvHours = view.findViewById(R.id.tvHours);
             this.tvMinutes = view.findViewById(R.id.tvMinutes);
-            this.tvSeconds = view.findViewById(R.id.tvSeconds);
+            //this.tvSeconds = view.findViewById(R.id.tvSeconds);
             this.textView = view.findViewById(R.id.textView);
             this.textView2 = view.findViewById(R.id.textView2);
             this.textView3 = view.findViewById(R.id.textView3);
-            this.textView5 = view.findViewById(R.id.textView5);
+            //this.textView5 = view.findViewById(R.id.textView5);
         }
     }
 
@@ -125,14 +125,14 @@ public class VerticalReviewAdapter extends RecyclerView.Adapter {
                 ((MyViewHolder) holder).textView.setVisibility(View.GONE);
                 ((MyViewHolder) holder).tvHours.setText(String.valueOf(elapsedHours));
                 ((MyViewHolder) holder).tvMinutes.setText(String.valueOf(elapsedMinutes));
-                ((MyViewHolder) holder).tvSeconds.setText(String.valueOf(elapsedSeconds));
+                //((MyViewHolder) holder).tvSeconds.setText(String.valueOf(elapsedSeconds));
             } else {
                 ((MyViewHolder) holder).tvMinutes.setVisibility(View.GONE);
                 ((MyViewHolder) holder).tvHours.setVisibility(View.GONE);
-                ((MyViewHolder) holder).tvSeconds.setVisibility(View.GONE);
+                //((MyViewHolder) holder).tvSeconds.setVisibility(View.GONE);
                 ((MyViewHolder) holder).textView2.setVisibility(View.GONE);
                 ((MyViewHolder) holder).textView3.setVisibility(View.GONE);
-                ((MyViewHolder) holder).textView5.setVisibility(View.GONE);
+               // ((MyViewHolder) holder).textView5.setVisibility(View.GONE);
                 ((MyViewHolder) holder).tvDays.setText(String.valueOf(elapsedDays));
             }
 

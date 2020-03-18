@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -58,9 +59,9 @@ public class LoginActivity extends AppCompatActivity {
     ArrayList<UserAuthModel> userinfo = new ArrayList<>();
     String baseURL = "https://www.thesablebusinessdirectory.com", userImage, userName, userEmail;
     AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    Button btnBack;
 
-    Animation animFadeIn,animFadeOut,animBlink,animZoomIn,animZoomOut,animRotate
-            ,animMove,animSlideUp,animSlideDown,animBounce,animSequential,animTogether,animCrossFadeIn,animCrossFadeOut;
+    Animation animFadeIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
        tvSecureMsg = findViewById(R.id.tvSecureMsg);
+       btnBack = findViewById(R.id.btnBack);
        //tvGreeting = findViewById(R.id.tvGreeting);
        //textView6 = findViewById(R.id.textView6);
        //textView7 = findViewById(R.id.textView7);
@@ -75,6 +77,13 @@ public class LoginActivity extends AppCompatActivity {
        ivLogo = findViewById(R.id.ivLogo);
        loginButton = findViewById(R.id.login_button);
        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
+            }
+        });
 
 
 

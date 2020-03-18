@@ -79,6 +79,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     private Random random = new Random(1984);
     private Person clickedVenueMarker;
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
+    boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
 
 
@@ -254,6 +255,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
     @Override
     public void onClusterItemInfoWindowClick(Person item) {
+
        for(int i = 0; i< verticalList.size(); i++) {
             if (item.name.equals(verticalList.get(i).title)){
                 locationReviewShow.add((new ListingsModel(ListingsModel.IMAGE_TYPE,

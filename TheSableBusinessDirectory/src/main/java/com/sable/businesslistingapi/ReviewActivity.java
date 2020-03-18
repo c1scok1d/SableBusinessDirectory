@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.AccessToken;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -59,6 +60,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.sable.businesslistingapi.MainActivity.firstName;
+
 
 public class ReviewActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -85,6 +88,8 @@ public class ReviewActivity extends AppCompatActivity implements
             password = "mroK zH6o wOW7 X094 MTKy fwmY", status = "approved";
     Double latitude, longitude;
     Integer category, id, rating;
+    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
 
     private ProgressBar pDialog;
@@ -238,7 +243,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationMatch.get(0).longitude));
             tvId.setText(String.valueOf(locationMatch.get(0).id));
             tvStatus.setText(locationMatch.get(0).status);
-            tvUserName.setText(MainActivity.firstName);
+            tvUserName.setText(firstName);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
 
 
@@ -287,7 +292,7 @@ public class ReviewActivity extends AppCompatActivity implements
             link = locationAdd.get(0).link;
             latitude = locationAdd.get(0).latitude;
             longitude = locationAdd.get(0).longitude;
-            tvUserName.setText(MainActivity.firstName);
+            tvUserName.setText(firstName);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
         } else {
 
@@ -321,7 +326,7 @@ public class ReviewActivity extends AppCompatActivity implements
             tvLongitude.setText(String.valueOf(locationReview.get(0).longitude));
             tvId.setText(String.valueOf(locationReview.get(0).id));
             tvStatus.setText(locationReview.get(0).status);
-            tvUserName.setText(MainActivity.firstName);
+            tvUserName.setText(firstName);
 //            tvUserEmail.setText(MainActivity.userEmail);
             builder.build().load(MainActivity.userImage).into(ivUserImage);
 //            tvUserId.setText(MainActivity.userId);
@@ -720,7 +725,11 @@ public class ReviewActivity extends AppCompatActivity implements
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-        Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
+        if(isLoggedIn && firstName != null) {
+            Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback " + firstName, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_LONG).show();
+        }
     }
 
     public class BasicAuthInterceptor implements Interceptor {

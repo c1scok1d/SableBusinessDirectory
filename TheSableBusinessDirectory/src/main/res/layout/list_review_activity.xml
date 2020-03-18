@@ -242,18 +242,16 @@
                         android:id="@+id/tvDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
                         android:textColor="@color/colorAccent"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        tools:text="distance" />
+                        tools:text="0.00" />
 
                     <TextView
                         android:id="@+id/tvMilesAway"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
-                        android:layout_marginEnd="5dp"
                         android:gravity="start"
                         android:text="Miles away"
                         android:textAllCaps="true"
@@ -623,7 +621,8 @@
                 android:id="@+id/tvNoReviews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAllCaps="true"
+                android:fontFamily="@font/montserrat"
+                android:textAllCaps="false"
                 android:textColor="@color/colorAccent2"
                 android:textSize="16sp" />
 

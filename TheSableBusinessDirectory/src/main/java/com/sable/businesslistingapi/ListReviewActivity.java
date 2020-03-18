@@ -83,6 +83,7 @@ public class ListReviewActivity extends AppCompatActivity {
     private int retryCount = 0;
     LinearLayout reviewImagesRecyclerLayout, reviewRecyclerLayout;
     RelativeLayout notLoggedInLayout;
+    boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
     //LinearLayoutManager hLayoutManager, vLayoutManager;
 
@@ -470,8 +471,14 @@ public class ListReviewActivity extends AppCompatActivity {
                         reviewImagesRecyclerLayout.setVisibility(View.GONE);
                         reviewRecyclerLayout.setVisibility(View.GONE);
                         notLoggedInLayout.setVisibility(View.VISIBLE);
-                        tvNoReviews.setText("Currently there are no reviews for "+tvName.getText().toString()+".  Tap the rate button above to be the first to rate "+tvName.getText().toString()+".");
-                    } else { //if listing has reviews, list each review
+                       // tvName.setTextColor(getResources().getColor(R.color.com_facebook_blue));
+                        String listingName = "<font color='#4FC1E9'>" +tvName.getText().toString()+"</font>";
+                       // t.setText(Html.fromHtml(first + next));
+                        tvNoReviews.setText(Html.fromHtml("Identify yourself via Facebook and use the rate button to be the first to rate " + listingName + "."));
+                        if (isLoggedIn) {
+                            tvNoReviews.setText(Html.fromHtml("Use the rate button to be the first to rate " + listingName + "."));
+                        }
+                        } else { //list each review
 
                         for (int i = 0; i < response.body().size(); i++) {
                             /**
