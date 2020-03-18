@@ -341,9 +341,10 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         // Button login_button3 = findViewById(R.id.login_button3);
         if (isLoggedIn) {
-            loggedInLayout.setVisibility(View.VISIBLE);
+
         }
         progressBar.setVisibility(View.GONE); //hide progressBar
+        login_button3.setVisibility(View.VISIBLE);
         loadingLayout.setAnimation(imgAnimationOut);
         loadingLayout.setVisibility(View.GONE);
         searchView.setAnimation(imgAnimationIn);
@@ -363,7 +364,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         Log.e("showOtherStuff", " Executing showOtherStuff " );
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn) {
-            loggedInLayout.setVisibility(View.VISIBLE);
+
         }
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
@@ -371,22 +372,23 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         Animation imgZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
 
         progressBar.setVisibility(View.GONE); //hide progressBar
+        login_button3.setVisibility(View.VISIBLE);
         loadingLayout.setAnimation(imgAnimationOut);
         loadingLayout.setVisibility(View.GONE);
-        searchView.setAnimation(imgAnimationIn);
-        searchView.setVisibility(View.VISIBLE);
+        //searchView.setAnimation(imgAnimationIn);
+        //searchView.setVisibility(View.VISIBLE);
         noListingsImageView.setAnimation(imgAnimationIn);
         noListingsImageView.setVisibility(View.VISIBLE);
         noListingsTextView.setAnimation(imgAnimationIn);
         noListingsTextView.setVisibility(View.VISIBLE);
         //noListingsTextView.setTextSize(16);
 
-        if(isLoggedIn) {
+        if(isLoggedIn && firstName != null) {
             noListingsTextView.setText("This is terrible " + firstName +"!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
-                    "Tap the ADD button to add any black owned business you visit to our directory.");
+                    "Tap ADD to add any black owned business you visit to our directory.");
         } else {
             noListingsTextView.setText("This is terrible!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
-                    "Tap the ADD button to add any black owned business you visit to our directory.");
+                    "Tap ADD to add any black owned business you visit to our directory.");
         }
 
         btnAdd.setAnimation(imgAnimationIn);

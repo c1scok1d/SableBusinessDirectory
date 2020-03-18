@@ -287,14 +287,14 @@ public class MainActivity extends AppCompatActivity implements
         sliderLayout = findViewById(R.id.sliderLayout);
         sliderLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progressBar);
-        tvCategories = findViewById(R.id.tvCategories);
-        tvCategories.setVisibility(View.GONE);
+        //tvCategories = findViewById(R.id.tvCategories);
+        //tvCategories.setVisibility(View.GONE);
         //category_radioButton_scroller = findViewById(R.id.category_radioButton_scroller);
         //category_radioButton_scroller.setVisibility(View.GONE);
-        searchList = findViewById(R.id.listview);
-        searchList.setVisibility(View.GONE);
-        loggedInLayout = findViewById(R.id.loggedInLayout);
-        loggedInLayout.setVisibility(View.GONE);
+        //searchList = findViewById(R.id.listview);
+       // searchList.setVisibility(View.GONE);
+//        loggedInLayout = findViewById(R.id.loggedInLayout);
+//        loggedInLayout.setVisibility(View.GONE);
         //noListingsAnimationLayout = findViewById(R.id.noListingsLayout);
         //noListingsAnimationLayout.setVisibility(View.GONE);
         ivLoading = findViewById(R.id.ivLoading);
@@ -593,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements
         searchView = findViewById(R.id.search);
         searchView.setVisibility(View.GONE);
         ArrayAdapter<String> searchViewAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.select_dialog_item, listingName);
+                android.R.layout.simple_list_item_1, listingName);
         searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -791,9 +791,9 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             // startActivity(getIntent());
             LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
-            LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
+            //LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
             userImageLayout.setVisibility(View.GONE);
-            userNameLayout.setVisibility(View.GONE);
+            //userNameLayout.setVisibility(View.GONE);
         }
         accessTokenTracker.startTracking();
         Log.e("onStart", "onStart Ended");
@@ -856,7 +856,7 @@ public class MainActivity extends AppCompatActivity implements
                     String[] parts = (object.getString("name").split(" "));
                     firstName = parts[0];
                     lastName = parts[1];
-                    tvUserName.setText(firstName);
+//                    tvUserName.setText(firstName);
 //                    tvUserName2.setText(firstName);
                     //    tvUserEmail.setText(object.getString("email"));
                     facebookImageBuilder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
@@ -904,7 +904,7 @@ public class MainActivity extends AppCompatActivity implements
             tvLoading.setVisibility(View.VISIBLE);
             tvLoading.setAnimation(imgAnimationIn);
             boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-            if(isLoggedIn) {
+            if(isLoggedIn && firstName != null) {
                 tvLoading.setText("Thanks for your patience " + firstName + "!\nWe are searching our directory for black owned businesses near you.");
             } else {
                 tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
@@ -1317,7 +1317,7 @@ public class MainActivity extends AppCompatActivity implements
                     // Pass results to ListViewAdapter Class
                    // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
-                    searchList.setAdapter(searchAdapter);
+//                    searchList.setAdapter(searchAdapter);
                    // tvLoading.setAnimation(imgAnimationIn);
                    // tvLoading.setText("...loading the map now.");
                     setMarkers();
@@ -1428,7 +1428,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("loginUser_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
                     userId = String.valueOf(response.body().getWpUserId());
-                    tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
+//                    tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
                 } else {
                     // do some stuff
                 }

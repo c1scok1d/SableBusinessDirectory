@@ -9,8 +9,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="fontFamily">@font/open_sans</item>
 
     </style>
+
 
     <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
         <item name="android:textSize">14sp</item>

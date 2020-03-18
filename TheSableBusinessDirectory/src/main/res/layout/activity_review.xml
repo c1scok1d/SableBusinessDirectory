@@ -405,82 +405,12 @@
                                 android:clickable="false"
                                 android:textColor="@color/link"
                                 android:textSize="10sp"
-                                tools:text="http://www.companywebsite.com" />
+                                android:visibility="gone"
+                                tools:text="http://www.companywebsite.com"
+                                tools:visibility="visible" />
 
                         </LinearLayout>
 
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/callBtnLayout"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@drawable/customborder"
-                        android:orientation="vertical">
-
-                        <ImageButton
-                            android:id="@+id/btnCall"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:clickable="false"
-                            android:contentDescription="@string/click_to_call"
-                            app:srcCompat="@drawable/phone"
-                            tools:srcCompat="@drawable/phone" />
-
-                        <TextView
-                            android:id="@+id/tvCall"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal|top|center_vertical"
-                            android:text=" Call"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/dirBtnLayout"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@drawable/customborder"
-                        android:orientation="vertical">
-
-                        <ImageButton
-                            android:id="@+id/btnDirections"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="@string/click_for_directions"
-                            app:srcCompat="@drawable/directions"
-                            tools:srcCompat="@drawable/directions" />
-
-                        <TextView
-                            android:id="@+id/tvDirections"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:autoText="false"
-                            android:gravity="center_horizontal|top|center_vertical"
-                            android:text="map"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold" />
                     </LinearLayout>
 
                 </LinearLayout>
