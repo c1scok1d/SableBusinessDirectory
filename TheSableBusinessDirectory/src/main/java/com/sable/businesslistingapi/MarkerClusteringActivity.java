@@ -114,13 +114,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
             // Draw a single person.
             // Set the info window to show their name.
             Picasso.get().load(person.profilePhoto).into(mImageView);
-           /*  Glide.with(getApplicationContext()).asBitmap()
-                    .load(person.profilePhoto)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .fitCenter().into(mImageView);
-                    //.placeholder(R.drawable.logo).dontAnimate().into(mImageView);
-
-           // mImageView.setImageBitmap(person.profilePhoto); */
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
         }

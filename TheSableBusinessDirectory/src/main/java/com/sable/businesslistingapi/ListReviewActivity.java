@@ -176,15 +176,13 @@ public class ListReviewActivity extends AppCompatActivity {
         pDialog = findViewById(R.id.progressBar);
         tvNoReviews = findViewById(R.id.tvNoReviews);
 
-       // pDialog.setVisibility(View.GONE);
-
-
 
         locationReview = this.getIntent().getExtras().getParcelableArrayList("locationReview");
 
 
         Map<String, String> query = new HashMap<>();
-
+        String foo = locationReview.get(0).timestamp;
+        Integer fooInt = locationReview.get(0).id;
         query.put("post", String.valueOf(locationReview.get(0).id));
         getPostReview(query);
 

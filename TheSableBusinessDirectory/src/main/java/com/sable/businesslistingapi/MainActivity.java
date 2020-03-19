@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
-    ArrayList<ListingsModel> verticalList = new ArrayList<>();
+    public static ArrayList<ListingsModel> verticalList = new ArrayList<>();
     ArrayList<String> listingName = new ArrayList<>();
     //ArrayList<ListReviewModel> reviewlList = new ArrayList<>();
     ArrayList<ListingsModel> featuredList = new ArrayList<>();
@@ -1384,7 +1384,9 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getAuthorName(),
                                     response.body().get(i).getRating().getRating(),
                                     response.body().get(i).getDateGmt(),
-                                    response.body().get(i).getImages().getRendered().get(0).getSrc()));
+                                    response.body().get(i).getImages().getRendered().get(0).getSrc(),
+                                    response.body().get(i).getContent().getRendered(),
+                                    response.body().get(i).getParent()));
                         }
 
                         recentReviewListingsAdapter.notifyDataSetChanged();

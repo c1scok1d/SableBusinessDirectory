@@ -8,14 +8,10 @@ import java.util.ArrayList;
 
 public class RecentReviewListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
-    public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
+    public String title, status, category, description, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
             hours, latitude, longitude, ratingTitle, content, image, logo, timestamp, authorName, link, isOpen, reviews, userName, userEmail, userImage, userId;
     public int id, ratingCount;
-    //public Double latitude, longitude;
-    Integer rating;
-    Boolean featured;
-
-
+    Integer rating, parent;
 
     public RecentReviewListingsModel(int imageType,
                                      Integer id,
@@ -23,7 +19,9 @@ public class RecentReviewListingsModel extends ArrayList<Parcelable> implements 
                                      String authorName,
                                      Integer ratingNumber,
                                      String dateCreated,
-                                     String image){
+                                     String image,
+                                     String description,
+                                     Integer parent){
 
         this.id = id;
         this.title = content;
@@ -38,6 +36,8 @@ public class RecentReviewListingsModel extends ArrayList<Parcelable> implements 
         this.rating = ratingNumber;
         this.timestamp = dateCreated;
         this.image = image;
+        this.description = description;
+        this.parent = parent;
     }
 
 
@@ -59,6 +59,8 @@ public class RecentReviewListingsModel extends ArrayList<Parcelable> implements 
         dest.writeInt(rating);
         dest.writeString(timestamp);
         dest.writeString(image);
+        dest.writeString(description);
+        dest.writeInt(parent);
     }
 
     //constructor used for parcel
@@ -77,6 +79,8 @@ public class RecentReviewListingsModel extends ArrayList<Parcelable> implements 
         rating = parcel.readInt();
         timestamp = parcel.readString();
         image = parcel.readString();
+        description = parcel.readString();
+        parent = parcel.readInt();
 
     }
 
