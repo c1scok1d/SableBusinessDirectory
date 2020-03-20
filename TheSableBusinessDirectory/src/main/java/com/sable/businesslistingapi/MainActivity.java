@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
    // ArrayList<ListingsModel> locationReview = new ArrayList<>();
-    public static ArrayList<Person> mapLocations;
+    public static ArrayList<Person> mapLocations = new ArrayList<>();
 
 
 
@@ -745,6 +745,12 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onStart() {
         super.onStart();
+        verticalList.clear();
+        listingName.clear();
+        recentList.clear();
+        featuredList.clear();
+        mapLocations.clear();
+        recentReviewList.clear();
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         Log.e("onStart", "onStart Executed");
 
@@ -1000,9 +1006,9 @@ public class MainActivity extends AppCompatActivity implements
                 for (int i = 0; i < fetchedAddress.getMaxAddressLineIndex(); i++) {
                     strAddress.append(fetchedAddress.getAddressLine(i)).append(" ");
                 }
-                //txtLocationAddress.setText(strAddress.toString());
+                 String address = strAddress.toString();
                 } else {
-                //txtLocationAddress.setText("Searching Current Address");
+                Toast.makeText(getApplicationContext(), "Searching current address...", Toast.LENGTH_LONG).show();
                 }
 
         } catch (IOException e) {
@@ -1089,16 +1095,10 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     public void getRetrofit(final Map<String, String> query) {
-        verticalList.clear();
-        listingName.clear();
-        recentList.clear();
-        featuredList.clear();
-//        mapLocations.clear();
-        recentReviewList.clear();
+
         Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
-        mapLocations = new ArrayList<>();
-        mapLocations.clear();
+        //mapLocations.clear();
 
         retrofit = null;
         retrofit = new Retrofit.Builder()
