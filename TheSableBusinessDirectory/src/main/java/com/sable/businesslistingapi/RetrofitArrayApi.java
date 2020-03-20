@@ -46,7 +46,9 @@ public interface RetrofitArrayApi {
     Call<List<WooProducts>> getPostWooInfo();
 
     @GET("wp-json/geodir/v2/business/categories")
-    Call<List<ListingsCategories>> getCategory();
+    Call<List<ListingsCategories>> getCategory(
+            @QueryMap Map<String, String> options
+    );
 
     @GET("wp-json/geodir/v2/business/categories")
     Call<List<BusinessListings>> getCategoryListings(

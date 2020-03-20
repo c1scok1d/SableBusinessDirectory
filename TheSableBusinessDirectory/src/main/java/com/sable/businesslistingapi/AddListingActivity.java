@@ -215,7 +215,9 @@ public class AddListingActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
-       getRetrofitCategories();
+        Map<String, String> query = new HashMap<>();
+        query.put("per_page", "100");
+       getRetrofitCategories(query);
 
         tvAddHours.setOnClickListener(v -> {
             if(businessHoursLayout.getVisibility() == View.GONE) {
@@ -316,7 +318,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     }
                     RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
                     // pass JSON data to BusinessListings class for filtering
-                    Call<List<ListingsCategories>> call = service.getCategory();
+                    Call<List<ListingsCategories>> call = service.getCategory(query);
 
                     // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
                     call.enqueue(new Callback<List<ListingsCategories>>() {
@@ -736,7 +738,7 @@ public class AddListingActivity extends AppCompatActivity implements
     //Integer addCategory;
 
     private static Retrofit retrofit = null;
-    public void getRetrofitCategories() {
+    public void getRetrofitCategories(final Map<String, String> query) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -758,7 +760,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
         // pass JSON data to BusinessListings class for filtering
-        Call<List<ListingsCategories>> call = service.getCategory();
+        Call<List<ListingsCategories>> call = service.getCategory(query);
 
         // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
         call.enqueue(new Callback<List<ListingsCategories>>() {

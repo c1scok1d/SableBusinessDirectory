@@ -10,24 +10,6 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="75dp"
-        android:layout_height="28dp"
-        android:layout_above="@id/ivGreeter"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/buttonshape"
-        android:padding="5dp"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="5"
-        android:text="back"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold" />
     <TextView
         android:id="@+id/tvSecureMsg"
         android:layout_width="wrap_content"
@@ -37,6 +19,25 @@
         android:text="@string/secureMsg"
         android:textColor="#e9774f"
         android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvSecureMsg"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/buttonshape"
+        android:padding="5dp"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="Back to map"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/ivGreeter"

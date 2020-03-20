@@ -1015,10 +1015,29 @@ public class MainActivity extends AppCompatActivity implements
         geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            if (addresses.size() > 0) {
+                Address fetchedAddress = addresses.get(0);
+                StringBuilder strAddress = new StringBuilder();
+                for (int i = 0; i < fetchedAddress.getMaxAddressLineIndex(); i++) {
+                    strAddress.append(fetchedAddress.getAddressLine(i)).append(" ");
+                }
+                //txtLocationAddress.setText(strAddress.toString());
+                } else {
+                //txtLocationAddress.setText("Searching Current Address");
+                }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Could not get address...", Toast.LENGTH_LONG).show();
+        }
+
+       /* try {
             addresses = geocoder.getFromLocation(latitude, longitude, 3); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } */
 
         if (addresses != null) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
