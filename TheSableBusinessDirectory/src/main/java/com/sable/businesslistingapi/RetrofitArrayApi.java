@@ -57,7 +57,7 @@ public interface RetrofitArrayApi {
 
     @GET("wp-json/geodir/v2/business")
     Call<List<BusinessListings>> search(
-            //@QueryMap Map<String, String> options
+            @QueryMap Map<String, String> options
     );
 
 

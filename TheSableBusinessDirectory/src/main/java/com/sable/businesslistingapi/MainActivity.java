@@ -579,6 +579,8 @@ public class MainActivity extends AppCompatActivity implements
             public void onItemClick(AdapterView<?> parent, View arg1, int pos,
                                     long id) {
                 Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                Map<String, String> query = new HashMap<>();
+                query.put("per_page", "100");
 
                 progressBar.setVisibility(View.VISIBLE);
                 loadingLayout.setVisibility(View.VISIBLE);
@@ -594,7 +596,7 @@ public class MainActivity extends AppCompatActivity implements
                             .build();
                     RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
                     // pass JSON data to BusinessListings class for filtering
-                    Call<List<BusinessListings>> call = service.search();
+                    Call<List<BusinessListings>> call = service.search(query);
 
                     // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
                     call.enqueue(new Callback<List<BusinessListings>>() {
@@ -604,6 +606,8 @@ public class MainActivity extends AppCompatActivity implements
                             // loop through JSON response get parse and output to log
                             for (int i = 0; i < response.body().size(); i++) {
 
+                                String foo = parent.getItemAtPosition(pos).toString();
+                                String foo1 = response.body().get(i).getTitle().getRaw();
                                 if (parent.getItemAtPosition(pos).toString().equals(response.body().get(i).getTitle().getRaw())) {
                                     ArrayList<ListingsModel> locationReview = new ArrayList<>();
                                     Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
@@ -1015,12 +1019,6 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Could not get address...", Toast.LENGTH_LONG).show();
         }
-
-       /* try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 3); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-        } catch (IOException e) {
-            e.printStackTrace();
-        } */
 
         if (addresses != null) {
             Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
