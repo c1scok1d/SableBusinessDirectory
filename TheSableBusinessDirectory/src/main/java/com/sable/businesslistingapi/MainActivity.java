@@ -1,7 +1,6 @@
 package com.sable.businesslistingapi;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,11 +9,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +57,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.sable.businesslistingapi.model.Person;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
-
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.DialogConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
@@ -80,7 +76,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Credentials;
@@ -213,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-    private static Retrofit retrofit = null;
+    private static Retrofit retrofit;
 
     // check for Internet Connectivity
     public static boolean isInternetAvailable() {
@@ -591,13 +586,12 @@ public class MainActivity extends AppCompatActivity implements
                 ivLoading.setImageResource(R.mipmap.online_reviews_foreground);
                 tvLoading.setText("Loading reviews for " + parent.getItemAtPosition(pos).toString());
 
-                    if(retrofit==null){
-                        retrofit = new Retrofit.Builder()
-                                .baseUrl(baseURL)
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .client(client)
-                                .build();
-                    }
+                    retrofit = null;
+                    retrofit = new Retrofit.Builder()
+                            .baseUrl(baseURL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .client(client)
+                            .build();
                     RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
                     // pass JSON data to BusinessListings class for filtering
                     Call<List<BusinessListings>> call = service.search();
@@ -1095,18 +1089,18 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     public void getRetrofit(final Map<String, String> query) {
+        verticalList.clear();
+        listingName.clear();
+        recentList.clear();
+        featuredList.clear();
+//        mapLocations.clear();
+        recentReviewList.clear();
         Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
-       // Animation imgAnimationIn =  AnimationUtils.loadAnimation(this,   R.anim.fade_in);
-        //Animation imgAnimationOut =  AnimationUtils.loadAnimation(this,   R.anim.fade_out);
-
-//        tvQuerying.setVisibility(View.VISIBLE);
-  //      tvQuerying.setText("SEARCHING FOR BLACK OWNED BUSINESSES NEAR YOU");
-    //    tvQuerying.setAnimation(imgAnimationBlink);
 
         mapLocations = new ArrayList<>();
-        mapLocations.removeAll(mapLocations);
-        //Log.i("mapLocations", mapLocations.toString());
+        mapLocations.clear();
 
+        retrofit = null;
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -1149,7 +1143,6 @@ public class MainActivity extends AppCompatActivity implements
 
                         if (String.valueOf(response.body().get(i).getLatitude()).equals(String.valueOf(latitude)) &&
                                 String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude)) && userActivityArray.size() > 0) {
-
                             locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
@@ -1220,6 +1213,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail()));
                             verticalAdapter.notifyDataSetChanged();
+
                             listingName.add(response.body().get(i).getTitle().getRaw());
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
