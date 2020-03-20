@@ -509,7 +509,7 @@
                         android:gravity="start|center_vertical"
                         android:paddingStart="3dp"
                         android:paddingEnd="3dp"
-                        android:text="Featured Listings"
+                        android:text="Featured"
                         android:textAllCaps="true"
                         android:textColor="#e9774f"
                         android:textSize="12sp" />
@@ -587,7 +587,7 @@
                         android:gravity="start|center_vertical"
                         android:paddingStart="3dp"
                         android:paddingEnd="3dp"
-                        android:text="New Listings"
+                        android:text="New"
                         android:textAllCaps="true"
                         android:textColor="#e9774f"
                         android:textSize="12sp" />

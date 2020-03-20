@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements
     ProgressBar progressBar;
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
-    LinearLayout loggedInLayout;
+    LinearLayout recentReviewsLayout, recentReviewsRecyclerLayout;
     RelativeLayout loadingLayout,  noListingsAnimationLayout;
 
 
@@ -287,16 +287,10 @@ public class MainActivity extends AppCompatActivity implements
         sliderLayout = findViewById(R.id.sliderLayout);
         sliderLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progressBar);
-        //tvCategories = findViewById(R.id.tvCategories);
-        //tvCategories.setVisibility(View.GONE);
-        //category_radioButton_scroller = findViewById(R.id.category_radioButton_scroller);
-        //category_radioButton_scroller.setVisibility(View.GONE);
-        //searchList = findViewById(R.id.listview);
-       // searchList.setVisibility(View.GONE);
-//        loggedInLayout = findViewById(R.id.loggedInLayout);
-//        loggedInLayout.setVisibility(View.GONE);
-        //noListingsAnimationLayout = findViewById(R.id.noListingsLayout);
-        //noListingsAnimationLayout.setVisibility(View.GONE);
+        recentReviewsRecyclerLayout = findViewById(R.id.recentReviewsRecyclerLayout);
+        recentReviewsRecyclerLayout.setVisibility(View.GONE);
+        recentReviewsLayout = findViewById(R.id.recentReviewsLayout);
+        recentReviewsLayout.setVisibility(View.GONE);
         ivLoading = findViewById(R.id.ivLoading);
         ivLoading.setVisibility(View.GONE);
         noListingsImageView = findViewById(R.id.noListingsImageView);
@@ -318,7 +312,6 @@ public class MainActivity extends AppCompatActivity implements
         login_button3 = findViewById(R.id.login_button3);
         login_button3.setVisibility(View.GONE);
         login_button4 = findViewById(R.id.login_button4);
-       // login_button4.setVisibility(View.GONE);
 
         textSwitcher =  findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
@@ -326,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(16);
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
-            //textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -352,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(16);
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
-            //textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -512,7 +503,6 @@ public class MainActivity extends AppCompatActivity implements
         };
 
         tvUserName = findViewById(R.id.tvUserName);
-        //tvUserName2 = findViewById(R.id.tvUserName2);
         ivUserImage = findViewById(R.id.ivUserImage);
         tvWpUserId = findViewById(R.id.tvWpUserId);
         textSwitcher = findViewById(R.id.textSwitcher);
@@ -521,9 +511,6 @@ public class MainActivity extends AppCompatActivity implements
             BEGIN vertical Recycler View
          */
         verticalRecyclerView = findViewById(R.id.verticalRecyclerView);
-//        tvQuerying = findViewById(R.id.tvQuerying);
-        //tvQuerying.setAnimation(imgAnimationBlink);
-  //      tvQuerying.setVisibility(View.GONE);
         mLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         verticalRecyclerView.setLayoutManager(mLayoutManager);
         verticalList = new ArrayList<>();
@@ -557,9 +544,6 @@ public class MainActivity extends AppCompatActivity implements
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                tvQuerying.setVisibility(View.VISIBLE);
-//                tvQuerying.setText("LOADING 10 BLACK OWNED BUSINESSES NEAREST YOU");
-                //btnShowListings.setVisibility(View.GONE);
                 startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
             }
         });
@@ -1013,7 +997,6 @@ public class MainActivity extends AppCompatActivity implements
         Geocoder geocoder;
         List<Address> addresses = null;
         geocoder = new Geocoder(this, Locale.getDefault());
-
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
