@@ -13,10 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.telephony.PhoneNumberUtils;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,35 +25,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.bashizip.bhlib.BusinessHours;
 import com.bashizip.bhlib.BusinessHoursWeekPicker;
 import com.bashizip.bhlib.BusinessHoursWeekView;
 import com.bashizip.bhlib.ValdationException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.api.Places;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,12 +59,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.aprilapps.easyphotopicker.ChooserType;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -104,7 +97,7 @@ public class AddListingActivity extends AppCompatActivity implements
     /*
     objects of text view and button widgets.
      */
-    TextView tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry;
+    TextView tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry, tvCurrentAddress;
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
     Button btnNext;
     //Spinner spnCategory;
@@ -179,12 +172,12 @@ public class AddListingActivity extends AppCompatActivity implements
             businessHoursLayout.setVisibility(View.GONE);
         });
 
-      //  tvAddress = findViewById(R.id.tvAddress);
+        tvCurrentAddress = findViewById(R.id.tvCurrentAddress);
         tvZip = findViewById(R.id.tvZip);
-        tvZip.setFocusable(true);
-        tvZip.setEnabled(true);
-        tvZip.setClickable(true);
-        tvZip.setFocusableInTouchMode(true);
+        tvCurrentAddress.setFocusable(true);
+        tvCurrentAddress.setEnabled(true);
+        tvCurrentAddress.setClickable(true);
+        tvCurrentAddress.setFocusableInTouchMode(true);
         tvState = findViewById(R.id.tvState);
         tvState.setFocusable(true);
         tvState.setEnabled(true);
@@ -279,9 +272,7 @@ public class AddListingActivity extends AppCompatActivity implements
                         businessHours.toString()));
 
                 submitData();
-                Intent home = new Intent(AddListingActivity.this, MainActivity.class);
-                //Bundle locationAddBundle = new Bundle();
-                //locationAddBundle.putParcelableArrayList("locationAddBundle", locationAdd);
+                Intent home = new Intent(AddListingActivity.this, MainActivity.class);;
                 home.putExtra("userActivityArray", userActivityArray);
                 startActivity(home);
             }
@@ -359,7 +350,6 @@ public class AddListingActivity extends AppCompatActivity implements
         easyImage = new EasyImage.Builder(this)
                 .setChooserTitle("Pick media")
                 .setCopyImagesToPublicGalleryFolder(false)
-//                .setChooserType(ChooserType.CAMERA_AND_DOCUMENTS)
                 .setChooserType(ChooserType.CAMERA_AND_GALLERY)
                 .setFolderName("EasyImage sample")
                 .allowMultiple(true)
@@ -376,6 +366,52 @@ public class AddListingActivity extends AppCompatActivity implements
                 } else {
                     requestPermissionsCompat(necessaryPermissions, GALLERY_REQUEST_CODE);
                 }
+            }
+        });
+        String TAG = "placeautocomplete";
+
+        // Initialize Places.
+        //com.google.android.libraries.places.api.Places.initialize(getApplicationContext(), R.string.google_api, Locale.US);
+        Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api), Locale.US);
+        // Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(getApplicationContext());
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
+
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                LatLng locationLatLng = place.getLatLng();
+                latitude = locationLatLng.latitude;
+                longitude = locationLatLng.longitude;
+                // zoom to location of selected address on map
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 13));
+
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
+                        .zoom(17)                   // Sets the zoom
+                        .bearing(90)                // Sets the orientation of the camera to east
+                        .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                        .build();                   // Creates a CameraPosition from the builder
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                tvCurrentAddress.setText(place.getAddress());
+                Log.e(TAG, "Place: " + place.getAddress() + "," + place.getLatLng());
+                //Log.i(TAG, "Lat/Lng: " + place.getLatLng() +',' + destlng);
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.e(TAG, "An error occurred: " + status);
             }
         });
     }
@@ -696,7 +732,7 @@ public class AddListingActivity extends AppCompatActivity implements
             String lng = Double.toString(longitude);*/
 
 
-//        tvAddress.setText(address);
+            tvCurrentAddress.setText(address);
             tvZip.setText(zipcode);
             tvState.setText(state);
             tvCity.setText(city);

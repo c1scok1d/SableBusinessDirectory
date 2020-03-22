@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -586,7 +587,8 @@ public class MainActivity extends AppCompatActivity implements
                 loadingLayout.setVisibility(View.VISIBLE);
                 loadingLayout.setAnimation(imgAnimationIn);
                 ivLoading.setImageResource(R.mipmap.online_reviews_foreground);
-                tvLoading.setText("Loading reviews for " + parent.getItemAtPosition(pos).toString());
+                String listingName = "<font color='#4FC1E9'>" +parent.getItemAtPosition(pos).toString()+"</font>";
+                tvLoading.setText(Html.fromHtml(("Thank you for your waiting while we load reviews for " + listingName )));
 
                     retrofit = null;
                     retrofit = new Retrofit.Builder()
@@ -606,8 +608,8 @@ public class MainActivity extends AppCompatActivity implements
                             // loop through JSON response get parse and output to log
                             for (int i = 0; i < response.body().size(); i++) {
 
-                                String foo = parent.getItemAtPosition(pos).toString();
-                                String foo1 = response.body().get(i).getTitle().getRaw();
+//                                String foo = parent.getItemAtPosition(pos).toString();
+//                                String foo1 = response.body().get(i).getTitle().getRaw();
                                 if (parent.getItemAtPosition(pos).toString().equals(response.body().get(i).getTitle().getRaw())) {
                                     ArrayList<ListingsModel> locationReview = new ArrayList<>();
                                     Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
@@ -893,7 +895,8 @@ public class MainActivity extends AppCompatActivity implements
             tvLoading.setAnimation(imgAnimationIn);
             boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
             if(isLoggedIn && firstName != null) {
-                tvLoading.setText("Thanks for your patience " + firstName + "!\nWe are searching our directory for black owned businesses near you.");
+                String name = "<font color='#4FC1E9'>" +firstName+"</font>";
+                tvLoading.setText(Html.fromHtml(("Thanks for your patience " + name + "<br>We are searching our directory for black owned businesses near you.")));
             } else {
                 tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
             }

@@ -52,7 +52,7 @@
 
                 <LinearLayout
                     android:id="@+id/businessInfoLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:gravity="center_vertical"
@@ -68,17 +68,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:hint="Enter The Business Name"
+                            android:hint="Business Name"
                             android:textColor="#4FC1E9" />
                     </LinearLayout>
 
                     <AutoCompleteTextView
                         android:id="@+id/tvCategory"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:hint="Enter The Business Category" />
+                        android:layout_height="wrap_content"
+                        android:hint="Business Category" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -130,6 +128,16 @@
                         android:orientation="horizontal">
 
                         <EditText
+                            android:id="@+id/tvCurrentAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_horizontal"
+                            android:text="TextView"
+                            android:textColor="@color/colorAccent"
+                            android:textStyle="bold" />
+
+                        <EditText
                             android:id="@+id/tvBldgNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -139,7 +147,9 @@
                             android:text="bldgno"
                             android:textColor="#4FC1E9"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <EditText
                             android:id="@+id/tvStreet"
@@ -151,7 +161,9 @@
                             android:text="street"
                             android:textColor="#4FC1E9"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <EditText
                             android:id="@+id/tvCity"
@@ -163,7 +175,9 @@
                             android:text="city"
                             android:textColor="#4FC1E9"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <EditText
                             android:id="@+id/tvState"
@@ -175,7 +189,9 @@
                             android:text="state"
                             android:textColor="#4FC1E9"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <EditText
                             android:id="@+id/tvZip"
@@ -187,7 +203,9 @@
                             android:text="zipcode"
                             android:textColor="#4FC1E9"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <EditText
                             android:id="@+id/tvCountry"
@@ -199,7 +217,22 @@
                             android:textColor="@color/colorAccent"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            tools:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/autocompleteAddressLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <fragment
+                            android:id="@+id/autocomplete_fragment"
+                            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 

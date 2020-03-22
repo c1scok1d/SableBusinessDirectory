@@ -44,6 +44,7 @@
     <string name="directions">DIRECTIONS</string>
     <string name="facebook_app_id">2106220289466501</string>
     <string name="fb_login_protocol_scheme">fb2106220289466501</string>
+    <string name="google_api">AIzaSyAU3hkd4PoOrrf3CGXCNbnzec8ek7cOWcQ</string>
     <string name="action_settings">Settings</string>
     <string name="action_hide">Hide Panel</string>
     <string name="action_show">Show Panel</string>
