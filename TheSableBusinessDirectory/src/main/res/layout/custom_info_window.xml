@@ -14,7 +14,7 @@
         android:layout_height="150dp"
         android:layout_centerHorizontal="false"
         android:layout_centerVertical="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitXY" />
 
     <LinearLayout
         android:id="@+id/listingInfoLayout"
@@ -73,6 +73,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
             <RatingBar
@@ -94,18 +95,10 @@
             android:id="@+id/tvReviewFirst"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:text="be the first to review"
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvMore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="More..."
-            android:textColor="@color/com_facebook_blue" />
 
     </LinearLayout>
 

@@ -175,7 +175,7 @@
                     android:layout_weight="1"
                     android:gravity="start|end"
                     android:textAllCaps="true"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/colorAccent2"
                     android:textSize="10sp"
                     android:textStyle="bold"
                     tools:text="be the first to rate" />
