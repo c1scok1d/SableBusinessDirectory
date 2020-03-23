@@ -898,7 +898,7 @@ public class MainActivity extends AppCompatActivity implements
                 String name = "<font color='#4FC1E9'>" +firstName+"</font>";
                 tvLoading.setText(Html.fromHtml(("Thanks for your patience " + name + "<br>We are searching our directory for black owned businesses near you.")));
             } else {
-                tvLoading.setText("Thank you for your patience while we search our directory for black owned businesses near you.");
+                tvLoading.setText("Thank you for waiting while we search our directory for black owned businesses near you.");
             }
             Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();

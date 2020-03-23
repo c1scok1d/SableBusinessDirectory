@@ -44,9 +44,14 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.sable.businesslistingapi.clustering.ClusterManager;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,9 +102,10 @@ public class AddListingActivity extends AppCompatActivity implements
     /*
     objects of text view and button widgets.
      */
-    TextView tvStreet, tvZip, tvState, tvCity, tvBldgNo, tvCountry, tvCurrentAddress;
+    TextView tvCurrentAddress;
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
     Button btnNext;
+    //AutoCompleteTextView tvCurrentAddress;
     //Spinner spnCategory;
     ListView spnCategory;
     AutoCompleteTextView tvCategory;
@@ -119,7 +125,8 @@ public class AddListingActivity extends AppCompatActivity implements
     private static final int CAMERA_VIDEO_REQUEST_CODE = 7501;
     private static final int GALLERY_REQUEST_CODE = 7502;
     private static final int DOCUMENTS_REQUEST_CODE = 7503;
-    protected ImageView ivLogo;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 4077;
+    protected ImageView ivLogo, ivAddySearch;
     private EasyImage easyImage;
     //BusinessHoursWeekPicker bh_picker;
     JSONArray businessHours = new JSONArray();
@@ -173,24 +180,6 @@ public class AddListingActivity extends AppCompatActivity implements
         });
 
         tvCurrentAddress = findViewById(R.id.tvCurrentAddress);
-        tvZip = findViewById(R.id.tvZip);
-        tvCurrentAddress.setFocusable(true);
-        tvCurrentAddress.setEnabled(true);
-        tvCurrentAddress.setClickable(true);
-        tvCurrentAddress.setFocusableInTouchMode(true);
-        tvState = findViewById(R.id.tvState);
-        tvState.setFocusable(true);
-        tvState.setEnabled(true);
-        tvState.setClickable(true);
-        tvState.setFocusableInTouchMode(true);
-        tvCity = findViewById(R.id.tvCity);
-        tvStreet = findViewById(R.id.tvStreet);
-        tvBldgNo = findViewById(R.id.tvBldgNo);
-        tvBldgNo.setFocusable(true);
-        tvBldgNo.setEnabled(true);
-        tvBldgNo.setClickable(true);
-        tvBldgNo.setFocusableInTouchMode(true);
-        tvCountry = findViewById(R.id.tvCountry);
         btnNext = findViewById(R.id.btnNext);
         //spnCategory = findViewById(R.id.spnCategory);
         //spnCategory.setFastScrollEnabled(true);
@@ -204,6 +193,7 @@ public class AddListingActivity extends AppCompatActivity implements
         etTwitter  = findViewById(R.id.etTwitter);
         etFacebook = findViewById(R.id.etFacebook);
         tvAddHours = findViewById(R.id.tvAddHours);
+        //currentLocationAutocomplete = findViewById(R.id.autoCompleteEditText);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
@@ -222,6 +212,28 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
 
+
+        // Open the autocomplete activity when the address is clicked.
+
+        tvCurrentAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api));
+        }
+        // Set the fields to specify which types of place data to return.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG);
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(getApplicationContext());
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            }
+        });
+
         /**
          * OnClick take user to add location page
          */
@@ -230,17 +242,14 @@ public class AddListingActivity extends AppCompatActivity implements
 
             if (etName.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please Enter The Business Name...", Toast.LENGTH_LONG).show();
-            } else if (spnCategory.getSelectedItem().equals("Select Business Category")) {
+            } else if (tvCategory.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please select a Category...", Toast.LENGTH_LONG).show();
             } else if (etDescription.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please enter a description...", Toast.LENGTH_LONG).show();
             } else {
 
-               // getRetrofitCategories();
-
                 name = etName.getText().toString();
                 description = etDescription.getText().toString();
-                catName = spnCategory.getSelectedItem().toString();
                 email = etEmail.getText().toString();
                 website = "http://www."+etWebsite.getText().toString();
                 twitter = "http://www.twitter.com/"+etTwitter.getText().toString();
@@ -255,8 +264,8 @@ public class AddListingActivity extends AppCompatActivity implements
                         catName,
                         catNum,
                         description,
-                        MainActivity.longitude,
-                        MainActivity.latitude,
+                        longitude,
+                        latitude,
                         address,
                         state,
                         country,
@@ -283,63 +292,101 @@ public class AddListingActivity extends AppCompatActivity implements
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
+        tvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                catName = parent.getItemAtPosition(position).toString();
+                Log.e("OnCategoryClick", "Category clicked: " +parent.getItemAtPosition(position).toString());
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .addInterceptor(new BasicAuthInterceptor(username, password))
+                        .addInterceptor(logging)
+                        .build();
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(client)
+                        .build();
+                RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                // pass JSON data to BusinessListings class for filtering
+                Call<List<ListingsCategories>> call = service.getCategory(query);
+                // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                call.enqueue(new Callback<List<ListingsCategories>>() {
+                    @Override
+                    public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
+                        // loop through JSON response get parse and output to log
+                        for (int i = 0; i < response.body().size(); i++) {
+                            if (parent.getItemAtPosition(position).toString().equals(response.body().get(i).getName())) {
+                                catNum = (response.body().get(i).getId());
+                                Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+                        Log.e("CategoryNumber", " response: " + t);
+                    }
+                });
+            }
+        });
         tvCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!spnCategory.getSelectedItem().toString().equals("Category")) {
+                catName = parent.getItemAtPosition(position).toString();
+                Log.e("onCategorySelected", "Category selected:" +parent.getItemAtPosition(position).toString());
+               // Toast.makeText(Check.this, view.getItem(position).toString(), Toast.LENGTH_SHORT).show();
 
-                    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-                    OkHttpClient client = new OkHttpClient.Builder()
-                            .connectTimeout(10, TimeUnit.SECONDS)
-                            .writeTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(30, TimeUnit.SECONDS)
-                            .addInterceptor(new BasicAuthInterceptor(username, password))
-                            .addInterceptor(logging)
-                            .build();
-
-
-                    if(retrofit==null){
-                        retrofit = new Retrofit.Builder()
-                                .baseUrl(baseURL)
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .client(client)
-                                .build();
-                    }
-                    RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-                    // pass JSON data to BusinessListings class for filtering
-                    Call<List<ListingsCategories>> call = service.getCategory(query);
-
-                    // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
-                    call.enqueue(new Callback<List<ListingsCategories>>() {
-                        @Override
-                        public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-
-                            // loop through JSON response get parse and output to log
-                            for (int i = 0; i < response.body().size(); i++) {
-
-                                if (tvCategory.equals(response.body().get(i).getName())) {
-                                    catNum = (response.body().get(i).getId());
-                                    break;
-                                }
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .addInterceptor(new BasicAuthInterceptor(username, password))
+                        .addInterceptor(logging)
+                        .build();
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(client)
+                        .build();
+                RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                // pass JSON data to BusinessListings class for filtering
+                Call<List<ListingsCategories>> call = service.getCategory(query);
+                // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                call.enqueue(new Callback<List<ListingsCategories>>() {
+                    @Override
+                    public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
+                        // loop through JSON response get parse and output to log
+                        for (int i = 0; i < response.body().size(); i++) {
+                            if (parent.getItemAtPosition(position).toString().equals(response.body().get(i).getName())) {
+                                catNum = (response.body().get(i).getId());
+                                Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
+                                break;
                             }
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
-                            Log.e("CategoryNumber", " response: " + t);
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+                        Log.e("CategoryNumber", " response: " + t);
+                    }
+                });
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // TODO Auto-generated method stub
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.d("onNothingSelected", "[AutoCompleteTextView] Nothing here");
             }
         });
-
         ivLogo = findViewById(R.id.ivLogo);
         //galleryButton = findViewById(R.id.gallery_button);
 
@@ -368,53 +415,8 @@ public class AddListingActivity extends AppCompatActivity implements
                 }
             }
         });
-        String TAG = "placeautocomplete";
-
-        // Initialize Places.
-        //com.google.android.libraries.places.api.Places.initialize(getApplicationContext(), R.string.google_api, Locale.US);
-        Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api), Locale.US);
-        // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(getApplicationContext());
-
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
-
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                LatLng locationLatLng = place.getLatLng();
-                latitude = locationLatLng.latitude;
-                longitude = locationLatLng.longitude;
-                // zoom to location of selected address on map
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 13));
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
-                        .zoom(17)                   // Sets the zoom
-                        .bearing(90)                // Sets the orientation of the camera to east
-                        .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                        .build();                   // Creates a CameraPosition from the builder
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                tvCurrentAddress.setText(place.getAddress());
-                Log.e(TAG, "Place: " + place.getAddress() + "," + place.getLatLng());
-                //Log.i(TAG, "Lat/Lng: " + place.getLatLng() +',' + destlng);
-
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.e(TAG, "An error occurred: " + status);
-            }
-        });
     }
+    ////  END OF ONCREATE ////
 
     public void onStart() {
         super.onStart();
@@ -445,6 +447,35 @@ public class AddListingActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                LatLng locationLatLng = place.getLatLng();
+                latitude = locationLatLng.latitude;
+                longitude = locationLatLng.longitude;
+                setAddress(latitude,longitude);
+                // zoom to location of selected address on map
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 13));
+
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(latitude, longitude))      // Sets the center of the map to location user
+                        .zoom(17)                   // Sets the zoom
+                        .bearing(90)                // Sets the orientation of the camera to east
+                        .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                        .build();                   // Creates a CameraPosition from the builder
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                tvCurrentAddress.setText(place.getAddress());
+                Log.e("PlaceAutocomplete", "Place: " + place.getAddress() + "," + place.getLatLng());
+                Log.i("PlaceAutocomplete", "Place: " + place.getName() + ", " + place.getId());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i("AutoCompleteText", status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
 
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
@@ -703,8 +734,8 @@ public class AddListingActivity extends AppCompatActivity implements
      * @param longitude
      */
     private void setAddress(Double latitude, Double longitude){
-        this.latitude = latitude;
-        this.longitude = longitude;
+       // this.latitude = latitude;
+        //this.longitude = longitude;
 
         Geocoder geocoder;
         List<Address> addresses = null;
@@ -715,8 +746,6 @@ public class AddListingActivity extends AppCompatActivity implements
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         if(addresses != null) {
            // Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
@@ -733,12 +762,12 @@ public class AddListingActivity extends AppCompatActivity implements
 
 
             tvCurrentAddress.setText(address);
-            tvZip.setText(zipcode);
+           /* tvZip.setText(zipcode);
             tvState.setText(state);
             tvCity.setText(city);
             tvStreet.setText(street);
             tvBldgNo.setText(bldgNo);
-            tvCountry.setText(country);
+            tvCountry.setText(country);*/
         }
 
     }
@@ -816,9 +845,9 @@ public class AddListingActivity extends AppCompatActivity implements
                    // spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, addListingCategory));
                    // Log.e("main ", " Category: " + response.body().get(i).getName());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.select_dialog_item, addListingCategory);
+                ArrayAdapter<String> listingCategoryAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.select_dialog_item, addListingCategory);
                 tvCategory.setThreshold(2);
-                tvCategory.setAdapter(adapter);
+                tvCategory.setAdapter(listingCategoryAdapter);
             }
             @Override
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {

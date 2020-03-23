@@ -117,17 +117,17 @@
                             android:gravity="center_horizontal|center_vertical"
                             android:text="Tap to edit if the address is incorrect"
                             android:textAllCaps="false"
-                            android:textColor="@color/colorAccent" />
+                            android:textColor="@color/colorAccent2" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/currentAddressLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center_horizontal|center_vertical"
                         android:orientation="horizontal">
 
-                        <EditText
+                        <TextView
                             android:id="@+id/tvCurrentAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -219,20 +219,6 @@
                             android:textStyle="bold"
                             android:visibility="gone"
                             tools:visibility="gone" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/autocompleteAddressLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <fragment
-                            android:id="@+id/autocomplete_fragment"
-                            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
