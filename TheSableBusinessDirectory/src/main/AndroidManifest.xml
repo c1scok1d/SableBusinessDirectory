@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.sable.businesslistingapi">
+    package="com.macinternetservices.sablebusinessdirectory">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -25,13 +25,12 @@
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
-        tools:ignore="googleappindexingwarning"
         android:label="Sable"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:icon="@mipmap/ic_launcher_round">
 
-        <activity android:name=".SplashScreen"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.SplashScreen"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,27 +38,27 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.MainActivity"
             android:label="@string/app_name">
         </activity>
 
-        <activity android:name=".AddListingActivity"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.AddListingActivity"
             android:label="@string/app_name">
         </activity>
 
-        <activity android:name=".ReviewActivity"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.ReviewActivity"
             android:label="@string/app_name">
         </activity>
 
-        <activity android:name=".ListReviewActivity"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.ListReviewActivity"
             android:label="@string/app_name">
         </activity>
 
-        <activity android:name=".LoginActivity"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.LoginActivity"
             android:label="@string/app_name">
         </activity>
 
-        <activity android:name=".MarkerClusteringActivity"
+        <activity android:name="com.macinternetservices.sablebusinessdirectory.MarkerClusteringActivity"
             android:label="@string/app_name">
         </activity>
 
@@ -97,7 +96,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.sable.businesslistingapi.easyphotopicker.fileprovider"
+            android:authorities="com.macinternetservices.sablebusinessdirectory.easyphotopicker.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
