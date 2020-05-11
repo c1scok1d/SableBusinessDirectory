@@ -93,8 +93,8 @@ public class AddListingActivity extends AppCompatActivity implements
     String address, state, country, zipcode, city, street, bldgNo, username = "android_app",
             password = "mroK zH6o wOW7 X094 MTKy fwmY";
 
-    private Double latitude = 0.00;
-    private Double longitude = 0.00;
+    private Double latitude = MainActivity.latitude;
+    private Double longitude = MainActivity.longitude;
     /*
     objects of text view and button widgets.
      */
@@ -222,7 +222,8 @@ public class AddListingActivity extends AppCompatActivity implements
             Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api));
         }
         // Set the fields to specify which types of place data to return.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG);
+       List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG);
+        //latitude = fields.get()
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(getApplicationContext());
@@ -240,9 +241,11 @@ public class AddListingActivity extends AppCompatActivity implements
                 Toast.makeText(AddListingActivity.this, "Please Enter The Business Name...", Toast.LENGTH_LONG).show();
             } else if (tvCategory.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please select a Category...", Toast.LENGTH_LONG).show();
-            } /*else if (etDescription.getText().toString().isEmpty()) {
+            }  else if (!imageUpload){
+                Toast.makeText(AddListingActivity.this, "Please add a logo or image of the business product or service...", Toast.LENGTH_LONG).show();
+            } else if (etDescription.getText().toString().isEmpty()) {
                 Toast.makeText(AddListingActivity.this, "Please enter a description...", Toast.LENGTH_LONG).show();
-            } */
+            }
             else {
 
                 name = etName.getText().toString();
@@ -521,7 +524,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
     File[] filesToUpload;
     ArrayList<String> filesToUploadfoo = new ArrayList<>();
-
+    Boolean imageUpload = false;
 
     public void uploadFiles(@NonNull MediaFile[] returnedPhotos){
         photos.addAll(Arrays.asList(returnedPhotos));
@@ -556,6 +559,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     }
                     filesToUploadfoo.add(foo);
                     Log.e("RESPONSE "+i, responses[i]);
+                    imageUpload = true;
                 }
             }
 
@@ -912,8 +916,8 @@ String type = "gd_business";
                 state,
                 country,
                 zipcode,
-                MainActivity.latitude,
-                MainActivity.longitude,
+                latitude,
+                longitude,
                 phone,
                 /* hours,*/
                 email,

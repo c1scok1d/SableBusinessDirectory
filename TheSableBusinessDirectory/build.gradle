@@ -10,8 +10,8 @@ android {
         applicationId "com.sable.businesslistingapi"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 4
-        versionName "$BUILD_DATE"
+        versionCode 7
+        versionName "$versionCode.$BUILD_DATE"
     }
     buildTypes {
         release {
