@@ -741,7 +741,7 @@ public class MainActivity extends AppCompatActivity implements
                         finish();
                         return;
                     } else {
-                       // startActivity(getIntent());
+                       startActivity(getIntent());
                     }
                 }
                 // all permissions were granted
