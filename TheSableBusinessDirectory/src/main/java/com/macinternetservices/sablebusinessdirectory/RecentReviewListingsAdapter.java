@@ -48,8 +48,8 @@ public class RecentReviewListingsAdapter extends RecyclerView.Adapter {
             image.setOnClickListener(v -> {
                // Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
                 for (int i = 0; i < MainActivity.verticalList.size(); i++) {
-                    String fooId = tvId.getText().toString();
-                    Integer fooId2 = MainActivity.verticalList.get(i).id;
+                    //String fooId = tvId.getText().toString();
+                    //Integer fooId2 = MainActivity.verticalList.get(i).id;
 
                     if (tvId.getText().toString().equals(MainActivity.verticalList.get(i).id)) {
                         ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
