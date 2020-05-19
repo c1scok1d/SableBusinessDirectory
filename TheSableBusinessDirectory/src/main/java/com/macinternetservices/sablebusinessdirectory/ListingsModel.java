@@ -88,7 +88,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(link);
         dest.writeString(status);
         dest.writeString(category);
-        dest.writeBoolean(featured);
+//        dest.writeBoolean(featured);
         dest.writeString(featured_image);
         dest.writeString(bldgno);
         dest.writeString(street);
@@ -124,7 +124,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         link = parcel.readString();
         status = parcel.readString();
         category = parcel.readString();
-        featured = parcel.readBoolean();
+       // featured = parcel.readBoolean();
         featured_image = parcel.readString();
         bldgno = parcel.readString();
         street = parcel.readString();
