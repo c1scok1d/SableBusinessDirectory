@@ -227,11 +227,11 @@ public class ListReviewActivity extends AppCompatActivity {
             tvIsOpen.setTextColor(Color.rgb(255, 0, 0)); //red
         }
 
-        if (locationReview.get(0).featured.equals(true)) {
+       /* if (locationReview.get(0).featured.equals(true)) {
                 String featured = "FEATURED";
                 tvFeatured.setText(featured);
                 tvFeatured.setTextColor(Color.rgb(255, 128, 0)); //orange
-            }
+            } */
 
         if (locationReview.get(0).ratingCount == 0) {
                 String FirstRate = "Be the first to rate";
