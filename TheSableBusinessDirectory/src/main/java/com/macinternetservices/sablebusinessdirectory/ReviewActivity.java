@@ -342,11 +342,14 @@ public class ReviewActivity extends AppCompatActivity implements
             if(locationReview.get(0).isOpen.equals("Closed now")){
                 tvIsOpen.setTextColor(Color.rgb(255, 0, 0 )); //red
             }
+           /* if(locationReview.get(0).featured.equals("null")){
+                locationReview.get(0).featured = false;
+            }
             if(locationReview.get(0).featured.equals(true)){
                 String featured = "FEATURED";
                 tvFeatured.setText(featured);
                 tvFeatured.setTextColor(Color.rgb(255, 128, 0 )); //orange
-            }
+            } */
 
             if (locationReview.get(0).ratingCount == 0){
                 String FirstRate = "Be the first to rate";
@@ -709,7 +712,7 @@ public class ReviewActivity extends AppCompatActivity implements
         call.enqueue(new Callback<ListReviewPOJO>() {
             @Override
             public void onResponse(Call<ListReviewPOJO> call, Response<ListReviewPOJO> response) {
-                Log.e("Review Response Successful", " response: " + response.body());
+                Log.e("Response Successful", " response: " + response.body());
                 if (response.isSuccessful()) {
                     userActivityArray.add(response.body().getDateGmt()); // date of review
                     userActivityArray.add(String.valueOf(response.body().getPost())); // listing id for review
