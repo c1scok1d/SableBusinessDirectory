@@ -1,17 +1,24 @@
 package com.macinternetservices.sablebusinessdirectory;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +41,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -49,12 +57,17 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.macinternetservices.sablebusinessdirectory.model.Person;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
@@ -167,6 +180,11 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
    // ArrayList<ListingsModel> locationReview = new ArrayList<>();
     public static ArrayList<Person> mapLocations = new ArrayList<>();
+    private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
+    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
+            * DateUtils.HOUR_IN_MILLIS;
+    static public boolean geofencesAlreadyRegistered = false;
+
 
 
 
@@ -258,7 +276,22 @@ public class MainActivity extends AppCompatActivity implements
 
    public static Context context;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                int resultCode = bundle.getInt("done");
+                if (resultCode == 1) {
+                    Double latitude = bundle.getDouble("latitude");
+                    Double longitude = bundle.getDouble("longitude");
+
+                    updateMarker(latitude, longitude);
+                }
+            }
+        }
+    };
 
 
     /**
@@ -472,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Log.e("Facebook Login Successful ", " response " + loginResult);
+                        //Log.e("Facebook Login Successful ", " response " + loginResult);
                     }
 
                     @Override
@@ -482,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onError(FacebookException exception) {
-                        Log.e("Facebook Login Error ", " response " + exception);
+                        //Log.e("Facebook Login Error ", " response " + exception);
                     }
                 });
 
@@ -641,7 +674,12 @@ public class MainActivity extends AppCompatActivity implements
                                             isOpen,
                                             response.body().get(i).getLogo(),
                                             response.body().get(i).getContent().getRaw(),
-                                            response.body().get(i).getFeaturedImage().getThumbnail())));
+                                            response.body().get(i).getFeaturedImage().getThumbnail(),
+                                            response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                            100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                            Geofence.GEOFENCE_TRANSITION_ENTER
+                                                    | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                    | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                                     //progressBar.setVisibility(View.GONE);
 
@@ -696,9 +734,42 @@ public class MainActivity extends AppCompatActivity implements
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
         Log.e("onCreate ", " END onCreate " );
+
+        startService(new Intent(this, GeolocationService.class));
+    }
+    //END ON CREATE
+    protected Marker myPositionMarker;
+    protected void createMarker(Double latitude, Double longitude) {
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+    protected void updateMarker(Double latitude, Double longitude) {
+        if (myPositionMarker == null) {
+            createMarker(latitude, longitude);
+        }
+
+        LatLng latLng = new LatLng(latitude, longitude);
+        myPositionMarker.setPosition(latLng);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
-        //END ON CREATE
+   /* static public void startGeolocationService(Context context) {
+
+        Intent geolocationService = new Intent(context,
+                GeolocationService.class);
+        PendingIntent piGeolocationService = PendingIntent.getService(context,
+                0, geolocationService, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context
+                .getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(piGeolocationService);
+        alarmManager
+                .setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis(), 2 * 60 * 1000,
+                        piGeolocationService);
+    } */
+
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
     }
@@ -749,6 +820,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void onStart() {
         super.onStart();
         verticalList.clear();
@@ -777,7 +849,7 @@ public class MainActivity extends AppCompatActivity implements
             useLoginInformation(accessToken);
         //    loggedInLayout.setVisibility(View.VISIBLE);
             // startActivity(getIntent());
-            Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
+            //Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
         } else {
             // startActivity(getIntent());
             LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
@@ -808,6 +880,8 @@ public class MainActivity extends AppCompatActivity implements
         //This starts the access token tracking
         accessTokenTracker.startTracking();
         Log.e("onResume", "onResume Ended");
+        getApplication().registerReceiver(receiver,
+                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
     }
 
     public void onDestroy() {
@@ -951,6 +1025,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
         mMap.setOnMyLocationClickListener(this);
+        displayGeofences();
     }
 
     /**
@@ -1174,7 +1249,12 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc()));
+                                    response.body().get(i).getFeaturedImage().getSrc(),
+                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                    100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                    Geofence.GEOFENCE_TRANSITION_ENTER
+                                            | Geofence.GEOFENCE_TRANSITION_DWELL
+                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
                             Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
                             Bundle locationMatchBundle = new Bundle();
                             locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
@@ -1214,7 +1294,12 @@ public class MainActivity extends AppCompatActivity implements
                                     isOpen,
                                     response.body().get(i).getLogo(),
                                     response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail()));
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                    100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                    Geofence.GEOFENCE_TRANSITION_ENTER
+                                            | Geofence.GEOFENCE_TRANSITION_DWELL
+                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
                             verticalAdapter.notifyDataSetChanged();
 
                             listingName.add(response.body().get(i).getTitle().getRaw());
@@ -1258,7 +1343,12 @@ public class MainActivity extends AppCompatActivity implements
                                         isOpen,
                                         response.body().get(i).getLogo(),
                                         response.body().get(i).getContent().getRaw(),
-                                        response.body().get(i).getFeaturedImage().getThumbnail()));
+                                        response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
                                 recentListingsAdapter.notifyDataSetChanged();
                             }
                             boolean isFeatured = response.body().get(i).getFeatured();
@@ -1291,7 +1381,12 @@ public class MainActivity extends AppCompatActivity implements
                                         isOpen,
                                         response.body().get(i).getLogo(),
                                         response.body().get(i).getContent().getRaw(),
-                                        response.body().get(i).getFeaturedImage().getThumbnail()));
+                                        response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
                                 featuredListAdapter.notifyDataSetChanged();
                             }
 
@@ -1320,6 +1415,7 @@ public class MainActivity extends AppCompatActivity implements
                    // tvLoading.setAnimation(imgAnimationIn);
                    // tvLoading.setText("...loading the map now.");
                     setMarkers();
+                    displayGeofences();
                 } else {
                     // do some stuff
                 }
@@ -1329,7 +1425,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("getListingsFailure", " response: " + t);
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
                 getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-                Log.e("getRetroFitListingsFailure", "Listings query executed by getRetroFitListingsFailure");
+                Log.e("getListingsFailure", "Listings query executed by getRetroFitListingsFailure");
             }
         });
     }//END Retrofit API call to get listings
@@ -1399,7 +1495,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("getReviewFailure", " response: " + t);
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
                 getReviews();
-                Log.e("getRetorFitReviewFailure", "Review query executed by getRetroFitReviewFailure");
+                Log.e("getReviewFailure", "Review query executed by getRetroFitReviewFailure");
                 // setAddress(latitude, longitude);
 
             }
@@ -1426,7 +1522,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<UserAuthPOJO>() {
             @Override
             public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
-                Log.e("loginUser_METHOD_SUCCESS", " response " + response.body());
+                Log.e("login_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
                     userId = String.valueOf(response.body().getWpUserId());
 //                    tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
@@ -1438,7 +1534,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
                 Log.e("UserLoginFailure", " response: " + t);
-                Log.e("loginUser_METHOD_FAILURE ", " Re-running method...");
+                Log.e("login_FAILURE ", " Re-running method...");
             }
         });
     }
@@ -1715,7 +1811,19 @@ public class MainActivity extends AppCompatActivity implements
 
         //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
     }
+    protected void displayGeofences() {
+        HashMap<String, SimpleGeofence> geofences = SimpleGeofenceStore.getInstance().getSimpleGeofences();
 
+        for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
+            SimpleGeofence sg = item.getValue();
+
+            CircleOptions circleOptions1 = new CircleOptions()
+                    .center(new LatLng(sg.getLatitude(), sg.getLongitude()))
+                    .radius(sg.getRadius()).strokeColor(Color.BLACK)
+                    .strokeWidth(2).fillColor(0x500000ff);
+            mMap.addCircle(circleOptions1);
+        }
+    }
     protected GoogleMap getMap() {
         return mMap;
     }

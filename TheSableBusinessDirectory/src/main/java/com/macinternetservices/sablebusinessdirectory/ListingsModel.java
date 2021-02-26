@@ -3,63 +3,36 @@ package com.macinternetservices.sablebusinessdirectory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.location.Geofence;
+
 import java.util.ArrayList;
 
 
 public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
     public static final int IMAGE_TYPE = 1;
     public String title, status, category, featured_image, bldgno, street, city, state, country, zipcode, phone, email, website, twitter, facebook, video,
-            hours, content, image, logo, timestamp, link, isOpen, reviews, userName, userEmail, userImage, userId;
+            hours, content, image, logo, timestamp, link, isOpen, reviews, foo, userName, userEmail, userImage, userId;
     public int id, ratingCount;
     public Double latitude, longitude;
     Float rating;
     Boolean featured;
+    String geofence;
 
 
-
-    public ListingsModel(int imageType,
-                         Integer id,
-                         String title,
-                         String link,
-                         String status,
-                         String category,
-                         Boolean featured,
-                         String featuredImage,
-                         String bldgNo,
-                         String street,
-                         String city,
-                         String state,
-                         String country,
-                         String zipcode,
-                         Double latitude,
-                         Double longitude,
-                         Float rating,
-                         Integer ratingCount,
-                         String phone,
-                         String email,
-                         String website,
-                         String twitter,
-                         String facebook,
-                         String video,
-                         String businessHours,
-                         String isOpen,
-                         String logo,
-                         String content,
-                         String image){
-
+    public ListingsModel(int imageType, Integer id, String raw, String link, String status, String name, Boolean featured, String src, String bldgNo, String street, String city, String region, String country, String zip, Double latitude, Double longitude, Float rating, Integer ratingCount, String phone, String email, String website, String twitter, String facebook, String video, String todayRange, String isOpen, String logo, String raw1, String thumbnail, String raw2, SimpleGeofence geofence) {
         this.id = id;
-        this.title = title;
+        this.title = raw;
         this.link = link;
         this.status = status;
-        this.category = category;
+        this.category = name;
         this.featured = featured;
-        this.featured_image = featuredImage;
+        this.featured_image = src;
         this.bldgno = bldgNo;
         this.street = street;
         this.city = city;
-        this.state = state;
+        this.state = region;
         this.country = country;
-        this.zipcode = zipcode;
+        this.zipcode = zip;
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = rating;
@@ -70,14 +43,14 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         this.twitter = twitter;
         this.facebook = facebook;
         this.video = video;
-        this.hours = businessHours;
+        this.hours = todayRange;
         this.isOpen = isOpen;
         this.logo = logo;
-        this.content = content;
-        this.image = image;
+        this.content = raw1;
+        this.image = thumbnail;
+        this.foo = raw2;
+        this.geofence = geofence.toString();
     }
-
-
 
 
     //write object values to parcel for storage
@@ -112,6 +85,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         dest.writeString(content);
         dest.writeString(image);
         dest.writeString(timestamp);
+        dest.writeString(geofence.toString());
 
 
     }
@@ -149,6 +123,7 @@ public class ListingsModel extends ArrayList<Parcelable> implements Parcelable {
         content = parcel.readString();
         image = parcel.readString();
         timestamp = parcel.readString();
+        geofence = parcel.readString();
     }
 
     //creator - used when un-parceling our parcle (creating the object)

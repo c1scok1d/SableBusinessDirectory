@@ -103,6 +103,24 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/easyimage_filepaths" />
         </provider>
+
+        <service
+            android:name=".GeofenceReceiver"
+            android:exported="false" >
+        </service>
+
+        <receiver
+            android:name=".GeofenceReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="me.hoen.geofence_21.ACTION_RECEIVE_GEOFENCE" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".GeolocationService"
+            android:icon="@drawable/logo"
+            android:label="@string/app_name" >
+        </service>
     </application>
 
 </manifest>
