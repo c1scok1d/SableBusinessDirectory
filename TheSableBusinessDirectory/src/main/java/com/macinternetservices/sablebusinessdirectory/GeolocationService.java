@@ -1,24 +1,34 @@
 package com.macinternetservices.sablebusinessdirectory;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
+import com.facebook.appevents.codeless.internal.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
@@ -50,7 +60,11 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
         }
 
     }
-
+    private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
+    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
+            * DateUtils.HOUR_IN_MILLIS;
+    private int loiteringDelay = 60000;
+    public static final long GEOFENCE_RADIUS_IN_METERS = 100;
     protected void registerGeofences() {
         if (MainActivity.geofencesAlreadyRegistered) {
             return;
@@ -58,20 +72,29 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
         Log.d("Geofence", "Registering Geofences");
 
-        HashMap<String, SimpleGeofence> geofences = SimpleGeofenceStore
-                .getInstance().getSimpleGeofences();
-
+        HashMap<String, SimpleGeofence> geofences = MainActivity.geofences;
         GeofencingRequest.Builder geofencingRequestBuilder = new GeofencingRequest.Builder();
         for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
             SimpleGeofence sg = item.getValue();
 
             geofencingRequestBuilder.addGeofence(sg.toGeofence());
+            //Float foo = item.getValue().getRadius();
         }
 
         GeofencingRequest geofencingRequest = geofencingRequestBuilder.build();
 
         mPendingIntent = requestPendingIntent();
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
                 geofencingRequest, mPendingIntent).setResultCallback(this);
 
@@ -102,6 +125,16 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     }
 
     protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
     }

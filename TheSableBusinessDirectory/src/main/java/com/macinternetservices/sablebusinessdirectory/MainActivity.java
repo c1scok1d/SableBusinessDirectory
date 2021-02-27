@@ -730,13 +730,7 @@ public class MainActivity extends AppCompatActivity implements
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-
         Log.e("onCreate ", " END onCreate " );
-
-        Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
-        ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
-        startGeolocationService(this);
-        //startService(new Intent(this, GeolocationService.class));
     }
     //END ON CREATE
     protected Marker myPositionMarker;
@@ -1804,18 +1798,12 @@ public class MainActivity extends AppCompatActivity implements
     };
 
     protected void setMarkers() {
-        Log.e("setMarkersCall", "setMarkersCall Executed");
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
+        ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
+        //startService(new Intent(this, GeolocationService.class));
+        //startGeolocationService(context);
         Intent intent = new Intent(this, MarkerClusteringActivity.class);
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-        //tvLoading.setAnimation(imgAnimationIn);
-        //tvLoading.setText("Loading the map...");
-        Log.e("setMarkersCall", "setMarkersCall Ended");
-
-
-        //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
     }
     protected void displayGeofences() {
         //HashMap<String, SimpleGeofence> geofences

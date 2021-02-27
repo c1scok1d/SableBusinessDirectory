@@ -22,11 +22,13 @@ public class SimpleGeofence {
     }
 
     public Geofence toGeofence() {
-        Geofence g = new Geofence.Builder().setRequestId(getId())
-                .setTransitionTypes(transitionType)
-                .setCircularRegion(getLatitude(), getLongitude(), getRadius())
+        Geofence g = new Geofence.Builder()
                 .setExpirationDuration(expirationDuration)
-                .setLoiteringDelay(loiteringDelay).build();
+                .setRequestId(id)
+                .setLoiteringDelay(loiteringDelay)
+                .setTransitionTypes(transitionType)
+                .setCircularRegion(latitude,longitude,radius)
+                .build();
         return g;
     }
 
