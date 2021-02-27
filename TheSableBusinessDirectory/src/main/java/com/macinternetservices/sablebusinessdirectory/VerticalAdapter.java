@@ -19,12 +19,14 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.AccessToken;
+import com.google.android.gms.location.Geofence;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS;
 
 public class VerticalAdapter extends RecyclerView.Adapter {
 
@@ -146,7 +148,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                 locationReview.get(i).isOpen,
                                 locationReview.get(i).logo,
                                 locationReview.get(i).content,
-                                locationReview.get(i).featured_image)));
+                                locationReview.get(i).featured_image,
+                                locationReview.get(i).content,
+                                new SimpleGeofence(locationReview.get(i).title, locationReview.get(i).latitude, locationReview.get(i).longitude,
+                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                Geofence.GEOFENCE_TRANSITION_ENTER
+                                        | Geofence.GEOFENCE_TRANSITION_DWELL
+                                        | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                         Bundle locationReviewBundle = new Bundle();
                         locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
@@ -214,7 +222,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                         locationReview.get(i).isOpen,
                                         locationReview.get(i).logo,
                                         locationReview.get(i).content,
-                                        locationReview.get(i).featured_image)));
+                                        locationReview.get(i).featured_image,
+                                        locationReview.get(i).content,
+                                        new SimpleGeofence(locationReview.get(i).title, locationReview.get(i).latitude, locationReview.get(i).longitude,
+                                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                                Geofence.GEOFENCE_TRANSITION_ENTER
+                                                        | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                        | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                                 Intent LocationReview = new Intent(v.getContext(), ReviewActivity.class);
 
@@ -381,7 +395,13 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                 object.isOpen,
                 object.logo,
                 object.content,
-                object.featured_image));
+                object.featured_image,
+                object.content,
+                new SimpleGeofence(object.title, object.latitude, object.longitude,
+                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
 
         /*if (object.facebook.equals("null") || object.facebook.isEmpty()) {
             ((ImageTypeViewHolder) holder).btnFacebook.setColorFilter(Color.argb(211, 211, 211, 211)); //grey

@@ -1,38 +1,29 @@
 package com.macinternetservices.sablebusinessdirectory;
+import java.util.HashMap;
+import java.util.Map;
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.internal.ConnectionCallbacks;
-import com.google.android.gms.common.api.internal.OnConnectionFailedListener;
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class GeolocationService extends Service implements ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, ResultCallback<Status> {
@@ -81,16 +72,6 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
         mPendingIntent = requestPendingIntent();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
         LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
                 geofencingRequest, mPendingIntent).setResultCallback(this);
 
@@ -121,34 +102,24 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     }
 
     protected void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
         LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+                mGoogleApiClient, mLocationRequest, this);
     }
 
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
+                mGoogleApiClient, this);
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i("GoogleApi", "Connected to GoogleApiClient");
+        Log.i("Geofence", "Connected to GoogleApiClient");
         startLocationUpdates();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("LocationChange",
+        Log.d("Geofence",
                 "new location : " + location.getLatitude() + ", "
                         + location.getLongitude() + ". "
                         + location.getAccuracy());
@@ -160,38 +131,23 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    @Override
     public void onConnectionSuspended(int cause) {
-        Log.i("GoogleApi", "Connection suspended");
+        Log.i("Geofence", "Connection suspended");
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.i("GoogleApi",
+        Log.i("Geofence",
                 "Connection failed: ConnectionResult.getErrorCode() = "
                         + result.getErrorCode());
     }
 
     protected synchronized void buildGoogleApiClient() {
-        Log.i("GoogleApi", "Building GoogleApiClient");
+        Log.i("Geofence", "Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
         createLocationRequest();
     }
@@ -236,5 +192,4 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                 return mResources.getString(R.string.unknown_geofence_error);
         }
     }
-
 }

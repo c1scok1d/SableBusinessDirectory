@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -268,7 +269,13 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                         verticalList.get(i).isOpen,
                         verticalList.get(i).logo,
                         verticalList.get(i).content,
-                        verticalList.get(i).featured_image)));
+                        verticalList.get(i).featured_image,
+                        verticalList.get(i).content,
+                        new SimpleGeofence(verticalList.get(i).title, verticalList.get(i).latitude, verticalList.get(i).longitude,
+                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                Geofence.GEOFENCE_TRANSITION_ENTER
+                                        | Geofence.GEOFENCE_TRANSITION_DWELL
+                                        | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                 Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
 

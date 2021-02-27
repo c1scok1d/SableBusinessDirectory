@@ -18,11 +18,7 @@ public class SimpleGeofenceStore {
     }
 
     private SimpleGeofenceStore() {
-        geofences.put("The Shire", new SimpleGeofence("The Shire", 51.663398, -0.209118,
-                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-                Geofence.GEOFENCE_TRANSITION_ENTER
-                        | Geofence.GEOFENCE_TRANSITION_DWELL
-                        | Geofence.GEOFENCE_TRANSITION_EXIT));
+       geofences = MainActivity.geofences;
     }
 
     public HashMap<String, SimpleGeofence> getSimpleGeofences() {

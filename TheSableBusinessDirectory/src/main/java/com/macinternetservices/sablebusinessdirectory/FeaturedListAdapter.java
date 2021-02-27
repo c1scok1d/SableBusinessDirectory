@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.Geofence;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS;
 
 
 public class FeaturedListAdapter extends RecyclerView.Adapter {
@@ -82,7 +85,13 @@ public class FeaturedListAdapter extends RecyclerView.Adapter {
                                 locationReview.get(i).isOpen,
                                 locationReview.get(i).logo,
                                 locationReview.get(i).content,
-                                locationReview.get(i).featured_image)));
+                                locationReview.get(i).featured_image,
+                                locationReview.get(i).content,
+                                new SimpleGeofence(locationReview.get(i).title, locationReview.get(i).latitude, locationReview.get(i).longitude,
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                         Bundle locationReviewBundle = new Bundle();
                         locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReviewShow);
@@ -147,7 +156,13 @@ public class FeaturedListAdapter extends RecyclerView.Adapter {
                 object.isOpen,
                 object.logo,
                 object.content,
-                object.featured_image));
+                object.featured_image,
+                object.content,
+                new SimpleGeofence(object.title, object.latitude, object.longitude,
+                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
     }
 
     @Override

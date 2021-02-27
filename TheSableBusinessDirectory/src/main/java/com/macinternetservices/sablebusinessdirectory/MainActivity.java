@@ -184,9 +184,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
             * DateUtils.HOUR_IN_MILLIS;
     static public boolean geofencesAlreadyRegistered = false;
-
-
-
+    public static HashMap<String, SimpleGeofence> geofences = new HashMap<String, SimpleGeofence>();
 
     //ArrayList<SearchListItems> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
@@ -735,7 +733,10 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.e("onCreate ", " END onCreate " );
 
-        startService(new Intent(this, GeolocationService.class));
+        Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
+        ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
+        startGeolocationService(this);
+        //startService(new Intent(this, GeolocationService.class));
     }
     //END ON CREATE
     protected Marker myPositionMarker;
@@ -755,7 +756,7 @@ public class MainActivity extends AppCompatActivity implements
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
-   /* static public void startGeolocationService(Context context) {
+    static public void startGeolocationService(Context context) {
 
         Intent geolocationService = new Intent(context,
                 GeolocationService.class);
@@ -768,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements
                 .setInexactRepeating(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis(), 2 * 60 * 1000,
                         piGeolocationService);
-    } */
+    }
 
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
@@ -1025,7 +1026,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
         mMap.setOnMyLocationClickListener(this);
-        displayGeofences();
+        //displayGeofences();
     }
 
     /**
@@ -1296,10 +1297,15 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
                                     Geofence.GEOFENCE_TRANSITION_ENTER
                                             | Geofence.GEOFENCE_TRANSITION_DWELL
                                             | Geofence.GEOFENCE_TRANSITION_EXIT)));
+                            geofences.put(response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                    Geofence.GEOFENCE_TRANSITION_ENTER
+                                            | Geofence.GEOFENCE_TRANSITION_DWELL
+                                            | Geofence.GEOFENCE_TRANSITION_EXIT));
                             verticalAdapter.notifyDataSetChanged();
 
                             listingName.add(response.body().get(i).getTitle().getRaw());
@@ -1345,7 +1351,7 @@ public class MainActivity extends AppCompatActivity implements
                                         response.body().get(i).getContent().getRaw(),
                                         response.body().get(i).getFeaturedImage().getThumbnail(),
                                         response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
                                         Geofence.GEOFENCE_TRANSITION_ENTER
                                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                                 | Geofence.GEOFENCE_TRANSITION_EXIT)));
@@ -1383,7 +1389,7 @@ public class MainActivity extends AppCompatActivity implements
                                         response.body().get(i).getContent().getRaw(),
                                         response.body().get(i).getFeaturedImage().getThumbnail(),
                                         response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
                                         Geofence.GEOFENCE_TRANSITION_ENTER
                                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                                 | Geofence.GEOFENCE_TRANSITION_EXIT)));
@@ -1415,7 +1421,7 @@ public class MainActivity extends AppCompatActivity implements
                    // tvLoading.setAnimation(imgAnimationIn);
                    // tvLoading.setText("...loading the map now.");
                     setMarkers();
-                    displayGeofences();
+                    //displayGeofences();
                 } else {
                     // do some stuff
                 }
@@ -1812,7 +1818,7 @@ public class MainActivity extends AppCompatActivity implements
         //startActivity(new Intent(getApplicationContext(), MarkerClusteringActivity.class));
     }
     protected void displayGeofences() {
-        HashMap<String, SimpleGeofence> geofences = SimpleGeofenceStore.getInstance().getSimpleGeofences();
+        //HashMap<String, SimpleGeofence> geofences
 
         for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
             SimpleGeofence sg = item.getValue();

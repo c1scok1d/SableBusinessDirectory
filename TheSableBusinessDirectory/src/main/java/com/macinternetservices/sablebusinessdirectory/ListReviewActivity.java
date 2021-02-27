@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.google.android.gms.location.Geofence;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -46,6 +47,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS;
 
 
 public class ListReviewActivity extends AppCompatActivity {
@@ -314,7 +317,13 @@ public class ListReviewActivity extends AppCompatActivity {
                                     locationReview.get(i).isOpen,
                                     locationReview.get(i).content,
                                     locationReview.get(i).logo,
-                                    locationReview.get(i).featured_image)));
+                                    locationReview.get(i).featured_image,
+                                    locationReview.get(i).content,
+                                    new SimpleGeofence(locationReview.get(i).title, locationReview.get(i).latitude, locationReview.get(i).longitude,
+                                            100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                            Geofence.GEOFENCE_TRANSITION_ENTER
+                                                    | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                    | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                             Bundle locationReviewBundle = new Bundle();
                             locationReviewBundle.putParcelableArrayList("locationReview", locationFoo);
@@ -457,7 +466,7 @@ public class ListReviewActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override
             public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
-                Log.e("getPostReview_METHOD_SUCCESS", " response " + response.body());
+                //Log.e("gePostReview_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();
@@ -520,13 +529,13 @@ public class ListReviewActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
+                    //Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
                 if (retryCount++ < TOTAL_RETRIES) {
-                    Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
+                    //Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
 
                 }
             }

@@ -12,11 +12,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.Geofence;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS;
 
 
 public class RecentReviewListingsAdapter extends RecyclerView.Adapter {
@@ -82,7 +85,13 @@ public class RecentReviewListingsAdapter extends RecyclerView.Adapter {
                                 MainActivity.verticalList.get(i).isOpen,
                                 MainActivity.verticalList.get(i).logo,
                                 MainActivity.verticalList.get(i).content,
-                                MainActivity.verticalList.get(i).featured_image)));
+                                MainActivity.verticalList.get(i).featured_image,
+                                MainActivity.verticalList.get(i).content,
+                                new SimpleGeofence(MainActivity.verticalList.get(i).title, MainActivity.verticalList.get(i).latitude, MainActivity.verticalList.get(i).longitude,
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
                         Intent showReviews = new Intent(v.getContext(), ListReviewActivity.class);
 
