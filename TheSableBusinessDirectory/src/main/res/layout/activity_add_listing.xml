@@ -135,14 +135,24 @@
                         android:gravity="center_horizontal|center_vertical"
                         android:orientation="horizontal">
 
-                        <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
+                        <fragment
+                            android:id="@+id/place_autocomplete_fragment"
+                            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/img"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                        <!--com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
                             android:id="@+id/tvCurrentAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             app:pacv_googleMapsApiKey="AIzaSyC3r09g_fye7EadC9KuYPdYbgVSjqY8Mgs" />
 
-                        <!--TextView
+                        <TextView
                             android:id="@+id/tvCurrentAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

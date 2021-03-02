@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Criteria;
@@ -42,10 +43,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPhotoResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 
@@ -60,6 +69,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -128,8 +138,7 @@ public class AddListingActivity extends AppCompatActivity implements
     //BusinessHoursWeekPicker bh_picker;
     JSONArray businessHours = new JSONArray();
     //LinearLayout viewBusinessHoursLayout;
-
-
+    PlacesClient placesClient;
 
     public static final String BH_LIST = "bh_list";
 
@@ -176,7 +185,7 @@ public class AddListingActivity extends AppCompatActivity implements
             businessHoursLayout.setVisibility(View.GONE);
         });
 
-        tvCurrentAddress = findViewById(R.id.tvCurrentAddress);
+        tvCurrentAddress = findViewById(R.id.tvAddress);
         btnNext = findViewById(R.id.btnNext);
         //spnCategory = findViewById(R.id.spnCategory);
         //spnCategory.setFastScrollEnabled(true);
@@ -208,18 +217,60 @@ public class AddListingActivity extends AppCompatActivity implements
                 tvAddHours.setText("Add Hours");
             }
         });
-        // Open the autocomplete activity when the address is clicked.
-        tvCurrentAddress.setOnClickListener(new View.OnClickListener() {
+
+
+        String apiKey = getString(R.string.api_key);
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
+
+        // Create a new Places client instance.
+        placesClient = Places.createClient(this);
+
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS, Place.Field.LAT_LNG));
+        //LatLng latlng = Place.Field.LAT_LNG();
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onClick(View view) {
-                tvCurrentAddress.setText("");
-                if (!Places.isInitialized()) {
-                    Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api));
-                }
-                List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG);
-                // Start the autocomplete intent.
-                Intent autoCompleteIntent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(getApplicationContext());
-                startActivityForResult(autoCompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
+            public void onPlaceSelected(@NonNull Place place) {
+                // TODO: Get info about the selected place.
+                Toast.makeText(getApplicationContext(), place.getName(), Toast.LENGTH_SHORT).show();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 13));
+                setAddress(place.getLatLng().latitude, place.getLatLng().longitude);
+
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(place.getLatLng())      // Sets the center of the map to location user
+                        .zoom(17)                   // Sets the zoom
+                        .bearing(90)                // Sets the orientation of the camera to east
+                        .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                        .build();                   // Creates a CameraPosition from the builder
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+/*                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(Objects.requireNonNull(place.getPhotoMetadatas()).get(0))
+                        .build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener(
+                        new OnSuccessListener<FetchPhotoResponse>() {
+                            @Override
+                            public void onSuccess(FetchPhotoResponse response) {
+                                Bitmap bitmap = response.getBitmap();
+                                ((ImageView)findViewById(R.id.img)).setImageBitmap(bitmap);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                exception.printStackTrace();
+                            }
+                        });*/
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Toast.makeText(getApplicationContext(), status.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -479,7 +530,7 @@ public class AddListingActivity extends AppCompatActivity implements
                         .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                         .build();                   // Creates a CameraPosition from the builder
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                tvCurrentAddress.setText(place.getAddress());
+                //tvCurrentAddress.setText(place.getAddress());
                 ////Log.e("PlaceAutocomplete", "Place: " + place.getAddress() + "," + place.getLatLng());
                 //Log.i("PlaceAutocomplete", "Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -777,13 +828,11 @@ public class AddListingActivity extends AppCompatActivity implements
      *
      */
     public class BasicAuthInterceptor implements Interceptor {
-
         private String credentials;
 
         public BasicAuthInterceptor(String user, String password) {
             this.credentials = Credentials.basic(user, password);
         }
-
         @Override
         public okhttp3.Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
@@ -794,7 +843,6 @@ public class AddListingActivity extends AppCompatActivity implements
 
     }
     private String baseURL = "https://www.thesablebusinessdirectory.com";
-    //Integer addCategory;
 
     private static Retrofit retrofit = null;
     public void getRetrofitCategories(final Map<String, String> query) {
@@ -825,19 +873,8 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override
             public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-               // //Log.e("main_activity", " response " + response.body());
-                // mListPost = response.body();
-                //progressBar.setVisibility(View.GONE); //hide progressBar
-                // loop through JSON response get parse and output to log
                 for (int i = 0; i < response.body().size(); i++) {
-                    //ifStatement to skip json object from array if value is empty/null
-                    //parse response based on ListingsModel class and add to list array ( get category name, description and image)
-                    // add category name from array to spinner
                     addListingCategory.add(response.body().get(i).getName());
-                    //category.add(response.body().get(i).getId().toString());
-                    // display category array list in spinner
-                   // spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, addListingCategory));
-                   // //Log.e("main ", " Category: " + response.body().get(i).getName());
                 }
                 ArrayAdapter<String> listingCategoryAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.select_dialog_item, addListingCategory);
                 tvCategory.setThreshold(2);
@@ -845,7 +882,6 @@ public class AddListingActivity extends AppCompatActivity implements
             }
             @Override
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
-                //Log.e("spnCategory", " response: " + t);
             }
         });
     }
@@ -879,9 +915,7 @@ String type = "gd_business";
                 status,
                 catNum,
                 description,
-                /*address,*/
                 bldgNo,
-                /*street,*/
                 streetFoo,
                 city,
                 state,
@@ -890,7 +924,6 @@ String type = "gd_business";
                 latitude,
                 longitude,
                 phone,
-                /* hours,*/
                 email,
                 website,
                 twitter,
