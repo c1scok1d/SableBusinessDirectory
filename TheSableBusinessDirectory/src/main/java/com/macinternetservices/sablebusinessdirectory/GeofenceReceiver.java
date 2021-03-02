@@ -14,6 +14,7 @@ import java.util.List;
 
 public class GeofenceReceiver extends IntentService {
     public static final int NOTIFICATION_ID = 1;
+    public static int near =0;
 
     public GeofenceReceiver() {
         super("GeofenceReceiver");
@@ -29,7 +30,6 @@ public class GeofenceReceiver extends IntentService {
                    // + geoEvent.getGeofenceTransition());
 
             int transitionType = geoEvent.getGeofenceTransition();
-            int i =0;
 
             if (transitionType == Geofence.GEOFENCE_TRANSITION_ENTER
                     || transitionType == Geofence.GEOFENCE_TRANSITION_DWELL
@@ -44,17 +44,17 @@ public class GeofenceReceiver extends IntentService {
                     switch (transitionType) {
                         case Geofence.GEOFENCE_TRANSITION_DWELL:
                             transitionName = "dwell";
-                            i++;
+                            near++;
                             break;
 
                         case Geofence.GEOFENCE_TRANSITION_ENTER:
                             transitionName = "enter";
-                            i++;
+                            near++;
                             break;
 
                         case Geofence.GEOFENCE_TRANSITION_EXIT:
                             transitionName = "exit";
-                            i++;
+                            near++;
                             break;
                     }
                    /* String date = DateFormat.format("yyyy-MM-dd hh:mm:ss",
@@ -69,8 +69,9 @@ public class GeofenceReceiver extends IntentService {
                     geofenceNotification
                             .displayNotification(sg, transitionType);
                 }
-                if(i > 0){
-                    Toast.makeText(getApplicationContext(), "There are " +i+ " black owned businesses within 5 miles of you", Toast.LENGTH_LONG).show();
+                if(near > 0){
+                    Toast.makeText(getApplicationContext(), "There are " +near+ " black owned businesses within 5 miles of you", Toast.LENGTH_LONG).show();
+                    //MainActivity.tvLoading.setText("It looks like there are " +near+ " black owned businesses within 5 miles of you");
                 } else{
                     Toast.makeText(getApplicationContext(), "There are no black owned businesses near you", Toast.LENGTH_LONG).show();
 

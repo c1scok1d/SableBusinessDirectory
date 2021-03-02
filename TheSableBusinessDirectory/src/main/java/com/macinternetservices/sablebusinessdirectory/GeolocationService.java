@@ -80,9 +80,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
         GeofencingRequest.Builder geofencingRequestBuilder = new GeofencingRequest.Builder();
         for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
             SimpleGeofence sg = item.getValue();
-
             geofencingRequestBuilder.addGeofence(sg.toGeofence());
-            //Float foo = item.getValue().getRadius();
         }
 
         GeofencingRequest geofencingRequest = geofencingRequestBuilder.build();
@@ -156,10 +154,10 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
     @Override
     public void onLocationChanged(Location location) {
-        //Log.d("Geofence",
-                //"new location : " + location.getLatitude() + ", "
-                   //     + location.getLongitude() + ". "
-                   //     + location.getAccuracy());
+        Log.d("Geofence",
+                "new location : " + location.getLatitude() + ", "
+                        + location.getLongitude() + ". "
+                        + location.getAccuracy());
         broadcastLocationFound(location);
 
         if (!MainActivity.geofencesAlreadyRegistered) {

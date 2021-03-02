@@ -1,12 +1,18 @@
 package com.macinternetservices.sablebusinessdirectory;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.Geofence;
+
+import java.util.Random;
 
 public class GeofenceNotification {
     public static final int NOTIFICATION_ID = 20;
@@ -22,24 +28,29 @@ public class GeofenceNotification {
         this.notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
     }
-
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType) {
-
-        String notificationText = "";
         Object[] notificationTextParams = new Object[] { simpleGeofence.getId() };
+        String notificationText = "";
+        float foo = simpleGeofence.getRadius();
+        String bar = simpleGeofence.getId();
+
 
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                notificationText = String.format(
+                notificationText = "You are near " +simpleGeofence.getId();
+                        /*String.format(
                         context.getString(R.string.geofence_dwell),
-                        notificationTextParams);
+                        notificationTextParams);*/
+                transitionDwellNotification(context, notificationText);
                 break;
 
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                notificationText = String.format(
+                notificationText = "You are 5 miles away from " +simpleGeofence.getId();
+            /*String.format(
                         context.getString(R.string.geofence_enter),
-                        notificationTextParams);
+                        notificationTextParams);*/
+                transitionEnterNotification(context, notificationText);
                 break;
 
             case Geofence.GEOFENCE_TRANSITION_EXIT:
@@ -68,5 +79,50 @@ public class GeofenceNotification {
         buildNotificaction(simpleGeofence, transitionType);
 
         notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+    public static final String CHANNEL_ID = "Transition Channel";
+    private void createNotificationChannel(final Context mContext) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Transition Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = mContext.getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+    private void transitionEnterNotification(final Context mContext,final String message){
+        createNotificationChannel(mContext);
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                .setContentTitle("Black Owned Business Alert")
+                .setContentText(message)
+                .setSmallIcon(R.mipmap.sable_logo_black)
+                .setContentIntent(pendingIntent)
+                .build();
+        NotificationManager notifManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(new Random().nextInt(), notification);
+    }
+
+    private void transitionDwellNotification(final Context mContext,final String message){
+        createNotificationChannel(mContext);
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                .setContentTitle("Black Owned Business Alert")
+                .setContentText(message)
+                .setSmallIcon(R.mipmap.sable_logo_black)
+                .setContentIntent(pendingIntent)
+                .build();
+        NotificationManager notifManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(new Random().nextInt(), notification);
     }
 }

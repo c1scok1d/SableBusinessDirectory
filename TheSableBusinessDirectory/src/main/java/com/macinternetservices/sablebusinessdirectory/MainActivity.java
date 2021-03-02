@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Double latitude, longitude;
 
-    TextView tvMore, tvUserName, tvWpUserId, tvCity, tvCategories, tvLoading, noListingsTextView;
+    public static TextView tvMore, tvUserName, tvWpUserId, tvCity, tvCategories, tvLoading, noListingsTextView;
     Button login_button2, login_button3, login_button4, btnAdd, btnShowListings;
     RecyclerView verticalRecyclerView, featuredRecyclervView, recentListingsRecyclervView, recentReviewsRecyclervView;
     ProgressBar progressBar;
@@ -655,9 +655,6 @@ public class MainActivity extends AppCompatActivity implements
 
                         // loop through JSON response get parse and output to log
                         for (int i = 0; i < response.body().size(); i++) {
-
-//                                String foo = parent.getItemAtPosition(pos).toString();
-//                                String foo1 = response.body().get(i).getTitle().getRaw();
                             if (parent.getItemAtPosition(pos).toString().equals(response.body().get(i).getTitle().getRaw())) {
                                 ArrayList<ListingsModel> locationReview = new ArrayList<>();
                                 Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
@@ -819,15 +816,9 @@ public class MainActivity extends AppCompatActivity implements
         ////Log.e("onResume", "onResume Executed");
         //This starts the access token tracking
         accessTokenTracker.startTracking();
-        ////Log.e("onResume", "onResume Ended");
-        verticalList.clear();
-        listingName.clear();
-        recentList.clear();
-        featuredList.clear();
-        mapLocations.clear();
-        recentReviewList.clear();
-        //Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
-        //ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
+        Log.e("onResume", "onResume Ended");
+        getApplication().registerReceiver(receiver,
+                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
     }
 
     public void onDestroy() {

@@ -54,7 +54,7 @@
     <string name="acraAddComment">You can add a comment and encourage Rod to fix his shit!</string>
     <string name="secureMsg">To insure a secure environment and high quality ratings and reviews for our users we request that everyone identify themselves before adding a listing or review. Tap the \'Continue with Facebook\' button below to add your favorite black owned businesses to The Sable Business Directory.</string>
     <string name="geofence_enter">You are now 5 miles away from %1$s</string>
-    <string name="geofence_dwell">Dwelling in %1$s</string>
+    <string name="geofence_dwell">You are near %1$s</string>
     <string name="geofence_exit">You are now 5 miles away from %1$s</string>
     <string name="events">Events</string>
     <string name="map">Map</string>
