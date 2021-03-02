@@ -13,13 +13,13 @@ public class APIHelper {
 
             @Override
             public void onFinalResponse(Call<T> call, Response<T> response) {
-                Log.d("APIHelper", "reached onFinalResponse");
+                //Log.d("APIHelper", "reached onFinalResponse");
                 callback.onResponse(call, response);
             }
 
             @Override
             public void onFinalFailure(Call<T> call, Throwable t) {
-                Log.d("APIHelper", "reached onFinalFailure");
+                //Log.d("APIHelper", "reached onFinalFailure");
                 callback.onFailure(call, t);
             }
         });

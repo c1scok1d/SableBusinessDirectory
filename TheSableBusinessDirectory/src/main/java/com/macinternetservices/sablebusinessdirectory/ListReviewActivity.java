@@ -332,7 +332,7 @@ public class ListReviewActivity extends AppCompatActivity {
                             startActivity(LocationReview);
                             break;
                         } else {
-                            Log.e("VerticalAdapter", "no matcon on locationReview");
+                            ////Log.e("VerticalAdapter", "no matcon on locationReview");
                         }
                     }
                 }
@@ -466,7 +466,7 @@ public class ListReviewActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<ListReviewPOJO>>() {
             @Override
             public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
-                //Log.e("gePostReview_METHOD_SUCCESS", " response " + response.body());
+                ////Log.e("gePostReview_METHOD_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();
@@ -529,13 +529,13 @@ public class ListReviewActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    //Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
+                    ////Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
                 if (retryCount++ < TOTAL_RETRIES) {
-                    //Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
+                    ////Log.e("getRetrofit_METHOD_FAILURE ", "Retrying... (" + retryCount + " out of " + TOTAL_RETRIES + ")");
 
                 }
             }

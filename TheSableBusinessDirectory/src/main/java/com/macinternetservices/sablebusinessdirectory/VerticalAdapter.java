@@ -238,7 +238,7 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                                 itemView.getContext().startActivity(LocationReview);
                                 break;
                             } else {
-                                Log.e("VerticalAdapter", "no matcon on locationReview");
+                                ////Log.e("VerticalAdapter", "no matcon on locationReview");
                             }
                         }
                     }

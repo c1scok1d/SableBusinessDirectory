@@ -569,7 +569,7 @@ public class ReviewActivity extends AppCompatActivity implements
                     @Override
                     public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                         for (MediaFile imageFile : imageFiles) {
-                            Log.e("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                            ////Log.e("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                         }
                         onPhotosReturned(imageFiles);
                     }
@@ -712,7 +712,7 @@ public class ReviewActivity extends AppCompatActivity implements
         call.enqueue(new Callback<ListReviewPOJO>() {
             @Override
             public void onResponse(Call<ListReviewPOJO> call, Response<ListReviewPOJO> response) {
-                Log.e("Response Successful", " response: " + response.body());
+                ////Log.e("Response Successful", " response: " + response.body());
                 if (response.isSuccessful()) {
                     userActivityArray.add(response.body().getDateGmt()); // date of review
                     userActivityArray.add(String.valueOf(response.body().getPost())); // listing id for review

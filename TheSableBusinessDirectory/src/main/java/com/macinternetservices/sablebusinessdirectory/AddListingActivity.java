@@ -47,6 +47,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -207,27 +208,18 @@ public class AddListingActivity extends AppCompatActivity implements
                 tvAddHours.setText("Add Hours");
             }
         });
-
-
         // Open the autocomplete activity when the address is clicked.
-
         tvCurrentAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-        /**
-         * Initialize Places. For simplicity, the API key is hard-coded. In a production
-         * environment we recommend using a secure mechanism to manage API keys.
-         */
-        if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api));
-        }
-        // Set the fields to specify which types of place data to return.
-       List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG);
-        //latitude = fields.get()
-
-        // Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(getApplicationContext());
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                tvCurrentAddress.setText("");
+                if (!Places.isInitialized()) {
+                    Places.initialize(getApplicationContext(), getResources().getString(R.string.google_api));
+                }
+                List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG);
+                // Start the autocomplete intent.
+                Intent autoCompleteIntent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(getApplicationContext());
+                startActivityForResult(autoCompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
 
@@ -318,7 +310,7 @@ public class AddListingActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 catName = parent.getItemAtPosition(position).toString();
-                Log.e("OnCategoryClick", "Category clicked: " +parent.getItemAtPosition(position).toString());
+                ////Log.e("OnCategoryClick", "Category clicked: " +parent.getItemAtPosition(position).toString());
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -345,7 +337,7 @@ public class AddListingActivity extends AppCompatActivity implements
                         for (int i = 0; i < response.body().size(); i++) {
                             if (parent.getItemAtPosition(position).toString().equals(response.body().get(i).getName())) {
                                 catNum = (response.body().get(i).getId());
-                                Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
+                                ////Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
                                 break;
                             }
                         }
@@ -353,7 +345,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
                     @Override
                     public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
-                        Log.e("CategoryNumber", " response: " + t);
+                        ////Log.e("CategoryNumber", " response: " + t);
                     }
                 });
             }
@@ -362,7 +354,7 @@ public class AddListingActivity extends AppCompatActivity implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 catName = parent.getItemAtPosition(position).toString();
-                Log.e("onCategorySelected", "Category selected:" +parent.getItemAtPosition(position).toString());
+                ////Log.e("onCategorySelected", "Category selected:" +parent.getItemAtPosition(position).toString());
                // Toast.makeText(Check.this, view.getItem(position).toString(), Toast.LENGTH_SHORT).show();
 
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -391,7 +383,7 @@ public class AddListingActivity extends AppCompatActivity implements
                         for (int i = 0; i < response.body().size(); i++) {
                             if (parent.getItemAtPosition(position).toString().equals(response.body().get(i).getName())) {
                                 catNum = (response.body().get(i).getId());
-                                Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
+                                ////Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
                                 break;
                             }
                         }
@@ -399,14 +391,14 @@ public class AddListingActivity extends AppCompatActivity implements
 
                     @Override
                     public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
-                        Log.e("CategoryNumber", " response: " + t);
+                        ////Log.e("CategoryNumber", " response: " + t);
                     }
                 });
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.d("onNothingSelected", "[AutoCompleteTextView] Nothing here");
+                //Log.d("onNothingSelected", "[AutoCompleteTextView] Nothing here");
             }
         });
         ivLogo = findViewById(R.id.ivLogo);
@@ -488,12 +480,12 @@ public class AddListingActivity extends AppCompatActivity implements
                         .build();                   // Creates a CameraPosition from the builder
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 tvCurrentAddress.setText(place.getAddress());
-                Log.e("PlaceAutocomplete", "Place: " + place.getAddress() + "," + place.getLatLng());
-                Log.i("PlaceAutocomplete", "Place: " + place.getName() + ", " + place.getId());
+                ////Log.e("PlaceAutocomplete", "Place: " + place.getAddress() + "," + place.getLatLng());
+                //Log.i("PlaceAutocomplete", "Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i("AutoCompleteText", status.getStatusMessage());
+                //Log.i("AutoCompleteText", status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
@@ -503,7 +495,7 @@ public class AddListingActivity extends AppCompatActivity implements
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 for (MediaFile imageFile : imageFiles) {
-                    Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
+                    //Log.d("EasyImage", "Image file returned: " + imageFile.getFile().toString());
                 }
                 uploadFiles(imageFiles);
                 onPhotosReturned(imageFiles);
@@ -558,7 +550,7 @@ public class AddListingActivity extends AppCompatActivity implements
                         e.printStackTrace();
                     }
                     filesToUploadfoo.add(foo);
-                    Log.e("RESPONSE "+i, responses[i]);
+                    ////Log.e("RESPONSE "+i, responses[i]);
                     imageUpload = true;
                 }
             }
@@ -566,7 +558,7 @@ public class AddListingActivity extends AppCompatActivity implements
             @Override
             public void onProgressUpdate(int currentpercent, int totalpercent, int filenumber) {
                 updateProgress(totalpercent,"Uploading file "+filenumber,"");
-                Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
+                ////Log.e("Progress Status", currentpercent+" "+totalpercent+" "+filenumber);
             }
         });
     }
@@ -745,13 +737,6 @@ public class AddListingActivity extends AppCompatActivity implements
             mPermissionDenied = false;
         }
     } */
-
-    private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getSupportFragmentManager(), "dialog");
-    }
-
-
     /**
      * @param latitude
      * @param longitude
@@ -770,27 +755,13 @@ public class AddListingActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
         if(addresses != null) {
-           // Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
-
             address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
             bldgNo = addresses.get(0).getSubThoroughfare();
             street = addresses.get(0).getThoroughfare();
             city = addresses.get(0).getLocality();
             state = addresses.get(0).getAdminArea();
             zipcode = addresses.get(0).getPostalCode();
-            country = addresses.get(0).getCountryName();
-           /* String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-            String lat = Double.toString(latitude);
-            String lng = Double.toString(longitude);*/
-
-
             tvCurrentAddress.setText(address);
-           /* tvZip.setText(zipcode);
-            tvState.setText(state);
-            tvCity.setText(city);
-            tvStreet.setText(street);
-            tvBldgNo.setText(bldgNo);
-            tvCountry.setText(country);*/
         }
 
     }
@@ -854,7 +825,7 @@ public class AddListingActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<ListingsCategories>>() {
             @Override
             public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
-               // Log.e("main_activity", " response " + response.body());
+               // //Log.e("main_activity", " response " + response.body());
                 // mListPost = response.body();
                 //progressBar.setVisibility(View.GONE); //hide progressBar
                 // loop through JSON response get parse and output to log
@@ -866,7 +837,7 @@ public class AddListingActivity extends AppCompatActivity implements
                     //category.add(response.body().get(i).getId().toString());
                     // display category array list in spinner
                    // spnCategory.setAdapter(new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_spinner_dropdown_item, addListingCategory));
-                   // Log.e("main ", " Category: " + response.body().get(i).getName());
+                   // //Log.e("main ", " Category: " + response.body().get(i).getName());
                 }
                 ArrayAdapter<String> listingCategoryAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.select_dialog_item, addListingCategory);
                 tvCategory.setThreshold(2);
@@ -874,7 +845,7 @@ public class AddListingActivity extends AppCompatActivity implements
             }
             @Override
             public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
-                Log.e("spnCategory", " response: " + t);
+                //Log.e("spnCategory", " response: " + t);
             }
         });
     }
@@ -933,7 +904,7 @@ String type = "gd_business";
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                Log.e("AddListingActivity", " response " + response.body());
+                //Log.e("AddListingActivity", " response " + response.body());
                 if(response.isSuccessful()){
                     userActivityArray.add(response.body().get(0).getDateGmt()); // date of listing add
                     userActivityArray.add(String.valueOf(response.body().get(0).getId())); //listing id
@@ -944,7 +915,7 @@ String type = "gd_business";
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                Log.e("SubmitData", " response: " + t);
+                //Log.e("SubmitData", " response: " + t);
 
             }
         });

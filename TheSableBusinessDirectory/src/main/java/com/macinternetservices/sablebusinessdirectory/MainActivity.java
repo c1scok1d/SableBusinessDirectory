@@ -1,6 +1,7 @@
 package com.macinternetservices.sablebusinessdirectory;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -40,6 +41,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +49,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -68,15 +71,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.macinternetservices.sablebusinessdirectory.model.Person;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
+
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.DialogConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -86,10 +92,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Credentials;
@@ -102,13 +111,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 import org.acra.*;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
-        OnMapReadyCallback,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+        OnMapReadyCallback/*,
+        ActivityCompat.OnRequestPermissionsResultCallback*/ {
     CoreConfigurationBuilder builder;
 
     @Override
@@ -140,13 +150,13 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * permissions request code
      */
-    private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
+    // private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
 
     /**
      * Permissions that need to be explicitly requested from end user.
      */
-    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    //private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{
+    //      Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
 
     public static Double latitude, longitude;
@@ -158,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements
     LinearLayoutManager mLayoutManager, featuredRecyclerViewLayoutManager,
             recentListingsRecyclerViewLayoutManager, recentReviewsRecyclerViewLayoutManager;
     LinearLayout recentReviewsLayout, recentReviewsRecyclerLayout;
-    RelativeLayout loadingLayout,  noListingsAnimationLayout;
+    RelativeLayout loadingLayout, noListingsAnimationLayout;
 
 
     VerticalAdapter verticalAdapter;
@@ -178,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<ListingsModel> recentList = new ArrayList<>();
     ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
     ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-   // ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    // ArrayList<ListingsModel> locationReview = new ArrayList<>();
     public static ArrayList<Person> mapLocations = new ArrayList<>();
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
@@ -252,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
     };
 
-    static Interceptor offlineInterceptor= chain -> {
+    static Interceptor offlineInterceptor = chain -> {
         Request request = chain.request();
         if (!isInternetAvailable()) {
             int maxStale = 60 * 60 * 24 * 30; // Offline cache available for 30 days
@@ -266,13 +276,13 @@ public class MainActivity extends AppCompatActivity implements
     };
 
     ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
-    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout,  sliderLayout;
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, sliderLayout;
     private Handler imageSwitchHandler;
 
     ListView searchList;
     SearchListViewAdapter searchAdapter;
 
-   public static Context context;
+    public static Context context;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -284,13 +294,23 @@ public class MainActivity extends AppCompatActivity implements
                 if (resultCode == 1) {
                     Double latitude = bundle.getDouble("latitude");
                     Double longitude = bundle.getDouble("longitude");
-
+                    // create marker
                     updateMarker(latitude, longitude);
                 }
             }
         }
     };
 
+    protected void updateMarker(Double latitude, Double longitude) {
+        if (myPositionMarker == null) {
+            MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!");
+
+            createMarker(latitude, longitude);
+        }
+
+        LatLng latLng = new LatLng(latitude, longitude);
+        myPositionMarker.setPosition(latLng);
+    }
 
     /**
      * @param savedInstanceState
@@ -340,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements
         login_button3.setVisibility(View.GONE);
         login_button4 = findViewById(R.id.login_button4);
 
-        textSwitcher =  findViewById(R.id.textSwitcher);
+        textSwitcher = findViewById(R.id.textSwitcher);
         textSwitcher.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -352,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher.setInAnimation(imgAnimationIn);
         textSwitcher.setOutAnimation(imgAnimationOut);
 
-        textSwitcher2 =  findViewById(R.id.textSwitcher2);
+        textSwitcher2 = findViewById(R.id.textSwitcher2);
         textSwitcher2.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -365,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher2.setInAnimation(imgAnimationIn);
         textSwitcher2.setOutAnimation(imgAnimationOut);
 
-        textSwitcher3 =  findViewById(R.id.textSwitcher3);
+        textSwitcher3 = findViewById(R.id.textSwitcher3);
         textSwitcher3.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -377,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher3.setInAnimation(imgAnimationIn);
         textSwitcher3.setOutAnimation(imgAnimationOut);
 
-        imageSwitcher =  findViewById(R.id.imageSwitcher);
+        imageSwitcher = findViewById(R.id.imageSwitcher);
 
         ImageView imageView = new ImageView(getApplicationContext());
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -387,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements
 
         imageView.setLayoutParams(params);
 
-        imageSwitcher2 =  findViewById(R.id.imageSwitcher2);
+        imageSwitcher2 = findViewById(R.id.imageSwitcher2);
 
         ImageView imageView2 = new ImageView(getApplicationContext());
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -397,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements
 
         imageView2.setLayoutParams(imageView2params);
 
-        imageSwitcher3 =  findViewById(R.id.imageSwitcher3);
+        imageSwitcher3 = findViewById(R.id.imageSwitcher3);
 
         ImageView imageView3 = new ImageView(getApplicationContext());
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -413,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements
         /**
          *  strt fuckin' around with getting linearLayouts to fade in and out
          */
-        textSwitcherLayout =  findViewById(R.id.textSwitcherLayout);
+        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
 
         LinearLayout textSwitcherLayout = new LinearLayout(getApplicationContext());
 
@@ -427,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcherLayout.setAnimation(imgAnimationOut);
         textSwitcherLayout.post(runnableCode);
 
-        textSwitcher2Layout =  findViewById(R.id.textSwitcher2Layout);
+        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
 
         LinearLayout textSwitcher2Layout = new LinearLayout(getApplicationContext());
 
@@ -438,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements
         textSwitcher2Layout.setAnimation(imgAnimationOut);
         textSwitcher2Layout.post(runnableCode);
 
-        textSwitcher3Layout =  findViewById(R.id.textSwitcher3Layout);
+        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
 
         LinearLayout textSwitcher3Layout = new LinearLayout(getApplicationContext());
 
@@ -503,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        //Log.e("Facebook Login Successful ", " response " + loginResult);
+                        ////Log.e("Facebook Login Successful ", " response " + loginResult);
                     }
 
                     @Override
@@ -513,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onError(FacebookException exception) {
-                        //Log.e("Facebook Login Error ", " response " + exception);
+                        ////Log.e("Facebook Login Error ", " response " + exception);
                     }
                 });
 
@@ -566,8 +586,6 @@ public class MainActivity extends AppCompatActivity implements
         btnShowListings.setVisibility(View.GONE);
 
 
-
-
         btnShowListings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -578,7 +596,6 @@ public class MainActivity extends AppCompatActivity implements
         /**
          *  location add button
          */
-
 
 
         btnAdd.setOnClickListener(view -> {
@@ -618,83 +635,83 @@ public class MainActivity extends AppCompatActivity implements
                 loadingLayout.setVisibility(View.VISIBLE);
                 loadingLayout.setAnimation(imgAnimationIn);
                 ivLoading.setImageResource(R.mipmap.online_reviews_foreground);
-                String listingName = "<font color='#4FC1E9'>" +parent.getItemAtPosition(pos).toString()+"</font>";
-                tvLoading.setText(Html.fromHtml(("Thank you for your waiting while we load reviews for " + listingName )));
+                String listingName = "<font color='#4FC1E9'>" + parent.getItemAtPosition(pos).toString() + "</font>";
+                tvLoading.setText(Html.fromHtml(("Thank you for your waiting while we load reviews for " + listingName)));
 
-                    retrofit = null;
-                    retrofit = new Retrofit.Builder()
-                            .baseUrl(baseURL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .client(client)
-                            .build();
-                    RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-                    // pass JSON data to BusinessListings class for filtering
-                    Call<List<BusinessListings>> call = service.search(query);
+                retrofit = null;
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(client)
+                        .build();
+                RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                // pass JSON data to BusinessListings class for filtering
+                Call<List<BusinessListings>> call = service.search(query);
 
-                    // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
-                    call.enqueue(new Callback<List<BusinessListings>>() {
-                        @Override
-                        public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
+                // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                call.enqueue(new Callback<List<BusinessListings>>() {
+                    @Override
+                    public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
 
-                            // loop through JSON response get parse and output to log
-                            for (int i = 0; i < response.body().size(); i++) {
+                        // loop through JSON response get parse and output to log
+                        for (int i = 0; i < response.body().size(); i++) {
 
 //                                String foo = parent.getItemAtPosition(pos).toString();
 //                                String foo1 = response.body().get(i).getTitle().getRaw();
-                                if (parent.getItemAtPosition(pos).toString().equals(response.body().get(i).getTitle().getRaw())) {
-                                    ArrayList<ListingsModel> locationReview = new ArrayList<>();
-                                    Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
-                                    locationReview.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                            response.body().get(i).getId(),
-                                            response.body().get(i).getTitle().getRaw(),
-                                            response.body().get(i).getLink(),
-                                            response.body().get(i).getStatus(),
-                                            response.body().get(i).getPostCategory().get(0).getName(),
-                                            response.body().get(i).getFeatured(),
-                                            response.body().get(i).getFeaturedImage().getSrc(),
-                                            response.body().get(i).getBldgNo(),
-                                            response.body().get(i).getStreet(),
-                                            response.body().get(i).getCity(),
-                                            response.body().get(i).getRegion(),
-                                            response.body().get(i).getCountry(),
-                                            response.body().get(i).getZip(),
-                                            response.body().get(i).getLatitude(),
-                                            response.body().get(i).getLongitude(),
-                                            response.body().get(i).getRating(),
-                                            response.body().get(i).getRatingCount(),
-                                            response.body().get(i).getPhone(),
-                                            response.body().get(i).getEmail(),
-                                            response.body().get(i).getWebsite(),
-                                            response.body().get(i).getTwitter(),
-                                            response.body().get(i).getFacebook(),
-                                            response.body().get(i).getVideo(),
-                                            todayRange,
-                                            isOpen,
-                                            response.body().get(i).getLogo(),
-                                            response.body().get(i).getContent().getRaw(),
-                                            response.body().get(i).getFeaturedImage().getThumbnail(),
-                                            response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                            100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-                                            Geofence.GEOFENCE_TRANSITION_ENTER
-                                                    | Geofence.GEOFENCE_TRANSITION_DWELL
-                                                    | Geofence.GEOFENCE_TRANSITION_EXIT))));
+                            if (parent.getItemAtPosition(pos).toString().equals(response.body().get(i).getTitle().getRaw())) {
+                                ArrayList<ListingsModel> locationReview = new ArrayList<>();
+                                Intent showReviews = new Intent(getApplicationContext(), ListReviewActivity.class);
+                                locationReview.add((new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                        response.body().get(i).getId(),
+                                        response.body().get(i).getTitle().getRaw(),
+                                        response.body().get(i).getLink(),
+                                        response.body().get(i).getStatus(),
+                                        response.body().get(i).getPostCategory().get(0).getName(),
+                                        response.body().get(i).getFeatured(),
+                                        response.body().get(i).getFeaturedImage().getSrc(),
+                                        response.body().get(i).getBldgNo(),
+                                        response.body().get(i).getStreet(),
+                                        response.body().get(i).getCity(),
+                                        response.body().get(i).getRegion(),
+                                        response.body().get(i).getCountry(),
+                                        response.body().get(i).getZip(),
+                                        response.body().get(i).getLatitude(),
+                                        response.body().get(i).getLongitude(),
+                                        response.body().get(i).getRating(),
+                                        response.body().get(i).getRatingCount(),
+                                        response.body().get(i).getPhone(),
+                                        response.body().get(i).getEmail(),
+                                        response.body().get(i).getWebsite(),
+                                        response.body().get(i).getTwitter(),
+                                        response.body().get(i).getFacebook(),
+                                        response.body().get(i).getVideo(),
+                                        todayRange,
+                                        isOpen,
+                                        response.body().get(i).getLogo(),
+                                        response.body().get(i).getContent().getRaw(),
+                                        response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT))));
 
-                                    //progressBar.setVisibility(View.GONE);
+                                //progressBar.setVisibility(View.GONE);
 
-                                    Bundle locationReviewBundle = new Bundle();
-                                    locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
-                                    showReviews.putExtra("locationReview", locationReview);
-                                    startActivity(showReviews);
-                                    break;
-                                }
+                                Bundle locationReviewBundle = new Bundle();
+                                locationReviewBundle.putParcelableArrayList("locationReviewBundle", locationReview);
+                                showReviews.putExtra("locationReview", locationReview);
+                                startActivity(showReviews);
+                                break;
                             }
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-                            Log.e("CategoryNumber", " response: " + t);
-                        }
-                    });
+                    @Override
+                    public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
+                        ////Log.e("CategoryNumber", " response: " + t);
+                    }
+                });
             }
         });
         searchView.setThreshold(1);
@@ -710,11 +727,11 @@ public class MainActivity extends AppCompatActivity implements
          */
 
 
-        mLayout =  findViewById(R.id.sliding_layout);
+        mLayout = findViewById(R.id.sliding_layout);
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-               // Log.i("onPanelSlide", "onPanelSlide, offset " + slideOffset);
+                // Log.i("onPanelSlide", "onPanelSlide, offset " + slideOffset);
             }
 
             @Override
@@ -725,117 +742,51 @@ public class MainActivity extends AppCompatActivity implements
                     tvMore.setText("Less");
                 }
 
-               // Log.i("onPanelStateChanged", "onPanelStateChanged " + newState);
+                // Log.i("onPanelStateChanged", "onPanelStateChanged " + newState);
             }
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        Log.e("onCreate ", " END onCreate " );
+        ////Log.e("onCreate ", " END onCreate ");
     }
-    //END ON CREATE
     protected Marker myPositionMarker;
+
     protected void createMarker(Double latitude, Double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
 
-        myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng));
+        myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng)
+        .title("You are here!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
-    protected void updateMarker(Double latitude, Double longitude) {
-        if (myPositionMarker == null) {
-            createMarker(latitude, longitude);
-        }
-
-        LatLng latLng = new LatLng(latitude, longitude);
-        myPositionMarker.setPosition(latLng);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
-    static public void startGeolocationService(Context context) {
-
-        Intent geolocationService = new Intent(context,
-                GeolocationService.class);
-        PendingIntent piGeolocationService = PendingIntent.getService(context,
-                0, geolocationService, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context
-                .getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(piGeolocationService);
-        alarmManager
-                .setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis(), 2 * 60 * 1000,
-                        piGeolocationService);
-    }
-
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
     }
 
-    /**
-     * Checks the dynamically-controlled permissions and requests missing permissions from end user.
-     */
-    protected void checkPermissions() {
-        final List<String> missingPermissions = new ArrayList<String>();
-        // check all required dynamic permissions
-        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
-            final int result = ContextCompat.checkSelfPermission(this, permission);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(permission);
-            }
-        }
-        if (!missingPermissions.isEmpty()) {
-            // request all missing permissions
-            final String[] permissions = missingPermissions
-                    .toArray(new String[missingPermissions.size()]);
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
-        } else {
-            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
-            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
-            onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
-                    grantResults);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_PERMISSIONS:
-                for (int index = permissions.length - 1; index >= 0; --index) {
-                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
-                        // exit the app if one permission is not granted
-                        Toast.makeText(this, "Required permission '" + permissions[index]
-                                + "' not granted, exiting", Toast.LENGTH_LONG).show();
-                        finish();
-                        return;
-                    } else {
-                       startActivity(getIntent());
-                    }
-                }
-                // all permissions were granted
-                break;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @SuppressLint("MissingPermission")
     public void onStart() {
         super.onStart();
+        //checkAndroidVersion();
         verticalList.clear();
         listingName.clear();
         recentList.clear();
         featuredList.clear();
         mapLocations.clear();
         recentReviewList.clear();
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        Log.e("onStart", "onStart Executed");
-
+        //Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        ////Log.e("onStart", "onStart Executed");
         /**
          *  location manager to get current location
          */
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            checkPermissions();
-            return;
-        }
+
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
+            return;
+        }*/
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
 
@@ -844,7 +795,7 @@ public class MainActivity extends AppCompatActivity implements
             useLoginInformation(accessToken);
         //    loggedInLayout.setVisibility(View.VISIBLE);
             // startActivity(getIntent());
-            //Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
+            ////Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
         } else {
             // startActivity(getIntent());
             LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
@@ -853,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements
             //userNameLayout.setVisibility(View.GONE);
         }
         accessTokenTracker.startTracking();
-        Log.e("onStart", "onStart Ended");
+        ////Log.e("onStart", "onStart Ended");
         //throw new RuntimeException();
     }
 
@@ -863,29 +814,29 @@ public class MainActivity extends AppCompatActivity implements
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
        // tvLoading.setAnimation(imgAnimationIn);
         //tvLoading.setText("onSTOP");
-        Log.e("onStop", "onStop Executed");
+        ////Log.e("onStop", "onStop Executed");
         imageSwitchHandler.removeCallbacks(runnableCode);
         super.onStop();
-        Log.e("onStop", "onStop Ended");
+        ////Log.e("onStop", "onStop Ended");
     }
 
     public void onResume() {
         super.onResume();
-        Log.e("onResume", "onResume Executed");
+        ////Log.e("onResume", "onResume Executed");
         //This starts the access token tracking
         accessTokenTracker.startTracking();
-        Log.e("onResume", "onResume Ended");
-        getApplication().registerReceiver(receiver,
-                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
+        ////Log.e("onResume", "onResume Ended");
+       getApplication().registerReceiver(receiver,
+               new IntentFilter("me.hoen.geofence_21.geolocation.service"));
     }
 
     public void onDestroy() {
         super.onDestroy();
-        Log.e("onDestroy", "onDestroy Executed");
+        ////Log.e("onDestroy", "onDestroy Executed");
         // We stop the tracking before destroying the activity
         accessTokenTracker.stopTracking();
         deleteCache(getApplicationContext());
-        Log.e("onDestroy", "onDestroy Ended");
+        ////Log.e("onDestroy", "onDestroy Ended");
     }
 
     public void restartActivity(){
@@ -893,7 +844,6 @@ public class MainActivity extends AppCompatActivity implements
         finish();
         startActivity(mIntent);
     }
-
     public void useLoginInformation(final AccessToken accessToken) {
 
         /**
@@ -969,7 +919,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 tvLoading.setText("Thank you for waiting while we search our directory for black owned businesses near you.");
             }
-            Log.e("onLocationChange", "onLocationChange Executed");
+            ////Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             Map<String, String> query = new HashMap<>();
@@ -982,11 +932,11 @@ public class MainActivity extends AppCompatActivity implements
             query.put("order", "asc");
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-            Log.e("Location Change", "Listings query executed by location change");
+            ////Log.e("Location Change", "Listings query executed by location change");
             getReviews();
-            Log.e("Location Change", "Review query executed by location change");
+            ////Log.e("Location Change", "Review query executed by location change");
             setAddress(location.getLatitude(), location.getLongitude());
-            Log.e("onLocationChange", "onLocationChange Ended");
+            ////Log.e("onLocationChange", "onLocationChange Ended");
         }
 
         /**
@@ -1037,9 +987,9 @@ public class MainActivity extends AppCompatActivity implements
         query.put("order", "asc");
         query.put("orderby", "distance");
         getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-        Log.e("onMyLocationButtonClick", "Listings query executed by onMyLocationButtonClick");
+        ////Log.e("onMyLocationButtonClick", "Listings query executed by onMyLocationButtonClick");
         getReviews();
-        Log.e("onMyLocationButtonClick", "Review query executed by onMyLocationButtonClick");
+        ////Log.e("onMyLocationButtonClick", "Review query executed by onMyLocationButtonClick");
         setAddress(latitude, longitude);
         return false;
     }
@@ -1058,9 +1008,9 @@ public class MainActivity extends AppCompatActivity implements
         query.put("order", "asc");
         query.put("orderby", "distance");
         getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-        Log.e("onMyLocationClick", "Listings query executed by onMyLocationClick");
+        ////Log.e("onMyLocationClick", "Listings query executed by onMyLocationClick");
         getReviews();
-        Log.e("onMyLocationClick", "Review query executed by onMyLocationClick");
+        ////Log.e("onMyLocationClick", "Review query executed by onMyLocationClick");
         setAddress(latitude, longitude);
     }
 
@@ -1094,7 +1044,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if (addresses != null) {
-            Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
+            //Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
 
             address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
             bldgno = addresses.get(0).getSubThoroughfare(); // get bulding number
@@ -1117,7 +1067,7 @@ public class MainActivity extends AppCompatActivity implements
         File cacheFoo = context.getCacheDir();
         //  cache = new Cache(new File(context.getCacheDir(), "sable-cache"), cacheSize);
         cache = new Cache(cacheFoo,  cacheSize);
-        Log.e("This is Cache:", "cacheFile: " +cache);
+        ////Log.e("This is Cache:", "cacheFile: " +cache);
 
     }
 
@@ -1193,9 +1143,9 @@ public class MainActivity extends AppCompatActivity implements
                    // tvLoading.setAnimation(imgAnimationIn);
                     //tvLoading.setText("Loading nearby listings");
                     if (response.raw().cacheResponse() != null) {
-                        Log.e("Network", "Listings response came from cache");
+                        ////Log.e("Network", "Listings response came from cache");
                     } else {
-                        Log.e("Network", "Listings response came from server");
+                        ////Log.e("Network", "Listings response came from server");
                     }
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
@@ -1422,10 +1372,10 @@ public class MainActivity extends AppCompatActivity implements
             }
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
-                Log.e("getListingsFailure", " response: " + t);
+                ////Log.e("getListingsFailure", " response: " + t);
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
                 getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-                Log.e("getListingsFailure", "Listings query executed by getRetroFitListingsFailure");
+                ////Log.e("getListingsFailure", "Listings query executed by getRetroFitListingsFailure");
             }
         });
     }//END Retrofit API call to get listings
@@ -1459,9 +1409,9 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<List<ListReviewPOJO>> call, Response<List<ListReviewPOJO>> response) {
                 if (response.raw().cacheResponse() != null) {
-                    Log.e("Network", "Reviews response came from cache");
+                    //Log.e("Network", "Reviews response came from cache");
                 } else {
-                    Log.e("Network", "Reviews response came from server");
+                    //Log.e("Network", "Reviews response came from server");
                 }
                 if (response.isSuccessful() && response.body().size() > 0) {
                    // tvLoading.setAnimation(imgAnimationIn);
@@ -1487,15 +1437,15 @@ public class MainActivity extends AppCompatActivity implements
                         recentReviewListingsAdapter.notifyDataSetChanged();
                     }
                 } else {
-                   // Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
+                   // //Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
-                Log.e("getReviewFailure", " response: " + t);
+                //Log.e("getReviewFailure", " response: " + t);
                 //OPTION TO RE-RUN QUERY OR ADD LISTING
                 getReviews();
-                Log.e("getReviewFailure", "Review query executed by getRetroFitReviewFailure");
+                //Log.e("getReviewFailure", "Review query executed by getRetroFitReviewFailure");
                 // setAddress(latitude, longitude);
 
             }
@@ -1522,7 +1472,7 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<UserAuthPOJO>() {
             @Override
             public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
-                Log.e("login_SUCCESS", " response " + response.body());
+                //Log.e("login_SUCCESS", " response " + response.body());
                 if (response.isSuccessful()) {
                     userId = String.valueOf(response.body().getWpUserId());
 //                    tvWpUserId.setText(String.valueOf(response.body().getWpUserId()));
@@ -1533,8 +1483,8 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<UserAuthPOJO> call, Throwable t) {
-                Log.e("UserLoginFailure", " response: " + t);
-                Log.e("login_FAILURE ", " Re-running method...");
+                //Log.e("UserLoginFailure", " response: " + t);
+                //Log.e("login_FAILURE ", " Re-running method...");
             }
         });
     }
@@ -1797,11 +1747,11 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
 
+    //create map markers and begin geofence monitoring
     protected void setMarkers() {
+        displayGeofences();
         Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
         ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
-        //startService(new Intent(this, GeolocationService.class));
-        //startGeolocationService(context);
         Intent intent = new Intent(this, MarkerClusteringActivity.class);
         startActivity(intent);
     }

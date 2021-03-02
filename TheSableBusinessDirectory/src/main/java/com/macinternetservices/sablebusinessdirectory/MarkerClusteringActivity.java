@@ -291,7 +291,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
     @Override
     public void setMarkers() {
-        Log.e("setMarkers", " Executing setMarkers " );
+        //Log.e("setMarkers", " Executing setMarkers " );
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.setRenderer(new PersonRenderer());
         getMap().setOnCameraIdleListener(mClusterManager);
@@ -322,10 +322,10 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200)));
         showStuff();
         }
-        Log.e("setMarkers", " Ending setMarkers " );
+        //Log.e("setMarkers", " Ending setMarkers " );
     }
     private void showStuff() {
-        Log.e("showStuff", " Executing showStuff ");
+        //Log.e("showStuff", " Executing showStuff ");
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
@@ -348,11 +348,11 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         tvMore.setVisibility(View.VISIBLE);
         sliderLayout.setAnimation(imgAnimationIn);
         sliderLayout.setVisibility(View.VISIBLE);
-        Log.e("showStuff", " Ending showStuff ");
+        //Log.e("showStuff", " Ending showStuff ");
 
     }
     private void showOtherStuff() {
-        Log.e("showOtherStuff", " Executing showOtherStuff " );
+        //Log.e("showOtherStuff", " Executing showOtherStuff " );
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn) {
 
@@ -384,6 +384,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
         btnAdd.setAnimation(imgAnimationIn);
         btnAdd.setVisibility(View.VISIBLE);
-        Log.e("showOtherStuff", " Ending showOtherStuff " );
+        //Log.e("showOtherStuff", " Ending showOtherStuff " );
     }
 }

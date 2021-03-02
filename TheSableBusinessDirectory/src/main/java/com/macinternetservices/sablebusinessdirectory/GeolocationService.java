@@ -46,8 +46,12 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
     @Override
     public void onStart(Intent intent, int startId) {
-        buildGoogleApiClient();
 
+    }
+
+    @Override
+    public void onCreate() {
+        buildGoogleApiClient();
         mGoogleApiClient.connect();
     }
 
@@ -70,7 +74,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
             return;
         }
 
-        Log.d("Geofence", "Registering Geofences");
+        //Log.d("Geofence", "Registering Geofences");
 
         HashMap<String, SimpleGeofence> geofences = MainActivity.geofences;
         GeofencingRequest.Builder geofencingRequestBuilder = new GeofencingRequest.Builder();
@@ -146,16 +150,16 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i("Geofence", "Connected to GoogleApiClient");
+        //Log.i("Geofence", "Connected to GoogleApiClient");
         startLocationUpdates();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("Geofence",
-                "new location : " + location.getLatitude() + ", "
-                        + location.getLongitude() + ". "
-                        + location.getAccuracy());
+        //Log.d("Geofence",
+                //"new location : " + location.getLatitude() + ", "
+                   //     + location.getLongitude() + ". "
+                   //     + location.getAccuracy());
         broadcastLocationFound(location);
 
         if (!MainActivity.geofencesAlreadyRegistered) {
@@ -165,19 +169,19 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.i("Geofence", "Connection suspended");
+        //Log.i("Geofence", "Connection suspended");
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.i("Geofence",
-                "Connection failed: ConnectionResult.getErrorCode() = "
-                        + result.getErrorCode());
+        //Log.i("Geofence",
+               // "Connection failed: ConnectionResult.getErrorCode() = "
+                 //       + result.getErrorCode());
     }
 
     protected synchronized void buildGoogleApiClient() {
-        Log.i("Geofence", "Building GoogleApiClient");
+        //Log.i("Geofence", "Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -207,7 +211,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
             MainActivity.geofencesAlreadyRegistered = false;
             String errorMessage = getErrorString(this, status.getStatusCode());
             Toast.makeText(getApplicationContext(), errorMessage,
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -222,7 +226,8 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                 return mResources
                         .getString(R.string.geofence_too_many_pending_intents);
             default:
-                return mResources.getString(R.string.unknown_geofence_error);
+                ////Log.e("Geofence Error: ", String.valueOf(+errorCode));
+                return mResources.getString(R.string.unknown_geofence_error) +errorCode;
         }
     }
 }

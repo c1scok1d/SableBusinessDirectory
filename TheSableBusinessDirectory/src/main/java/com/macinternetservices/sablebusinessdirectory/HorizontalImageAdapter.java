@@ -40,7 +40,7 @@ public class HorizontalImageAdapter extends RecyclerView.Adapter<HorizontalImage
 
         @Override
         public void onBindViewHolder(ViewHolder holder, final int position) {
-            Log.d(TAG, "onBindViewHolder: Images Set");
+            //Log.d(TAG, "onBindViewHolder: Images Set");
             Glide.with(mcontext)
                     .asBitmap()
                     .load(mImages.get(position))
@@ -51,7 +51,7 @@ public class HorizontalImageAdapter extends RecyclerView.Adapter<HorizontalImage
             holder.parent_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: Clicked");
+                    //Log.d(TAG, "onClick: Clicked");
                     Toast.makeText(mcontext, mNames.get(position), Toast.LENGTH_SHORT).show();
                 }
             });

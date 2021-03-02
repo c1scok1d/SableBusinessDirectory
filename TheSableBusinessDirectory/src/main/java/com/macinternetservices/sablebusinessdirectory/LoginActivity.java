@@ -254,7 +254,7 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<UserAuthPOJO>() {
             @Override
             public void onResponse(Call<UserAuthPOJO> call, Response<UserAuthPOJO> response) {
-                //Log.e("main_activity", " response " + response.body());
+                ////Log.e("main_activity", " response " + response.body());
                 if (response.isSuccessful()) {
 
                     // mListPost = response.body();

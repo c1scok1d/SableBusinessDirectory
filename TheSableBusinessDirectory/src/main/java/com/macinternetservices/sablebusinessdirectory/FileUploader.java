@@ -151,13 +151,13 @@ public class FileUploader {
         call.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                Log.e("UPLOAD_IMAGE ","RESPONSE" + response.body());
+                ////Log.e("UPLOAD_IMAGE ","RESPONSE" + response.body());
 
                 if (response.isSuccessful()) {
                     JsonElement jsonElement = response.body();
                     responses[index] = jsonElement.toString();
                 }else{
-                    //Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
+                    ////Log.e("SNAFU ", " SOMETHING'S FUBAR'd!!! :)");
                     responses[index] = "";
                 }
                 uploadNext();
