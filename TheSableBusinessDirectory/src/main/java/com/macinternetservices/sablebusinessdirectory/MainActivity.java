@@ -810,14 +810,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-       // tvLoading.setAnimation(imgAnimationIn);
-        //tvLoading.setText("onSTOP");
-        ////Log.e("onStop", "onStop Executed");
         imageSwitchHandler.removeCallbacks(runnableCode);
         super.onStop();
-        ////Log.e("onStop", "onStop Ended");
     }
 
     public void onResume() {
@@ -826,8 +820,14 @@ public class MainActivity extends AppCompatActivity implements
         //This starts the access token tracking
         accessTokenTracker.startTracking();
         ////Log.e("onResume", "onResume Ended");
-       getApplication().registerReceiver(receiver,
-               new IntentFilter("me.hoen.geofence_21.geolocation.service"));
+        verticalList.clear();
+        listingName.clear();
+        recentList.clear();
+        featuredList.clear();
+        mapLocations.clear();
+        recentReviewList.clear();
+        //Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
+        //ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
     }
 
     public void onDestroy() {
@@ -1749,7 +1749,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //create map markers and begin geofence monitoring
     protected void setMarkers() {
-        displayGeofences();
+        //displayGeofences();
         Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
         ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
         Intent intent = new Intent(this, MarkerClusteringActivity.class);
