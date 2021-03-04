@@ -15,8 +15,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -86,6 +89,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.firstName;
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.isLoggedIn;
+
 /**
  *
  */
@@ -135,12 +142,14 @@ public class AddListingActivity extends AppCompatActivity implements
     private static final int AUTOCOMPLETE_REQUEST_CODE = 4077;
     protected ImageView ivLogo, ivAddySearch;
     private EasyImage easyImage;
+    //private TextView tvLoading;
     //BusinessHoursWeekPicker bh_picker;
     JSONArray businessHours = new JSONArray();
     //LinearLayout viewBusinessHoursLayout;
     PlacesClient placesClient;
 
     public static final String BH_LIST = "bh_list";
+
 
     /**
      * @param savedInstanceState
@@ -159,7 +168,6 @@ public class AddListingActivity extends AppCompatActivity implements
         viewBusinessHoursLayout.setVisibility(View.GONE);
         TextView tvAddHours;
         addListingCategory.add("Select Business Category"); //add heading to category spinner
-
 
         btn_apply.setOnClickListener(view -> {
 
@@ -199,7 +207,9 @@ public class AddListingActivity extends AppCompatActivity implements
         etTwitter  = findViewById(R.id.etTwitter);
         etFacebook = findViewById(R.id.etFacebook);
         tvAddHours = findViewById(R.id.tvAddHours);
-        //currentLocationAutocomplete = findViewById(R.id.autoCompleteEditText);
+//        tvLoading = findViewById(R.id.tvLoading);
+//        tvLoading.setVisibility(View.GONE);
+
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
@@ -232,13 +242,14 @@ public class AddListingActivity extends AppCompatActivity implements
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
         autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS, Place.Field.LAT_LNG));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         //LatLng latlng = Place.Field.LAT_LNG();
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 // TODO: Get info about the selected place.
                 Toast.makeText(getApplicationContext(), place.getName(), Toast.LENGTH_SHORT).show();
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 13));
                 setAddress(place.getLatLng().latitude, place.getLatLng().longitude);
 
@@ -249,22 +260,6 @@ public class AddListingActivity extends AppCompatActivity implements
                         .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                         .build();                   // Creates a CameraPosition from the builder
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-/*                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(Objects.requireNonNull(place.getPhotoMetadatas()).get(0))
-                        .build();
-                placesClient.fetchPhoto(photoRequest).addOnSuccessListener(
-                        new OnSuccessListener<FetchPhotoResponse>() {
-                            @Override
-                            public void onSuccess(FetchPhotoResponse response) {
-                                Bitmap bitmap = response.getBitmap();
-                                ((ImageView)findViewById(R.id.img)).setImageBitmap(bitmap);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                exception.printStackTrace();
-                            }
-                        });*/
             }
 
             @Override
@@ -480,6 +475,18 @@ public class AddListingActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+       // tvLoading.setVisibility(View.VISIBLE);
+        //tvLoading.setAnimation(imgAnimationIn);
+        //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+       // if(isLoggedIn && firstName != null) {
+          //  String name = "<font color='#4FC1E9'>" +firstName+"</font>";
+            //tvLoading.setText(Html.fromHtml(("Hey  " + name + "<br> it looks like you're at " +address)));
+        /*} else {
+            tvLoading.setText("Thank you for waiting while we search our directory for black owned businesses near you.");
+        }*/
     }
     ////  END OF ONCREATE ////
 

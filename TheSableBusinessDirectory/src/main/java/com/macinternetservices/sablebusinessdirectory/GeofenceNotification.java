@@ -31,25 +31,15 @@ public class GeofenceNotification {
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType) {
         Object[] notificationTextParams = new Object[] { simpleGeofence.getId() };
-        String notificationText = "";
-        float foo = simpleGeofence.getRadius();
-        String bar = simpleGeofence.getId();
-
-
+        String notificationText = simpleGeofence.getId();
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                notificationText = "You are near " +simpleGeofence.getId();
-                        /*String.format(
-                        context.getString(R.string.geofence_dwell),
-                        notificationTextParams);*/
+                notificationText = "You are near " +notificationTextParams;
                 transitionDwellNotification(context, notificationText);
                 break;
 
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                notificationText = "You are 5 miles away from " +simpleGeofence.getId();
-            /*String.format(
-                        context.getString(R.string.geofence_enter),
-                        notificationTextParams);*/
+                notificationText = "You are 5 miles away from " +simpleGeofence;
                 transitionEnterNotification(context, notificationText);
                 break;
 
@@ -101,7 +91,7 @@ public class GeofenceNotification {
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setContentTitle("Black Owned Business Alert")
                 .setContentText(message)
-                .setSmallIcon(R.mipmap.sable_logo_black)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
                 .build();
         NotificationManager notifManager =

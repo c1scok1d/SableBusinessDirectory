@@ -182,25 +182,19 @@ public class MainActivity extends AppCompatActivity implements
             password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
 
     public static ArrayList<ListingsModel> verticalList = new ArrayList<>();
-    ArrayList<String> listingName = new ArrayList<>();
-    //ArrayList<ListReviewModel> reviewlList = new ArrayList<>();
-    ArrayList<ListingsModel> featuredList = new ArrayList<>();
-    ArrayList<ListingsModel> recentList = new ArrayList<>();
-    ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
-    ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-    // ArrayList<ListingsModel> locationReview = new ArrayList<>();
+    public static ArrayList<String> listingName = new ArrayList<>();
+    public static ArrayList<ListingsModel> featuredList = new ArrayList<>();
+    public static ArrayList<ListingsModel> recentList = new ArrayList<>();
+    public static ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
+    public static ArrayList<ListingsModel> locationMatch = new ArrayList<>();
     public static ArrayList<Person> mapLocations = new ArrayList<>();
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
             * DateUtils.HOUR_IN_MILLIS;
     static public boolean geofencesAlreadyRegistered = false;
     public static HashMap<String, SimpleGeofence> geofences = new HashMap<String, SimpleGeofence>();
-
-    //ArrayList<SearchListItems> category = new ArrayList<>();
     ArrayList<String> userActivityArray = new ArrayList<>();
-    RadioGroup radioGroup;
     ImageView ivUserImage, spokesperson, ivLoading, noListingsImageView;
-    //HorizontalScrollView category_radioButton_scroller;
 
     private static final int FRAME_TIME_MS = 8000;
 
@@ -278,9 +272,6 @@ public class MainActivity extends AppCompatActivity implements
     ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout, sliderLayout;
     private Handler imageSwitchHandler;
-
-    ListView searchList;
-    SearchListViewAdapter searchAdapter;
 
     public static Context context;
 
@@ -762,47 +753,6 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressLint("MissingPermission")
     public void onStart() {
         super.onStart();
-        //checkAndroidVersion();
-        verticalList.clear();
-        listingName.clear();
-        recentList.clear();
-        featuredList.clear();
-        mapLocations.clear();
-        recentReviewList.clear();
-        //Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        ////Log.e("onStart", "onStart Executed");
-        /**
-         *  location manager to get current location
-         */
-
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
-            return;
-        }*/
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
-                400, LocationListener);
-
-        //This starts the access token tracking
-        if (accessToken != null) {
-            useLoginInformation(accessToken);
-        //    loggedInLayout.setVisibility(View.VISIBLE);
-            // startActivity(getIntent());
-            ////Log.e("onStart Access Token Login Successful ", " accessToken " + accessToken);
-        } else {
-            // startActivity(getIntent());
-            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
-            //LinearLayout userNameLayout = findViewById(R.id.userNameLayout);
-            userImageLayout.setVisibility(View.GONE);
-            //userNameLayout.setVisibility(View.GONE);
-        }
-        accessTokenTracker.startTracking();
-        ////Log.e("onStart", "onStart Ended");
-        //throw new RuntimeException();
     }
 
     @Override
@@ -811,23 +761,33 @@ public class MainActivity extends AppCompatActivity implements
         super.onStop();
     }
 
+    @SuppressLint("MissingPermission")
     public void onResume() {
         super.onResume();
-        ////Log.e("onResume", "onResume Executed");
+        /**
+         *  location manager to get current location
+         */
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
+                400, LocationListener);
         //This starts the access token tracking
+        if (accessToken != null) {
+            useLoginInformation(accessToken);
+        } else {
+            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
+            userImageLayout.setVisibility(View.GONE);
+        }
         accessTokenTracker.startTracking();
-        Log.e("onResume", "onResume Ended");
+//        Log.e("onResume", "onResume Ended");
         getApplication().registerReceiver(receiver,
-                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
+               new IntentFilter("me.hoen.geofence_21.geolocation.service"));
     }
 
     public void onDestroy() {
         super.onDestroy();
-        ////Log.e("onDestroy", "onDestroy Executed");
-        // We stop the tracking before destroying the activity
         accessTokenTracker.stopTracking();
         deleteCache(getApplicationContext());
-        ////Log.e("onDestroy", "onDestroy Ended");
     }
 
     public void restartActivity(){
@@ -856,9 +816,6 @@ public class MainActivity extends AppCompatActivity implements
                     String[] parts = (object.getString("name").split(" "));
                     firstName = parts[0];
                     lastName = parts[1];
-//                    tvUserName.setText(firstName);
-//                    tvUserName2.setText(firstName);
-                    //    tvUserEmail.setText(object.getString("email"));
                     facebookImageBuilder.build().load(object.getJSONObject("picture").getJSONObject("data").getString("url")).into(ivUserImage);
 
                     Map<String, String> query = new HashMap<>();
@@ -886,6 +843,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    public static boolean isLoggedIn;
     /**
      * Location listener to get device current lat/lng
      */
@@ -903,7 +861,7 @@ public class MainActivity extends AppCompatActivity implements
             ivLoading.setAnimation(imgAnimationIn);
             tvLoading.setVisibility(View.VISIBLE);
             tvLoading.setAnimation(imgAnimationIn);
-            boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+            isLoggedIn = accessToken != null && !accessToken.isExpired();
             if(isLoggedIn && firstName != null) {
                 String name = "<font color='#4FC1E9'>" +firstName+"</font>";
                 tvLoading.setText(Html.fromHtml(("Thanks for your patience " + name + "<br>We are searching our directory for black owned businesses near you.")));
@@ -1107,11 +1065,6 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     public void getRetrofit(final Map<String, String> query) {
-
-        Animation imgAnimationBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
-
-        //mapLocations.clear();
-
         retrofit = null;
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseURL)
@@ -1120,7 +1073,13 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
 
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
-
+        verticalList = new ArrayList<>();
+        locationMatch = new ArrayList<>();
+        listingName = new ArrayList<>();
+        recentList = new ArrayList<>();
+        featuredList= new ArrayList<>();
+        mapLocations = new ArrayList<>();
+        recentReviewList = new ArrayList<>();
         // pass JSON data to BusinessListings class for filtering
         Call<List<BusinessListings>> call = service.getPostInfo(query);
 
@@ -1129,10 +1088,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 if (response.isSuccessful()) {
-                    Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-                    Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-                   // tvLoading.setAnimation(imgAnimationIn);
-                    //tvLoading.setText("Loading nearby listings");
                     if (response.raw().cacheResponse() != null) {
                         ////Log.e("Network", "Listings response came from cache");
                     } else {
