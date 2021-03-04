@@ -294,11 +294,8 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void updateMarker(Double latitude, Double longitude) {
         if (myPositionMarker == null) {
-            MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!");
-
             createMarker(latitude, longitude);
         }
-
         LatLng latLng = new LatLng(latitude, longitude);
         myPositionMarker.setPosition(latLng);
     }
@@ -311,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         setCache(getApplicationContext());
-        //ACRA.init(getApplication(), builder);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
@@ -369,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements
             textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             textView.setTextSize(16);
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-            //textView.setGravity(Gravity.CENTER);
             return textView;
         });
 
@@ -596,8 +591,6 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(loginIntent);
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                //goto login activity get username and email via facebook create account, return here to check again and proceed
-
                 Toast.makeText(getApplicationContext(), "User must be logged in to add a business listing.", Toast.LENGTH_LONG).show();
             } else {
                 Intent addListingIntent = new Intent(MainActivity.this, AddListingActivity.class);
@@ -729,8 +722,6 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     tvMore.setText("Less");
                 }
-
-                // Log.i("onPanelStateChanged", "onPanelStateChanged " + newState);
             }
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
@@ -781,7 +772,7 @@ public class MainActivity extends AppCompatActivity implements
         accessTokenTracker.startTracking();
 //        Log.e("onResume", "onResume Ended");
         getApplication().registerReceiver(receiver,
-               new IntentFilter("me.hoen.geofence_21.geolocation.service"));
+                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
     }
 
     public void onDestroy() {

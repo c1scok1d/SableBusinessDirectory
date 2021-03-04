@@ -141,11 +141,6 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                 mGoogleApiClient, mLocationRequest, this);
     }
 
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
-
     @Override
     public void onConnected(Bundle connectionHint) {
         //Log.i("Geofence", "Connected to GoogleApiClient");

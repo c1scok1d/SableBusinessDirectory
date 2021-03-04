@@ -24,7 +24,6 @@ public class GeofenceReceiver extends IntentService {
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent geoEvent = GeofencingEvent.fromIntent(intent);
         if (geoEvent.hasError()) {
-            //Log.d("Geofence", "Error GeofenceReceiver.onHandleIntent");
         } else {
             //Log.d("Geofence", "GeofenceReceiver : Transition -> "
                    // + geoEvent.getGeofenceTransition());
@@ -57,12 +56,6 @@ public class GeofenceReceiver extends IntentService {
                             near++;
                             break;
                     }
-                   /* String date = DateFormat.format("yyyy-MM-dd hh:mm:ss",
-                            new Date()).toString();
-                    EventDataSource eds = new EventDataSource(
-                            getApplicationContext());
-                    eds.create(transitionName, date, geofence.getRequestId());
-                    eds.close();*/
 
                     GeofenceNotification geofenceNotification = new GeofenceNotification(
                             this);

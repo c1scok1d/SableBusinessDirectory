@@ -31,10 +31,10 @@ public class GeofenceNotification {
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType) {
         Object[] notificationTextParams = new Object[] { simpleGeofence.getId() };
-        String notificationText = simpleGeofence.getId();
+        String notificationText = "";
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                notificationText = "You are near " +notificationTextParams;
+                notificationText = "You are near " +notificationTextParams.toString();
                 transitionDwellNotification(context, notificationText);
                 break;
 
