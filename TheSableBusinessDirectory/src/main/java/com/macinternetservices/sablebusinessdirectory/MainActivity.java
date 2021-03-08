@@ -194,7 +194,8 @@ public class MainActivity extends AppCompatActivity implements
     static public boolean geofencesAlreadyRegistered = false;
     public static HashMap<String, SimpleGeofence> geofences = new HashMap<String, SimpleGeofence>();
     ArrayList<String> userActivityArray = new ArrayList<>();
-    ImageView ivUserImage, spokesperson, ivLoading, noListingsImageView;
+    public static ImageView ivUserImage, spokesperson, ivLoading, noListingsImageView;
+
 
     private static final int FRAME_TIME_MS = 8000;
 
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements
     private AccessTokenTracker accessTokenTracker;
 
 
-    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    public static AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
     TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
     private SlidingUpPanelLayout mLayout;
@@ -846,7 +847,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onLocationChanged(Location location) {
             Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-            Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+            //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
             ivLoading.setVisibility(View.VISIBLE);
             ivLoading.setAnimation(imgAnimationIn);
