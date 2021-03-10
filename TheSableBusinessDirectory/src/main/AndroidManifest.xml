@@ -28,7 +28,7 @@
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
-        android:label="Sable"
+        android:label="Sable Business Directory"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:icon="@mipmap/ic_launcher_round">
