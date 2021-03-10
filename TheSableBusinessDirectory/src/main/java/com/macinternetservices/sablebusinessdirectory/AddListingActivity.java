@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Criteria;
@@ -15,8 +14,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -46,20 +43,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -89,9 +79,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.macinternetservices.sablebusinessdirectory.MainActivity.firstName;
-import static com.macinternetservices.sablebusinessdirectory.MainActivity.isLoggedIn;
 
 /**
  *
@@ -117,8 +104,9 @@ public class AddListingActivity extends AppCompatActivity implements
     objects of text view and button widgets.
      */
     TextView tvCurrentAddress;
+    LinearLayout addressAutocompleteLayout, addressChangeBtnLayout, currentAddressHeaderLayout;
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
-    Button btnNext;
+    Button btnNext, changeAddressBtn;
     //AutoCompleteTextView tvCurrentAddress;
     //Spinner spnCategory;
     ListView spnCategory;
@@ -194,6 +182,13 @@ public class AddListingActivity extends AppCompatActivity implements
         });
 
         tvCurrentAddress = findViewById(R.id.tvAddress);
+        currentAddressHeaderLayout = findViewById(R.id.currentAddressHeaderLayout);
+        //currentAddressHeaderLayout.setVisibility(View.GONE);
+        addressChangeBtnLayout = findViewById(R.id.addressChangeBtnLayout);
+        addressAutocompleteLayout = findViewById(R.id.addressAutocompleteLayout);
+        addressAutocompleteLayout.setVisibility(View.GONE);
+        changeAddressBtn = findViewById(R.id.changeAddressBtn);
+
         btnNext = findViewById(R.id.btnNext);
         //spnCategory = findViewById(R.id.spnCategory);
         //spnCategory.setFastScrollEnabled(true);
@@ -218,6 +213,14 @@ public class AddListingActivity extends AppCompatActivity implements
         query.put("per_page", "100");
        getRetrofitCategories(query);
 
+        changeAddressBtn.setOnClickListener(view -> {
+            if(addressAutocompleteLayout.getVisibility() == View.GONE) {
+                addressAutocompleteLayout.setVisibility(View.VISIBLE);
+            } else {
+                addressAutocompleteLayout.setVisibility(View.GONE);
+            }
+        });
+
         tvAddHours.setOnClickListener(v -> {
             if(businessHoursLayout.getVisibility() == View.GONE) {
                 businessHoursLayout.setVisibility(View.VISIBLE);
@@ -237,7 +240,6 @@ public class AddListingActivity extends AppCompatActivity implements
         // Create a new Places client instance.
         placesClient = Places.createClient(this);
 
-
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -248,7 +250,8 @@ public class AddListingActivity extends AppCompatActivity implements
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 // TODO: Get info about the selected place.
-                Toast.makeText(getApplicationContext(), place.getName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), place.getName(), Toast.LENGTH_SHORT).show();
+                addressAutocompleteLayout.setVisibility(View.GONE);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 13));
                 setAddress(place.getLatLng().latitude, place.getLatLng().longitude);
