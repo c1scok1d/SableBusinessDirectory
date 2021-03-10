@@ -66,10 +66,10 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         ClusterManager.OnClusterItemInfoWindowClickListener<Person> {
 
     ClusterManager<Person> mClusterManager;
-    private Random random = new Random(1984);
+   // private Random random = new Random(1984);
     private Person clickedVenueMarker;
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
-    boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+    //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
 
 
@@ -316,8 +316,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                     .build();                   // Creates a CameraPosition from the builder
             getMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } else {
-        mClusterManager.addItems(mapLocations);
-        mClusterManager.cluster();
+            mClusterManager.addItems(mapLocations);
+            mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
         getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200)));
         showStuff();
@@ -359,8 +359,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         }
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        Animation imgZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_out);
-        Animation imgZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
+        //Animation imgZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_out);
+        //Animation imgZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
 
         progressBar.setVisibility(View.GONE); //hide progressBar
         login_button3.setVisibility(View.VISIBLE);
