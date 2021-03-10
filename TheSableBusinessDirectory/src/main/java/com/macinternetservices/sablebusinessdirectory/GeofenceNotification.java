@@ -6,12 +6,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.Geofence;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 public class GeofenceNotification {
@@ -22,6 +28,12 @@ public class GeofenceNotification {
     protected NotificationManager notificationManager;
     protected Notification notification;
 
+    // Set the notification tap action
+    /*Intent intent = new Intent(this, AlertDetails.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    PendingIntent notificationTapIntent = PendingIntent.getActivity(this, 0, intent, 0);*/
+
+
     public GeofenceNotification(Context context) {
         this.context = context;
 
@@ -30,23 +42,30 @@ public class GeofenceNotification {
     }
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType) {
-        Object[] notificationTextParams = new Object[] { simpleGeofence.getId() };
+        Object[] notificationTextParams = new Object[] { simpleGeofence };
         String notificationText = "";
+        String notificationText2 = "";
+        /*String foo = simpleGeofence.getId();
+        Double lng = simpleGeofence.getLongitude();
+        Double lat = simpleGeofence.getLatitude();
+        Float rad = simpleGeofence.getRadius();*/
+        Geofence geo = simpleGeofence.toGeofence();
+        String bar = simpleGeofence.getLogo();
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                notificationText = "You are near " +simpleGeofence.getId();
-                transitionDwellNotification(context, notificationText);
+                notificationText = "You are near " +geo.getRequestId();
+                notificationText2 = "Support black business.  Stop in and say 'Hi!'";
+                transitionDwellNotification(context, notificationText, notificationText2, simpleGeofence.getLogo());
                 break;
 
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                notificationText = "You are 5 miles away from " +simpleGeofence.getId();
+                notificationText = "You are 5 miles away from " +geo.getRequestId();
                 transitionEnterNotification(context, notificationText);
                 break;
 
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                notificationText = String.format(
-                        context.getString(R.string.geofence_exit),
-                        notificationTextParams);
+                notificationText = "Support black business. You are near " +geo.getRequestId()+ " why not stop in and say 'Hi!'";
+                transitionEnterNotification(context, notificationText);
                 break;
         }
 
@@ -91,27 +110,48 @@ public class GeofenceNotification {
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setContentTitle("Black Owned Business Alert")
                 .setContentText(message)
+                //.setSubText("Support Black Business")
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent)
-                .setOnlyAlertOnce(true) // set this to show and vibrate only once
+                //.setContentIntent(notificationTapIntent) // notification tap action
+                //.setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
         NotificationManager notifManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.notify(new Random().nextInt(), notification);
     }
 
-    private void transitionDwellNotification(final Context mContext,final String message){
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
+    }
+    private void transitionDwellNotification(final Context mContext,final String message, final String message2, String url){
         createNotificationChannel(mContext);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
 
+        //Bitmap myBitmap = R.drawable.logo;
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                .setContentTitle("Black Owned Business Alert")
+                .setContentTitle(message2)
                 .setContentText(message)
+                .setSubText("Black Owned Business Alert")
                 .setSmallIcon(R.mipmap.sable_logo_black)
-                .setContentIntent(pendingIntent)
-                .setOnlyAlertOnce(true) // set this to show and vibrate only once
+                .setLargeIcon(getBitmapFromURL(url))
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                  //      .bigPicture(myBitmap)
+                        .bigLargeIcon(null))
+                //.setContentIntent(notificationTapIntent) // notification tap action
+                //.setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
         NotificationManager notifManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

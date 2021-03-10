@@ -272,7 +272,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                         verticalList.get(i).featured_image,
                         verticalList.get(i).content,
                         new SimpleGeofence(verticalList.get(i).title, verticalList.get(i).latitude, verticalList.get(i).longitude,
-                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, verticalList.get(i).logo,
                                 Geofence.GEOFENCE_TRANSITION_ENTER
                                         | Geofence.GEOFENCE_TRANSITION_DWELL
                                         | Geofence.GEOFENCE_TRANSITION_EXIT))));
@@ -291,6 +291,10 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
 
     @Override
     public void setMarkers() {
+       // getMap().clear();
+        //mClusterManager.clearItems();
+        //mClusterManager.addItems(items);
+        //mClusterManager.cluster();
         //Log.e("setMarkers", " Executing setMarkers " );
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.setRenderer(new PersonRenderer());
@@ -301,7 +305,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         mClusterManager.setOnClusterInfoWindowClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
-        mClusterManager.clearItems();
+
 
         if(mapLocations.size() == 0){
             // if no locations near user zoom to current location and display no listing message and spokesman
@@ -316,6 +320,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                     .build();                   // Creates a CameraPosition from the builder
             getMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } else {
+            getMap().clear();
+            mClusterManager.clearItems();
             mClusterManager.addItems(mapLocations);
             mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();

@@ -67,7 +67,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
             * DateUtils.HOUR_IN_MILLIS;
-    private int loiteringDelay = 60000;
+    //private int loiteringDelay = 60000;
     public static final long GEOFENCE_RADIUS_IN_METERS = 100;
     protected void registerGeofences() {
         if (MainActivity.geofencesAlreadyRegistered) {

@@ -4,6 +4,7 @@ import com.google.android.gms.location.Geofence;
 
 public class SimpleGeofence {
     private final String id;
+    private final String logo;
     private final double latitude;
     private final double longitude;
     private final float radius;
@@ -12,13 +13,14 @@ public class SimpleGeofence {
     private int loiteringDelay = 60000;
 
     public SimpleGeofence(String geofenceId, double latitude, double longitude,
-                          float radius, long expiration, int transition) {
+                          float radius, long expiration, String logo, int transition) {
         this.id = geofenceId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
         this.expirationDuration = expiration;
         this.transitionType = transition;
+        this.logo = logo;
     }
 
     public Geofence toGeofence() {
@@ -33,18 +35,20 @@ public class SimpleGeofence {
     }
 
     float getRadius() {
-        return 0;
+        return radius;
     }
 
     double getLongitude() {
-        return 0;
+        return longitude;
     }
 
     String getId() {
-        return null;
+        return id;
     }
 
     double getLatitude() {
-        return 0;
+        return latitude;
     }
+
+    String getLogo(){return logo;}
 }

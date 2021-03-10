@@ -88,7 +88,7 @@ public class RecentReviewListingsAdapter extends RecyclerView.Adapter {
                                 MainActivity.verticalList.get(i).featured_image,
                                 MainActivity.verticalList.get(i).content,
                                 new SimpleGeofence(MainActivity.verticalList.get(i).title, MainActivity.verticalList.get(i).latitude, MainActivity.verticalList.get(i).longitude,
-                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, MainActivity.verticalList.get(i).logo,
                                         Geofence.GEOFENCE_TRANSITION_ENTER
                                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                                 | Geofence.GEOFENCE_TRANSITION_EXIT))));

@@ -95,7 +95,7 @@ public class RecentListingsAdapter extends RecyclerView.Adapter {
                                 locationReview.get(i).featured_image,
                                 locationReview.get(i).content,
                                 new SimpleGeofence(locationReview.get(i).title, locationReview.get(i).latitude, locationReview.get(i).longitude,
-                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, locationReview.get(i).logo,
                                         Geofence.GEOFENCE_TRANSITION_ENTER
                                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                                 | Geofence.GEOFENCE_TRANSITION_EXIT))));
@@ -163,7 +163,7 @@ public class RecentListingsAdapter extends RecyclerView.Adapter {
                 object.featured_image,
                 object.content,
                 new SimpleGeofence(object.title, object.latitude, object.longitude,
-                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, object.logo,
                         Geofence.GEOFENCE_TRANSITION_ENTER
                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                 | Geofence.GEOFENCE_TRANSITION_EXIT)));

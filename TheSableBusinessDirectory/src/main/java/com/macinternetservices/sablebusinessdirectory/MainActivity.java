@@ -313,7 +313,6 @@ public class MainActivity extends AppCompatActivity implements
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
         isRestore = savedInstanceState != null;
-        setUpMap();
         loadingLayout = findViewById(R.id.loadingLayout);
         tvLoading = findViewById(R.id.tvLoading);
         tvLoading.setVisibility(View.GONE);
@@ -673,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements
                                         response.body().get(i).getContent().getRaw(),
                                         response.body().get(i).getFeaturedImage().getThumbnail(),
                                         response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
                                         Geofence.GEOFENCE_TRANSITION_ENTER
                                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                                 | Geofence.GEOFENCE_TRANSITION_EXIT))));
@@ -727,17 +726,20 @@ public class MainActivity extends AppCompatActivity implements
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        ////Log.e("onCreate ", " END onCreate ");
+
+        setUpMap();
     }
+
     protected Marker myPositionMarker;
 
     protected void createMarker(Double latitude, Double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
 
         myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng)
-        .title("You are here!"));
+                .title("You are here!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
+
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
     }
@@ -782,11 +784,12 @@ public class MainActivity extends AppCompatActivity implements
         deleteCache(getApplicationContext());
     }
 
-    public void restartActivity(){
+    public void restartActivity() {
         Intent mIntent = getIntent();
         finish();
         startActivity(mIntent);
     }
+
     public void useLoginInformation(final AccessToken accessToken) {
 
         /**
@@ -854,8 +857,8 @@ public class MainActivity extends AppCompatActivity implements
             tvLoading.setVisibility(View.VISIBLE);
             tvLoading.setAnimation(imgAnimationIn);
             isLoggedIn = accessToken != null && !accessToken.isExpired();
-            if(isLoggedIn && firstName != null) {
-                String name = "<font color='#4FC1E9'>" +firstName+"</font>";
+            if (isLoggedIn && firstName != null) {
+                String name = "<font color='#4FC1E9'>" + firstName + "</font>";
                 tvLoading.setText(Html.fromHtml(("Thanks for your patience " + name + "<br>We are searching our directory for black owned businesses near you.")));
             } else {
                 tvLoading.setText("Thank you for waiting while we search our directory for black owned businesses near you.");
@@ -904,6 +907,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     };
+
     /**
      * @param map
      */
@@ -955,12 +959,6 @@ public class MainActivity extends AppCompatActivity implements
         //setAddress(latitude, longitude);
     }
 
-    /**
-     * geocode location address using lat/lng
-     *
-     * @param latitude
-     * @param longitude
-     */
    /* public void setAddress(Double latitude, Double longitude) {
         Geocoder geocoder;
         List<Address> addresses = null;
@@ -1007,7 +1005,7 @@ public class MainActivity extends AppCompatActivity implements
         int cacheSize = 10 * 1024 * 1024; // 10 MB
         File cacheFoo = context.getCacheDir();
         //  cache = new Cache(new File(context.getCacheDir(), "sable-cache"), cacheSize);
-        cache = new Cache(cacheFoo,  cacheSize);
+        cache = new Cache(cacheFoo, cacheSize);
         ////Log.e("This is Cache:", "cacheFile: " +cache);
 
     }
@@ -1051,6 +1049,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
     /**
      * Retrofit API call to get listings
      *
@@ -1069,7 +1068,7 @@ public class MainActivity extends AppCompatActivity implements
         locationMatch = new ArrayList<>();
         listingName = new ArrayList<>();
         recentList = new ArrayList<>();
-        featuredList= new ArrayList<>();
+        featuredList = new ArrayList<>();
         mapLocations = new ArrayList<>();
         recentReviewList = new ArrayList<>();
         // pass JSON data to BusinessListings class for filtering
@@ -1080,11 +1079,11 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
                 if (response.isSuccessful()) {
-                    if (response.raw().cacheResponse() != null) {
+                   /* if (response.raw().cacheResponse() != null) {
                         ////Log.e("Network", "Listings response came from cache");
                     } else {
                         ////Log.e("Network", "Listings response came from server");
-                    }
+                    }*/
                     for (int i = 0; i < response.body().size(); i++) {
                         BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
                         if (businessHours == null) {
@@ -1100,7 +1099,7 @@ public class MainActivity extends AppCompatActivity implements
                          *
                          */
 
-                        Boolean onMatch = false;
+                     /*   Boolean onMatch = false;
 
                         if (String.valueOf(response.body().get(i).getLatitude()).equals(String.valueOf(latitude)) &&
                                 String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude)) && userActivityArray.size() > 0 && onMatch) {
@@ -1144,12 +1143,66 @@ public class MainActivity extends AppCompatActivity implements
                             LocationMatch.putExtra("locationMatch", locationMatch);
                             startActivity(LocationMatch);
                             break;
-                        } else {
+                        } else { */
 
-                            /**
-                             * populate vertical recycler in Main Activity
-                             */
-                            verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                        /**
+                         * populate vertical recycler in Main Activity
+                         */
+                        verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                response.body().get(i).getId(),
+                                response.body().get(i).getTitle().getRaw(),
+                                response.body().get(i).getLink(),
+                                response.body().get(i).getStatus(),
+                                response.body().get(i).getPostCategory().get(0).getName(),
+                                response.body().get(i).getFeatured(),
+                                response.body().get(i).getFeaturedImage().getSrc(),
+                                response.body().get(i).getBldgNo(),
+                                response.body().get(i).getStreet(),
+                                response.body().get(i).getCity(),
+                                response.body().get(i).getRegion(),
+                                response.body().get(i).getCountry(),
+                                response.body().get(i).getZip(),
+                                response.body().get(i).getLatitude(),
+                                response.body().get(i).getLongitude(),
+                                response.body().get(i).getRating(),
+                                response.body().get(i).getRatingCount(),
+                                response.body().get(i).getPhone(),
+                                response.body().get(i).getEmail(),
+                                response.body().get(i).getWebsite(),
+                                response.body().get(i).getTwitter(),
+                                response.body().get(i).getFacebook(),
+                                response.body().get(i).getVideo(),
+                                todayRange,
+                                isOpen,
+                                response.body().get(i).getLogo(),
+                                response.body().get(i).getContent().getRaw(),
+                                response.body().get(i).getFeaturedImage().getThumbnail(),
+                                response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                Geofence.GEOFENCE_TRANSITION_ENTER
+                                        | Geofence.GEOFENCE_TRANSITION_DWELL
+                                        | Geofence.GEOFENCE_TRANSITION_EXIT)));
+                        geofences.put(response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                Geofence.GEOFENCE_TRANSITION_ENTER
+                                        | Geofence.GEOFENCE_TRANSITION_DWELL
+                                        | Geofence.GEOFENCE_TRANSITION_EXIT));
+                        verticalAdapter.notifyDataSetChanged();
+
+                        listingName.add(response.body().get(i).getTitle().getRaw());
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
+                            Date created = sdf.parse(response.body().get(i).getDateGmt());
+                            Date currentTime = Calendar.getInstance().getTime();
+                            date1 = String.valueOf(created);
+                            date2 = String.valueOf(currentTime);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 30;
+                        if (isRecent) {
+                            recentList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
                                     response.body().get(i).getLink(),
@@ -1179,135 +1232,81 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
                                     Geofence.GEOFENCE_TRANSITION_ENTER
                                             | Geofence.GEOFENCE_TRANSITION_DWELL
                                             | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                            geofences.put(response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-                                    Geofence.GEOFENCE_TRANSITION_ENTER
-                                            | Geofence.GEOFENCE_TRANSITION_DWELL
-                                            | Geofence.GEOFENCE_TRANSITION_EXIT));
-                            verticalAdapter.notifyDataSetChanged();
-
-                            listingName.add(response.body().get(i).getTitle().getRaw());
-                            try {
-                                SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
-                                Date created = sdf.parse(response.body().get(i).getDateGmt());
-                                Date currentTime = Calendar.getInstance().getTime();
-                                date1 = String.valueOf(created);
-                                date2 = String.valueOf(currentTime);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 30;
-                            if (isRecent) {
-                                recentList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                        response.body().get(i).getId(),
-                                        response.body().get(i).getTitle().getRaw(),
-                                        response.body().get(i).getLink(),
-                                        response.body().get(i).getStatus(),
-                                        response.body().get(i).getPostCategory().get(0).getName(),
-                                        response.body().get(i).getFeatured(),
-                                        response.body().get(i).getFeaturedImage().getSrc(),
-                                        response.body().get(i).getBldgNo(),
-                                        response.body().get(i).getStreet(),
-                                        response.body().get(i).getCity(),
-                                        response.body().get(i).getRegion(),
-                                        response.body().get(i).getCountry(),
-                                        response.body().get(i).getZip(),
-                                        response.body().get(i).getLatitude(),
-                                        response.body().get(i).getLongitude(),
-                                        response.body().get(i).getRating(),
-                                        response.body().get(i).getRatingCount(),
-                                        response.body().get(i).getPhone(),
-                                        response.body().get(i).getEmail(),
-                                        response.body().get(i).getWebsite(),
-                                        response.body().get(i).getTwitter(),
-                                        response.body().get(i).getFacebook(),
-                                        response.body().get(i).getVideo(),
-                                        todayRange,
-                                        isOpen,
-                                        response.body().get(i).getLogo(),
-                                        response.body().get(i).getContent().getRaw(),
-                                        response.body().get(i).getFeaturedImage().getThumbnail(),
-                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                        8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-                                        Geofence.GEOFENCE_TRANSITION_ENTER
-                                                | Geofence.GEOFENCE_TRANSITION_DWELL
-                                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                                recentListingsAdapter.notifyDataSetChanged();
-                            }
-                            boolean isFeatured = response.body().get(i).getFeatured();
-                            if (isFeatured) {
-                                featuredList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                        response.body().get(i).getId(),
-                                        response.body().get(i).getTitle().getRaw(),
-                                        response.body().get(i).getLink(),
-                                        response.body().get(i).getStatus(),
-                                        response.body().get(i).getPostCategory().get(0).getName(),
-                                        response.body().get(i).getFeatured(),
-                                        response.body().get(i).getFeaturedImage().getSrc(),
-                                        response.body().get(i).getBldgNo(),
-                                        response.body().get(i).getStreet(),
-                                        response.body().get(i).getCity(),
-                                        response.body().get(i).getRegion(),
-                                        response.body().get(i).getCountry(),
-                                        response.body().get(i).getZip(),
-                                        response.body().get(i).getLatitude(),
-                                        response.body().get(i).getLongitude(),
-                                        response.body().get(i).getRating(),
-                                        response.body().get(i).getRatingCount(),
-                                        response.body().get(i).getPhone(),
-                                        response.body().get(i).getEmail(),
-                                        response.body().get(i).getWebsite(),
-                                        response.body().get(i).getTwitter(),
-                                        response.body().get(i).getFacebook(),
-                                        response.body().get(i).getVideo(),
-                                        todayRange,
-                                        isOpen,
-                                        response.body().get(i).getLogo(),
-                                        response.body().get(i).getContent().getRaw(),
-                                        response.body().get(i).getFeaturedImage().getThumbnail(),
-                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                        8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-                                        Geofence.GEOFENCE_TRANSITION_ENTER
-                                                | Geofence.GEOFENCE_TRANSITION_DWELL
-                                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                                featuredListAdapter.notifyDataSetChanged();
-                            }
-
-                            /**
-                             * categories on top of the map
-                             */
-
-                            LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
-                            latLngBoundsBuilder.include(latlng);
-                            mapLocations.add(new Person(latlng,
+                            recentListingsAdapter.notifyDataSetChanged();
+                        }
+                        boolean isFeatured = response.body().get(i).getFeatured();
+                        if (isFeatured) {
+                            featuredList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getId(),
                                     response.body().get(i).getTitle().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getLink(),
+                                    response.body().get(i).getStatus(),
+                                    response.body().get(i).getPostCategory().get(0).getName(),
+                                    response.body().get(i).getFeatured(),
+                                    response.body().get(i).getFeaturedImage().getSrc(),
+                                    response.body().get(i).getBldgNo(),
+                                    response.body().get(i).getStreet(),
                                     response.body().get(i).getCity(),
                                     response.body().get(i).getRegion(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail()));
-
+                                    response.body().get(i).getCountry(),
+                                    response.body().get(i).getZip(),
+                                    response.body().get(i).getLatitude(),
+                                    response.body().get(i).getLongitude(),
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getPhone(),
+                                    response.body().get(i).getEmail(),
+                                    response.body().get(i).getWebsite(),
+                                    response.body().get(i).getTwitter(),
+                                    response.body().get(i).getFacebook(),
+                                    response.body().get(i).getVideo(),
+                                    todayRange,
+                                    isOpen,
+                                    response.body().get(i).getLogo(),
+                                    response.body().get(i).getContent().getRaw(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                    Geofence.GEOFENCE_TRANSITION_ENTER
+                                            | Geofence.GEOFENCE_TRANSITION_DWELL
+                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
+                            featuredListAdapter.notifyDataSetChanged();
                         }
+
+                        /**
+                         * categories on top of the map
+                         */
+
+                        LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
+                        latLngBoundsBuilder.include(latlng);
+                        mapLocations.add(new Person(latlng,
+                                response.body().get(i).getTitle().getRaw(),
+                                response.body().get(i).getFeaturedImage().getThumbnail(),
+                                response.body().get(i).getContent().getRaw(),
+                                response.body().get(i).getRating(),
+                                response.body().get(i).getRatingCount(),
+                                response.body().get(i).getCity(),
+                                response.body().get(i).getRegion(),
+                                response.body().get(i).getFeaturedImage().getThumbnail()));
                     }
+                    // }
                     // Pass results to ListViewAdapter Class
-                   // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
+                    // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
                     // Binds the Adapter to the ListView
 //                    searchList.setAdapter(searchAdapter);
-                   // tvLoading.setAnimation(imgAnimationIn);
-                   // tvLoading.setText("...loading the map now.");
+                    // tvLoading.setAnimation(imgAnimationIn);
+                    // tvLoading.setText("...loading the map now.");
                     setMarkers();
                     //displayGeofences();
                 } else {
                     // do some stuff
                 }
             }
+
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
                 ////Log.e("getListingsFailure", " response: " + t);
@@ -1352,14 +1351,14 @@ public class MainActivity extends AppCompatActivity implements
                     //Log.e("Network", "Reviews response came from server");
                 }
                 if (response.isSuccessful() && response.body().size() > 0) {
-                   // tvLoading.setAnimation(imgAnimationIn);
-                   // tvLoading.setText("Loading recent reviews...");
+                    // tvLoading.setAnimation(imgAnimationIn);
+                    // tvLoading.setText("Loading recent reviews...");
 
                     for (int i = 0; i < response.body().size(); i++) {
                         /**
                          * populate vertical recycler in Main Activity
                          */
-                        if(response.body().get(i).getImages().getRendered().size() != 0) {
+                        if (response.body().get(i).getImages().getRendered().size() != 0) {
 
                             recentReviewList.add(new RecentReviewListingsModel(RecentReviewListingsModel.IMAGE_TYPE,
                                     response.body().get(i).getId(),
@@ -1375,9 +1374,10 @@ public class MainActivity extends AppCompatActivity implements
                         recentReviewListingsAdapter.notifyDataSetChanged();
                     }
                 } else {
-                   // //Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
+                    // //Log.e("getPostReview_METHOD_noResponse ", " SOMETHING'S FUBAR'd!!! :)");
                 }
             }
+
             @Override
             public void onFailure(Call<List<ListReviewPOJO>> call, Throwable t) {
                 //Log.e("getReviewFailure", " response: " + t);
@@ -1395,11 +1395,11 @@ public class MainActivity extends AppCompatActivity implements
     public void loginUser(final Map<String, String> query) {
         Retrofit retrofit;
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(baseURL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
-                    .build();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
         RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
 
         // pass JSON data to BusinessListings class for filtering
@@ -1529,7 +1529,6 @@ public class MainActivity extends AppCompatActivity implements
      */
 
 
-
     private Runnable runnableCode = new Runnable() {
         int count = 0;
 
@@ -1573,14 +1572,13 @@ public class MainActivity extends AppCompatActivity implements
             };
 
             int[] images = {R.mipmap.hello_foreground, R.mipmap.showing_right_foreground,
-                    R.mipmap.one_of_akind_foreground, R.mipmap.showing_tablet_foreground,R.mipmap.holding_phone_foreground, R.mipmap.making_thumbs_up_foreground,
-                    R.mipmap.online_reviews_foreground, R.mipmap.showing_with_left_hand_foreground,R.mipmap.smiling_peace_foreground};
+                    R.mipmap.one_of_akind_foreground, R.mipmap.showing_tablet_foreground, R.mipmap.holding_phone_foreground, R.mipmap.making_thumbs_up_foreground,
+                    R.mipmap.online_reviews_foreground, R.mipmap.showing_with_left_hand_foreground, R.mipmap.smiling_peace_foreground};
 
-            if(count > text.length){
+            if (count > text.length) {
                 count = 0;
             }
-            switch (count)
-            {
+            switch (count) {
                 case 1:
                 case 3:
                 case 5:
@@ -1594,20 +1592,20 @@ public class MainActivity extends AppCompatActivity implements
                     imageSwitcher.setVisibility(View.VISIBLE);
 
                     textSwitcher3Layout.setAnimation(imgAnimationOut);
-                   // textSwitcher3Layout.setVisibility(View.GONE);
+                    // textSwitcher3Layout.setVisibility(View.GONE);
 
                     textSwitcher2.setText(text[count]);
                     textSwitcher2Layout.setAnimation(imgAnimationIn);
                     textSwitcher2Layout.setVisibility(View.VISIBLE);
 
                     imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                   // i = randomGenerator.nextInt(100);
-                    count ++;
+                    // i = randomGenerator.nextInt(100);
+                    count++;
                     break;
                 case 2:
                 case 4:
                 case 6:
-                //case 8:
+                    //case 8:
 
                     imageSwitcher.setAnimation(imgAnimationOut);
                     imageSwitcher.setVisibility(View.GONE);
@@ -1628,13 +1626,13 @@ public class MainActivity extends AppCompatActivity implements
                     //textSwitcher2Layout.setAnimation(imgAnimationOut);
                     //textSwitcher2Layout.setVisibility(View.GONE);
                     imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
-                   // i = randomGenerator.nextInt(100);
-                    count ++;
+                    // i = randomGenerator.nextInt(100);
+                    count++;
                     break;
 
                 case 8:
                     imageSwitcher.setAnimation(imgAnimationOut);
-                   // imageSwitcher.setVisibility(View.GONE);
+                    // imageSwitcher.setVisibility(View.GONE);
 
                     imageSwitcher2.setImageResource(images[count]);
                     imageSwitcher2.setAnimation(imgAnimationIn);
@@ -1642,7 +1640,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
                     textSwitcher2Layout.setAnimation(imgAnimationOut);
-                   // textSwitcher2Layout.setVisibility(View.GONE);
+                    // textSwitcher2Layout.setVisibility(View.GONE);
 
                     textSwitcher.setText(text[count]);
                     textSwitcherLayout.setAnimation(imgAnimationIn);
@@ -1654,8 +1652,8 @@ public class MainActivity extends AppCompatActivity implements
                     //btnLearnMore.setVisibility(View.VISIBLE);
                     //btnLearnMore.setAnimation(imgAnimationIn);
                     imageSwitchHandler.removeCallbacks(runnableCode);
-                   // i = randomGenerator.nextInt(100);
-                    count ++;
+                    // i = randomGenerator.nextInt(100);
+                    count++;
                     break;
                 default:
                     imageSwitcher.setAnimation(imgAnimationOut);
@@ -1678,7 +1676,7 @@ public class MainActivity extends AppCompatActivity implements
                     //textSwitcher2Layout.setVisibility(View.GONE);
                     imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
                     // i = randomGenerator.nextInt(100);
-                    count ++;
+                    count++;
                     break;
 
             }
@@ -1689,11 +1687,12 @@ public class MainActivity extends AppCompatActivity implements
     protected void setMarkers() {
         //displayGeofences();
         Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
-        ContextCompat.startForegroundService(getApplicationContext(),geofenceIntent);
+        ContextCompat.startForegroundService(getApplicationContext(), geofenceIntent);
         Intent intent = new Intent(this, MarkerClusteringActivity.class);
         startActivity(intent);
     }
-    protected void displayGeofences() {
+
+   /* protected void displayGeofences() {
         //HashMap<String, SimpleGeofence> geofences
 
         for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
@@ -1705,7 +1704,8 @@ public class MainActivity extends AppCompatActivity implements
                     .strokeWidth(2).fillColor(0x500000ff);
             mMap.addCircle(circleOptions1);
         }
-    }
+    } */
+
     protected GoogleMap getMap() {
         return mMap;
     }
