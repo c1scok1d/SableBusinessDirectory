@@ -34,12 +34,12 @@ public class GeofenceNotification {
         String notificationText = "";
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                notificationText = "You are near " +notificationTextParams.toString();
+                notificationText = "You are near " +simpleGeofence.getId();
                 transitionDwellNotification(context, notificationText);
                 break;
 
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                notificationText = "You are 5 miles away from " +simpleGeofence;
+                notificationText = "You are 5 miles away from " +simpleGeofence.getId();
                 transitionEnterNotification(context, notificationText);
                 break;
 
@@ -93,6 +93,7 @@ public class GeofenceNotification {
                 .setContentText(message)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
+                .setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
         NotificationManager notifManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -110,6 +111,7 @@ public class GeofenceNotification {
                 .setContentText(message)
                 .setSmallIcon(R.mipmap.sable_logo_black)
                 .setContentIntent(pendingIntent)
+                .setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
         NotificationManager notifManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
