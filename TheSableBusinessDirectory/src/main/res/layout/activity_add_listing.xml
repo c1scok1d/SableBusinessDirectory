@@ -122,14 +122,26 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/addressChangeBtnLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:gravity="center|center_horizontal|center_vertical"
+                        android:orientation="vertical">
 
+                        <Button
+                            android:id="@+id/changeAddressBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:background="@drawable/buttonshape"
+                            android:padding="5dp"
+                            android:shadowRadius="5"
+                            android:text="edit address"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/currentAddressLayout"
+                        android:id="@+id/addressAutocompleteLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|center_vertical"
