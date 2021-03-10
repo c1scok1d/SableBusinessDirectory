@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements
     public static ArrayList<ListingsModel> recentList = new ArrayList<>();
     public static ArrayList<RecentReviewListingsModel> recentReviewList = new ArrayList<>();
     public static ArrayList<ListingsModel> locationMatch = new ArrayList<>();
-    public static ArrayList<Person> mapLocations = new ArrayList<>();
+    public static ArrayList<Person> mapLocations;
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
             * DateUtils.HOUR_IN_MILLIS;
@@ -876,7 +876,7 @@ public class MainActivity extends AppCompatActivity implements
             ////Log.e("Location Change", "Listings query executed by location change");
             getReviews();
             ////Log.e("Location Change", "Review query executed by location change");
-            setAddress(location.getLatitude(), location.getLongitude());
+            //setAddress(location.getLatitude(), location.getLongitude());
             ////Log.e("onLocationChange", "onLocationChange Ended");
         }
 
@@ -931,7 +931,7 @@ public class MainActivity extends AppCompatActivity implements
         ////Log.e("onMyLocationButtonClick", "Listings query executed by onMyLocationButtonClick");
         getReviews();
         ////Log.e("onMyLocationButtonClick", "Review query executed by onMyLocationButtonClick");
-        setAddress(latitude, longitude);
+        //setAddress(latitude, longitude);
         return false;
     }
 
@@ -952,7 +952,7 @@ public class MainActivity extends AppCompatActivity implements
         ////Log.e("onMyLocationClick", "Listings query executed by onMyLocationClick");
         getReviews();
         ////Log.e("onMyLocationClick", "Review query executed by onMyLocationClick");
-        setAddress(latitude, longitude);
+        //setAddress(latitude, longitude);
     }
 
     /**
@@ -961,7 +961,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param latitude
      * @param longitude
      */
-    public void setAddress(Double latitude, Double longitude) {
+   /* public void setAddress(Double latitude, Double longitude) {
         Geocoder geocoder;
         List<Address> addresses = null;
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -998,10 +998,10 @@ public class MainActivity extends AppCompatActivity implements
             //tvCity.setText(addresses.get(0).getLocality());
             addresses.get(0).getAdminArea();
         } else {
-           /*  Toast.makeText(this, "No GPS location available!  " +
-                    "Please check your mobile device for possible service issues.", Toast.LENGTH_LONG).show(); */
+             Toast.makeText(this, "No GPS location available!  " +
+                    "Please check your mobile device for possible service issues.", Toast.LENGTH_LONG).show();
         }
-    }
+    } */
 
     public void setCache(Context context) {
         int cacheSize = 10 * 1024 * 1024; // 10 MB
