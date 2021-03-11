@@ -197,9 +197,9 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
     public void onResult(Status status) {
         if (status.isSuccess()) {
-            Toast.makeText(getApplicationContext(),
+           /* Toast.makeText(getApplicationContext(),
                     getString(R.string.geofences_added), Toast.LENGTH_SHORT)
-                    .show();
+                    .show(); */
         } else {
             MainActivity.geofencesAlreadyRegistered = false;
             String errorMessage = getErrorString(this, status.getStatusCode());

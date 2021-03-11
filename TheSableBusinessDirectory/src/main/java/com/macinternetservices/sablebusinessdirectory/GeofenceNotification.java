@@ -42,15 +42,9 @@ public class GeofenceNotification {
     }
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType) {
-        Object[] notificationTextParams = new Object[] { simpleGeofence };
         String notificationText = "";
         String notificationText2 = "";
-        /*String foo = simpleGeofence.getId();
-        Double lng = simpleGeofence.getLongitude();
-        Double lat = simpleGeofence.getLatitude();
-        Float rad = simpleGeofence.getRadius();*/
         Geofence geo = simpleGeofence.toGeofence();
-       // String bar = simpleGeofence.getLogo();
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
                 notificationText = "You are near " +geo.getRequestId();
@@ -138,7 +132,6 @@ public class GeofenceNotification {
         createNotificationChannel(mContext);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
 
-        //Bitmap myBitmap = R.drawable.logo;
         PendingIntent notificationTapIntent = PendingIntent.getActivity(mContext,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
