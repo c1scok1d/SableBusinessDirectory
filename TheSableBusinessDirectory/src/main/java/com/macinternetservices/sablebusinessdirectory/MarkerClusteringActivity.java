@@ -272,7 +272,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                         verticalList.get(i).featured_image,
                         verticalList.get(i).content,
                         new SimpleGeofence(verticalList.get(i).title, verticalList.get(i).latitude, verticalList.get(i).longitude,
-                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, verticalList.get(i).logo,
+                                100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, verticalList.get(i).featured_image,
                                 Geofence.GEOFENCE_TRANSITION_ENTER
                                         | Geofence.GEOFENCE_TRANSITION_DWELL
                                         | Geofence.GEOFENCE_TRANSITION_EXIT))));

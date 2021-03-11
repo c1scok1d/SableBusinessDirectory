@@ -105,14 +105,14 @@ public class GeofenceNotification {
         createNotificationChannel(mContext);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+        PendingIntent notificationTapIntent = PendingIntent.getActivity(mContext,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setContentTitle("Black Owned Business Alert")
                 .setContentText(message)
                 //.setSubText("Support Black Business")
                 .setSmallIcon(R.mipmap.ic_launcher)
-                //.setContentIntent(notificationTapIntent) // notification tap action
+                .setContentIntent(notificationTapIntent) // notification tap action
                 //.setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
         NotificationManager notifManager =
@@ -139,7 +139,7 @@ public class GeofenceNotification {
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
 
         //Bitmap myBitmap = R.drawable.logo;
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+        PendingIntent notificationTapIntent = PendingIntent.getActivity(mContext,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setContentTitle(message2)
@@ -148,9 +148,9 @@ public class GeofenceNotification {
                 .setSmallIcon(R.mipmap.sable_logo_black)
                 .setLargeIcon(getBitmapFromURL(url))
                 .setStyle(new NotificationCompat.BigPictureStyle()
-                  //      .bigPicture(myBitmap)
+                       .bigPicture(getBitmapFromURL(url))
                         .bigLargeIcon(null))
-                //.setContentIntent(notificationTapIntent) // notification tap action
+                .setContentIntent(notificationTapIntent) // notification tap action
                 //.setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
         NotificationManager notifManager =

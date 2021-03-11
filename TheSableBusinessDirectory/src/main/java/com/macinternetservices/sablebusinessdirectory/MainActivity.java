@@ -672,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements
                                         response.body().get(i).getContent().getRaw(),
                                         response.body().get(i).getFeaturedImage().getThumbnail(),
                                         response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                        100, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
                                         Geofence.GEOFENCE_TRANSITION_ENTER
                                                 | Geofence.GEOFENCE_TRANSITION_DWELL
                                                 | Geofence.GEOFENCE_TRANSITION_EXIT))));
@@ -1178,12 +1178,12 @@ public class MainActivity extends AppCompatActivity implements
                                 response.body().get(i).getContent().getRaw(),
                                 response.body().get(i).getFeaturedImage().getThumbnail(),
                                 response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
                                 Geofence.GEOFENCE_TRANSITION_ENTER
                                         | Geofence.GEOFENCE_TRANSITION_DWELL
                                         | Geofence.GEOFENCE_TRANSITION_EXIT)));
                         geofences.put(response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
                                 Geofence.GEOFENCE_TRANSITION_ENTER
                                         | Geofence.GEOFENCE_TRANSITION_DWELL
                                         | Geofence.GEOFENCE_TRANSITION_EXIT));
@@ -1232,7 +1232,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
                                     Geofence.GEOFENCE_TRANSITION_ENTER
                                             | Geofence.GEOFENCE_TRANSITION_DWELL
                                             | Geofence.GEOFENCE_TRANSITION_EXIT)));
@@ -1270,7 +1270,7 @@ public class MainActivity extends AppCompatActivity implements
                                     response.body().get(i).getContent().getRaw(),
                                     response.body().get(i).getFeaturedImage().getThumbnail(),
                                     response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getLogo(),
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
                                     Geofence.GEOFENCE_TRANSITION_ENTER
                                             | Geofence.GEOFENCE_TRANSITION_DWELL
                                             | Geofence.GEOFENCE_TRANSITION_EXIT)));
