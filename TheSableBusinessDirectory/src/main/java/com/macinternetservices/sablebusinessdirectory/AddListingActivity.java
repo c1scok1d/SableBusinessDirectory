@@ -104,9 +104,9 @@ public class AddListingActivity extends AppCompatActivity implements
     objects of text view and button widgets.
      */
     TextView tvCurrentAddress;
-    LinearLayout addressAutocompleteLayout, addressChangeBtnLayout, currentAddressHeaderLayout;
+    LinearLayout addressAutocompleteLayout, addressChangeBtnLayout, currentAddressHeaderLayout, businessHoursLayoutTitle;
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
-    Button btnNext, changeAddressBtn;
+    Button btnNext, changeAddressBtn, addPhotoBtn, addHoursBtn;
     //AutoCompleteTextView tvCurrentAddress;
     //Spinner spnCategory;
     ListView spnCategory;
@@ -128,7 +128,7 @@ public class AddListingActivity extends AppCompatActivity implements
     private static final int GALLERY_REQUEST_CODE = 7502;
     private static final int DOCUMENTS_REQUEST_CODE = 7503;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 4077;
-    protected ImageView ivLogo, ivAddySearch;
+    protected ImageView ivLogo;
     private EasyImage easyImage;
     //private TextView tvLoading;
     //BusinessHoursWeekPicker bh_picker;
@@ -154,7 +154,7 @@ public class AddListingActivity extends AppCompatActivity implements
         businessHoursLayout.setVisibility(View.GONE);
         LinearLayout viewBusinessHoursLayout = findViewById(R.id.viewBusinessHoursLayout);
         viewBusinessHoursLayout.setVisibility(View.GONE);
-        TextView tvAddHours;
+        //TextView tvAddHours;
         addListingCategory.add("Select Business Category"); //add heading to category spinner
 
         btn_apply.setOnClickListener(view -> {
@@ -182,12 +182,15 @@ public class AddListingActivity extends AppCompatActivity implements
         });
 
         tvCurrentAddress = findViewById(R.id.tvAddress);
+        addPhotoBtn = findViewById(R.id.addPhotoBtn);
         currentAddressHeaderLayout = findViewById(R.id.currentAddressHeaderLayout);
         //currentAddressHeaderLayout.setVisibility(View.GONE);
         addressChangeBtnLayout = findViewById(R.id.addressChangeBtnLayout);
         addressAutocompleteLayout = findViewById(R.id.addressAutocompleteLayout);
         addressAutocompleteLayout.setVisibility(View.GONE);
         changeAddressBtn = findViewById(R.id.changeAddressBtn);
+        businessHoursLayoutTitle = findViewById(R.id.businessHoursLayoutTitle);
+        businessHoursLayoutTitle.setVisibility(View.GONE);
 
         btnNext = findViewById(R.id.btnNext);
         //spnCategory = findViewById(R.id.spnCategory);
@@ -201,7 +204,8 @@ public class AddListingActivity extends AppCompatActivity implements
         etWebsite = findViewById(R.id.etWebsite);
         etTwitter  = findViewById(R.id.etTwitter);
         etFacebook = findViewById(R.id.etFacebook);
-        tvAddHours = findViewById(R.id.tvAddHours);
+        //tvAddHours = findViewById(R.id.tvAddHours);
+        addHoursBtn = findViewById(R.id.addHoursBtn);
 //        tvLoading = findViewById(R.id.tvLoading);
 //        tvLoading.setVisibility(View.GONE);
 
@@ -221,13 +225,13 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
 
-        tvAddHours.setOnClickListener(v -> {
+        addHoursBtn.setOnClickListener(v -> {
             if(businessHoursLayout.getVisibility() == View.GONE) {
                 businessHoursLayout.setVisibility(View.VISIBLE);
-                tvAddHours.setText("Hide Hours");
+                businessHoursLayoutTitle.setVisibility(View.VISIBLE);
             } else {
                 businessHoursLayout.setVisibility(View.GONE);
-                tvAddHours.setText("Add Hours");
+                businessHoursLayoutTitle.setVisibility(View.GONE);
             }
         });
 
@@ -451,6 +455,7 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
         ivLogo = findViewById(R.id.ivLogo);
+        ivLogo.setVisibility(View.GONE);
         //galleryButton = findViewById(R.id.gallery_button);
 
         if (savedInstanceState != null) {
@@ -466,7 +471,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 .build();
 
 
-        findViewById(R.id.ivLogo).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.addPhotoBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /** Some devices such as Samsungs which have their own gallery app require write permission. Testing is advised! */
@@ -479,7 +484,7 @@ public class AddListingActivity extends AppCompatActivity implements
             }
         });
 
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        //Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
        // tvLoading.setVisibility(View.VISIBLE);
         //tvLoading.setAnimation(imgAnimationIn);
@@ -651,6 +656,7 @@ public class AddListingActivity extends AppCompatActivity implements
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         photos.addAll(Arrays.asList(returnedPhotos));
+        ivLogo.setVisibility(View.VISIBLE);
         ivLogo.setImageBitmap(BitmapFactory.decodeFile(photos.get(0).getFile().toString()));
     }
 
