@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
     public static LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
     private GoogleMap mMap;
-    private boolean isRestore;
+    //private boolean isRestore;
 
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
-        isRestore = savedInstanceState != null;
+        //isRestore = savedInstanceState != null;
         loadingLayout = findViewById(R.id.loadingLayout);
         tvLoading = findViewById(R.id.tvLoading);
         tvLoading.setVisibility(View.GONE);
@@ -499,41 +499,6 @@ public class MainActivity extends AppCompatActivity implements
         recentReviewsRecyclervView.setAdapter(recentReviewListingsAdapter);
         recentReviewsRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recentReviewsRecyclervView.setLayoutManager(recentReviewsRecyclerViewLayoutManager);
-
-
-/**
- * login via facebook
- */
-        fbLogincallbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(fbLogincallbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        ////Log.e("Facebook Login Successful ", " response " + loginResult);
-                    }
-
-                    @Override
-                    public void onCancel() {
-
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        ////Log.e("Facebook Login Error ", " response " + exception);
-                    }
-                });
-
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                if (currentAccessToken != null) {
-                    accessToken = currentAccessToken;
-                    useLoginInformation(currentAccessToken);
-                } else {
-                    restartActivity();
-                }
-            }
-        };
 
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);
@@ -726,10 +691,39 @@ public class MainActivity extends AppCompatActivity implements
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-
-        setUpMap();
     }
+protected void facebookLogin(){
+        fbLogincallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(fbLogincallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        ////Log.e("Facebook Login Successful ", " response " + loginResult);
+                    }
 
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        ////Log.e("Facebook Login Error ", " response " + exception);
+                    }
+                });
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken != null) {
+                    accessToken = currentAccessToken;
+                    useLoginInformation(currentAccessToken);
+                } else {
+                    restartActivity();
+                }
+            }
+        };
+    }
     protected Marker myPositionMarker;
 
     protected void createMarker(Double latitude, Double longitude) {
@@ -758,13 +752,20 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressLint("MissingPermission")
     public void onResume() {
         super.onResume();
+
+        setUpMap();
         /**
          *  location manager to get current location
          */
-
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
+
+        /**
+         * login via facebook
+         */
+        facebookLogin();
+
         //This starts the access token tracking
         if (accessToken != null) {
             useLoginInformation(accessToken);
