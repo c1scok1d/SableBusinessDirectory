@@ -773,7 +773,6 @@ public class MainActivity extends AppCompatActivity implements
             userImageLayout.setVisibility(View.GONE);
         }
         accessTokenTracker.startTracking();
-//        Log.e("onResume", "onResume Ended");
         getApplication().registerReceiver(receiver,
                 new IntentFilter("me.hoen.geofence_21.geolocation.service"));
     }
@@ -850,7 +849,6 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onLocationChanged(Location location) {
             Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-            //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
             ivLoading.setVisibility(View.VISIBLE);
             ivLoading.setAnimation(imgAnimationIn);
@@ -863,7 +861,6 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 tvLoading.setText("Thank you for waiting while we search our directory for black owned businesses near you.");
             }
-            ////Log.e("onLocationChange", "onLocationChange Executed");
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             Map<String, String> query = new HashMap<>();
@@ -872,15 +869,11 @@ public class MainActivity extends AppCompatActivity implements
 
             query.put("latitude", String.valueOf(location.getLatitude()));
             query.put("longitude", String.valueOf(location.getLongitude()));
-            //query.put("distance", "5");
             query.put("order", "asc");
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
-            ////Log.e("Location Change", "Listings query executed by location change");
             getReviews();
-            ////Log.e("Location Change", "Review query executed by location change");
-            //setAddress(location.getLatitude(), location.getLongitude());
-            ////Log.e("onLocationChange", "onLocationChange Ended");
+
         }
 
         /**

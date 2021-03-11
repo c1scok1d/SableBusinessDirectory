@@ -50,7 +50,7 @@ public class GeofenceNotification {
         Double lat = simpleGeofence.getLatitude();
         Float rad = simpleGeofence.getRadius();*/
         Geofence geo = simpleGeofence.toGeofence();
-        String bar = simpleGeofence.getLogo();
+       // String bar = simpleGeofence.getLogo();
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_DWELL:
                 notificationText = "You are near " +geo.getRequestId();
