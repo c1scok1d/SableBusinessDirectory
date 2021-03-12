@@ -22,11 +22,14 @@ import java.util.Random;
 
 public class GeofenceNotification {
     public static final int NOTIFICATION_ID = 20;
+    int near = 0;
 
     protected Context context;
 
     protected NotificationManager notificationManager;
     protected Notification notification;
+    String notificationText = "";
+    String notificationText2 = "";
 
     // Set the notification tap action
     /*Intent intent = new Intent(this, AlertDetails.class);
@@ -37,30 +40,33 @@ public class GeofenceNotification {
     public GeofenceNotification(Context context) {
         this.context = context;
 
+
         this.notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
     }
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
-                                      int transitionType) {
-        String notificationText = "";
-        String notificationText2 = "";
-        Geofence geo = simpleGeofence.toGeofence();
-        switch (transitionType) {
-            case Geofence.GEOFENCE_TRANSITION_DWELL:
-                notificationText = "You are near " +geo.getRequestId();
-                notificationText2 = "Support black business.  Stop in and say 'Hi!'";
-                transitionDwellNotification(context, notificationText, notificationText2, simpleGeofence.getLogo());
-                break;
+                                      int transitionType, int near) {
+        if(near > 0 && transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
+            notificationText = near+ " black owned businesses near your current location!";
+            transitionEnterNotification(context, notificationText);
+        } else {
+            Geofence geo = simpleGeofence.toGeofence();
+            switch (transitionType) {
+                case Geofence.GEOFENCE_TRANSITION_DWELL:
+                    notificationText = "You are near " + geo.getRequestId();
+                    notificationText2 = "Support black business.  Stop in and say 'Hi!'";
+                    transitionDwellNotification(context, notificationText, notificationText2, simpleGeofence.getLogo());
+                    break;
 
-            case Geofence.GEOFENCE_TRANSITION_ENTER:
-                notificationText = "You are 5 miles away from " +geo.getRequestId();
-                transitionEnterNotification(context, notificationText);
-                break;
+                /*case Geofence.GEOFENCE_TRANSITION_ENTER:
 
-            case Geofence.GEOFENCE_TRANSITION_EXIT:
-                notificationText = "Support black business. You are near " +geo.getRequestId()+ " why not stop in and say 'Hi!'";
-                transitionEnterNotification(context, notificationText);
-                break;
+                    break;*/
+
+                case Geofence.GEOFENCE_TRANSITION_EXIT:
+                    notificationText = "Support black business. You are near " + geo.getRequestId() + " why not stop in and say 'Hi!'";
+                    transitionEnterNotification(context, notificationText);
+                    break;
+            }
         }
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
@@ -78,11 +84,11 @@ public class GeofenceNotification {
     }
 
     public void displayNotification(SimpleGeofence simpleGeofence,
-                                    int transitionType) {
-        buildNotificaction(simpleGeofence, transitionType);
-
+                                    int transitionType, int near) {
+        //Geofence geo = simpleGeofence.toGeofence();
+        buildNotificaction(simpleGeofence, transitionType, near);
         notificationManager.notify(NOTIFICATION_ID, notification);
-    }
+        }
     public static final String CHANNEL_ID = "Transition Channel";
     private void createNotificationChannel(final Context mContext) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

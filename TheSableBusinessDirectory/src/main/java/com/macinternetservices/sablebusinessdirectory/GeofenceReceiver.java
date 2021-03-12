@@ -45,15 +45,15 @@ public class GeofenceReceiver extends IntentService {
                     || transitionType == Geofence.GEOFENCE_TRANSITION_EXIT) {
                 List<Geofence> triggerList = geoEvent.getTriggeringGeofences();
 
+                SimpleGeofence sg = null;
                 for (Geofence geofence : triggerList) {
-                    SimpleGeofence sg = SimpleGeofenceStore.getInstance()
+                    sg = SimpleGeofenceStore.getInstance()
                             .getSimpleGeofences().get(geofence.getRequestId());
-
                     String transitionName = "";
                     switch (transitionType) {
                         case Geofence.GEOFENCE_TRANSITION_DWELL:
                             transitionName = "dwell";
-                            near++;
+                            //near++;
                             break;
 
                         case Geofence.GEOFENCE_TRANSITION_ENTER:
@@ -66,12 +66,12 @@ public class GeofenceReceiver extends IntentService {
                             near++;
                             break;
                     }
-
-                    GeofenceNotification geofenceNotification = new GeofenceNotification(
-                            this);
-                    geofenceNotification
-                            .displayNotification(sg, transitionType);
                 }
+                GeofenceNotification geofenceNotification = new GeofenceNotification(
+                        this);
+                geofenceNotification
+                        .displayNotification(sg, transitionType, near);
+
                 if(near > 0){
                     /*Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
