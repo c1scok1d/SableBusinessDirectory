@@ -72,6 +72,13 @@
                             android:textColor="#4FC1E9" />
                     </LinearLayout>
 
+                    <Spinner
+                        android:id="@+id/spnCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/btn_dropdown"
+                        android:spinnerMode="dropdown" />
+
                     <AutoCompleteTextView
                         android:id="@+id/tvCategory"
                         android:layout_width="match_parent"
@@ -133,7 +140,7 @@
                             android:layout_height="25dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:background="@drawable/buttonshape"
+                            android:background="@color/colorAccent"
                             android:padding="5dp"
                             android:shadowRadius="5"
                             android:text="business hours"
@@ -146,7 +153,7 @@
                             android:layout_height="25dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:background="@drawable/buttonshape"
+                            android:background="@color/colorAccent"
                             android:padding="5dp"
                             android:shadowRadius="5"
                             android:text="add photos"
@@ -159,7 +166,7 @@
                             android:layout_height="25dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:background="@drawable/buttonshape"
+                            android:background="@color/colorAccent"
                             android:padding="5dp"
                             android:shadowRadius="5"
                             android:text="edit address"
