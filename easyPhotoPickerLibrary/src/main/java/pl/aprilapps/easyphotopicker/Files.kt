@@ -96,7 +96,9 @@ object Files {
         val directory = tempImageDirectory(context)
         val photoFile = File(directory, generateFileName() + "." + getMimeType(context, photoUri))
         photoFile.createNewFile()
-        writeToFile(pictureInputStream, photoFile)
+        if (pictureInputStream != null) {
+            writeToFile(pictureInputStream, photoFile)
+        }
         return photoFile
     }
 
