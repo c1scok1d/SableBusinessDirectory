@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -108,8 +109,8 @@ public class AddListingActivity extends AppCompatActivity implements
     EditText etName, etDescription, etPhone, etEmail, etWebsite, etTwitter, etFacebook;
     Button btnNext, changeAddressBtn, addPhotoBtn, addHoursBtn;
     //AutoCompleteTextView tvCurrentAddress;
-    //Spinner spnCategory;
-    ListView spnCategory;
+    Spinner spnCategory;
+    //ListView spnCategory;
     AutoCompleteTextView tvCategory;
     private ArrayList<String> addListingCategory = new ArrayList<>();
 
@@ -193,7 +194,7 @@ public class AddListingActivity extends AppCompatActivity implements
         businessHoursLayoutTitle.setVisibility(View.GONE);
 
         btnNext = findViewById(R.id.btnNext);
-        //spnCategory = findViewById(R.id.spnCategory);
+        spnCategory = findViewById(R.id.spnCategory);
         //spnCategory.setFastScrollEnabled(true);
         tvCategory = findViewById(R.id.tvCategory);
         etName = findViewById(R.id.etName);
@@ -358,6 +359,103 @@ public class AddListingActivity extends AppCompatActivity implements
         enableMyLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
                 400, LocationListener);
+
+        spnCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                catName = parent.getItemAtPosition(position).toString();
+                ////Log.e("OnCategoryClick", "Category clicked: " +parent.getItemAtPosition(position).toString());
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .addInterceptor(new BasicAuthInterceptor(username, password))
+                        .addInterceptor(logging)
+                        .build();
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(client)
+                        .build();
+                RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                // pass JSON data to BusinessListings class for filtering
+                Call<List<ListingsCategories>> call = service.getCategory(query);
+                // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                call.enqueue(new Callback<List<ListingsCategories>>() {
+                    @Override
+                    public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
+                        // loop through JSON response get parse and output to log
+                        for (int i = 0; i < response.body().size(); i++) {
+                            if (parent.getItemAtPosition(position).toString().equals(response.body().get(i).getName())) {
+                                catNum = (response.body().get(i).getId());
+                                ////Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+                        ////Log.e("CategoryNumber", " response: " + t);
+                    }
+                });
+            }
+        });
+        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                catName = parent.getItemAtPosition(position).toString();
+                ////Log.e("onCategorySelected", "Category selected:" +parent.getItemAtPosition(position).toString());
+                // Toast.makeText(Check.this, view.getItem(position).toString(), Toast.LENGTH_SHORT).show();
+
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .addInterceptor(new BasicAuthInterceptor(username, password))
+                        .addInterceptor(logging)
+                        .build();
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(client)
+                        .build();
+                RetrofitArrayApi service = retrofit.create(RetrofitArrayApi.class);
+                // pass JSON data to BusinessListings class for filtering
+                Call<List<ListingsCategories>> call = service.getCategory(query);
+                // get filtered data from BusinessListings class and add to recyclerView adapter for display on screen
+                call.enqueue(new Callback<List<ListingsCategories>>() {
+                    @Override
+                    public void onResponse(Call<List<ListingsCategories>> call, Response<List<ListingsCategories>> response) {
+                        // loop through JSON response get parse and output to log
+                        for (int i = 0; i < response.body().size(); i++) {
+                            if (parent.getItemAtPosition(position).toString().equals(response.body().get(i).getName())) {
+                                catNum = (response.body().get(i).getId());
+                                ////Log.e("Category Match: ", "Category Number: " +response.body().get(i).getId());
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ListingsCategories>> call, Throwable t) {
+                        ////Log.e("CategoryNumber", " response: " + t);
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //Log.d("onNothingSelected", "[AutoCompleteTextView] Nothing here");
+            }
+        });
+
 
         tvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -894,6 +992,7 @@ public class AddListingActivity extends AppCompatActivity implements
                 }
                 ArrayAdapter<String> listingCategoryAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.select_dialog_item, addListingCategory);
                 tvCategory.setThreshold(2);
+                spnCategory.setAdapter(listingCategoryAdapter);
                 tvCategory.setAdapter(listingCategoryAdapter);
             }
             @Override
