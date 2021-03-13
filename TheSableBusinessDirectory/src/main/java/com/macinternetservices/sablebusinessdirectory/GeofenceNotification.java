@@ -47,7 +47,7 @@ public class GeofenceNotification {
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType, int near) {
         if(near > 0 && transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
-            notificationText = near+ " black owned businesses near your current location!";
+            notificationText = "There are "+near+" black owned businesses near you!";
             transitionEnterNotification(context, notificationText);
         } else {
             Geofence geo = simpleGeofence.toGeofence();
