@@ -50,10 +50,9 @@ public class GeofenceNotification {
             notificationText = "There are "+near+" black owned businesses near you!";
             transitionEnterNotification(context, notificationText);
         } else {
-            Geofence geo = simpleGeofence.toGeofence();
             switch (transitionType) {
                 case Geofence.GEOFENCE_TRANSITION_DWELL:
-                    notificationText = "You are near " + geo.getRequestId();
+                    notificationText = "You are near " + simpleGeofence.toGeofence().getRequestId();
                     notificationText2 = "Support black business.  Stop in and say 'Hi!'";
                     transitionDwellNotification(context, notificationText, notificationText2, simpleGeofence.getLogo());
                     break;
@@ -63,7 +62,7 @@ public class GeofenceNotification {
                     break;*/
 
                 case Geofence.GEOFENCE_TRANSITION_EXIT:
-                    notificationText = "Support black business. You are near " + geo.getRequestId() + " why not stop in and say 'Hi!'";
+                    notificationText = "Support black business. You are near " + simpleGeofence.toGeofence().getRequestId() + " why not stop in and say 'Hi!'";
                     transitionEnterNotification(context, notificationText);
                     break;
             }

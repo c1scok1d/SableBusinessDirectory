@@ -28,7 +28,7 @@
         app:srcCompat="@mipmap/holding_phone_foreground"
         tools:layout_editor_absoluteX="-34dp"
         tools:layout_editor_absoluteY="140dp"
-        tools:visibility="gone"></ImageSwitcher>
+        tools:visibility="gone" />
 
     <ImageSwitcher
         android:id="@+id/imageSwitcher2"
@@ -38,69 +38,60 @@
         tools:layout_editor_absoluteX="46dp"
         tools:layout_editor_absoluteY="91dp"
         tools:visibility="gone">
+
+    </ImageSwitcher>
+
+    <ImageSwitcher
+        android:id="@+id/imageSwitcher3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@id/deny_permission_request"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textSwitcher">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srcCompat="@mipmap/holding_phone_foreground" />
+
+        <!--ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" /-->
+
     </ImageSwitcher>
 
-    <ImageSwitcher
-        android:id="@+id/imageSwitcher3"
-        android:layout_width="300dp"
-        android:layout_height="465dp"
-        app:layout_constraintBottom_toTopOf="@id/textSwitcher3"
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@mipmap/sable_logo_black_foreground"
+        app:layout_constraintBottom_toTopOf="@id/textSwitcher"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextSwitcher
+        android:id="@+id/textSwitcher"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/imageSwitcher3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@mipmap/sorry_foreground" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@mipmap/making_thumbs_up_foreground" />
-    </ImageSwitcher>
-
-    <TextSwitcher
-        android:id="@+id/textSwitcher3"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@id/deny_permission_request"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.075"
-        app:layout_constraintStart_toStartOf="parent">
     </TextSwitcher>
-
-    <TextSwitcher
-        android:id="@+id/textSwitcher"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="406dp">
-
-    </TextSwitcher>
-
-    <TextSwitcher
-        android:id="@+id/textSwitcher2"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginEnd="16dp"
-        android:padding="10dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="83dp"
-        tools:visibility="visible" />
 
     <Button
         android:id="@+id/deny_permission_request"
@@ -131,24 +122,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:gravity="clip_vertical|center_horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/approve_permission_request"
-        app:layout_constraintStart_toEndOf="@id/deny_permission_request" />
-
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:src="@mipmap/sable_logo_black_foreground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
