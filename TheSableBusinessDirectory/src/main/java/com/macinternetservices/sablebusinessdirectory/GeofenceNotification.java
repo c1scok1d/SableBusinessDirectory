@@ -144,7 +144,7 @@ public class GeofenceNotification {
                 .setContentTitle(message2)
                 .setContentText(message)
                 .setSubText("Black Owned Business Alert")
-                .setSmallIcon(R.mipmap.sable_logo_black)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(getBitmapFromURL(url))
                 .setStyle(new NotificationCompat.BigPictureStyle()
                        .bigPicture(getBitmapFromURL(url))

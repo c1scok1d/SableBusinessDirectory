@@ -47,7 +47,7 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
     private static final String TAG = "PermissionRational";
 
     /* Id to identify Activity Recognition permission request. */
-    private static final int PERMISSION_BACKGROUD_LOCATION = 45;
+    //private static final int PERMISSION_BACKGROUD_LOCATION = 45;
     private static final int REQUEST_READ_PHONE_STATE = 110 ,
             REQUEST_ACCESS_FINE_LOCATION = 111,
             REQUEST_WRITE_STORAGE = 112,
@@ -57,38 +57,12 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
             REQUEST_CAMERA =116,
             REQUEST_NETWORK = 117,
             REQUEST_CALL_PHONE = 118,
-            REQUEST_BACKGROUNG_LOCATION = 119;
+            REQUEST_BACKGROUND_LOCATION = 119;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // If permissions granted, we start the main activity (shut this activity down).
-       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            finish();
-        }*/
-
         setContentView(R.layout.activity_permission_rationale);
-    }
-    private void requestPermission(String permissionName, int permissionRequestCode) {
-        ActivityCompat.requestPermissions(this,
-                new String[]{permissionName}, permissionRequestCode);
-    }
-
-    private void showExplanation(String title,
-                                 String message,
-                                 final String permission,
-                                 final int permissionRequestCode) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        requestPermission(permission, permissionRequestCode);
-                    }
-                });
-        builder.create().show();
     }
 
     //@RequiresApi(api = Build.VERSION_CODES.Q)
@@ -124,7 +98,7 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
         }else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_READ_PHONE_STATE);
+                    REQUEST_READ_STORAGE);
         } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
@@ -134,19 +108,17 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
                     new String[]{Manifest.permission.ACCESS_NETWORK_STATE},
                     REQUEST_NETWORK);
         } else  if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            //ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE);
-            //showExplanation("Permission Needed", "The app requires internet access to function properly. Please consider granting it this permission.", Manifest.permission.INTERNET, REQUEST_INTERNET_STATE);
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CALL_PHONE},
                     REQUEST_CALL_PHONE);
-         }  else if  (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+         }  else /*if  (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) */{
             //Ask se to geo to settings and manually allow permissions
             showDialog("", "You have denied some permissions.  Allow all permissions at [Settings] > [Permissions]",
                     "Go to Settings",
@@ -172,6 +144,23 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
                     }, false);
         }
         return true;
+    }
+    private void showExplanation(String title,
+                                 String message,
+                                 final String[] permission,
+                                 final int permissionRequestCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.Q)
+                    public void onClick(DialogInterface dialog, int id) {
+                        ActivityCompat.requestPermissions(PermissionRationaleActivity.this,
+                                permission,
+                                permissionRequestCode);
+                    }
+                });
+        builder.create().show();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -209,12 +198,13 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
                     new String[]{Manifest.permission.CALL_PHONE},
                     REQUEST_CALL_PHONE);
         } else  if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-            //showExplanation("Permission Needed", "The app requires internet access to function properly. Please consider granting it this permission.", Manifest.permission.INTERNET, REQUEST_INTERNET_STATE);
+            /*if(!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                showExplanation("Permission Needed", "Permission is need to access current location for alerts", new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_BACKGROUND_LOCATION);
+            }*/
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
-                    REQUEST_BACKGROUNG_LOCATION);
-        } else if  (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                    REQUEST_BACKGROUND_LOCATION);
+        } else/* if  (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
@@ -222,7 +212,7 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) */{
             //Ask se to geo to settings and manually allow permissions
             showDialog("", "You have denied some permissions.  Allow all permissions at [Settings] > [Permissions]",
                     "Go to Settings",
@@ -315,20 +305,20 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
                     ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
                     ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     checkPermissionsQ();
-
             } else {
                 startActivity(new Intent(this, MainActivity.class));
                 finish();            //h.postDelayed(r, 1500);
             }
         } else {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED){
                     checkPermissions();
             } else {
                 startActivity(new Intent(this, MainActivity.class));

@@ -38,17 +38,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
-        //setContentView(R.layout.activity_splash);
 
-        // if () {
-        h = new Handler();
-        r = new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashScreen.this, MainActivity.class));
-                finish();
-            }
-        };
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             checkPermissionsQ();
         } else {
