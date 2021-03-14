@@ -25,11 +25,13 @@
         android:id="@+id/deny_permission_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:layout_margin="10dp"
+        android:background="@drawable/buttonshape"
         android:onClick="onClickDenyPermissionRequest"
         android:stateListAnimator="@null"
         android:text="Deny"
-        android:textColor="#000000"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -38,69 +40,124 @@
         android:id="@+id/approve_permission_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:layout_margin="10dp"
+        android:background="@drawable/buttonshape"
         android:onClick="onClickApprovePermissionRequest"
         android:stateListAnimator="@null"
         android:text="Approve"
-        android:shadowRadius="4"
-        android:textColor="#000000"
+        android:textColor="#ffffff"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/deny_permission_request" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:id="@+id/mainMessageTextView"
-        android:layout_width="184dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="168dp"
-        android:layout_marginEnd="148dp"
-        android:text="Your security is important to us."
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/detailsTextView"
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="In order to let you know when you're near a black owned business, we need permission to access your devices current location when the app isnt' running.  Do we have your permission to access your device location when the app is not running?"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/deny_permission_request"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainMessageTextView"
-        app:layout_constraintVertical_bias="0.941" />
+        android:layout_marginBottom="15dp"
+        android:gravity="clip_vertical|center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/approve_permission_request"
+        app:layout_constraintStart_toEndOf="@id/deny_permission_request" />
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="60dp"
+        android:layout_margin="10dp"
         android:src="@mipmap/sable_logo_black_foreground"
-        app:layout_constraintBottom_toTopOf="@+id/mainMessageTextView"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
-        android:id="@+id/greeter"
-        android:layout_width="262dp"
-        android:layout_height="389dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="74dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="11dp"
-        android:src="@mipmap/holding_phone_foreground"
-        app:layout_constraintBottom_toTopOf="@+id/detailsTextView"
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/making_thumbs_up_foreground" />
+
+    <LinearLayout
+        android:id="@+id/textSwitcherLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textSwitcher2Layout"
+        tools:visibility="visible">
+
+        <TextSwitcher
+            android:id="@+id/textSwitcher"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:visibility="visible"
+            tools:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/textSwitcher2Layout">
+
+        </TextSwitcher>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/textSwitcher2Layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textSwitcherLayout"
+        app:layout_constraintBottom_toTopOf="@id/textSwitcher3Layout"
+        tools:visibility="visible">
+
+        <TextSwitcher
+            android:id="@+id/textSwitcher2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:visibility="visible"
+            tools:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textSwitcherLayout"
+            app:layout_constraintBottom_toTopOf="@id/textSwitcher3Layout"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/textSwitcher3Layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textSwitcher2Layout"
+        app:layout_constraintBottom_toTopOf="@id/deny_permission_request">
+
+        <TextSwitcher
+            android:id="@+id/textSwitcher3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textSwitcher2Layout"
+            app:layout_constraintBottom_toTopOf="@id/deny_permission_request">
+
+        </TextSwitcher>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

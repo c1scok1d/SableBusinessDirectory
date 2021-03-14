@@ -22,9 +22,19 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +45,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Displays rationale for allowing the activity recognition permission and allows user to accept
@@ -59,10 +70,112 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
             REQUEST_CALL_PHONE = 118,
             REQUEST_BACKGROUND_LOCATION = 119;
 
+    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
+    ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
+    TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
+    Button login_button2, login_button3, login_button4;
+    private static final int FRAME_TIME_MS = 10000;
+
+    private Handler imageSwitchHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission_rationale);
+        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+
+        /**
+         * ABOUT US
+         */
+       /*textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);*/
+
+        login_button2 = findViewById(R.id.login_button2);
+        login_button2.setVisibility(View.GONE);
+
+        ImageView imageView = new ImageView(getApplicationContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        ViewGroup.LayoutParams params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageView.setLayoutParams(params);
+
+
+
+        ImageView imageView2 = new ImageView(getApplicationContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        ViewGroup.LayoutParams imageView2params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageView2.setLayoutParams(imageView2params);
+
+        //imageSwitcher3 = findViewById(R.id.imageSwitcher3);
+
+        ImageView imageView3 = new ImageView(getApplicationContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        ViewGroup.LayoutParams imageView3params = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        imageView3.setLayoutParams(imageView3params);
+
+        imageSwitchHandler = new Handler();
+        imageSwitchHandler.post(runnableCode);
+
+        /**
+         *  txt switchers for animations
+         */
+        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+        LinearLayout textSwitcherLayout = new LinearLayout(getApplicationContext());
+        ViewGroup.LayoutParams textSwitcherLayoutParams = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        textSwitcherLayout.setLayoutParams(textSwitcherLayoutParams);
+        textSwitcherLayout.setAnimation(imgAnimationIn);
+        textSwitcherLayout.setAnimation(imgAnimationOut);
+        textSwitcherLayout.post(runnableCode);
+
+        textSwitcher = findViewById(R.id.textSwitcher);
+        textSwitcher.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
+            return textView;
+        });
+
+        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+        LinearLayout textSwitcher2Layout = new LinearLayout(getApplicationContext());
+        ViewGroup.LayoutParams textSwitcher2LayoutParams = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        textSwitcher2Layout.setLayoutParams(textSwitcher2LayoutParams);
+        textSwitcher2Layout.setAnimation(imgAnimationIn);
+        textSwitcher2Layout.setAnimation(imgAnimationOut);
+        textSwitcher2Layout.post(runnableCode);
+
+        textSwitcher2 = findViewById(R.id.textSwitcher2);
+        textSwitcher2.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+            return textView;
+        });
+
+        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+        LinearLayout textSwitcher3Layout = new LinearLayout(getApplicationContext());
+        ViewGroup.LayoutParams textSwitcher3LayoutParams = new ImageSwitcher.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        textSwitcher3Layout.setLayoutParams(textSwitcher3LayoutParams);
+        textSwitcher3Layout.setAnimation(imgAnimationIn);
+        textSwitcher3Layout.setAnimation(imgAnimationOut);
+        textSwitcher3Layout.post(runnableCode);
+
+        textSwitcher3 = findViewById(R.id.textSwitcher3);
+        textSwitcher3.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setLayoutParams(new TextSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setTextSize(16);
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent2));
+            return textView;
+        });
     }
 
     //@RequiresApi(api = Build.VERSION_CODES.Q)
@@ -326,4 +439,121 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
             }
         }
     }
+
+
+    /**
+     * ANIMATIONS
+     */
+
+
+    private Runnable runnableCode = new Runnable() {
+
+       // Random r = new Random();
+        //int random = (int)(Math.random()*8);
+
+        // String image;
+        @Override
+        public void run() {
+            Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+            Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+
+
+            String[] text = {
+                    "Welcome to The Sable Business Directory!\n",
+
+
+                    "The Sable Business Directory is designed to help those wanting to support " +
+                            "and frequent black owned businesses and service providers find black owned" +
+                            "businesses and service providers.",
+
+                    "We provide a one of a kind online platform that makes it easier to find, rate " +
+                            "and review black owned businesses and service providers.",
+
+                    "We have combined geo-search, social media and e-commerce technologies to create an online " +
+                            "platform dedicated to the continued growth and support of black owned businesses.",
+
+                    "To insure high quality services, customers maintain the directory by adding and " +
+                            "reviewing the black owned businesses and service providers they frequent.",
+
+                    "Our combined technologies then compile those listings, ratings and reviews to " +
+                            "provide a directory listing of black owned business and service providers " +
+                            "near your current location.",
+
+                    "88% of people trust online reviews. Online reviews are an important way you can increase " +
+                            "sales for your business. This is especially important for local businesses and service providers.",
+
+                    "Adding and reviewing listings is easy. To protect the privacy of our users and insure high quality feedback " +
+                            "we require users to login before adding or reviewing a listing.",
+
+                    "Tap below to begin adding and reviewing black owned businesses using your Facebook account."
+
+            };
+
+            int[] images = {R.mipmap.hello_foreground, R.mipmap.showing_right_foreground,
+                    R.mipmap.one_of_akind_foreground, R.mipmap.showing_tablet_foreground, R.mipmap.holding_phone_foreground, R.mipmap.making_thumbs_up_foreground,
+                    R.mipmap.online_reviews_foreground, R.mipmap.showing_with_left_hand_foreground, R.mipmap.smiling_peace_foreground};
+
+                int random = new Random().nextInt(text.length);
+
+                switch (random){
+                    case 0:
+                    case 1:
+                    case 5:
+                    textSwitcher3.setText(text[random]);
+                    textSwitcher3.setAnimation(imgAnimationIn);
+                    textSwitcher3.setVisibility(View.VISIBLE);
+                    //textSwitcher3Layout.setAnimation(imgAnimationIn);
+                    textSwitcher3Layout.setVisibility(View.VISIBLE);
+                    login_button2.setAnimation(imgAnimationIn);
+                    login_button2.setVisibility(View.VISIBLE);
+                    //textSwitcherLayout.setAnimation(imgAnimationOut);
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    //textSwitcher.setAnimation(imgAnimationOut);
+                    textSwitcher.setVisibility(View.GONE);
+                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    //textSwitcher2.setAnimation(imgAnimationOut);
+                    textSwitcher2.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    break;
+                    case 2:
+                    case 6:
+                    case 8:
+                    textSwitcher.setText(text[random]);
+                    textSwitcher.setAnimation(imgAnimationIn);
+                    textSwitcher.setVisibility(View.VISIBLE);
+                    //textSwitcherLayout.setAnimation(imgAnimationIn);
+                    textSwitcherLayout.setVisibility(View.VISIBLE);
+                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    textSwitcher2Layout.setVisibility(View.GONE);
+                    //textSwitcher2.setAnimation(imgAnimationOut);
+                    textSwitcher2.setVisibility(View.GONE);
+                    //textSwitcher3Layout.setAnimation(imgAnimationOut);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+                    //textSwitcher3.setAnimation(imgAnimationOut);
+                    textSwitcher3.setVisibility(View.GONE);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                    break;
+                    case 3:
+                    case 4:
+                    case 7:
+                    textSwitcher2.setText(text[random]);
+                    textSwitcher2.setVisibility(View.VISIBLE);
+                    textSwitcher2.setAnimation(imgAnimationIn);
+                    textSwitcher2Layout.setVisibility(View.VISIBLE);
+                    //textSwitcher2Layout.setAnimation(imgAnimationIn);
+                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
+                    textSwitcherLayout.setVisibility(View.GONE);
+                    //textSwitcherLayout.setAnimation(imgAnimationOut);
+                    textSwitcher.setVisibility(View.GONE);
+                    //textSwitcher.setAnimation(imgAnimationOut);
+                    textSwitcher3Layout.setVisibility(View.GONE);
+                    //textSwitcher3Layout.setAnimation(imgAnimationOut);
+                    textSwitcher3.setVisibility(View.GONE);
+                    //textSwitcher3.setAnimation(imgAnimationOut);
+                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                   break;
+                }
+        }
+    };
 }
