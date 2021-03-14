@@ -35,7 +35,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -70,9 +69,11 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
             REQUEST_CALL_PHONE = 118,
             REQUEST_BACKGROUND_LOCATION = 119;
 
-    LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
-    ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
+    //LinearLayout textSwitcherLayout, textSwitcher2Layout, textSwitcher3Layout;
+    //ImageSwitcher imageSwitcher, imageSwitcher2, imageSwitcher3;
     TextSwitcher textSwitcher, textSwitcher2, textSwitcher3;
+    TextView textView5, textView6;
+    ImageView imageView, imageView2, imageView3;
     Button login_button2, login_button3, login_button4;
     private static final int FRAME_TIME_MS = 10000;
 
@@ -84,13 +85,20 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_permission_rationale);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        /*imageSwitcher = findViewById(R.id.imageSwitcher);
+        imageSwitcher2 = findViewById(R.id.imageSwitcher2);
+        imageSwitcher3 = findViewById(R.id.imageSwitcher3);*/
+
 
         /**
          * ABOUT US
          */
-       /*textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
-        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
-        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);*/
+       imageView = findViewById(R.id.imageView);
+       imageView.setVisibility(View.GONE);
+       imageView2 = findViewById(R.id.imageView2);
+       imageView2.setVisibility(View.GONE);
+       imageView3 = findViewById(R.id.imageView3);
+       imageView3.setVisibility(View.GONE);
 
         login_button2 = findViewById(R.id.login_button2);
         login_button2.setVisibility(View.GONE);
@@ -104,15 +112,14 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
 
 
         ImageView imageView2 = new ImageView(getApplicationContext());
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView2.setScaleType(ImageView.ScaleType.FIT_XY);
         ViewGroup.LayoutParams imageView2params = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageView2.setLayoutParams(imageView2params);
 
-        //imageSwitcher3 = findViewById(R.id.imageSwitcher3);
 
         ImageView imageView3 = new ImageView(getApplicationContext());
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView3.setScaleType(ImageView.ScaleType.FIT_XY);
         ViewGroup.LayoutParams imageView3params = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageView3.setLayoutParams(imageView3params);
@@ -123,7 +130,7 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
         /**
          *  txt switchers for animations
          */
-        textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
+        //textSwitcherLayout = findViewById(R.id.textSwitcherLayout);
         LinearLayout textSwitcherLayout = new LinearLayout(getApplicationContext());
         ViewGroup.LayoutParams textSwitcherLayoutParams = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -141,7 +148,7 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
             return textView;
         });
 
-        textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
+        //textSwitcher2Layout = findViewById(R.id.textSwitcher2Layout);
         LinearLayout textSwitcher2Layout = new LinearLayout(getApplicationContext());
         ViewGroup.LayoutParams textSwitcher2LayoutParams = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -159,7 +166,7 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
             return textView;
         });
 
-        textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
+        //textSwitcher3Layout = findViewById(R.id.textSwitcher3Layout);
         LinearLayout textSwitcher3Layout = new LinearLayout(getApplicationContext());
         ViewGroup.LayoutParams textSwitcher3LayoutParams = new ImageSwitcher.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -499,59 +506,74 @@ public class PermissionRationaleActivity extends AppCompatActivity implements
                     case 0:
                     case 1:
                     case 5:
-                    textSwitcher3.setText(text[random]);
-                    textSwitcher3.setAnimation(imgAnimationIn);
-                    textSwitcher3.setVisibility(View.VISIBLE);
-                    //textSwitcher3Layout.setAnimation(imgAnimationIn);
-                    textSwitcher3Layout.setVisibility(View.VISIBLE);
-                    login_button2.setAnimation(imgAnimationIn);
-                    login_button2.setVisibility(View.VISIBLE);
-                    //textSwitcherLayout.setAnimation(imgAnimationOut);
-                    textSwitcherLayout.setVisibility(View.GONE);
-                    //textSwitcher.setAnimation(imgAnimationOut);
-                    textSwitcher.setVisibility(View.GONE);
-                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
-                    textSwitcher2Layout.setVisibility(View.GONE);
-                    //textSwitcher2.setAnimation(imgAnimationOut);
-                    textSwitcher2.setVisibility(View.GONE);
-                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                        imageView.setAnimation(imgAnimationOut);
+                        imageView.setVisibility(View.GONE);
+                        imageView2.setAnimation(imgAnimationOut);
+                        imageView2.setVisibility(View.GONE);
+
+                        textSwitcher.setText(text[random]);
+                        textSwitcher.setAnimation(imgAnimationIn);
+                        textSwitcher.setVisibility(View.VISIBLE);
+
+                        imageView3.setImageResource(images[random]);
+                        imageView3.setAnimation(imgAnimationIn);
+                        imageView3.setVisibility(View.VISIBLE);
+
+                        login_button2.setAnimation(imgAnimationIn);
+                        login_button2.setVisibility(View.VISIBLE);
+
+                        textSwitcher3.setAnimation(imgAnimationOut);
+                        textSwitcher3.setVisibility(View.GONE);
+                        textSwitcher2.setAnimation(imgAnimationOut);
+                        textSwitcher2.setVisibility(View.GONE);
+
+                        imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
                     break;
                     case 2:
                     case 6:
                     case 8:
-                    textSwitcher.setText(text[random]);
-                    textSwitcher.setAnimation(imgAnimationIn);
-                    textSwitcher.setVisibility(View.VISIBLE);
-                    //textSwitcherLayout.setAnimation(imgAnimationIn);
-                    textSwitcherLayout.setVisibility(View.VISIBLE);
-                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
-                    textSwitcher2Layout.setVisibility(View.GONE);
-                    //textSwitcher2.setAnimation(imgAnimationOut);
-                    textSwitcher2.setVisibility(View.GONE);
-                    //textSwitcher3Layout.setAnimation(imgAnimationOut);
-                    textSwitcher3Layout.setVisibility(View.GONE);
-                    //textSwitcher3.setAnimation(imgAnimationOut);
-                    textSwitcher3.setVisibility(View.GONE);
-                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                        imageView3.setAnimation(imgAnimationOut);
+                        imageView3.setVisibility(View.GONE);
+                        imageView2.setAnimation(imgAnimationOut);
+                        imageView2.setVisibility(View.GONE);
+
+                        textSwitcher2.setText(text[random]);
+                        textSwitcher2.setAnimation(imgAnimationIn);
+                        textSwitcher2.setVisibility(View.VISIBLE);
+
+                        imageView.setImageResource(images[random]);
+                        imageView.setAnimation(imgAnimationIn);
+                        imageView.setVisibility(View.VISIBLE);
+
+                        textSwitcher.setAnimation(imgAnimationOut);
+                        textSwitcher.setVisibility(View.GONE);
+                        textSwitcher3.setAnimation(imgAnimationOut);
+                        textSwitcher3.setVisibility(View.GONE);
+
+                        imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
                     break;
                     case 3:
                     case 4:
                     case 7:
-                    textSwitcher2.setText(text[random]);
-                    textSwitcher2.setVisibility(View.VISIBLE);
-                    textSwitcher2.setAnimation(imgAnimationIn);
-                    textSwitcher2Layout.setVisibility(View.VISIBLE);
-                    //textSwitcher2Layout.setAnimation(imgAnimationIn);
-                    //textSwitcher2Layout.setAnimation(imgAnimationOut);
-                    textSwitcherLayout.setVisibility(View.GONE);
-                    //textSwitcherLayout.setAnimation(imgAnimationOut);
-                    textSwitcher.setVisibility(View.GONE);
-                    //textSwitcher.setAnimation(imgAnimationOut);
-                    textSwitcher3Layout.setVisibility(View.GONE);
-                    //textSwitcher3Layout.setAnimation(imgAnimationOut);
-                    textSwitcher3.setVisibility(View.GONE);
-                    //textSwitcher3.setAnimation(imgAnimationOut);
-                    imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
+                        imageView.setAnimation(imgAnimationOut);
+                        imageView.setVisibility(View.GONE);
+                        imageView3.setAnimation(imgAnimationOut);
+                        imageView3.setVisibility(View.GONE);
+
+                        textSwitcher2.setText(text[random]);
+                        textSwitcher2.setAnimation(imgAnimationIn);
+                        textSwitcher2.setVisibility(View.VISIBLE);
+
+                        imageView.setImageResource(images[random]);
+                        imageView.setAnimation(imgAnimationIn);
+                        imageView.setVisibility(View.VISIBLE);
+
+                        textSwitcher.setAnimation(imgAnimationOut);
+                        textSwitcher.setVisibility(View.GONE);
+                        textSwitcher3.setAnimation(imgAnimationOut);
+                        textSwitcher3.setVisibility(View.GONE);
+
+                        imageSwitchHandler.postDelayed(this, FRAME_TIME_MS);
                    break;
                 }
         }

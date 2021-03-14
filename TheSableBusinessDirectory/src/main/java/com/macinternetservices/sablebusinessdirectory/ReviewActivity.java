@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -151,7 +150,7 @@ public class ReviewActivity extends AppCompatActivity implements
         tvProgressStatus = findViewById(R.id.tvProgressStatus);
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);
-        textSwitcher =  findViewById(R.id.textSwitcher);
+        textSwitcher =  findViewById(R.id.textSwitcher1);
 
         Animation in = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);

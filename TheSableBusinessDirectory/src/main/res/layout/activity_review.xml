@@ -526,7 +526,7 @@
                         </LinearLayout>
 
                         <TextSwitcher
-                            android:id="@+id/textSwitcher"
+                            android:id="@+id/textSwitcher1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
