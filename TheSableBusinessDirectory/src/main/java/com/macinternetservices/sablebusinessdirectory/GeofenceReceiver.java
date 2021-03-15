@@ -35,11 +35,9 @@ public class GeofenceReceiver extends IntentService {
         GeofencingEvent geoEvent = GeofencingEvent.fromIntent(intent);
         if (geoEvent.hasError()) {
         } else {
-            //Log.d("Geofence", "GeofenceReceiver : Transition -> "
-                   // + geoEvent.getGeofenceTransition());
 
             int transitionType = geoEvent.getGeofenceTransition();
-            near = 0;
+            //near = 0;
             if (transitionType == Geofence.GEOFENCE_TRANSITION_ENTER
                     || transitionType == Geofence.GEOFENCE_TRANSITION_DWELL
                     || transitionType == Geofence.GEOFENCE_TRANSITION_EXIT) {
