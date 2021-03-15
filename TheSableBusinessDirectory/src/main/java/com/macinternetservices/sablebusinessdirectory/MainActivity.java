@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -162,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
-            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName, lastName;
+            password = "mroK zH6o wOW7 X094 MTKy fwmY", userName, userEmail, userImage, userId, firstName = "", lastName;
 
     public static ArrayList<ListingsModel> verticalList = new ArrayList<>();
     public static ArrayList<String> listingName = new ArrayList<>();
@@ -190,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements
     AutoCompleteTextView searchView;
     public static LatLngBounds.Builder latLngBoundsBuilder = new LatLngBounds.Builder();
 
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
     //private boolean isRestore;
 
     protected int getLayoutId() {
@@ -266,12 +269,12 @@ public class MainActivity extends AppCompatActivity implements
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 int resultCode = bundle.getInt("done");
-                if (resultCode == 1) {
+                /*if (resultCode == 1) {
                     Double latitude = bundle.getDouble("latitude");
                     Double longitude = bundle.getDouble("longitude");
                     // create marker
                     updateMarker(latitude, longitude);
-                }
+                }*/
             }
         }
     };
@@ -904,7 +907,51 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
         mMap.setOnMyLocationClickListener(this);
-        //displayGeofences();
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                View view = getLayoutInflater().inflate(R.layout.infowindowlayout, null);
+                ImageView greeter = (ImageView) view.findViewById(R.id.imageView1);
+                TextView title = (TextView) view.findViewById(R.id.textView1);
+                TextView snippet = (TextView) view.findViewById(R.id.textView2);
+                //LinearLayout info = new LinearLayout(getApplicationContext());
+                //info.setOrientation(LinearLayout.VERTICAL);
+
+                //title = new TextView(getApplicationContext());
+                title.setTextColor(Color.BLACK);
+                //title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                //greeter = new ImageView(getApplicationContext());
+                //greeter.setAnimation(R.anim.fade_in);
+                greeter.setImageResource(R.mipmap.hello_foreground);
+                greeter.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                //snippet = new TextView(getApplicationContext());
+                snippet.setTextColor(Color.GRAY);
+                //snippet.setGravity(Gravity.CENTER);
+                snippet.setText(marker.getSnippet());
+
+                //info.addView(title);
+                //info.addView(snippet);
+
+                return view;
+            }
+        });
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                marker.hideInfoWindow();
+            }
+        });
     }
 
     /**
