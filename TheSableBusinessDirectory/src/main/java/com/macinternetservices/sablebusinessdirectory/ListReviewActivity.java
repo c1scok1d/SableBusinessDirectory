@@ -267,9 +267,9 @@ public class ListReviewActivity extends AppCompatActivity {
                  * check validity of facebook access token
                  */
                 //accessTokenTracker.startTracking();
-                Boolean isLoggedIn = accessToken != null;
+                //Boolean isLoggedIn = accessToken != null;
 
-                if (!isLoggedIn) {
+                if (!MainActivity.isLoggedIn) {
                     Intent loginIntent = new Intent(v.getContext(),LoginActivity.class);
                     startActivity(loginIntent);
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);

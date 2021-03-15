@@ -39,7 +39,7 @@ public class GeofenceNotification {
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType, int near) {
         if(near > 0 && transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
-            if(MainActivity.firstName.isEmpty()) {
+            if(!MainActivity.isLoggedIn) {
                 notificationText = "Good news!";
             } else {
                 notificationText = "Good news "+ MainActivity.firstName+"!";

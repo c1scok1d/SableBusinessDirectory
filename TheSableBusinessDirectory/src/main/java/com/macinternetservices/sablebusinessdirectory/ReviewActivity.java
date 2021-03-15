@@ -724,7 +724,7 @@ public class ReviewActivity extends AppCompatActivity implements
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-        if(isLoggedIn && firstName != null) {
+        if(MainActivity.isLoggedIn) {
             Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback " + firstName, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(ReviewActivity.this, "Thank you for sharing your feedback", Toast.LENGTH_LONG).show();

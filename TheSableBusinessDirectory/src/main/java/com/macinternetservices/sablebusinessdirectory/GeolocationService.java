@@ -160,7 +160,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                         + location.getLongitude() + ". "
                         + location.getAccuracy());
         broadcastLocationFound(location);
-        if(MainActivity.firstName.isEmpty()) {
+        if(!MainActivity.isLoggedIn) {
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude(), location.getLongitude()))
                     .title("You are here!").snippet("Double tap\nanywhere on\nthe map to zoom")

@@ -335,9 +335,9 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         // Button login_button3 = findViewById(R.id.login_button3);
-        if (isLoggedIn) {
+        if (MainActivity.isLoggedIn) {
 
         }
         progressBar.setVisibility(View.GONE); //hide progressBar
@@ -359,8 +359,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     }
     private void showOtherStuff() {
         //Log.e("showOtherStuff", " Executing showOtherStuff " );
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        if(isLoggedIn) {
+        //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        if(MainActivity.isLoggedIn) {
 
         }
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
@@ -380,7 +380,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         noListingsTextView.setVisibility(View.VISIBLE);
         //noListingsTextView.setTextSize(16);
 
-        if(isLoggedIn && firstName != null) {
+        if(MainActivity.isLoggedIn) {
             noListingsTextView.setText("This is terrible " + firstName +"!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
                     "Tap ADD to add any black owned business you visit to our directory.");
         } else {

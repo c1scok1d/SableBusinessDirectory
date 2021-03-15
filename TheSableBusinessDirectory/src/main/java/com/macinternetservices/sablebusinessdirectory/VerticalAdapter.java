@@ -176,9 +176,9 @@ public class VerticalAdapter extends RecyclerView.Adapter {
                     //accessTokenTracker.startTracking();
 
 
-                    boolean isLoggedIn = accessToken != null;
+                    //boolean isLoggedIn = accessToken != null;
 
-                    if (!isLoggedIn) {
+                    if (!MainActivity.isLoggedIn) {
                         Intent loginIntent = new Intent(v.getContext(),LoginActivity.class);
                         itemView.getContext().startActivity(loginIntent);
                         //goto login activity get username and email via facebook create account, return here to check again and proceed

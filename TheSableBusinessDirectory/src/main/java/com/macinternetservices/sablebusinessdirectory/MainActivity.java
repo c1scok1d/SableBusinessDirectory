@@ -537,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements
 
         btnAdd.setOnClickListener(view -> {
             boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-            if (!isLoggedIn) {
+            if (MainActivity.isLoggedIn) {
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -854,7 +854,7 @@ public class MainActivity extends AppCompatActivity implements
             tvLoading.setVisibility(View.VISIBLE);
             tvLoading.setAnimation(imgAnimationIn);
             isLoggedIn = accessToken != null && !accessToken.isExpired();
-            if (isLoggedIn && firstName != null) {
+            if (isLoggedIn) {
                 String name = "<font color='#4FC1E9'>" + firstName + "</font>";
                 tvLoading.setText(Html.fromHtml(("Thanks for your patience " + name + "<br>We are searching our directory for black owned businesses near you.")));
             } else {
