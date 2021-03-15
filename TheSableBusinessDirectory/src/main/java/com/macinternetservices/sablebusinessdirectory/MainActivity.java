@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -677,8 +678,27 @@ public class MainActivity extends AppCompatActivity implements
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+
+        Thread.setDefaultUncaughtExceptionHandler(handleAppCrash);
     }
 
+    private Thread.UncaughtExceptionHandler handleAppCrash =
+            new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread thread, Throwable error) {
+                    Log.e("error", error.toString());
+                    String stackTrace = Log.getStackTraceString(error);
+                    String message = error.getMessage();
+                    Intent intent = new Intent (Intent.ACTION_SEND);
+                    intent.setType("message/rfc822");
+                    intent.putExtra (Intent.EXTRA_EMAIL, new String[] {"rchatman@macinternetservices.com"});
+                    intent.putExtra (Intent.EXTRA_SUBJECT, "Sable Crash log file");
+                    intent.putExtra (Intent.EXTRA_TEXT, stackTrace);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application
+                    startActivity(intent);
+
+                }
+            };
     protected void facebookLogin() {
         fbLogincallbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(fbLogincallbackManager,
@@ -916,32 +936,20 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public View getInfoContents(Marker marker) {
-
                 View view = getLayoutInflater().inflate(R.layout.infowindowlayout, null);
-                ImageView greeter = (ImageView) view.findViewById(R.id.imageView1);
-                TextView title = (TextView) view.findViewById(R.id.textView1);
-                TextView snippet = (TextView) view.findViewById(R.id.textView2);
-                //LinearLayout info = new LinearLayout(getApplicationContext());
-                //info.setOrientation(LinearLayout.VERTICAL);
 
-                //title = new TextView(getApplicationContext());
+                TextView title = (TextView) view.findViewById(R.id.textView1);
                 title.setTextColor(Color.BLACK);
-                //title.setGravity(Gravity.CENTER);
                 title.setTypeface(null, Typeface.BOLD);
                 title.setText(marker.getTitle());
 
-                //greeter = new ImageView(getApplicationContext());
-                //greeter.setAnimation(R.anim.fade_in);
+                ImageView greeter = (ImageView) view.findViewById(R.id.imageView1);
                 greeter.setImageResource(R.mipmap.hello_foreground);
                 greeter.setScaleType(ImageView.ScaleType.FIT_XY);
 
-                //snippet = new TextView(getApplicationContext());
+                TextView snippet = (TextView) view.findViewById(R.id.textView2);
                 snippet.setTextColor(Color.GRAY);
-                //snippet.setGravity(Gravity.CENTER);
                 snippet.setText(marker.getSnippet());
-
-                //info.addView(title);
-                //info.addView(snippet);
 
                 return view;
             }
@@ -952,6 +960,7 @@ public class MainActivity extends AppCompatActivity implements
                 marker.hideInfoWindow();
             }
         });
+
     }
 
     /**
@@ -1337,6 +1346,8 @@ public class MainActivity extends AppCompatActivity implements
                     // tvLoading.setAnimation(imgAnimationIn);
                     // tvLoading.setText("...loading the map now.");
                     setMarkers();
+                    Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
+                    ContextCompat.startForegroundService(getApplicationContext(), geofenceIntent);
                     //displayGeofences();
                 } else {
                     // do some stuff
@@ -1722,8 +1733,6 @@ public class MainActivity extends AppCompatActivity implements
     //create map markers and begin geofence monitoring
     protected void setMarkers() {
         //displayGeofences();
-        Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
-        ContextCompat.startForegroundService(getApplicationContext(), geofenceIntent);
         Intent intent = new Intent(this, MarkerClusteringActivity.class);
         startActivity(intent);
     }
