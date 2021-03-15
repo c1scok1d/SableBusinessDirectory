@@ -34,6 +34,7 @@ public class GeofenceReceiver extends IntentService {
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent geoEvent = GeofencingEvent.fromIntent(intent);
         if (geoEvent.hasError()) {
+            Log.e("GeoEventErro", "There was a geo even error");
         } else {
 
             int transitionType = geoEvent.getGeofenceTransition();
@@ -70,7 +71,7 @@ public class GeofenceReceiver extends IntentService {
                 geofenceNotification
                         .displayNotification(sg, transitionType, near);
 
-                if(near > 0){
+                if(near > 0 && transitionType != Geofence.GEOFENCE_TRANSITION_DWELL){
                     /*Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
                     ivLoading.setVisibility(View.VISIBLE);
@@ -86,10 +87,10 @@ public class GeofenceReceiver extends IntentService {
                     } */
                     Toast.makeText(getApplicationContext(), "There are " +near+ " black owned businesses within 5 miles of you", Toast.LENGTH_LONG).show();
                     //MainActivity.tvLoading.setText("It looks like there are " +near+ " black owned businesses within 5 miles of you");
-                } else{
+                } /*else if (near > 0 && transitionType)
                     Toast.makeText(getApplicationContext(), "There are no black owned businesses near you", Toast.LENGTH_LONG).show();
 
-                }
+                } */
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.macinternetservices.sablebusinessdirectory;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -75,7 +77,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
+import java.text.Annotation;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -92,9 +96,11 @@ import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -205,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements
     private FusedLocationProviderClient fusedLocationClient;
 
     LocationManager locationManager;
+    Location location;
 
     CallbackManager fbLogincallbackManager;
     private AccessTokenTracker accessTokenTracker;
@@ -291,6 +298,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * @param savedInstanceState
      */
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -677,9 +685,73 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         mLayout.setFadeOnClickListener(view -> mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED));
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
         Thread.setDefaultUncaughtExceptionHandler(handleAppCrash);
+    }
+
+    @SuppressLint("MissingPermission")
+    public void onStart() {
+        super.onStart();
+
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000,
+                400, LocationListener);
+
+        Map<String, String> query = new HashMap<>();
+        query.put("latitude", String.valueOf(location.getLatitude()));
+        query.put("longitude", String.valueOf(location.getLongitude()));
+        query.put("order", "asc");
+        query.put("orderby", "distance");
+        getRetrofit(query); //api call; pass current lat/lng to check if current location in database
+
+        Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
+        ContextCompat.startForegroundService(getApplicationContext(), geofenceIntent);
+    }
+
+    @SuppressLint("MissingPermission")
+    public void onResume() {
+        super.onResume();
+
+        /**
+         * login via facebook
+         */
+        facebookLogin();
+
+        //This starts the access token tracking
+        if (accessToken != null) {
+            useLoginInformation(accessToken);
+        } else {
+            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
+            userImageLayout.setVisibility(View.GONE);
+        }
+        accessTokenTracker.startTracking();
+        getApplication().registerReceiver(receiver,
+                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        imageSwitchHandler.removeCallbacks(runnableCode);
+        super.onStop();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        accessTokenTracker.stopTracking();
+        //deleteCache(getApplicationContext());
+    }
+
+    public void restartActivity() {
+        Intent mIntent = getIntent();
+        finish();
+        startActivity(mIntent);
     }
 
     private Thread.UncaughtExceptionHandler handleAppCrash =
@@ -726,7 +798,7 @@ public class MainActivity extends AppCompatActivity implements
                     accessToken = currentAccessToken;
                     useLoginInformation(currentAccessToken);
                 } else {
-                    restartActivity();
+                   // restartActivity();
                 }
             }
         };
@@ -744,68 +816,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);
-    }
-
-    //@SuppressLint("MissingPermission")
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        imageSwitchHandler.removeCallbacks(runnableCode);
-        super.onStop();
-    }
-
-    //@SuppressLint("MissingPermission")
-    public void onResume() {
-        super.onResume();
-
-        setUpMap();
-        /**
-         *  location manager to get current location
-         */
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
-                400, LocationListener);
-
-        /**
-         * login via facebook
-         */
-        facebookLogin();
-
-        //This starts the access token tracking
-        if (accessToken != null) {
-            useLoginInformation(accessToken);
-        } else {
-            LinearLayout userImageLayout = findViewById(R.id.userImageLayout);
-            userImageLayout.setVisibility(View.GONE);
-        }
-        accessTokenTracker.startTracking();
-        getApplication().registerReceiver(receiver,
-                new IntentFilter("me.hoen.geofence_21.geolocation.service"));
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-        accessTokenTracker.stopTracking();
-        deleteCache(getApplicationContext());
-    }
-
-    public void restartActivity() {
-        Intent mIntent = getIntent();
-        finish();
-        startActivity(mIntent);
     }
 
     public void useLoginInformation(final AccessToken accessToken) {
@@ -880,11 +890,8 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 tvLoading.setText("Thank you for waiting while we search our directory for black owned businesses near you.");
             }
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
+
             Map<String, String> query = new HashMap<>();
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
 
             query.put("latitude", String.valueOf(location.getLatitude()));
             query.put("longitude", String.valueOf(location.getLongitude()));
@@ -892,7 +899,6 @@ public class MainActivity extends AppCompatActivity implements
             query.put("orderby", "distance");
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
             getReviews();
-
         }
 
         /**
@@ -1004,48 +1010,6 @@ public class MainActivity extends AppCompatActivity implements
         //setAddress(latitude, longitude);
     }
 
-   /* public void setAddress(Double latitude, Double longitude) {
-        Geocoder geocoder;
-        List<Address> addresses = null;
-        geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-            if (addresses.size() > 0) {
-                Address fetchedAddress = addresses.get(0);
-                StringBuilder strAddress = new StringBuilder();
-                for (int i = 0; i < fetchedAddress.getMaxAddressLineIndex(); i++) {
-                    strAddress.append(fetchedAddress.getAddressLine(i)).append(" ");
-                }
-                 String address = strAddress.toString();
-                } else {
-                Toast.makeText(getApplicationContext(), "Searching current address...", Toast.LENGTH_LONG).show();
-                }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Could not get address...", Toast.LENGTH_LONG).show();
-        }
-
-        if (addresses != null) {
-            //Log.d("max", " " + addresses.get(0).getMaxAddressLineIndex());
-
-            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()/*String city = addresses.get(0).getLocality();
-            bldgno = addresses.get(0).getSubThoroughfare(); // get bulding number
-            street = addresses.get(0).getThoroughfare(); //get street name
-            city = addresses.get(0).getLocality(); //get city name
-            state = addresses.get(0).getAdminArea(); //get state name
-            zipcode = addresses.get(0).getPostalCode(); //get zip code
-            country = addresses.get(0).getCountryName(); //get country
-            //tvAddress.setText(address);
-            //tvCity.setText(addresses.get(0).getLocality());
-            addresses.get(0).getAdminArea();
-        } else {
-             Toast.makeText(this, "No GPS location available!  " +
-                    "Please check your mobile device for possible service issues.", Toast.LENGTH_LONG).show();
-        }
-    } */
-
     public void setCache(Context context) {
         int cacheSize = 10 * 1024 * 1024; // 10 MB
         File cacheFoo = context.getCacheDir();
@@ -1070,8 +1034,6 @@ public class MainActivity extends AppCompatActivity implements
             .addInterceptor(onlineInterceptor)
             .cache(cache)
             .build();
-
-
     /**
      * Query API for listings data
      * set URL and make call to API
@@ -1094,7 +1056,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
-
     /**
      * Retrofit API call to get listings
      *
@@ -1123,237 +1084,184 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<BusinessListings>>() {
             @Override
             public void onResponse(Call<List<BusinessListings>> call, Response<List<BusinessListings>> response) {
-                if (response.isSuccessful()) {
-                   /* if (response.raw().cacheResponse() != null) {
-                        ////Log.e("Network", "Listings response came from cache");
-                    } else {
-                        ////Log.e("Network", "Listings response came from server");
-                    }*/
-                    for (int i = 0; i < response.body().size(); i++) {
-                        BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
-                        if (businessHours == null) {
-                            String today = "null";
-                        } else {
-                            todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
-                            isOpen = response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
-                        }
-                        /**
-                         * onLocationMatch
-                         * if device lat/lng equals stored listing lat/lng locationMatch = true
-                         * add all matching data to array and launch Review Activity
-                         *
-                         */
-
-                     /*   Boolean onMatch = false;
-
-                        if (String.valueOf(response.body().get(i).getLatitude()).equals(String.valueOf(latitude)) &&
-                                String.valueOf(response.body().get(i).getLongitude()).equals(String.valueOf(longitude)) && userActivityArray.size() > 0 && onMatch) {
-                            locationMatch.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                    response.body().get(i).getId(),
-                                    response.body().get(i).getTitle().getRaw(),
-                                    response.body().get(i).getLink(),
-                                    response.body().get(i).getStatus(),
-                                    response.body().get(i).getPostCategory().get(0).getName(),
-                                    response.body().get(i).getFeatured(),
-                                    response.body().get(i).getFeaturedImage().getSrc(),
-                                    response.body().get(i).getBldgNo(),
-                                    response.body().get(i).getStreet(),
-                                    response.body().get(i).getCity(),
-                                    response.body().get(i).getRegion(),
-                                    response.body().get(i).getCountry(),
-                                    response.body().get(i).getZip(),
-                                    response.body().get(i).getLatitude(),
-                                    response.body().get(i).getLongitude(),
-                                    response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount(),
-                                    response.body().get(i).getPhone(),
-                                    response.body().get(i).getEmail(),
-                                    response.body().get(i).getWebsite(),
-                                    response.body().get(i).getTwitter(),
-                                    response.body().get(i).getFacebook(),
-                                    response.body().get(i).getVideo(),
-                                    todayRange,
-                                    isOpen,
-                                    response.body().get(i).getLogo(),
-                                    response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getSrc(),
-                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    100, GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-                                    Geofence.GEOFENCE_TRANSITION_ENTER
-                                            | Geofence.GEOFENCE_TRANSITION_DWELL
-                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                            Intent LocationMatch = new Intent(MainActivity.this, ReviewActivity.class);
-                            Bundle locationMatchBundle = new Bundle();
-                            locationMatchBundle.putParcelableArrayList("locationMatchBundle", locationMatch);
-                            LocationMatch.putExtra("locationMatch", locationMatch);
-                            startActivity(LocationMatch);
-                            break;
-                        } else { */
-
-                        /**
-                         * populate vertical recycler in Main Activity
-                         */
-                        verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                response.body().get(i).getId(),
-                                response.body().get(i).getTitle().getRaw(),
-                                response.body().get(i).getLink(),
-                                response.body().get(i).getStatus(),
-                                response.body().get(i).getPostCategory().get(0).getName(),
-                                response.body().get(i).getFeatured(),
-                                response.body().get(i).getFeaturedImage().getSrc(),
-                                response.body().get(i).getBldgNo(),
-                                response.body().get(i).getStreet(),
-                                response.body().get(i).getCity(),
-                                response.body().get(i).getRegion(),
-                                response.body().get(i).getCountry(),
-                                response.body().get(i).getZip(),
-                                response.body().get(i).getLatitude(),
-                                response.body().get(i).getLongitude(),
-                                response.body().get(i).getRating(),
-                                response.body().get(i).getRatingCount(),
-                                response.body().get(i).getPhone(),
-                                response.body().get(i).getEmail(),
-                                response.body().get(i).getWebsite(),
-                                response.body().get(i).getTwitter(),
-                                response.body().get(i).getFacebook(),
-                                response.body().get(i).getVideo(),
-                                todayRange,
-                                isOpen,
-                                response.body().get(i).getLogo(),
-                                response.body().get(i).getContent().getRaw(),
-                                response.body().get(i).getFeaturedImage().getThumbnail(),
-                                response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
-                                Geofence.GEOFENCE_TRANSITION_ENTER
-                                        | Geofence.GEOFENCE_TRANSITION_DWELL
-                                        | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                        geofences.put(response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
-                                Geofence.GEOFENCE_TRANSITION_ENTER
-                                        | Geofence.GEOFENCE_TRANSITION_DWELL
-                                        | Geofence.GEOFENCE_TRANSITION_EXIT));
-                        verticalAdapter.notifyDataSetChanged();
-
-                        listingName.add(response.body().get(i).getTitle().getRaw());
-                        try {
-                            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
-                            Date created = sdf.parse(response.body().get(i).getDateGmt());
-                            Date currentTime = Calendar.getInstance().getTime();
-                            date1 = String.valueOf(created);
-                            date2 = String.valueOf(currentTime);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 30;
-                        if (isRecent) {
-                            recentList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                    response.body().get(i).getId(),
-                                    response.body().get(i).getTitle().getRaw(),
-                                    response.body().get(i).getLink(),
-                                    response.body().get(i).getStatus(),
-                                    response.body().get(i).getPostCategory().get(0).getName(),
-                                    response.body().get(i).getFeatured(),
-                                    response.body().get(i).getFeaturedImage().getSrc(),
-                                    response.body().get(i).getBldgNo(),
-                                    response.body().get(i).getStreet(),
-                                    response.body().get(i).getCity(),
-                                    response.body().get(i).getRegion(),
-                                    response.body().get(i).getCountry(),
-                                    response.body().get(i).getZip(),
-                                    response.body().get(i).getLatitude(),
-                                    response.body().get(i).getLongitude(),
-                                    response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount(),
-                                    response.body().get(i).getPhone(),
-                                    response.body().get(i).getEmail(),
-                                    response.body().get(i).getWebsite(),
-                                    response.body().get(i).getTwitter(),
-                                    response.body().get(i).getFacebook(),
-                                    response.body().get(i).getVideo(),
-                                    todayRange,
-                                    isOpen,
-                                    response.body().get(i).getLogo(),
-                                    response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    Geofence.GEOFENCE_TRANSITION_ENTER
-                                            | Geofence.GEOFENCE_TRANSITION_DWELL
-                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                            recentListingsAdapter.notifyDataSetChanged();
-                        }
-                        boolean isFeatured = response.body().get(i).getFeatured();
-                        if (isFeatured) {
-                            featuredList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
-                                    response.body().get(i).getId(),
-                                    response.body().get(i).getTitle().getRaw(),
-                                    response.body().get(i).getLink(),
-                                    response.body().get(i).getStatus(),
-                                    response.body().get(i).getPostCategory().get(0).getName(),
-                                    response.body().get(i).getFeatured(),
-                                    response.body().get(i).getFeaturedImage().getSrc(),
-                                    response.body().get(i).getBldgNo(),
-                                    response.body().get(i).getStreet(),
-                                    response.body().get(i).getCity(),
-                                    response.body().get(i).getRegion(),
-                                    response.body().get(i).getCountry(),
-                                    response.body().get(i).getZip(),
-                                    response.body().get(i).getLatitude(),
-                                    response.body().get(i).getLongitude(),
-                                    response.body().get(i).getRating(),
-                                    response.body().get(i).getRatingCount(),
-                                    response.body().get(i).getPhone(),
-                                    response.body().get(i).getEmail(),
-                                    response.body().get(i).getWebsite(),
-                                    response.body().get(i).getTwitter(),
-                                    response.body().get(i).getFacebook(),
-                                    response.body().get(i).getVideo(),
-                                    todayRange,
-                                    isOpen,
-                                    response.body().get(i).getLogo(),
-                                    response.body().get(i).getContent().getRaw(),
-                                    response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
-                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
-                                    Geofence.GEOFENCE_TRANSITION_ENTER
-                                            | Geofence.GEOFENCE_TRANSITION_DWELL
-                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
-                            featuredListAdapter.notifyDataSetChanged();
-                        }
-
-                        /**
-                         * categories on top of the map
-                         */
-
-                        LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
-                        latLngBoundsBuilder.include(latlng);
-                        mapLocations.add(new Person(latlng,
-                                response.body().get(i).getTitle().getRaw(),
-                                response.body().get(i).getFeaturedImage().getThumbnail(),
-                                response.body().get(i).getContent().getRaw(),
-                                response.body().get(i).getRating(),
-                                response.body().get(i).getRatingCount(),
-                                response.body().get(i).getCity(),
-                                response.body().get(i).getRegion(),
-                                response.body().get(i).getFeaturedImage().getThumbnail()));
-                    }
-                    // }
-                    // Pass results to ListViewAdapter Class
-                    // searchAdapter = new SearchListViewAdapter(getApplicationContext(), category);
-                    // Binds the Adapter to the ListView
-//                    searchList.setAdapter(searchAdapter);
-                    // tvLoading.setAnimation(imgAnimationIn);
-                    // tvLoading.setText("...loading the map now.");
-                    setMarkers();
-                    Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
-                    ContextCompat.startForegroundService(getApplicationContext(), geofenceIntent);
-                    //displayGeofences();
+                if(response.body().isEmpty()){
+                    Log.e("Retrofit Response: ", response.body().toString());
                 } else {
-                    // do some stuff
+                    //Log.e("Retrofit Response", "Response: " + response);
+                    if (response.isSuccessful()) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            BusinessListings.BusinessHours businessHours = response.body().get(i).getBusinessHours();
+                            if (businessHours == null) {
+                                String today = "null";
+                            } else {
+                                todayRange = response.body().get(i).getBusinessHours().getRendered().getExtra().getTodayRange();
+                                isOpen = response.body().get(i).getBusinessHours().getRendered().getExtra().getCurrentLabel();
+                            }
+                            /**
+                             * onLocationMatch
+                             * if device lat/lng equals stored listing lat/lng locationMatch = true
+                             * add all matching data to array and launch Review Activity
+                             *
+                             */
+                        /*
+                          // location match code goes here
+                         */
+
+                            /**
+                             * populate vertical recycler in Main Activity
+                             */
+                            verticalList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                    response.body().get(i).getId(),
+                                    response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getLink(),
+                                    response.body().get(i).getStatus(),
+                                    response.body().get(i).getPostCategory().get(0).getName(),
+                                    response.body().get(i).getFeatured(),
+                                    response.body().get(i).getFeaturedImage().getSrc(),
+                                    response.body().get(i).getBldgNo(),
+                                    response.body().get(i).getStreet(),
+                                    response.body().get(i).getCity(),
+                                    response.body().get(i).getRegion(),
+                                    response.body().get(i).getCountry(),
+                                    response.body().get(i).getZip(),
+                                    response.body().get(i).getLatitude(),
+                                    response.body().get(i).getLongitude(),
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getPhone(),
+                                    response.body().get(i).getEmail(),
+                                    response.body().get(i).getWebsite(),
+                                    response.body().get(i).getTwitter(),
+                                    response.body().get(i).getFacebook(),
+                                    response.body().get(i).getVideo(),
+                                    todayRange,
+                                    isOpen,
+                                    response.body().get(i).getLogo(),
+                                    response.body().get(i).getContent().getRaw(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    Geofence.GEOFENCE_TRANSITION_ENTER
+                                            | Geofence.GEOFENCE_TRANSITION_DWELL
+                                            | Geofence.GEOFENCE_TRANSITION_EXIT)));
+                            geofences.put(response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                    8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    Geofence.GEOFENCE_TRANSITION_ENTER
+                                            | Geofence.GEOFENCE_TRANSITION_DWELL
+                                            | Geofence.GEOFENCE_TRANSITION_EXIT));
+                            verticalAdapter.notifyDataSetChanged();
+
+                            listingName.add(response.body().get(i).getTitle().getRaw());
+                            try {
+                                SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss", Locale.US);
+                                Date created = sdf.parse(response.body().get(i).getDateGmt());
+                                Date currentTime = Calendar.getInstance().getTime();
+                                date1 = String.valueOf(created);
+                                date2 = String.valueOf(currentTime);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            boolean isRecent = date1 != null && date2 != null && date1.compareTo(date2) < 30;
+                            if (isRecent) {
+                                recentList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                        response.body().get(i).getId(),
+                                        response.body().get(i).getTitle().getRaw(),
+                                        response.body().get(i).getLink(),
+                                        response.body().get(i).getStatus(),
+                                        response.body().get(i).getPostCategory().get(0).getName(),
+                                        response.body().get(i).getFeatured(),
+                                        response.body().get(i).getFeaturedImage().getSrc(),
+                                        response.body().get(i).getBldgNo(),
+                                        response.body().get(i).getStreet(),
+                                        response.body().get(i).getCity(),
+                                        response.body().get(i).getRegion(),
+                                        response.body().get(i).getCountry(),
+                                        response.body().get(i).getZip(),
+                                        response.body().get(i).getLatitude(),
+                                        response.body().get(i).getLongitude(),
+                                        response.body().get(i).getRating(),
+                                        response.body().get(i).getRatingCount(),
+                                        response.body().get(i).getPhone(),
+                                        response.body().get(i).getEmail(),
+                                        response.body().get(i).getWebsite(),
+                                        response.body().get(i).getTwitter(),
+                                        response.body().get(i).getFacebook(),
+                                        response.body().get(i).getVideo(),
+                                        todayRange,
+                                        isOpen,
+                                        response.body().get(i).getLogo(),
+                                        response.body().get(i).getContent().getRaw(),
+                                        response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                        8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
+                                recentListingsAdapter.notifyDataSetChanged();
+                            }
+                            boolean isFeatured = response.body().get(i).getFeatured();
+                            if (isFeatured) {
+                                featuredList.add(new ListingsModel(ListingsModel.IMAGE_TYPE,
+                                        response.body().get(i).getId(),
+                                        response.body().get(i).getTitle().getRaw(),
+                                        response.body().get(i).getLink(),
+                                        response.body().get(i).getStatus(),
+                                        response.body().get(i).getPostCategory().get(0).getName(),
+                                        response.body().get(i).getFeatured(),
+                                        response.body().get(i).getFeaturedImage().getSrc(),
+                                        response.body().get(i).getBldgNo(),
+                                        response.body().get(i).getStreet(),
+                                        response.body().get(i).getCity(),
+                                        response.body().get(i).getRegion(),
+                                        response.body().get(i).getCountry(),
+                                        response.body().get(i).getZip(),
+                                        response.body().get(i).getLatitude(),
+                                        response.body().get(i).getLongitude(),
+                                        response.body().get(i).getRating(),
+                                        response.body().get(i).getRatingCount(),
+                                        response.body().get(i).getPhone(),
+                                        response.body().get(i).getEmail(),
+                                        response.body().get(i).getWebsite(),
+                                        response.body().get(i).getTwitter(),
+                                        response.body().get(i).getFacebook(),
+                                        response.body().get(i).getVideo(),
+                                        todayRange,
+                                        isOpen,
+                                        response.body().get(i).getLogo(),
+                                        response.body().get(i).getContent().getRaw(),
+                                        response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        response.body().get(i).getTitle().getRaw(), new SimpleGeofence(response.body().get(i).getTitle().getRaw(), response.body().get(i).getLatitude(), response.body().get(i).getLongitude(),
+                                        8046, GEOFENCE_EXPIRATION_IN_MILLISECONDS, response.body().get(i).getFeaturedImage().getThumbnail(),
+                                        Geofence.GEOFENCE_TRANSITION_ENTER
+                                                | Geofence.GEOFENCE_TRANSITION_DWELL
+                                                | Geofence.GEOFENCE_TRANSITION_EXIT)));
+                                featuredListAdapter.notifyDataSetChanged();
+                            }
+
+                            /**
+                             * categories on top of the map
+                             */
+
+                            LatLng latlng = new LatLng(response.body().get(i).getLatitude(), response.body().get(i).getLongitude());
+                            latLngBoundsBuilder.include(latlng);
+                            mapLocations.add(new Person(latlng,
+                                    response.body().get(i).getTitle().getRaw(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail(),
+                                    response.body().get(i).getContent().getRaw(),
+                                    response.body().get(i).getRating(),
+                                    response.body().get(i).getRatingCount(),
+                                    response.body().get(i).getCity(),
+                                    response.body().get(i).getRegion(),
+                                    response.body().get(i).getFeaturedImage().getThumbnail()));
+                        }
+
+                    } else {
+                        Log.e("Retrofit Response: ", "foobar");
+                    }
+                    setMarkers();
                 }
             }
-
             @Override
             public void onFailure(Call<List<BusinessListings>> call, Throwable t) {
                 ////Log.e("getListingsFailure", " response: " + t);
@@ -1370,8 +1278,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void getReviews() {
         retrofit = null;
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        //Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);

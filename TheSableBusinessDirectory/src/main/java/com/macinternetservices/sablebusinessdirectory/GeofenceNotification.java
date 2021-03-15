@@ -38,16 +38,25 @@ public class GeofenceNotification {
     }
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType, int near) {
-        if(near > 0 && transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
-            if(!MainActivity.isLoggedIn) {
-                notificationText = "Good news!";
-            } else {
-                notificationText = "Good news "+ MainActivity.firstName+"!";
-            }
-            notificationText2 = "There are " + near + " black owned businesses near you!";
-            transitionEnterNotification(context, notificationText, notificationText2);
-        } else {
             switch (transitionType) {
+                case Geofence.GEOFENCE_TRANSITION_ENTER:
+                    if(near > 0){
+                        if(!MainActivity.isLoggedIn) {
+                            notificationText = "Good news!";
+                        } else {
+                            notificationText = "Good news "+ MainActivity.firstName+"!";
+                        }
+                        notificationText2 = "There are " + near + " black owned businesses within 5 miles of you!";
+                    } else {
+                        if(!MainActivity.isLoggedIn) {
+                            notificationText = "Oh no!";
+                        } else {
+                            notificationText = "Oh no "+ MainActivity.firstName+"!";
+                        }
+                        notificationText2 = "There are no businesses listed with us near you! Tap to add a listing now";
+                    }
+                    transitionEnterNotification(context, notificationText, notificationText2);
+                    break;
                 case Geofence.GEOFENCE_TRANSITION_DWELL:
                     notificationText = "You are near " + simpleGeofence.toGeofence().getRequestId();
                     notificationText2 = "Support black business.  Stop in and say 'Hi!'";
@@ -60,7 +69,6 @@ public class GeofenceNotification {
                     transitionEnterNotification(context, notificationText, notificationText2);
                     break;
             }
-        }
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                 context)

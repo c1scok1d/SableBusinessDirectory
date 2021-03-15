@@ -40,11 +40,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static com.macinternetservices.sablebusinessdirectory.MainActivity.mMap;
 
 public class GeolocationService extends Service implements ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, ResultCallback<Status> {
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 30000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 5;
     protected GoogleApiClient mGoogleApiClient;
     protected LocationRequest mLocationRequest;
@@ -74,40 +80,28 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
             * DateUtils.HOUR_IN_MILLIS;
-    private int loiteringDelay = 60000;
+    //private int loiteringDelay = 60000;
     public static final long GEOFENCE_RADIUS_IN_METERS = 100;
     @SuppressLint("MissingPermission")
     protected void registerGeofences() {
         if (MainActivity.geofencesAlreadyRegistered) {
             return;
         }
+         HashMap<String, SimpleGeofence> geofences = MainActivity.geofences;
+            GeofencingRequest.Builder geofencingRequestBuilder = new GeofencingRequest.Builder();
+            for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
+                SimpleGeofence sg = item.getValue();
+                geofencingRequestBuilder.addGeofence(sg.toGeofence());
+            }
 
-        HashMap<String, SimpleGeofence> geofences = MainActivity.geofences;
-        GeofencingRequest.Builder geofencingRequestBuilder = new GeofencingRequest.Builder();
-        for (Map.Entry<String, SimpleGeofence> item : geofences.entrySet()) {
-            SimpleGeofence sg = item.getValue();
-            geofencingRequestBuilder.addGeofence(sg.toGeofence());
-        }
+            GeofencingRequest geofencingRequest = geofencingRequestBuilder.build();
+            mPendingIntent = requestPendingIntent();
+            LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+                    geofencingRequest, mPendingIntent).setResultCallback(this);
 
-        GeofencingRequest geofencingRequest = geofencingRequestBuilder.build();
-
-        mPendingIntent = requestPendingIntent();
-
-       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        } */
-        LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
-                geofencingRequest, mPendingIntent).setResultCallback(this);
-
-        MainActivity.geofencesAlreadyRegistered = true;
+            MainActivity.geofencesAlreadyRegistered = true;
     }
+
 
     private PendingIntent requestPendingIntent() {
 
@@ -132,17 +126,9 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
         sendBroadcast(intent);
     }
 
+    @SuppressLint("MissingPermission")
     protected void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
     }
@@ -165,10 +151,11 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                     .position(new LatLng(location.getLatitude(), location.getLongitude()))
                     .title("You are here!").snippet("Double tap\nanywhere on\nthe map to zoom")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
         } else {
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .title("You are here "+ MainActivity.firstName+"!").snippet("Double tap\nanywhere on\nthe map to zoom")
+                    .title("Welcome "+ MainActivity.firstName).snippet("Double tap\nanywhere on\nthe map to zoom")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         }
 
@@ -208,6 +195,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
         mLocationRequest
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(400);
     }
 
     @Override
@@ -217,9 +205,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
     public void onResult(Status status) {
         if (status.isSuccess()) {
-           /* Toast.makeText(getApplicationContext(),
-                    getString(R.string.geofences_added), Toast.LENGTH_SHORT)
-                    .show(); */
+
         } else {
             MainActivity.geofencesAlreadyRegistered = false;
             String errorMessage = getErrorString(this, status.getStatusCode());
