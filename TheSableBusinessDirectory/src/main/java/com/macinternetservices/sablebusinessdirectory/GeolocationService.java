@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -34,6 +35,12 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import static com.macinternetservices.sablebusinessdirectory.MainActivity.mMap;
 
 public class GeolocationService extends Service implements ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, ResultCallback<Status> {
@@ -67,14 +74,13 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS
             * DateUtils.HOUR_IN_MILLIS;
-    //private int loiteringDelay = 60000;
+    private int loiteringDelay = 60000;
     public static final long GEOFENCE_RADIUS_IN_METERS = 100;
+    @SuppressLint("MissingPermission")
     protected void registerGeofences() {
         if (MainActivity.geofencesAlreadyRegistered) {
             return;
         }
-
-        //Log.d("Geofence", "Registering Geofences");
 
         HashMap<String, SimpleGeofence> geofences = MainActivity.geofences;
         GeofencingRequest.Builder geofencingRequestBuilder = new GeofencingRequest.Builder();
@@ -87,7 +93,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
         mPendingIntent = requestPendingIntent();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -96,7 +102,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             return;
-        }
+        } */
         LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
                 geofencingRequest, mPendingIntent).setResultCallback(this);
 
@@ -154,11 +160,25 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                         + location.getLongitude() + ". "
                         + location.getAccuracy());
         broadcastLocationFound(location);
+        if(MainActivity.firstName.isEmpty()) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .title("You are here!").snippet("Double tap\nanywhere on\nthe map to zoom")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        } else {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .title("You are here "+ MainActivity.firstName+"!").snippet("Double tap\nanywhere on\nthe map to zoom")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        }
 
         if (!MainActivity.geofencesAlreadyRegistered) {
             registerGeofences();
         }
     }
+
+
+
 
     @Override
     public void onConnectionSuspended(int cause) {
