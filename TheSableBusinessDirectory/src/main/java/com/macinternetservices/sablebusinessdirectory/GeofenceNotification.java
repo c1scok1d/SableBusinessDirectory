@@ -22,20 +22,12 @@ import java.util.Random;
 
 public class GeofenceNotification {
     public static final int NOTIFICATION_ID = 20;
-    int near = 0;
-
     protected Context context;
 
     protected NotificationManager notificationManager;
     protected Notification notification;
     String notificationText = "";
     String notificationText2 = "";
-
-    // Set the notification tap action
-    /*Intent intent = new Intent(this, AlertDetails.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    PendingIntent notificationTapIntent = PendingIntent.getActivity(this, 0, intent, 0);*/
-
 
     public GeofenceNotification(Context context) {
         this.context = context;
@@ -47,8 +39,13 @@ public class GeofenceNotification {
     protected void buildNotificaction(SimpleGeofence simpleGeofence,
                                       int transitionType, int near) {
         if(near > 0 && transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
-            notificationText = "There are "+near+" black owned businesses near you!";
-            transitionEnterNotification(context, notificationText);
+            if(MainActivity.firstName.isEmpty()) {
+                notificationText = "Good news!";
+            } else {
+                notificationText = "Good news "+ MainActivity.firstName+"!";
+            }
+            notificationText2 = "There are " + near + " black owned businesses near you!";
+            transitionEnterNotification(context, notificationText, notificationText2);
         } else {
             switch (transitionType) {
                 case Geofence.GEOFENCE_TRANSITION_DWELL:
@@ -57,13 +54,10 @@ public class GeofenceNotification {
                     transitionDwellNotification(context, notificationText, notificationText2, simpleGeofence.getLogo());
                     break;
 
-                /*case Geofence.GEOFENCE_TRANSITION_ENTER:
-
-                    break;*/
-
                 case Geofence.GEOFENCE_TRANSITION_EXIT:
-                    notificationText = "Support black business. You are near " + simpleGeofence.toGeofence().getRequestId() + " why not stop in and say 'Hi!'";
-                    transitionEnterNotification(context, notificationText);
+                    notificationText = "Support black business. You are near " + simpleGeofence.toGeofence().getRequestId();
+                    notificationText2 = "Why not stop in and say 'Hi!'";
+                    transitionEnterNotification(context, notificationText, notificationText2);
                     break;
             }
         }
@@ -100,20 +94,20 @@ public class GeofenceNotification {
             manager.createNotificationChannel(serviceChannel);
         }
     }
-    private void transitionEnterNotification(final Context mContext,final String message){
+    private void transitionEnterNotification(final Context mContext,final String message, final String message2){
         createNotificationChannel(mContext);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
 
         PendingIntent notificationTapIntent = PendingIntent.getActivity(mContext,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                .setContentTitle("Black Owned Business Alert")
-                .setContentText(message)
-                //.setSubText("Support Black Business")
+                .setSubText("Black Owned Business Alert")
+                .setContentText(message2)
+                .setContentTitle(message)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(notificationTapIntent) // notification tap action
-                //.setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notifManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.notify(new Random().nextInt(), notification);
@@ -149,8 +143,8 @@ public class GeofenceNotification {
                        .bigPicture(getBitmapFromURL(url))
                         .bigLargeIcon(null))
                 .setContentIntent(notificationTapIntent) // notification tap action
-                //.setOnlyAlertOnce(true) // set this to show and vibrate only once
                 .build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notifManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notifManager.notify(new Random().nextInt(), notification);
