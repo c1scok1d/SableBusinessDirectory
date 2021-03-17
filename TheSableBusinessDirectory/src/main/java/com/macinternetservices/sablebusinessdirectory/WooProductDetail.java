@@ -49,7 +49,7 @@ public class WooProductDetail extends AppCompatActivity {
 
         title = findViewById(R.id.title);
         webView = findViewById(R.id.productwebview);
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar1);
         /* Set Horizontal LinearLayout to RecyclerView */
         horizontalRecyclervView = findViewById(R.id.featuredListingsRecyclerView);
         horizontalRecyclervView.setHasFixedSize(true);

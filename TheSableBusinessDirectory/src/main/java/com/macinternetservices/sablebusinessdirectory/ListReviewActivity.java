@@ -6,7 +6,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -175,7 +174,7 @@ public class ListReviewActivity extends AppCompatActivity {
         tvCategory = findViewById(R.id.tvCategory);
         tvVideo = findViewById(R.id.tvVideo);
         tvFirstRate = findViewById(R.id.tvFirstRate);
-        pDialog = findViewById(R.id.progressBar);
+        pDialog = findViewById(R.id.progressBar1);
         tvNoReviews = findViewById(R.id.tvNoReviews);
 
 

@@ -146,7 +146,7 @@ public class ReviewActivity extends AppCompatActivity implements
         tvStatus = findViewById(R.id.tvStatus);
         tvLatitude = findViewById(R.id.tvLatitude);
         tvLongitude = findViewById(R.id.tvLongitude);
-        pDialog = findViewById(R.id.progressBar);
+        pDialog = findViewById(R.id.progressBar1);
         tvProgressStatus = findViewById(R.id.tvProgressStatus);
         tvUserName = findViewById(R.id.tvUserName);
         ivUserImage = findViewById(R.id.ivUserImage);

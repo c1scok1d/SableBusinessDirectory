@@ -69,7 +69,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
    // private Random random = new Random(1984);
     private Person clickedVenueMarker;
     ArrayList<ListingsModel> locationReviewShow = new ArrayList<>();
-    //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+    boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
 
 
@@ -289,13 +289,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         }
     }
 
-    @Override
+   @Override
     public void setMarkers() {
-       // getMap().clear();
-        //mClusterManager.clearItems();
-        //mClusterManager.addItems(items);
-        //mClusterManager.cluster();
-        //Log.e("setMarkers", " Executing setMarkers " );
         mClusterManager = new ClusterManager<>(this, getMap());
         mClusterManager.setRenderer(new PersonRenderer());
         getMap().setOnCameraIdleListener(mClusterManager);
@@ -305,8 +300,6 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         mClusterManager.setOnClusterInfoWindowClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
-
-
         if(mapLocations.size() == 0){
             // if no locations near user zoom to current location and display no listing message and spokesman
             showOtherStuff();
@@ -320,10 +313,8 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
                     .build();                   // Creates a CameraPosition from the builder
             getMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         } else {
-            getMap().clear();
-            mClusterManager.clearItems();
-            mClusterManager.addItems(mapLocations);
-            mClusterManager.cluster();
+        mClusterManager.addItems(mapLocations);
+        mClusterManager.cluster();
         LatLngBounds bounds = MainActivity.latLngBoundsBuilder.build();
         getMap().setOnMapLoadedCallback(() -> getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200)));
         showStuff();
@@ -331,13 +322,12 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         //Log.e("setMarkers", " Ending setMarkers " );
     }
     private void showStuff() {
-        //Log.e("showStuff", " Executing showStuff ");
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
-        //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         // Button login_button3 = findViewById(R.id.login_button3);
-        if (MainActivity.isLoggedIn) {
+        if (isLoggedIn) {
 
         }
         progressBar.setVisibility(View.GONE); //hide progressBar
@@ -359,14 +349,14 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
     }
     private void showOtherStuff() {
         //Log.e("showOtherStuff", " Executing showOtherStuff " );
-        //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        if(MainActivity.isLoggedIn) {
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        if(isLoggedIn) {
 
         }
         Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        //Animation imgZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_out);
-        //Animation imgZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
+        Animation imgZoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_out);
+        Animation imgZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
 
         progressBar.setVisibility(View.GONE); //hide progressBar
         login_button3.setVisibility(View.VISIBLE);
@@ -380,7 +370,7 @@ public class MarkerClusteringActivity extends MainActivity implements ClusterMan
         noListingsTextView.setVisibility(View.VISIBLE);
         //noListingsTextView.setTextSize(16);
 
-        if(MainActivity.isLoggedIn) {
+        if(isLoggedIn) {
             noListingsTextView.setText("This is terrible " + firstName +"!!!!\n\nLooks like there aren't any black owned businesses near you in our directory.\n" +
                     "Tap ADD to add any black owned business you visit to our directory.");
         } else {

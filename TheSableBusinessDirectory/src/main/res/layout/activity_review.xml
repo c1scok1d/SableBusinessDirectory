@@ -694,7 +694,7 @@
                     android:orientation="vertical"></LinearLayout>
 
                 <ProgressBar
-                    android:id="@+id/progressBar"
+                    android:id="@+id/progressBar1"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -711,8 +711,8 @@
                     android:id="@+id/tvProgressStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/progressBar"
-                    android:layout_alignLeft="@+id/progressBar"
+                    android:layout_below="@+id/progressBar1"
+                    android:layout_alignLeft="@+id/progressBar1"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:textColor="@color/colorAccent"
                     android:textStyle="bold" />
