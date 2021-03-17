@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements
     RecentListingsAdapter recentListingsAdapter;
     RecentReviewListingsAdapter recentReviewListingsAdapter;
 
+    Animation imgAnimationIn, imgAnimationOut = null;
+
 
     public static String baseURL = "https://www.thesablebusinessdirectory.com", radius, address, state, country,
             zipcode, city, street, bldgno, todayRange, username = "android_app", isOpen, email,
@@ -279,15 +281,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     };
-
-   /* protected void updateMarker(Double latitude, Double longitude) {
-        if (myPositionMarker == null) {
-            createMarker(latitude, longitude);
-        }
-        LatLng latLng = new LatLng(latitude, longitude);
-        myPositionMarker.setPosition(latLng);
-    } */
-
     /**
      * @param savedInstanceState
      */
@@ -297,8 +290,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         setCache(getApplicationContext());
-        Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-        Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+       // Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
         //isRestore = savedInstanceState != null;
         loadingLayout = findViewById(R.id.loadingLayout);
@@ -320,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements
         noListingsTextView = findViewById(R.id.noListingsTextView);
         noListingsTextView.setVisibility(View.GONE);
         spinner = findViewById(R.id.progressBar1);
+        imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+        imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
 
         /**
@@ -573,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View arg1, int pos,
                                     long id) {
-                Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                //Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
                 Map<String, String> query = new HashMap<>();
                 query.put("per_page", "100");
 
@@ -903,8 +898,6 @@ start location listener to get current location minimum alert 30 secs 400M
          */
         @Override
         public void onLocationChanged(Location location) {
-            Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-
             ivLoading.setVisibility(View.VISIBLE);
             ivLoading.setAnimation(imgAnimationIn);
             tvLoading.setVisibility(View.VISIBLE);
@@ -990,24 +983,6 @@ start location listener to get current location minimum alert 30 secs 400M
                 return view;
             }
         });
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                marker.hideInfoWindow();
-            }
-        });
-        if(!MainActivity.isLoggedIn) {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .title("You are here!").snippet("Double tap\nanywhere on\nthe map to zoom")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
-        } else {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .title("Welcome "+ MainActivity.firstName).snippet("Double tap\nanywhere on\nthe map to zoom")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        }
     }
 
     /**
@@ -1536,8 +1511,8 @@ start location listener to get current location minimum alert 30 secs 400M
         // String image;
         @Override
         public void run() {
-            Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-            Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+            //Animation imgAnimationIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+            //Animation imgAnimationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
 
 
             String[] text = {
