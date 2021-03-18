@@ -746,8 +746,8 @@ start location listener to get current location minimum alert 30 secs 400M
             getRetrofit(query); //api call; pass current lat/lng to check if current location in database
             //Log.e("MapReadyGeofences", geofences.toString());
         } else {
-            Intent geofenceIntent = new Intent(getApplicationContext(), GeolocationService.class);
-            startService(geofenceIntent);
+            //Intent geofenceIntent = ;
+            startService(new Intent(getApplicationContext(), GeolocationService.class));
            // setMarkers();
         }
     }
@@ -825,7 +825,7 @@ start location listener to get current location minimum alert 30 secs 400M
         };
     }
 
-    protected Marker myPositionMarker;
+    /*protected Marker myPositionMarker;
 
     protected void createMarker(Double latitude, Double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
@@ -833,7 +833,7 @@ start location listener to get current location minimum alert 30 secs 400M
         myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng)
                 .title("You are here!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
+    }*/
 
     private void setUpMap() {
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMapAsync(this);

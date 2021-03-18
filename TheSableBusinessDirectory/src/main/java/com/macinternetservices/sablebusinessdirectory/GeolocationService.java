@@ -50,18 +50,50 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 5;
     protected GoogleApiClient mGoogleApiClient;
     protected LocationRequest mLocationRequest;
+    int counter=0;
 
     private PendingIntent mPendingIntent;
-
-    @Override
-    public void onStart(Intent intent, int startId) {
-
-    }
 
     @Override
     public void onCreate() {
         buildGoogleApiClient();
         mGoogleApiClient.connect();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
+            startMyOwnForeground();
+        else
+            startForeground(1, new Notification());
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void startMyOwnForeground()
+    {
+        String NOTIFICATION_CHANNEL_ID = "example.permanence";
+        String channelName = "Background Service";
+        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        assert manager != null;
+        manager.createNotificationChannel(chan);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        Notification notification = notificationBuilder
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setContentTitle("App is running in background")
+                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        startForeground(2, notification);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        startTimer();
+        return START_STICKY;
     }
 
     @Override
@@ -69,6 +101,25 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
         super.onDestroy();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
+        }
+        stoptimertask();
+    }
+    private Timer timer;
+    private TimerTask timerTask;
+    public void startTimer() {
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            public void run() {
+                Log.i("Count", "=========  "+ (counter++));
+            }
+        };
+        timer.schedule(timerTask, 1000, 1000); //
+    }
+
+    public void stoptimertask() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
     }
 
@@ -129,16 +180,10 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
                 mGoogleApiClient, mLocationRequest, this);
     }
 
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
-
     @Override
     public void onConnected(Bundle connectionHint) {
+        //Log.i("Geofence", "Connected to GoogleApiClient");
         startLocationUpdates();
-        //setMarkers();
-       // Log.i("GeolocationService", "setMarkers");
     }
 
     @Override
@@ -163,8 +208,12 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
 
         if (!MainActivity.geofencesAlreadyRegistered) {
             registerGeofences();
-        };
+        }
     }
+
+
+
+
     @Override
     public void onConnectionSuspended(int cause) {
         //Log.i("Geofence", "Connection suspended");
@@ -193,7 +242,7 @@ public class GeolocationService extends Service implements ConnectionCallbacks,
         mLocationRequest
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        //mLocationRequest.setSmallestDisplacement(400);
+        mLocationRequest.setSmallestDisplacement(400);
     }
 
     @Override
